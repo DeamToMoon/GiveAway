@@ -381,7 +381,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, getDoc, getDocs, query, where, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDPp-JsePgIM4Y3MrFrXEMLiv1GW3sJGKU",
@@ -442,8 +442,25 @@
     }
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
-    btn.textContent = '⏳ Sending your vibes...';
+    btn.textContent = '⏳ Checking entry...';
     try {
+      // Duplicate check — same UID or same username
+      const dupUID = await getDocs(query(collection(db, 'entries'), where('uid', '==', uid)));
+      if (!dupUID.empty) {
+        alert('🚫 This UID has already entered!\nOnly one entry per person is allowed 😊');
+        btn.disabled = false;
+        btn.textContent = '🎰 ENTER NOW — IT\'S FREE!';
+        return;
+      }
+      const dupUser = await getDocs(query(collection(db, 'entries'), where('username', '==', username)));
+      if (!dupUser.empty) {
+        alert('🚫 This username has already entered!\nOnly one entry per person is allowed 😊');
+        btn.disabled = false;
+        btn.textContent = '🎰 ENTER NOW — IT\'S FREE!';
+        return;
+      }
+
+      btn.textContent = '⏳ Sending your vibes...';
       await addDoc(collection(db, 'entries'), { username, uid, timestamp: serverTimestamp() });
       document.getElementById('formCard').style.display = 'none';
       const ty = document.getElementById('thankyou');
@@ -454,7 +471,7 @@
       console.error('Firebase error:', err);
       let msg = 'Something went wrong 😢\n\n';
       if (err.code === 'permission-denied') {
-        msg += '🔒 Firestore rules are blocking writes. Go to Firebase Console → Firestore → Rules and allow writes.';
+        msg += '🔒 Firestore rules are blocking writes.';
       } else if (err.message && err.message.includes('network')) {
         msg += '🌐 Network error — check your internet.';
       } else {
