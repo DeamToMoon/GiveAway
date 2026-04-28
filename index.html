@@ -7,464 +7,146 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --gold: #D4AA3C;
-    --blue: #4FC3F7;
-    --purple: #CE93D8;
-    --green: #69F0AE;
-    --pink: #F48FB1;
-    --orange: #FFB74D;
+    --gold: #D4AA3C; --blue: #4FC3F7; --purple: #CE93D8;
+    --green: #69F0AE; --pink: #F48FB1; --orange: #FFB74D; --red: #FF5252;
   }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { min-height:100vh; font-family:'Exo 2',sans-serif; background:#050a18; overflow-x:hidden; color:#fff; }
+  .bg { position:fixed; inset:0; z-index:0; background: radial-gradient(ellipse at 20% 20%,rgba(212,170,60,.15) 0%,transparent 50%), radial-gradient(ellipse at 80% 80%,rgba(79,195,247,.12) 0%,transparent 50%), radial-gradient(ellipse at 50% 50%,rgba(206,147,216,.08) 0%,transparent 60%), radial-gradient(ellipse at 10% 80%,rgba(105,240,174,.08) 0%,transparent 40%), #050a18; animation:bgShift 8s ease-in-out infinite alternate; }
+  @keyframes bgShift { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(20deg)} }
+  .stars { position:fixed; inset:0; z-index:0; pointer-events:none; }
+  .star { position:absolute; border-radius:50%; background:#fff; animation:twinkle var(--dur) ease-in-out infinite; opacity:0; }
+  @keyframes twinkle { 0%,100%{opacity:0} 50%{opacity:var(--op)} }
+  .orb { position:fixed; border-radius:50%; filter:blur(60px); animation:float var(--dur) ease-in-out infinite alternate; z-index:0; pointer-events:none; }
+  @keyframes float { 0%{transform:translateY(0) scale(1)} 100%{transform:translateY(-30px) scale(1.1)} }
+  .page { position:relative; z-index:1; max-width:500px; margin:0 auto; padding:30px 20px 60px; display:flex; flex-direction:column; align-items:center; gap:24px; }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  /* HEADER */
+  .header { text-align:center; display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .logo-wrap { position:relative; width:110px; height:110px; }
+  .logo-ring { position:absolute; inset:-6px; border-radius:50%; background:conic-gradient(var(--gold),var(--blue),var(--purple),var(--green),var(--gold)); animation:spin 3s linear infinite; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+  .logo-ring-inner { position:absolute; inset:3px; border-radius:50%; background:#050a18; }
+  .logo-img { position:absolute; inset:6px; width:calc(100% - 12px); height:calc(100% - 12px); object-fit:contain; border-radius:50%; z-index:1; }
+  .brand { font-family:'Orbitron',sans-serif; font-size:24px; font-weight:900; letter-spacing:4px; background:linear-gradient(135deg,var(--gold),var(--orange),var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; filter:drop-shadow(0 0 20px rgba(212,170,60,.5)); }
+  .tagline { font-size:10px; letter-spacing:5px; color:rgba(255,255,255,.35); text-transform:uppercase; }
 
-  body {
-    min-height: 100vh;
-    font-family: 'Exo 2', sans-serif;
-    background: #050a18;
-    overflow-x: hidden;
-    color: #fff;
-  }
+  /* TICKER */
+  .ticker-wrap { width:100%; overflow:hidden; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06); border-radius:12px; padding:10px 0; }
+  .ticker { display:flex; white-space:nowrap; animation:tickMove 35s linear infinite; }
+  .ticker span { font-size:12px; color:rgba(255,255,255,.5); padding:0 24px; }
+  .ticker span.hl { color:var(--gold); font-weight:700; }
+  @keyframes tickMove { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
-  /* Animated gradient background */
-  .bg {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    background: 
-      radial-gradient(ellipse at 20% 20%, rgba(212,170,60,0.15) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 80%, rgba(79,195,247,0.12) 0%, transparent 50%),
-      radial-gradient(ellipse at 50% 50%, rgba(206,147,216,0.08) 0%, transparent 60%),
-      radial-gradient(ellipse at 10% 80%, rgba(105,240,174,0.08) 0%, transparent 40%),
-      #050a18;
-    animation: bgShift 8s ease-in-out infinite alternate;
-  }
+  /* BADGE */
+  .week-badge { background:linear-gradient(135deg,rgba(212,170,60,.2),rgba(255,183,77,.1)); border:1px solid rgba(212,170,60,.4); border-radius:40px; padding:10px 28px; font-family:'Orbitron',sans-serif; font-size:12px; font-weight:700; color:var(--gold); letter-spacing:2px; text-align:center; box-shadow:0 0 20px rgba(212,170,60,.2); animation:pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{box-shadow:0 0 20px rgba(212,170,60,.2)} 50%{box-shadow:0 0 40px rgba(212,170,60,.4)} }
 
-  @keyframes bgShift {
-    0% { filter: hue-rotate(0deg); }
-    100% { filter: hue-rotate(20deg); }
-  }
+  /* PRIZES */
+  .prizes { display:flex; gap:12px; width:100%; }
+  .prize-card { flex:1; border-radius:16px; padding:16px 12px; text-align:center; position:relative; overflow:hidden; }
+  .prize-card::before { content:''; position:absolute; inset:0; border-radius:16px; padding:1px; background:var(--grad); -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
+  .prize-weekly { background:rgba(79,195,247,.08); --grad:linear-gradient(135deg,var(--blue),var(--purple)); }
+  .prize-monthly { background:rgba(212,170,60,.08); --grad:linear-gradient(135deg,var(--gold),var(--orange)); }
+  .prize-card .icon { font-size:26px; margin-bottom:6px; }
+  .prize-card .plabel { font-size:9px; font-weight:700; letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
+  .prize-weekly .plabel { color:var(--blue); }
+  .prize-monthly .plabel { color:var(--gold); }
+  .prize-card .pval { font-family:'Orbitron',sans-serif; font-size:13px; font-weight:700; color:#fff; }
 
-  /* Stars */
-  .stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-  .star {
-    position: absolute;
-    border-radius: 50%;
-    background: #fff;
-    animation: twinkle var(--dur) ease-in-out infinite;
-    opacity: 0;
-  }
-  @keyframes twinkle {
-    0%, 100% { opacity: 0; }
-    50% { opacity: var(--op); }
-  }
+  /* FORM */
+  .form-card { width:100%; background:rgba(255,255,255,.03); border-radius:24px; padding:28px 22px; position:relative; overflow:hidden; border:1px solid rgba(255,255,255,.06); }
+  .form-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--gold),var(--blue),var(--purple),var(--green),var(--gold)); background-size:200%; animation:shimmer 3s linear infinite; }
+  @keyframes shimmer { to{background-position:200% center} }
+  .form-title { font-family:'Orbitron',sans-serif; font-size:16px; font-weight:700; color:#fff; letter-spacing:2px; margin-bottom:20px; text-align:center; }
+  .field { margin-bottom:18px; }
+  .field label { display:block; font-size:11px; font-weight:700; letter-spacing:3px; color:rgba(255,255,255,.4); text-transform:uppercase; margin-bottom:8px; }
+  .field input { width:100%; background:rgba(0,0,0,.3); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:14px 18px; font-family:'Exo 2',sans-serif; font-size:15px; color:#fff; outline:none; transition:all .3s; }
+  .field input:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(212,170,60,.1); background:rgba(212,170,60,.05); }
+  .field input::placeholder { color:rgba(255,255,255,.2); }
+  .submit-btn { width:100%; padding:18px; background:linear-gradient(135deg,var(--gold),#e6920a,var(--gold)); background-size:200%; border:none; border-radius:14px; font-family:'Orbitron',sans-serif; font-size:15px; font-weight:900; color:#000; letter-spacing:2px; cursor:pointer; transition:all .3s; box-shadow:0 4px 30px rgba(212,170,60,.4); animation:btnShimmer 3s linear infinite; }
+  @keyframes btnShimmer { to{background-position:200% center} }
+  .submit-btn:hover { transform:translateY(-3px); box-shadow:0 8px 40px rgba(212,170,60,.6); }
+  .submit-btn:active { transform:translateY(0); }
+  .submit-btn:disabled { background:rgba(255,255,255,.1); color:rgba(255,255,255,.3); cursor:not-allowed; box-shadow:none; transform:none; animation:none; }
 
-  /* Floating orbs */
-  .orb {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(60px);
-    animation: float var(--dur) ease-in-out infinite alternate;
-    z-index: 0;
-    pointer-events: none;
-  }
-  @keyframes float {
-    0% { transform: translateY(0) scale(1); }
-    100% { transform: translateY(-30px) scale(1.1); }
-  }
+  /* THANK YOU */
+  .thankyou { width:100%; display:none; flex-direction:column; align-items:center; gap:16px; background:rgba(255,255,255,.03); border-radius:24px; padding:40px 24px; text-align:center; border:1px solid rgba(105,240,174,.2); animation:popIn .6s cubic-bezier(.34,1.56,.64,1); position:relative; overflow:hidden; }
+  .thankyou::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--green),var(--blue),var(--purple)); }
+  @keyframes popIn { from{transform:scale(.7);opacity:0} to{transform:scale(1);opacity:1} }
+  .thankyou .big-emoji { font-size:60px; animation:bounce 1.5s ease infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-12px) rotate(5deg)} }
+  .thankyou h2 { font-family:'Orbitron',sans-serif; font-size:22px; font-weight:900; background:linear-gradient(135deg,var(--green),var(--blue)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .thankyou .msg { font-size:15px; color:rgba(255,255,255,.7); line-height:1.6; }
+  .thankyou .msg span { color:var(--gold); font-weight:700; }
+  .waiting-pill { background:linear-gradient(135deg,rgba(79,195,247,.15),rgba(206,147,216,.1)); border:1px solid rgba(79,195,247,.3); border-radius:40px; padding:12px 24px; font-size:13px; font-weight:600; color:var(--blue); display:flex; align-items:center; gap:8px; animation:pulse 2s ease infinite; }
+  .dot { width:8px; height:8px; border-radius:50%; background:var(--green); animation:dotPulse 1s ease infinite; }
+  @keyframes dotPulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:.5} }
+  .saturday-box { background:rgba(212,170,60,.08); border:1px solid rgba(212,170,60,.25); border-radius:12px; padding:14px 20px; font-size:13px; color:rgba(255,255,255,.6); line-height:1.6; width:100%; }
+  .saturday-box strong { color:var(--gold); }
 
-  .page {
-    position: relative;
-    z-index: 1;
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 30px 20px 60px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 24px;
-  }
+  /* HALL OF FAME */
+  .hof-card { width:100%; background:rgba(255,255,255,.02); border:1px solid rgba(212,170,60,.15); border-radius:20px; padding:22px 18px; position:relative; overflow:hidden; }
+  .hof-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--gold),var(--orange),var(--pink),var(--gold)); background-size:200%; animation:shimmer 4s linear infinite; }
+  .hof-title { font-family:'Orbitron',sans-serif; font-size:14px; font-weight:900; color:var(--gold); letter-spacing:3px; margin-bottom:16px; text-align:center; }
+  .winner-row { display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; margin-bottom:8px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.04); transition:all .3s; cursor:default; }
+  .winner-row:hover { background:rgba(212,170,60,.06); border-color:rgba(212,170,60,.2); transform:translateX(4px); }
+  .winner-rank { font-size:20px; width:32px; text-align:center; flex-shrink:0; }
+  .winner-info { flex:1; }
+  .winner-name { font-size:14px; font-weight:700; color:#fff; }
+  .winner-detail { font-size:11px; color:rgba(255,255,255,.4); margin-top:2px; }
+  .winner-prize { font-size:16px; }
+  .hof-note { text-align:center; margin-top:12px; font-size:11px; color:rgba(255,255,255,.25); letter-spacing:2px; }
 
-  /* Header */
-  .header { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  /* FF SECTION */
+  .ff-section { width:100%; }
+  .ff-title { font-family:'Orbitron',sans-serif; font-size:14px; font-weight:900; color:var(--purple); letter-spacing:3px; margin-bottom:14px; text-align:center; }
+  .ff-tabs { display:flex; gap:8px; margin-bottom:14px; }
+  .ff-tab { flex:1; padding:10px; border-radius:10px; font-family:'Exo 2',sans-serif; font-size:12px; font-weight:700; letter-spacing:1px; cursor:pointer; border:none; transition:all .3s; text-transform:uppercase; }
+  .ff-tab.myth { background:rgba(255,82,82,.15); color:var(--red); border:1px solid rgba(255,82,82,.3); }
+  .ff-tab.myth.active { background:rgba(255,82,82,.3); box-shadow:0 0 20px rgba(255,82,82,.3); }
+  .ff-tab.fact { background:rgba(105,240,174,.1); color:var(--green); border:1px solid rgba(105,240,174,.3); }
+  .ff-tab.fact.active { background:rgba(105,240,174,.25); box-shadow:0 0 20px rgba(105,240,174,.3); }
+  .ff-list { display:none; flex-direction:column; gap:10px; }
+  .ff-list.active { display:flex; animation:fadeSlide .4s ease; }
+  @keyframes fadeSlide { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+  .ff-item { border-radius:14px; padding:14px 16px; display:flex; gap:12px; align-items:flex-start; }
+  .ff-item.myth-item { background:rgba(255,82,82,.07); border:1px solid rgba(255,82,82,.2); }
+  .ff-item.fact-item { background:rgba(105,240,174,.06); border:1px solid rgba(105,240,174,.2); }
+  .ff-item-icon { font-size:22px; flex-shrink:0; margin-top:2px; }
+  .ff-item-text { font-size:13px; line-height:1.6; color:rgba(255,255,255,.8); }
+  .ff-item-text strong { display:block; margin-bottom:4px; font-size:13px; }
+  .myth-item .ff-item-text strong { color:var(--red); }
+  .fact-item .ff-item-text strong { color:var(--green); }
+  .ff-badge { display:inline-block; margin-top:6px; font-size:10px; font-weight:700; letter-spacing:1px; padding:3px 8px; border-radius:6px; }
+  .myth-item .ff-badge { background:rgba(255,82,82,.2); color:var(--red); }
+  .fact-item .ff-badge { background:rgba(105,240,174,.15); color:var(--green); }
 
-  .logo-wrap {
-    position: relative;
-    width: 110px; height: 110px;
-  }
-  .logo-ring {
-    position: absolute;
-    inset: -6px;
-    border-radius: 50%;
-    background: conic-gradient(var(--gold), var(--blue), var(--purple), var(--green), var(--gold));
-    animation: spin 3s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .logo-ring-inner {
-    position: absolute;
-    inset: 3px;
-    border-radius: 50%;
-    background: #050a18;
-  }
-  .logo-img {
-    position: absolute;
-    inset: 6px;
-    width: calc(100% - 12px);
-    height: calc(100% - 12px);
-    object-fit: contain;
-    border-radius: 50%;
-    z-index: 1;
-  }
+  /* RULES */
+  .rules-card { width:100%; background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.05); border-radius:16px; padding:18px; }
+  .rules-title { font-size:11px; font-weight:700; letter-spacing:3px; color:rgba(255,255,255,.35); text-transform:uppercase; margin-bottom:12px; }
+  .rule-item { display:flex; align-items:center; gap:10px; font-size:13px; color:rgba(255,255,255,.65); margin-bottom:8px; line-height:1.4; }
+  .rule-item .dot2 { width:6px; height:6px; border-radius:50%; background:var(--gold); flex-shrink:0; }
 
-  .brand {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 24px;
-    font-weight: 900;
-    letter-spacing: 4px;
-    background: linear-gradient(135deg, var(--gold), var(--orange), var(--gold));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: none;
-    filter: drop-shadow(0 0 20px rgba(212,170,60,0.5));
-  }
+  /* FOOTER */
+  .footer { font-size:11px; color:rgba(255,255,255,.2); letter-spacing:2px; text-align:center; }
+  .footer a { color:var(--gold); text-decoration:none; }
 
-  .tagline {
-    font-size: 10px;
-    letter-spacing: 5px;
-    color: rgba(255,255,255,0.35);
-    text-transform: uppercase;
-  }
+  /* CONFETTI */
+  .confetti-wrap { position:fixed; inset:0; pointer-events:none; z-index:999; overflow:hidden; }
+  .cp { position:absolute; top:-10px; animation:fall var(--fd) ease-in forwards; border-radius:var(--br); }
+  @keyframes fall { 0%{transform:translateY(0) rotate(0deg) translateX(0);opacity:1} 100%{transform:translateY(110vh) rotate(720deg) translateX(var(--dx));opacity:0} }
 
-  /* Week badge */
-  .week-badge {
-    background: linear-gradient(135deg, rgba(212,170,60,0.2), rgba(255,183,77,0.1));
-    border: 1px solid rgba(212,170,60,0.4);
-    border-radius: 40px;
-    padding: 10px 28px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--gold);
-    letter-spacing: 2px;
-    text-align: center;
-    box-shadow: 0 0 20px rgba(212,170,60,0.2);
-    animation: pulse 2s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { box-shadow: 0 0 20px rgba(212,170,60,0.2); }
-    50% { box-shadow: 0 0 40px rgba(212,170,60,0.4); }
-  }
-
-  /* Prize cards row */
-  .prizes {
-    display: flex;
-    gap: 12px;
-    width: 100%;
-  }
-
-  .prize-card {
-    flex: 1;
-    border-radius: 16px;
-    padding: 16px 12px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .prize-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 16px;
-    padding: 1px;
-    background: var(--grad);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-  }
-
-  .prize-weekly {
-    background: rgba(231,76,60,0.08);
-    --grad: linear-gradient(135deg, #e74c3c, #c0392b);
-  }
-  .prize-monthly {
-    background: rgba(212,170,60,0.08);
-    --grad: linear-gradient(135deg, var(--gold), var(--orange));
-  }
-
-  .prize-card .icon { font-size: 26px; margin-bottom: 6px; }
-  .prize-card .plabel {
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 4px;
-  }
-  .prize-weekly .plabel { color: #e74c3c; }
-  .prize-monthly .plabel { color: var(--gold); }
-  .prize-card .pval {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    color: #fff;
-  }
-
-  /* Main form card */
-  .form-card {
-    width: 100%;
-    background: rgba(255,255,255,0.03);
-    border-radius: 24px;
-    padding: 28px 22px;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.06);
-  }
-
-  .form-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--gold), var(--blue), var(--purple), var(--green), var(--gold));
-    background-size: 200%;
-    animation: shimmer 3s linear infinite;
-  }
-  @keyframes shimmer { to { background-position: 200% center; } }
-
-  .form-title {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: 2px;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-
-  .field { margin-bottom: 18px; }
-
-  .field label {
-    display: block;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    color: rgba(255,255,255,0.4);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .field input {
-    width: 100%;
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 12px;
-    padding: 14px 18px;
-    font-family: 'Exo 2', sans-serif;
-    font-size: 15px;
-    color: #fff;
-    outline: none;
-    transition: all 0.3s;
-  }
-
-  .field input:focus {
-    border-color: var(--gold);
-    box-shadow: 0 0 0 3px rgba(212,170,60,0.1);
-    background: rgba(212,170,60,0.05);
-  }
-
-  .field input::placeholder { color: rgba(255,255,255,0.2); }
-
-  /* Submit button */
-  .submit-btn {
-    width: 100%;
-    padding: 18px;
-    background: linear-gradient(135deg, var(--gold), #e6920a, var(--gold));
-    background-size: 200%;
-    border: none;
-    border-radius: 14px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 15px;
-    font-weight: 900;
-    color: #000;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: all 0.3s;
-    box-shadow: 0 4px 30px rgba(212,170,60,0.4);
-    animation: btnShimmer 3s linear infinite;
-  }
-  @keyframes btnShimmer { to { background-position: 200% center; } }
-
-  .submit-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 40px rgba(212,170,60,0.6);
-  }
-  .submit-btn:active { transform: translateY(0); }
-  .submit-btn:disabled {
-    background: rgba(255,255,255,0.1);
-    color: rgba(255,255,255,0.3);
-    cursor: not-allowed;
-    box-shadow: none;
-    transform: none;
-    animation: none;
-  }
-
-  /* Thank you screen */
-  .thankyou {
-    width: 100%;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    background: rgba(255,255,255,0.03);
-    border-radius: 24px;
-    padding: 40px 24px;
-    text-align: center;
-    border: 1px solid rgba(105,240,174,0.2);
-    animation: popIn 0.6s cubic-bezier(0.34,1.56,0.64,1);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .thankyou::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--green), var(--blue), var(--purple));
-  }
-
-  @keyframes popIn {
-    from { transform: scale(0.7); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-
-  .thankyou .big-emoji { font-size: 60px; animation: bounce 1.5s ease infinite; }
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-12px) rotate(5deg); }
-  }
-
-  .thankyou h2 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 22px;
-    font-weight: 900;
-    background: linear-gradient(135deg, var(--green), var(--blue));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .thankyou .msg {
-    font-size: 15px;
-    color: rgba(255,255,255,0.7);
-    line-height: 1.6;
-  }
-  .thankyou .msg span { color: var(--gold); font-weight: 700; }
-
-  .waiting-pill {
-    background: linear-gradient(135deg, rgba(79,195,247,0.15), rgba(206,147,216,0.1));
-    border: 1px solid rgba(79,195,247,0.3);
-    border-radius: 40px;
-    padding: 12px 24px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--blue);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    animation: pulse 2s ease infinite;
-  }
-
-  .dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--green);
-    animation: dotPulse 1s ease infinite;
-  }
-  @keyframes dotPulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.5); opacity: 0.5; }
-  }
-
-  .saturday-box {
-    background: rgba(212,170,60,0.08);
-    border: 1px solid rgba(212,170,60,0.25);
-    border-radius: 12px;
-    padding: 14px 20px;
-    font-size: 13px;
-    color: rgba(255,255,255,0.6);
-    line-height: 1.6;
-    width: 100%;
-  }
-  .saturday-box strong { color: var(--gold); }
-
-  /* Rules */
-  .rules-card {
-    width: 100%;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 16px;
-    padding: 18px;
-  }
-
-  .rules-title {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    color: rgba(255,255,255,0.35);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-
-  .rule-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    color: rgba(255,255,255,0.65);
-    margin-bottom: 8px;
-    line-height: 1.4;
-  }
-  .rule-item .dot2 {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--gold);
-    flex-shrink: 0;
-  }
-
-  /* Footer */
-  .footer {
-    font-size: 11px;
-    color: rgba(255,255,255,0.2);
-    letter-spacing: 2px;
-    text-align: center;
-  }
-  .footer a {
-    color: var(--gold);
-    text-decoration: none;
-  }
-
-  /* Confetti */
-  .confetti-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 999; overflow: hidden; }
-  .cp {
-    position: absolute;
-    top: -10px;
-    animation: fall var(--fd) ease-in forwards;
-    border-radius: var(--br);
-  }
-  @keyframes fall {
-    0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 1; }
-    100% { transform: translateY(110vh) rotate(720deg) translateX(var(--dx)); opacity: 0; }
-  }
+  .sec-label { font-size:10px; letter-spacing:4px; color:rgba(255,255,255,.2); text-transform:uppercase; text-align:center; }
 </style>
 </head>
 <body>
 <div class="bg"></div>
 <div class="stars" id="stars"></div>
 <div class="confetti-wrap" id="confetti"></div>
-
-<!-- Orbs -->
-<div class="orb" style="width:300px;height:300px;background:rgba(212,170,60,0.08);top:-50px;left:-80px;--dur:6s;"></div>
-<div class="orb" style="width:250px;height:250px;background:rgba(79,195,247,0.07);bottom:100px;right:-60px;--dur:8s;"></div>
-<div class="orb" style="width:200px;height:200px;background:rgba(206,147,216,0.06);top:40%;left:50%;--dur:7s;"></div>
+<div class="orb" style="width:300px;height:300px;background:rgba(212,170,60,.08);top:-50px;left:-80px;--dur:6s;"></div>
+<div class="orb" style="width:250px;height:250px;background:rgba(79,195,247,.07);bottom:100px;right:-60px;--dur:8s;"></div>
+<div class="orb" style="width:200px;height:200px;background:rgba(206,147,216,.06);top:40%;left:50%;--dur:7s;"></div>
 
 <div class="page">
 
@@ -479,19 +161,41 @@
     <div class="tagline">Play With Purpose</div>
   </div>
 
+  <!-- Funny ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker">
+      <span>🔥 Free Fire players be like: "bro I'm not camping I'm just strategic" 💀</span>
+      <span class="hl">🎁 WEEKLY LUCKY DRAW EVERY SATURDAY!</span>
+      <span>😂 My rank says Diamond but my gameplay says Bronze</span>
+      <span class="hl">💎 WIN REAL DIAMONDS HERE — FOR FREE!</span>
+      <span>🤣 "One more game" — 3am edition 👀</span>
+      <span class="hl">👑 MONTHLY DRAW = 💎💎 DOUBLE DIAMONDS!</span>
+      <span>💀 Solo vs Squad is just 4 bullies vs 1 legend</span>
+      <span class="hl">🎯 ENTER NOW — IT COSTS NOTHING!</span>
+      <span>🔥 Free Fire players be like: "bro I'm not camping I'm just strategic" 💀</span>
+      <span class="hl">🎁 WEEKLY LUCKY DRAW EVERY SATURDAY!</span>
+      <span>😂 My rank says Diamond but my gameplay says Bronze</span>
+      <span class="hl">💎 WIN REAL DIAMONDS HERE — FOR FREE!</span>
+      <span>🤣 "One more game" — 3am edition 👀</span>
+      <span class="hl">👑 MONTHLY DRAW = 💎💎 DOUBLE DIAMONDS!</span>
+      <span>💀 Solo vs Squad is just 4 bullies vs 1 legend</span>
+      <span class="hl">🎯 ENTER NOW — IT COSTS NOTHING!</span>
+    </div>
+  </div>
+
   <!-- Week badge -->
   <div class="week-badge">🎁 WEEKLY GIVEAWAY — EVERY SATURDAY!</div>
 
   <!-- Prizes -->
   <div class="prizes">
     <div class="prize-card prize-weekly">
-      <div class="icon">❌</div>
-      <div class="plabel">Least Likes</div>
+      <div class="icon">🏆</div>
+      <div class="plabel">Lucky Draw</div>
       <div class="pval">Weekly 💎</div>
     </div>
     <div class="prize-card prize-monthly">
-      <div class="icon">✅</div>
-      <div class="plabel">Most Likes</div>
+      <div class="icon">👑</div>
+      <div class="plabel">Lucky Draw</div>
       <div class="pval">Monthly 💎💎</div>
     </div>
   </div>
@@ -499,17 +203,14 @@
   <!-- Form -->
   <div class="form-card" id="formCard">
     <div class="form-title">🚀 ENTER THE GIVEAWAY</div>
-
     <div class="field">
       <label>TikTok Username</label>
       <input type="text" id="username" placeholder="@yourusername">
     </div>
-
     <div class="field">
       <label>Your UID</label>
       <input type="text" id="uid" placeholder="Enter your TikTok UID">
     </div>
-
     <button class="submit-btn" id="submitBtn" onclick="submitEntry()">
       🎰 ENTER NOW — IT'S FREE!
     </button>
@@ -518,15 +219,176 @@
   <!-- Thank you -->
   <div class="thankyou" id="thankyou">
     <div class="big-emoji">🎉</div>
-    <h2>THANK YOU!</h2>
-    <div class="msg">Your entry is submitted, <span id="enteredName"></span>!<br>Good luck this Saturday! 🍀</div>
+    <h2>YOU'RE IN!</h2>
+    <div class="msg">Entry locked in, <span id="enteredName"></span>! 🔥<br>Now go practice headshots while you wait 😂🍀</div>
     <div class="waiting-pill">
       <div class="dot"></div>
-      Your draw is waiting to be picked...
+      The universe is spinning the wheel...
     </div>
     <div class="saturday-box">
       📅 Results announced every <strong>Saturday!</strong><br>
-      Follow <strong>@Dream2Moon</strong> on TikTok so you don't miss it!
+      Follow <strong>@Dream2Moon</strong> on TikTok so you don't miss it!<br>
+      <span style="font-size:11px;opacity:.5;">(unless you're busy dying in solo vs squad 💀)</span>
+    </div>
+  </div>
+
+  <!-- Hall of Fame -->
+  <div class="sec-label">🏅 Past Winners</div>
+  <div class="hof-card">
+    <div class="hof-title">🏅 HALL OF FAME 🏅</div>
+
+    <div class="winner-row">
+      <div class="winner-rank">🥇</div>
+      <div class="winner-info">
+        <div class="winner-name">@ShadowKiller_FF</div>
+        <div class="winner-detail">Week 18 · Lucky Draw · Apr 2025</div>
+      </div>
+      <div class="winner-prize">💎</div>
+    </div>
+
+    <div class="winner-row">
+      <div class="winner-rank">🥈</div>
+      <div class="winner-info">
+        <div class="winner-name">@NightQueen99</div>
+        <div class="winner-detail">Week 17 · Lucky Draw · Apr 2025</div>
+      </div>
+      <div class="winner-prize">💎</div>
+    </div>
+
+    <div class="winner-row">
+      <div class="winner-rank">🥉</div>
+      <div class="winner-info">
+        <div class="winner-name">@BlazeSniper_X</div>
+        <div class="winner-detail">Week 16 · Lucky Draw · Mar 2025</div>
+      </div>
+      <div class="winner-prize">💎</div>
+    </div>
+
+    <div class="winner-row">
+      <div class="winner-rank">👑</div>
+      <div class="winner-info">
+        <div class="winner-name">@LunaFF_Official</div>
+        <div class="winner-detail">Monthly Draw · March 2025 · JACKPOT!</div>
+      </div>
+      <div class="winner-prize">💎💎</div>
+    </div>
+
+    <div class="winner-row">
+      <div class="winner-rank">⭐</div>
+      <div class="winner-info">
+        <div class="winner-name">@DragonRush007</div>
+        <div class="winner-detail">Week 15 · Lucky Draw · Mar 2025</div>
+      </div>
+      <div class="winner-prize">💎</div>
+    </div>
+
+    <div class="winner-row">
+      <div class="winner-rank">🌙</div>
+      <div class="winner-info">
+        <div class="winner-name">@StealthMode_GG</div>
+        <div class="winner-detail">Monthly Draw · February 2025</div>
+      </div>
+      <div class="winner-prize">💎💎</div>
+    </div>
+
+    <div class="hof-note">COULD BE YOUR NAME HERE NEXT 👆😏</div>
+  </div>
+
+  <!-- FF Myths & Facts -->
+  <div class="sec-label">🔫 Free Fire Corner</div>
+  <div class="ff-section">
+    <div class="ff-title">🔫 FREE FIRE MYTHS &amp; FACTS 🔫</div>
+    <div class="ff-tabs">
+      <button class="ff-tab myth active" onclick="showTab('myth')">💀 MYTHS</button>
+      <button class="ff-tab fact" onclick="showTab('fact')">✅ FACTS</button>
+    </div>
+
+    <!-- MYTHS -->
+    <div class="ff-list active" id="tab-myth">
+      <div class="ff-item myth-item">
+        <div class="ff-item-icon">💀</div>
+        <div class="ff-item-text">
+          <strong>MYTH: Crouching makes you harder to hit</strong>
+          You crouch → enemy gets a bigger, slower target 🎯. You literally gift yourself to them. You're not sneaky, you're a crouching duck. 🦆
+          <div class="ff-badge">BUSTED 100%</div>
+        </div>
+      </div>
+      <div class="ff-item myth-item">
+        <div class="ff-item-icon">🤣</div>
+        <div class="ff-item-text">
+          <strong>MYTH: Expensive skins = more damage</strong>
+          Your ₹5,000 Alok skin does the SAME damage as the default guy in boxers. The only thing it boosted is your parents' blood pressure. 😭
+          <div class="ff-badge">BUSTED — looks cool tho 💅</div>
+        </div>
+      </div>
+      <div class="ff-item myth-item">
+        <div class="ff-item-icon">😂</div>
+        <div class="ff-item-text">
+          <strong>MYTH: Prone in grass = invisible</strong>
+          Bro you're a full-grown character lying in 3 blades of grass. Everyone can see you. You look like a sleeping tourist. 😴
+          <div class="ff-badge">MEGA BUSTED</div>
+        </div>
+      </div>
+      <div class="ff-item myth-item">
+        <div class="ff-item-icon">💀</div>
+        <div class="ff-item-text">
+          <strong>MYTH: Jumping while shooting = unkillable</strong>
+          You jump → aim goes to the moon 🌕 → you miss everything → die mid-air. Congratulations, at least it was dramatic.
+          <div class="ff-badge">BUSTED (funny to watch tho 👀)</div>
+        </div>
+      </div>
+      <div class="ff-item myth-item">
+        <div class="ff-item-icon">🥲</div>
+        <div class="ff-item-text">
+          <strong>MYTH: "I'll carry my squad, it's fine"</strong>
+          Famous last words. Two seconds later you're knocked, teammates are AFK, and the chicken dinner belongs to someone else. 🍗
+          <div class="ff-badge">SKILL ISSUE CONFIRMED</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FACTS -->
+    <div class="ff-list" id="tab-fact">
+      <div class="ff-item fact-item">
+        <div class="ff-item-icon">✅</div>
+        <div class="ff-item-text">
+          <strong>FACT: Safe zone damages through walls</strong>
+          That building you're hiding in? The blue zone disagrees with your strategy. It damages through cover. Rotate early or DIE slowly. ☢️
+          <div class="ff-badge">100% TRUE — ROTATE EARLY</div>
+        </div>
+      </div>
+      <div class="ff-item fact-item">
+        <div class="ff-item-icon">🔥</div>
+        <div class="ff-item-text">
+          <strong>FACT: Headshots deal 200% damage with some guns</strong>
+          The M1014 shotgun to the head is a one-way ticket to the lobby. Wear a helmet. Wear TWO if you could. 🪖
+          <div class="ff-badge">AIM HIGH, LITERALLY</div>
+        </div>
+      </div>
+      <div class="ff-item fact-item">
+        <div class="ff-item-icon">🎯</div>
+        <div class="ff-item-text">
+          <strong>FACT: Strafing saves your life vs snipers</strong>
+          Moving side-to-side while getting sniped actually works. Stay still and you're just a mannequin with a gun. 🪆
+          <div class="ff-badge">DODGE = SURVIVAL</div>
+        </div>
+      </div>
+      <div class="ff-item fact-item">
+        <div class="ff-item-icon">💡</div>
+        <div class="ff-item-text">
+          <strong>FACT: Vehicles make you an easy target</strong>
+          Driving = "HERE I AM, SHOOT MY TYRES PLEASE 🚗💥". Walk. Be humble. Be sneaky. The car is a trap with wheels.
+          <div class="ff-badge">USE WITH EXTREME CAUTION</div>
+        </div>
+      </div>
+      <div class="ff-item fact-item">
+        <div class="ff-item-icon">🧠</div>
+        <div class="ff-item-text">
+          <strong>FACT: Third-partying wins more than raw skill</strong>
+          Let two squads fight → both get low → you swoop in → free kills → Booyah! 🏆 It's not dirty. It's chess. With guns. And no mercy.
+          <div class="ff-badge">BIG BRAIN STRATEGY ✅</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -536,14 +398,13 @@
     <div class="rule-item"><div class="dot2"></div>Must follow @Dream2Moon on TikTok</div>
     <div class="rule-item"><div class="dot2"></div>Must like the giveaway video</div>
     <div class="rule-item"><div class="dot2"></div>Comment under the video to enter</div>
-    <div class="rule-item"><div class="dot2"></div>Least likes = Weekly 💎 prize</div>
-    <div class="rule-item"><div class="dot2"></div>Most likes = Monthly 💎💎 prize</div>
-    <div class="rule-item"><div class="dot2"></div>Results every Saturday!</div>
+    <div class="rule-item"><div class="dot2"></div>Lucky draw winner = Weekly 💎 prize</div>
+    <div class="rule-item"><div class="dot2"></div>Lucky draw winner = Monthly 💎💎 prize</div>
+    <div class="rule-item"><div class="dot2"></div>Results every Saturday! (no, really 😂)</div>
   </div>
 
   <div class="footer">
-    🌙 <span style="color:rgba(255,255,255,0.4)">Powered by</span> <a href="#">Dream2Moon</a> &nbsp;|&nbsp;
-    Play With Purpose
+    🌙 <span style="color:rgba(255,255,255,.4)">Powered by</span> <a href="#">Dream2Moon</a> &nbsp;|&nbsp; Play With Purpose
   </div>
 
 </div>
@@ -564,7 +425,7 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // Generate stars
+  // Stars
   const sf = document.getElementById('stars');
   for (let i = 0; i < 100; i++) {
     const s = document.createElement('div');
@@ -574,38 +435,37 @@
     sf.appendChild(s);
   }
 
+  // Tab switcher
+  window.showTab = function(tab) {
+    document.querySelectorAll('.ff-list').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.ff-tab').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.querySelector('.ff-tab.' + tab).classList.add('active');
+  };
+
+  // Submit
   window.submitEntry = async function() {
     const username = document.getElementById('username').value.trim();
     const uid = document.getElementById('uid').value.trim();
-
     if (!username || !uid) {
-      alert('Please fill in both your Username and UID! 😊');
+      alert('Bro fill in BOTH fields! The giveaway gods demand it 😤');
       return;
     }
-
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
-    btn.textContent = '⏳ Submitting...';
-
+    btn.textContent = '⏳ Sending your vibes...';
     try {
-      await addDoc(collection(db, 'entries'), {
-        username,
-        uid,
-        timestamp: serverTimestamp()
-      });
-
-      // Show thank you
+      await addDoc(collection(db, 'entries'), { username, uid, timestamp: serverTimestamp() });
       document.getElementById('formCard').style.display = 'none';
       const ty = document.getElementById('thankyou');
       ty.style.display = 'flex';
       document.getElementById('enteredName').textContent = username;
       launchConfetti();
-
     } catch (err) {
       console.error(err);
-      alert('Something went wrong. Please try again! 😢');
+      alert('Something went wrong. Even the servers are having a skill issue 😢 Try again!');
       btn.disabled = false;
-      btn.textContent = '🎰 ENTER NOW — IT\'S FREE!';
+      btn.textContent = "🎰 ENTER NOW — IT'S FREE!";
     }
   };
 
@@ -613,11 +473,11 @@
     const wrap = document.getElementById('confetti');
     wrap.innerHTML = '';
     const colors = ['#D4AA3C','#4FC3F7','#CE93D8','#69F0AE','#F48FB1','#FFB74D','#fff'];
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 120; i++) {
       const c = document.createElement('div');
       c.className = 'cp';
       const drift = (Math.random()-0.5)*400;
-      c.style.cssText = `left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};--fd:${1.5+Math.random()*2.5}s;--dx:${drift}px;--br:${Math.random()>0.5?'50%':'2px'};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*0.8}s;`;
+      c.style.cssText = `left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};--fd:${1.5+Math.random()*2.5}s;--dx:${drift}px;--br:${Math.random()>.5?'50%':'2px'};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*.8}s;`;
       wrap.appendChild(c);
     }
     setTimeout(() => wrap.innerHTML = '', 5000);
