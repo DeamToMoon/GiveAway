@@ -529,7 +529,10 @@ background: linear-gradient(90deg, transparent, rgba(212,170,60,0.3), transparen
       <div class="admin-brand">⚙️ ADMIN PANEL</div>
       <div class="admin-sub">Dream2Moon Giveaway Manager</div>
     </div>
-    <button class="logout-btn" onclick="doLogout()">🚪 Logout</button>
+    <div style="display:flex;gap:8px;">
+      <a href="index.html" style="background:rgba(79,195,247,0.1);border:1px solid rgba(79,195,247,0.3);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;color:#4FC3F7;text-decoration:none;letter-spacing:1px;transition:all 0.3s;">🏠 Main Page</a>
+      <button class="logout-btn" onclick="doLogout()">🚪 Logout</button>
+    </div>
   </div>
 
   <!-- Stats -->
@@ -646,7 +649,7 @@ background: linear-gradient(90deg, transparent, rgba(212,170,60,0.3), transparen
   window.doLogin = function() {
     const u = document.getElementById('loginUser').value;
     const p = document.getElementById('loginPass').value;
-    if (u === 'Dream' && p === '2moon') {
+    if (u === 'Dream2moon' && p === 'dream2moon@123') {
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('adminPanel').style.display = 'flex';
       loadEntries();
