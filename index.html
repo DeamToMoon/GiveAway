@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dream2Moon — Admin Panel</title>
+<title>Dream2Moon — Giveaway Entry</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -11,7 +11,8 @@
     --blue: #4FC3F7;
     --purple: #CE93D8;
     --green: #69F0AE;
-    --red: #e74c3c;
+    --pink: #F48FB1;
+    --orange: #FFB74D;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -19,73 +20,239 @@
   body {
     min-height: 100vh;
     font-family: 'Exo 2', sans-serif;
-    background: #030810;
-    color: #fff;
+    background: #050a18;
     overflow-x: hidden;
+    color: #fff;
   }
 
+  /* Animated gradient background */
   .bg {
-    position: fixed; inset: 0; z-index: 0;
-    background:
-      radial-gradient(ellipse at 20% 30%, rgba(212,170,60,0.1) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 70%, rgba(79,195,247,0.08) 0%, transparent 50%),
-      #030810;
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: 
+      radial-gradient(ellipse at 20% 20%, rgba(212,170,60,0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(79,195,247,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(206,147,216,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 10% 80%, rgba(105,240,174,0.08) 0%, transparent 40%),
+      #050a18;
+    animation: bgShift 8s ease-in-out infinite alternate;
   }
 
-  .stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-  .star { position: absolute; border-radius: 50%; background: #fff; animation: twinkle var(--dur) ease-in-out infinite; opacity: 0; }
-  @keyframes twinkle { 0%,100%{opacity:0} 50%{opacity:var(--op)} }
+  @keyframes bgShift {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(20deg); }
+  }
 
-  /* Login screen */
-  #loginScreen {
-    position: relative; z-index: 1;
-    min-height: 100vh;
+  /* Stars */
+  .stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  .star {
+    position: absolute;
+    border-radius: 50%;
+    background: #fff;
+    animation: twinkle var(--dur) ease-in-out infinite;
+    opacity: 0;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; }
+    50% { opacity: var(--op); }
+  }
+
+  /* Floating orbs */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(60px);
+    animation: float var(--dur) ease-in-out infinite alternate;
+    z-index: 0;
+    pointer-events: none;
+  }
+  @keyframes float {
+    0% { transform: translateY(0) scale(1); }
+    100% { transform: translateY(-30px) scale(1.1); }
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 30px 20px 60px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding: 20px;
-    gap: 20px;
+    gap: 24px;
   }
 
-  .lock-icon { font-size: 56px; animation: bounce 2s ease infinite; }
-  @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  /* Header */
+  .header { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; }
 
-  .login-title {
+  .logo-wrap {
+    position: relative;
+    width: 110px; height: 110px;
+  }
+  .logo-ring {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    background: conic-gradient(var(--gold), var(--blue), var(--purple), var(--green), var(--gold));
+    animation: spin 3s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .logo-ring-inner {
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: #050a18;
+  }
+  .logo-img {
+    position: absolute;
+    inset: 6px;
+    width: calc(100% - 12px);
+    height: calc(100% - 12px);
+    object-fit: contain;
+    border-radius: 50%;
+    z-index: 1;
+  }
+
+  .brand {
     font-family: 'Orbitron', sans-serif;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 900;
-    color: var(--gold);
-    letter-spacing: 3px;
-    text-align: center;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, var(--gold), var(--orange), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
+    filter: drop-shadow(0 0 20px rgba(212,170,60,0.5));
   }
 
-  .login-card {
-    width: 100%;
-    max-width: 360px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(212,170,60,0.2);
-    border-radius: 20px;
-    padding: 30px 24px;
+  .tagline {
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: rgba(255,255,255,0.35);
+    text-transform: uppercase;
+  }
+
+  /* Week badge */
+  .week-badge {
+    background: linear-gradient(135deg, rgba(212,170,60,0.2), rgba(255,183,77,0.1));
+    border: 1px solid rgba(212,170,60,0.4);
+    border-radius: 40px;
+    padding: 10px 28px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(212,170,60,0.2);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(212,170,60,0.2); }
+    50% { box-shadow: 0 0 40px rgba(212,170,60,0.4); }
+  }
+
+  /* Prize cards row */
+  .prizes {
     display: flex;
-    flex-direction: column;
-    gap: 16px;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .prize-card {
+    flex: 1;
+    border-radius: 16px;
+    padding: 16px 12px;
+    text-align: center;
     position: relative;
     overflow: hidden;
   }
 
-  .login-card::before {
+  .prize-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    padding: 1px;
+    background: var(--grad);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+  }
+
+  .prize-weekly {
+    background: rgba(231,76,60,0.08);
+    --grad: linear-gradient(135deg, #e74c3c, #c0392b);
+  }
+  .prize-monthly {
+    background: rgba(212,170,60,0.08);
+    --grad: linear-gradient(135deg, var(--gold), var(--orange));
+  }
+
+  .prize-card .icon { font-size: 26px; margin-bottom: 6px; }
+  .prize-card .plabel {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .prize-weekly .plabel { color: #e74c3c; }
+  .prize-monthly .plabel { color: var(--gold); }
+  .prize-card .pval {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  /* Main form card */
+  .form-card {
+    width: 100%;
+    background: rgba(255,255,255,0.03);
+    border-radius: 24px;
+    padding: 28px 22px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .form-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--gold), var(--blue), var(--gold));
+    background: linear-gradient(90deg, var(--gold), var(--blue), var(--purple), var(--green), var(--gold));
     background-size: 200%;
     animation: shimmer 3s linear infinite;
   }
   @keyframes shimmer { to { background-position: 200% center; } }
 
-  .login-input {
+  .form-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .field { margin-bottom: 18px; }
+
+  .field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .field input {
     width: 100%;
     background: rgba(0,0,0,0.3);
     border: 1px solid rgba(255,255,255,0.1);
@@ -97,388 +264,195 @@
     outline: none;
     transition: all 0.3s;
   }
-  .login-input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212,170,60,0.1); }
-  .login-input::placeholder { color: rgba(255,255,255,0.2); }
 
-  .login-btn {
-    padding: 16px;
-    background: linear-gradient(135deg, var(--gold), #e6920a);
-    border: none;
-    border-radius: 12px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 14px;
-    font-weight: 900;
-    color: #000;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: all 0.3s;
-    box-shadow: 0 4px 20px rgba(212,170,60,0.3);
-  }
-  .login-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(212,170,60,0.5); }
-
-  .login-error {
-    color: var(--red);
-    font-size: 13px;
-    text-align: center;
-    display: none;
+  .field input:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(212,170,60,0.1);
+    background: rgba(212,170,60,0.05);
   }
 
-  /* Admin panel */
-  #adminPanel {
-    display: none;
-    position: relative;
-    z-index: 1;
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 30px 20px 60px;
-    flex-direction: column;
-    gap: 24px;
-  }
+  .field input::placeholder { color: rgba(255,255,255,0.2); }
 
-  /* Header */
-  .admin-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
-  .admin-brand {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 18px;
-    font-weight: 900;
-    color: var(--gold);
-    letter-spacing: 3px;
-  }
-
-  .logout-btn {
-    background: rgba(231,76,60,0.1);
-    border: 1px solid rgba(231,76,60,0.3);
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--red);
-    cursor: pointer;
-    letter-spacing: 1px;
-    transition: all 0.3s;
-  }
-  .logout-btn:hover { background: rgba(231,76,60,0.2); }
-
-  .admin-sub {
-    font-size: 11px;
-    color: rgba(255,255,255,0.3);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-  }
-
-  /* Stats row */
-  .stats-row {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  .stat-card {
-    flex: 1;
-    min-width: 100px;
-    background: rgba(255,255,255,0.03);
-    border-radius: 14px;
-    padding: 16px;
-    text-align: center;
-    border: 1px solid rgba(255,255,255,0.05);
-  }
-
-  .stat-num {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 28px;
-    font-weight: 900;
-    color: var(--gold);
-  }
-
-  .stat-label {
-    font-size: 10px;
-    color: rgba(255,255,255,0.35);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-top: 4px;
-  }
-
-  /* Card */
-  .card {
+  /* Submit button */
+  .submit-btn {
     width: 100%;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 20px;
-    padding: 22px;
-  }
-
-  .card-header {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    color: rgba(255,255,255,0.35);
-    text-transform: uppercase;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  /* Entries list */
-  .entries-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    max-height: 300px;
-    overflow-y: auto;
-  }
-
-  .entry-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 10px;
-    padding: 10px 14px;
-    animation: slideIn 0.3s ease;
-  }
-  @keyframes slideIn { from{transform:translateX(-10px);opacity:0} to{transform:translateX(0);opacity:1} }
-
-  .entry-num {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 10px;
-    color: var(--gold);
-    min-width: 28px;
-  }
-
-  .entry-info { flex: 1; }
-  .entry-username { font-size: 14px; font-weight: 700; color: #fff; }
-  .entry-uid { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
-
-  .entry-time {
-    font-size: 10px;
-    color: rgba(255,255,255,0.2);
-    text-align: right;
-  }
-
-  .no-entries {
-    text-align: center;
-    color: rgba(255,255,255,0.25);
-    font-size: 14px;
-    padding: 20px;
-  }
-
-  /* Copy area */
-  .copy-section { display: flex; flex-direction: column; gap: 10px; }
-
-  .copy-textarea {
-    width: 100%;
-    min-height: 100px;
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 10px;
-    padding: 14px;
-    font-family: 'Exo 2', sans-serif;
-    font-size: 12px;
-    color: rgba(255,255,255,0.7);
-    resize: vertical;
-    outline: none;
-  }
-
-  .copy-btn {
-    padding: 12px 20px;
-    border-radius: 10px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: all 0.3s;
-    border: none;
-  }
-
-  .copy-btn-blue {
-    background: rgba(79,195,247,0.12);
-    border: 1px solid rgba(79,195,247,0.3);
-    color: var(--blue);
-  }
-  .copy-btn-blue:hover { background: rgba(79,195,247,0.2); }
-
-  .copy-btn-green {
-    background: rgba(105,240,174,0.1);
-    border: 1px solid rgba(105,240,174,0.25);
-    color: var(--green);
-  }
-  .copy-btn-green:hover { background: rgba(105,240,174,0.18); }
-
-  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
-
-  /* Manual paste */
-  .manual-input {
-    width: 100%;
-    min-height: 80px;
-    background: rgba(0,0,0,0.3);
-    border: 1px solid rgba(212,170,60,0.2);
-    border-radius: 10px;
-    padding: 14px;
-    font-family: 'Exo 2', sans-serif;
-    font-size: 13px;
-    color: rgba(255,255,255,0.8);
-    resize: vertical;
-    outline: none;
-    transition: all 0.3s;
-  }
-  .manual-input:focus { border-color: var(--gold); }
-  .manual-input::placeholder { color: rgba(255,255,255,0.2); }
-
-  .add-manual-btn {
-    padding: 12px 20px;
-    background: rgba(212,170,60,0.12);
-    border: 1px solid rgba(212,170,60,0.3);
-    border-radius: 10px;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--gold);
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: all 0.3s;
-  }
-  .add-manual-btn:hover { background: rgba(212,170,60,0.2); }
-
-  /* Pick winner */
-  .pick-btn {
-    width: 100%;
-    padding: 20px;
+    padding: 18px;
     background: linear-gradient(135deg, var(--gold), #e6920a, var(--gold));
     background-size: 200%;
     border: none;
     border-radius: 14px;
     font-family: 'Orbitron', sans-serif;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 900;
     color: #000;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     cursor: pointer;
     transition: all 0.3s;
     box-shadow: 0 4px 30px rgba(212,170,60,0.4);
     animation: btnShimmer 3s linear infinite;
   }
   @keyframes btnShimmer { to { background-position: 200% center; } }
-  .pick-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 40px rgba(212,170,60,0.6); }
-  .pick-btn:disabled { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.3); box-shadow: none; transform: none; animation: none; cursor: not-allowed; }
 
-  /* Rolling */
-  .rolling-box {
-    background: rgba(0,0,0,0.4);
-    border: 1px solid rgba(79,195,247,0.2);
-    border-radius: 14px;
-    padding: 20px;
-    text-align: center;
-    display: none;
-    min-height: 70px;
-    align-items: center;
-    justify-content: center;
+  .submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 40px rgba(212,170,60,0.6);
+  }
+  .submit-btn:active { transform: translateY(0); }
+  .submit-btn:disabled {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.3);
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+    animation: none;
   }
 
-  .rolling-name {
-    font-family: 'Orbitron', sans-serif;
-    font-size: clamp(18px,5vw,26px);
-    font-weight: 700;
-    color: var(--blue);
-    animation: flicker 0.1s infinite;
-  }
-  @keyframes flicker { 0%,100%{opacity:1} 50%{opacity:0.6} }
-
-  /* Winner */
-  .winner-box {
-    background: linear-gradient(135deg, rgba(212,170,60,0.1), rgba(212,170,60,0.04));
-    border: 2px solid rgba(212,170,60,0.5);
-    border-radius: 18px;
-    padding: 28px 20px;
-    text-align: center;
+  /* Thank you screen */
+  .thankyou {
+    width: 100%;
     display: none;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
-    animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+    gap: 16px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 24px;
+    padding: 40px 24px;
+    text-align: center;
+    border: 1px solid rgba(105,240,174,0.2);
+    animation: popIn 0.6s cubic-bezier(0.34,1.56,0.64,1);
+    position: relative;
+    overflow: hidden;
   }
-  @keyframes popIn { from{transform:scale(0.7);opacity:0} to{transform:scale(1);opacity:1} }
 
-  .winner-trophy { font-size: 48px; animation: bounce 1.5s ease infinite; }
-  .winner-name {
+  .thankyou::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--green), var(--blue), var(--purple));
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .thankyou .big-emoji { font-size: 60px; animation: bounce 1.5s ease infinite; }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-12px) rotate(5deg); }
+  }
+
+  .thankyou h2 {
     font-family: 'Orbitron', sans-serif;
-    font-size: clamp(20px,6vw,32px);
+    font-size: 22px;
     font-weight: 900;
-    color: var(--gold);
-    text-shadow: 0 0 30px rgba(212,170,60,0.8);
-    word-break: break-all;
+    background: linear-gradient(135deg, var(--green), var(--blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
-  .winner-uid { font-size: 13px; color: rgba(255,255,255,0.4); }
-  .winner-label { font-size: 11px; color: rgba(255,255,255,0.35); letter-spacing: 3px; text-transform: uppercase; }
 
-  .again-btn {
-    background: rgba(79,195,247,0.1);
+  .thankyou .msg {
+    font-size: 15px;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.6;
+  }
+  .thankyou .msg span { color: var(--gold); font-weight: 700; }
+
+  .waiting-pill {
+    background: linear-gradient(135deg, rgba(79,195,247,0.15), rgba(206,147,216,0.1));
     border: 1px solid rgba(79,195,247,0.3);
-    border-radius: 10px;
+    border-radius: 40px;
     padding: 12px 24px;
-    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--blue);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: pulse 2s ease infinite;
+  }
+
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: dotPulse 1s ease infinite;
+  }
+  @keyframes dotPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.5; }
+  }
+
+  .saturday-box {
+    background: rgba(212,170,60,0.08);
+    border: 1px solid rgba(212,170,60,0.25);
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+    width: 100%;
+  }
+  .saturday-box strong { color: var(--gold); }
+
+  /* Rules */
+  .rules-card {
+    width: 100%;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 16px;
+    padding: 18px;
+  }
+
+  .rules-title {
     font-size: 11px;
     font-weight: 700;
-    color: var(--blue);
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: all 0.3s;
-    margin-top: 4px;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,0.35);
+    text-transform: uppercase;
+    margin-bottom: 12px;
   }
-  .again-btn:hover { background: rgba(79,195,247,0.2); }
 
-  /* History */
-  .history-list { display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto; }
-  .history-item {
-    display: flex; align-items: center; gap: 10px;
-    background: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.04);
-    border-radius: 10px;
-    padding: 10px 14px;
+  .rule-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     font-size: 13px;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 8px;
+    line-height: 1.4;
   }
-  .h-num { font-family:'Orbitron',sans-serif; font-size:10px; color:var(--gold); min-width:24px; }
-  .h-name { font-weight:700; flex:1; }
-  .h-uid { font-size:11px; color:rgba(255,255,255,0.35); }
+  .rule-item .dot2 {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
 
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: rgba(212,170,60,0.3); border-radius: 2px; }
+  /* Footer */
+  .footer {
+    font-size: 11px;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  .footer a {
+    color: var(--gold);
+    text-decoration: none;
+  }
 
   /* Confetti */
   .confetti-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 999; overflow: hidden; }
-  .cp { position:absolute; top:-10px; animation: fall var(--fd) ease-in forwards; border-radius: var(--br); }
-  @keyframes fall { 0%{transform:translateY(0) rotate(0deg) translateX(0);opacity:1} 100%{transform:translateY(110vh) rotate(720deg) translateX(var(--dx));opacity:0} }
-
-  /* Refresh btn */
-  .refresh-btn {
-    background: rgba(105,240,174,0.08);
-    border: 1px solid rgba(105,240,174,0.2);
-    border-radius: 8px;
-    padding: 6px 14px;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--green);
-    cursor: pointer;
-    letter-spacing: 1px;
-    transition: all 0.3s;
+  .cp {
+    position: absolute;
+    top: -10px;
+    animation: fall var(--fd) ease-in forwards;
+    border-radius: var(--br);
   }
-  .refresh-btn:hover { background: rgba(105,240,174,0.15); }
-
-  .divider {
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(212,170,60,0.3), transparent);
+  @keyframes fall {
+    0% { transform: translateY(0) rotate(0deg) translateX(0); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg) translateX(var(--dx)); opacity: 0; }
   }
 </style>
 </head>
@@ -487,106 +461,96 @@
 <div class="stars" id="stars"></div>
 <div class="confetti-wrap" id="confetti"></div>
 
-<!-- Login -->
-<div id="loginScreen">
-  <div class="lock-icon">🔐</div>
-  <div class="login-title">DREAM2MOON ADMIN</div>
-  <div class="login-card">
-    <input class="login-input" type="text" id="loginUser" placeholder="Username">
-    <input class="login-input" type="password" id="loginPass" placeholder="Password">
-    <div class="login-error" id="loginError">❌ Wrong username or password</div>
-    <button class="login-btn" onclick="doLogin()">🚀 LOGIN</button>
-  </div>
-</div>
+<!-- Orbs -->
+<div class="orb" style="width:300px;height:300px;background:rgba(212,170,60,0.08);top:-50px;left:-80px;--dur:6s;"></div>
+<div class="orb" style="width:250px;height:250px;background:rgba(79,195,247,0.07);bottom:100px;right:-60px;--dur:8s;"></div>
+<div class="orb" style="width:200px;height:200px;background:rgba(206,147,216,0.06);top:40%;left:50%;--dur:7s;"></div>
 
-<!-- Admin Panel -->
-<div id="adminPanel">
+<div class="page">
 
-  <div class="admin-header">
-    <div>
-      <div class="admin-brand">⚙️ ADMIN PANEL</div>
-      <div class="admin-sub">Dream2Moon Giveaway Manager</div>
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-wrap">
+      <div class="logo-ring"></div>
+      <div class="logo-ring-inner"></div>
+      <img class="logo-img" src="logo.jpeg" alt="Dream2Moon" onerror="this.style.display='none'">
     </div>
-    <button class="logout-btn" onclick="doLogout()">🚪 Logout</button>
+    <div class="brand">DREAM.2MOON</div>
+    <div class="tagline">Play With Purpose</div>
   </div>
 
-  <!-- Stats -->
-  <div class="stats-row">
-    <div class="stat-card">
-      <div class="stat-num" id="totalCount">0</div>
-      <div class="stat-label">Total Entries</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num" id="totalWins">0</div>
-      <div class="stat-label">Winners Picked</div>
-    </div>
-  </div>
+  <!-- Week badge -->
+  <div class="week-badge">🎁 WEEKLY GIVEAWAY — EVERY SATURDAY!</div>
 
-  <div class="divider"></div>
-
-  <!-- Entries -->
-  <div class="card">
-    <div class="card-header">
-      📋 Submitted Entries
-      <button class="refresh-btn" onclick="loadEntries()">🔄 Refresh</button>
+  <!-- Prizes -->
+  <div class="prizes">
+    <div class="prize-card prize-weekly">
+      <div class="icon">❌</div>
+      <div class="plabel">Least Likes</div>
+      <div class="pval">Weekly 💎</div>
     </div>
-    <div class="entries-list" id="entriesList">
-      <div class="no-entries">Loading entries...</div>
+    <div class="prize-card prize-monthly">
+      <div class="icon">✅</div>
+      <div class="plabel">Most Likes</div>
+      <div class="pval">Monthly 💎💎</div>
     </div>
   </div>
 
-  <!-- Copy/Export -->
-  <div class="card">
-    <div class="card-header">📤 Copy Usernames & UIDs</div>
-    <div class="copy-section">
-      <textarea class="copy-textarea" id="copyArea" readonly placeholder="Click a button below to load entries here..."></textarea>
-      <div class="btn-row">
-        <button class="copy-btn copy-btn-blue" onclick="loadUsernames()">👤 Load Usernames</button>
-        <button class="copy-btn copy-btn-blue" onclick="loadUIDs()">🔢 Load UIDs</button>
-        <button class="copy-btn copy-btn-green" onclick="copyToClipboard()">📋 Copy All</button>
-      </div>
+  <!-- Form -->
+  <div class="form-card" id="formCard">
+    <div class="form-title">🚀 ENTER THE GIVEAWAY</div>
+
+    <div class="field">
+      <label>TikTok Username</label>
+      <input type="text" id="username" placeholder="@yourusername">
+    </div>
+
+    <div class="field">
+      <label>Your UID</label>
+      <input type="text" id="uid" placeholder="Enter your TikTok UID">
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="submitEntry()">
+      🎰 ENTER NOW — IT'S FREE!
+    </button>
+  </div>
+
+  <!-- Thank you -->
+  <div class="thankyou" id="thankyou">
+    <div class="big-emoji">🎉</div>
+    <h2>THANK YOU!</h2>
+    <div class="msg">Your entry is submitted, <span id="enteredName"></span>!<br>Good luck this Saturday! 🍀</div>
+    <div class="waiting-pill">
+      <div class="dot"></div>
+      Your draw is waiting to be picked...
+    </div>
+    <div class="saturday-box">
+      📅 Results announced every <strong>Saturday!</strong><br>
+      Follow <strong>@Dream2Moon</strong> on TikTok so you don't miss it!
     </div>
   </div>
 
-  <!-- Manual add -->
-  <div class="card">
-    <div class="card-header">✏️ Add Entries Manually (Paste Multiple)</div>
-    <div class="copy-section">
-      <textarea class="manual-input" id="manualInput" placeholder="Paste usernames here, one per line:&#10;@username1&#10;@username2&#10;@username3"></textarea>
-      <textarea class="manual-input" id="manualUIDs" placeholder="Paste UIDs here, one per line (match order above):&#10;123456&#10;789012&#10;345678" style="margin-top:8px"></textarea>
-      <button class="add-manual-btn" onclick="addManualEntries()">➕ Add These Entries</button>
-    </div>
+  <!-- Rules -->
+  <div class="rules-card">
+    <div class="rules-title">📋 Rules to Win</div>
+    <div class="rule-item"><div class="dot2"></div>Must follow @Dream2Moon on TikTok</div>
+    <div class="rule-item"><div class="dot2"></div>Must like the giveaway video</div>
+    <div class="rule-item"><div class="dot2"></div>Comment under the video to enter</div>
+    <div class="rule-item"><div class="dot2"></div>Least likes = Weekly 💎 prize</div>
+    <div class="rule-item"><div class="dot2"></div>Most likes = Monthly 💎💎 prize</div>
+    <div class="rule-item"><div class="dot2"></div>Results every Saturday!</div>
   </div>
 
-  <!-- Pick Winner -->
-  <div class="card">
-    <div class="card-header">🎰 Pick a Winner</div>
-    <button class="pick-btn" id="pickBtn" onclick="pickWinner()">🎲 DRAW THE LUCKY WINNER</button>
-    <div class="rolling-box" id="rollingBox" style="margin-top:16px">
-      <div class="rolling-name" id="rollingName">...</div>
-    </div>
-    <div class="winner-box" id="winnerBox" style="margin-top:16px">
-      <div class="winner-label">🏆 Lucky Winner</div>
-      <div class="winner-trophy">🏆</div>
-      <div class="winner-name" id="winnerName"></div>
-      <div class="winner-uid" id="winnerUID"></div>
-      <button class="again-btn" onclick="pickAgain()">🔄 Pick Again</button>
-    </div>
-  </div>
-
-  <!-- History -->
-  <div class="card">
-    <div class="card-header">📜 Winner History</div>
-    <div class="history-list" id="historyList">
-      <div class="no-entries">No winners picked yet</div>
-    </div>
+  <div class="footer">
+    🌙 <span style="color:rgba(255,255,255,0.4)">Powered by</span> <a href="#">Dream2Moon</a> &nbsp;|&nbsp;
+    Play With Purpose
   </div>
 
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, collection, getDocs, addDoc, serverTimestamp, orderBy, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDPp-JsePgIM4Y3MrFrXEMLiv1GW3sJGKU",
@@ -600,199 +564,49 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // Stars
+  // Generate stars
   const sf = document.getElementById('stars');
-  for (let i = 0; i < 80; i++) {
+  for (let i = 0; i < 100; i++) {
     const s = document.createElement('div');
     s.className = 'star';
-    const size = Math.random()*2+0.5;
+    const size = Math.random() * 2 + 0.5;
     s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${2+Math.random()*4}s;--op:${0.3+Math.random()*0.7};animation-delay:${Math.random()*5}s;`;
     sf.appendChild(s);
   }
 
-  let allEntries = [];
-  let winnerHistory = [];
-  let rolling = false;
+  window.submitEntry = async function() {
+    const username = document.getElementById('username').value.trim();
+    const uid = document.getElementById('uid').value.trim();
 
-  // Login
-  window.doLogin = function() {
-    const u = document.getElementById('loginUser').value;
-    const p = document.getElementById('loginPass').value;
-    if (u === 'Dream' && p === '2moon') {
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('adminPanel').style.display = 'flex';
-      loadEntries();
-    } else {
-      document.getElementById('loginError').style.display = 'block';
-    }
-  };
-
-  window.doLogout = function() {
-    document.getElementById('adminPanel').style.display = 'none';
-    document.getElementById('loginScreen').style.display = 'flex';
-    document.getElementById('loginUser').value = '';
-    document.getElementById('loginPass').value = '';
-  };
-
-  // Allow Enter key on login
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') {
-      window.doLogin();
-    }
-  });
-
-  // Load entries from Firebase
-  window.loadEntries = async function() {
-    const list = document.getElementById('entriesList');
-    list.innerHTML = '<div class="no-entries">⏳ Loading...</div>';
-
-    try {
-      const q = query(collection(db, 'entries'), orderBy('timestamp', 'desc'));
-      const snap = await getDocs(q);
-      allEntries = [];
-      snap.forEach(doc => allEntries.push({ id: doc.id, ...doc.data() }));
-
-      document.getElementById('totalCount').textContent = allEntries.length;
-
-      if (allEntries.length === 0) {
-        list.innerHTML = '<div class="no-entries">No entries yet 😊</div>';
-        return;
-      }
-
-      list.innerHTML = allEntries.map((e, i) => `
-        <div class="entry-item">
-          <span class="entry-num">#${allEntries.length - i}</span>
-          <div class="entry-info">
-            <div class="entry-username">${e.username}</div>
-            <div class="entry-uid">UID: ${e.uid}</div>
-          </div>
-          <div class="entry-time">${e.timestamp ? new Date(e.timestamp.seconds*1000).toLocaleString() : 'Just now'}</div>
-        </div>
-      `).join('');
-
-    } catch (err) {
-      list.innerHTML = '<div class="no-entries">❌ Error loading. Check Firestore rules.</div>';
-      console.error(err);
-    }
-  };
-
-  // Copy
-  window.loadUsernames = function() {
-    document.getElementById('copyArea').value = allEntries.map(e => e.username).join('\n');
-  };
-
-  window.loadUIDs = function() {
-    document.getElementById('copyArea').value = allEntries.map(e => e.uid).join('\n');
-  };
-
-  window.copyToClipboard = function() {
-    const area = document.getElementById('copyArea');
-    if (!area.value) { alert('Load usernames or UIDs first!'); return; }
-    navigator.clipboard.writeText(area.value).then(() => alert('✅ Copied to clipboard!'));
-  };
-
-  // Manual add
-  window.addManualEntries = async function() {
-    const usersRaw = document.getElementById('manualInput').value.trim();
-    const uidsRaw = document.getElementById('manualUIDs').value.trim();
-    if (!usersRaw) { alert('Please enter at least usernames!'); return; }
-
-    const usernames = usersRaw.split('\n').map(u => u.trim()).filter(Boolean);
-    const uids = uidsRaw.split('\n').map(u => u.trim()).filter(Boolean);
-
-    if (uids.length > 0 && uids.length !== usernames.length) {
-      alert(`⚠️ Mismatch: ${usernames.length} usernames but ${uids.length} UIDs. Please match them!`);
+    if (!username || !uid) {
+      alert('Please fill in both your Username and UID! 😊');
       return;
     }
 
-    const btn = document.querySelector('.add-manual-btn');
-    btn.textContent = '⏳ Adding...';
+    const btn = document.getElementById('submitBtn');
     btn.disabled = true;
+    btn.textContent = '⏳ Submitting...';
 
     try {
-      for (let i = 0; i < usernames.length; i++) {
-        await addDoc(collection(db, 'entries'), {
-          username: usernames[i],
-          uid: uids[i] || 'N/A',
-          timestamp: serverTimestamp(),
-          manual: true
-        });
-      }
-      document.getElementById('manualInput').value = '';
-      document.getElementById('manualUIDs').value = '';
-      alert(`✅ Added ${usernames.length} entries!`);
-      loadEntries();
+      await addDoc(collection(db, 'entries'), {
+        username,
+        uid,
+        timestamp: serverTimestamp()
+      });
+
+      // Show thank you
+      document.getElementById('formCard').style.display = 'none';
+      const ty = document.getElementById('thankyou');
+      ty.style.display = 'flex';
+      document.getElementById('enteredName').textContent = username;
+      launchConfetti();
+
     } catch (err) {
-      alert('❌ Error adding entries.');
       console.error(err);
+      alert('Something went wrong. Please try again! 😢');
+      btn.disabled = false;
+      btn.textContent = '🎰 ENTER NOW — IT\'S FREE!';
     }
-
-    btn.textContent = '➕ Add These Entries';
-    btn.disabled = false;
-  };
-
-  // Pick winner
-  window.pickWinner = function() {
-    if (rolling) return;
-    if (allEntries.length === 0) { alert('No entries yet! 😊'); return; }
-
-    rolling = true;
-    const btn = document.getElementById('pickBtn');
-    btn.disabled = true;
-
-    document.getElementById('winnerBox').style.display = 'none';
-    const rollingBox = document.getElementById('rollingBox');
-    const rollingName = document.getElementById('rollingName');
-    rollingBox.style.display = 'flex';
-
-    const winner = allEntries[Math.floor(Math.random() * allEntries.length)];
-    let count = 0;
-    const totalRolls = 30 + Math.floor(Math.random()*15);
-
-    const roll = setInterval(() => {
-      const r = allEntries[Math.floor(Math.random()*allEntries.length)];
-      rollingName.textContent = r.username;
-      count++;
-      if (count >= totalRolls) {
-        clearInterval(roll);
-        rollingBox.style.display = 'none';
-        revealWinner(winner);
-        rolling = false;
-        btn.disabled = false;
-      }
-    }, 80);
-  };
-
-  function revealWinner(winner) {
-    document.getElementById('winnerName').textContent = winner.username;
-    document.getElementById('winnerUID').textContent = `UID: ${winner.uid}`;
-    const wb = document.getElementById('winnerBox');
-    wb.style.display = 'flex';
-
-    winnerHistory.unshift(winner);
-    document.getElementById('totalWins').textContent = winnerHistory.length;
-    updateHistory();
-    launchConfetti();
-  }
-
-  function updateHistory() {
-    const list = document.getElementById('historyList');
-    if (winnerHistory.length === 0) {
-      list.innerHTML = '<div class="no-entries">No winners yet</div>';
-      return;
-    }
-    list.innerHTML = winnerHistory.map((w, i) => `
-      <div class="history-item">
-        <span class="h-num">#${i+1}</span>
-        <span class="h-name">${w.username}</span>
-        <span class="h-uid">UID: ${w.uid}</span>
-      </div>
-    `).join('');
-  }
-
-  window.pickAgain = function() {
-    document.getElementById('winnerBox').style.display = 'none';
-    window.pickWinner();
   };
 
   function launchConfetti() {
@@ -803,7 +617,7 @@
       const c = document.createElement('div');
       c.className = 'cp';
       const drift = (Math.random()-0.5)*400;
-      c.style.cssText = `left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};--fd:${1.5+Math.random()*2.5}s;--dx:${drift}px;--br:${Math.random()>0.5?'50%':'2px'};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*0.5}s;`;
+      c.style.cssText = `left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};--fd:${1.5+Math.random()*2.5}s;--dx:${drift}px;--br:${Math.random()>0.5?'50%':'2px'};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*0.8}s;`;
       wrap.appendChild(c);
     }
     setTimeout(() => wrap.innerHTML = '', 5000);
