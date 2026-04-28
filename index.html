@@ -138,6 +138,26 @@
   @keyframes fall { 0%{transform:translateY(0) rotate(0deg) translateX(0);opacity:1} 100%{transform:translateY(110vh) rotate(720deg) translateX(var(--dx));opacity:0} }
 
   .sec-label { font-size:10px; letter-spacing:4px; color:rgba(255,255,255,.2); text-transform:uppercase; text-align:center; }
+
+  .admin-link {
+    display: inline-block;
+    margin-top: 4px;
+    padding: 8px 20px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.25);
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+  .admin-link:hover {
+    background: rgba(212,170,60,0.08);
+    border-color: rgba(212,170,60,0.3);
+    color: var(--gold);
+  }
 </style>
 </head>
 <body>
@@ -204,12 +224,12 @@
   <div class="form-card" id="formCard">
     <div class="form-title">🚀 ENTER THE GIVEAWAY</div>
     <div class="field">
-      <label>TikTok Username</label>
+      <label>Username</label>
       <input type="text" id="username" placeholder="@yourusername">
     </div>
     <div class="field">
-      <label>Your UID</label>
-      <input type="text" id="uid" placeholder="Enter your TikTok UID">
+      <label>UID</label>
+      <input type="text" id="uid" placeholder="Enter your UID">
     </div>
     <button class="submit-btn" id="submitBtn" onclick="submitEntry()">
       🎰 ENTER NOW — IT'S FREE!
@@ -232,66 +252,14 @@
     </div>
   </div>
 
-  <!-- Hall of Fame -->
-  <div class="sec-label">🏅 Past Winners</div>
-  <div class="hof-card">
-    <div class="hof-title">🏅 HALL OF FAME 🏅</div>
-
-    <div class="winner-row">
-      <div class="winner-rank">🥇</div>
-      <div class="winner-info">
-        <div class="winner-name">@ShadowKiller_FF</div>
-        <div class="winner-detail">Week 18 · Lucky Draw · Apr 2025</div>
-      </div>
-      <div class="winner-prize">💎</div>
+  <!-- Latest Winner (live from Firebase) -->
+  <div class="sec-label">🏆 Latest Winner</div>
+  <div class="hof-card" id="latestWinnerCard">
+    <div class="hof-title">🏆 LUCKY DRAW WINNER 🏆</div>
+    <div id="winnerDisplay" style="text-align:center;padding:10px 0;">
+      <div style="font-size:36px;margin-bottom:8px;">🎰</div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.3);letter-spacing:1px;">No winner drawn yet...<br>Stay tuned for Saturday! 👀</div>
     </div>
-
-    <div class="winner-row">
-      <div class="winner-rank">🥈</div>
-      <div class="winner-info">
-        <div class="winner-name">@NightQueen99</div>
-        <div class="winner-detail">Week 17 · Lucky Draw · Apr 2025</div>
-      </div>
-      <div class="winner-prize">💎</div>
-    </div>
-
-    <div class="winner-row">
-      <div class="winner-rank">🥉</div>
-      <div class="winner-info">
-        <div class="winner-name">@BlazeSniper_X</div>
-        <div class="winner-detail">Week 16 · Lucky Draw · Mar 2025</div>
-      </div>
-      <div class="winner-prize">💎</div>
-    </div>
-
-    <div class="winner-row">
-      <div class="winner-rank">👑</div>
-      <div class="winner-info">
-        <div class="winner-name">@LunaFF_Official</div>
-        <div class="winner-detail">Monthly Draw · March 2025 · JACKPOT!</div>
-      </div>
-      <div class="winner-prize">💎💎</div>
-    </div>
-
-    <div class="winner-row">
-      <div class="winner-rank">⭐</div>
-      <div class="winner-info">
-        <div class="winner-name">@DragonRush007</div>
-        <div class="winner-detail">Week 15 · Lucky Draw · Mar 2025</div>
-      </div>
-      <div class="winner-prize">💎</div>
-    </div>
-
-    <div class="winner-row">
-      <div class="winner-rank">🌙</div>
-      <div class="winner-info">
-        <div class="winner-name">@StealthMode_GG</div>
-        <div class="winner-detail">Monthly Draw · February 2025</div>
-      </div>
-      <div class="winner-prize">💎💎</div>
-    </div>
-
-    <div class="hof-note">COULD BE YOUR NAME HERE NEXT 👆😏</div>
   </div>
 
   <!-- FF Myths & Facts -->
@@ -407,11 +375,13 @@
     🌙 <span style="color:rgba(255,255,255,.4)">Powered by</span> <a href="#">Dream2Moon</a> &nbsp;|&nbsp; Play With Purpose
   </div>
 
+  <a href="admin.html" class="admin-link">🔐 Admin Panel</a>
+
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, getDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDPp-JsePgIM4Y3MrFrXEMLiv1GW3sJGKU",
@@ -434,6 +404,25 @@
     s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${2+Math.random()*4}s;--op:${0.3+Math.random()*0.7};animation-delay:${Math.random()*5}s;`;
     sf.appendChild(s);
   }
+
+  // Load latest winner from Firebase
+  async function loadLatestWinner() {
+    try {
+      const snap = await getDoc(doc(db, 'winners', 'latest'));
+      if (snap.exists()) {
+        const w = snap.data();
+        const date = w.drawnAt ? new Date(w.drawnAt.seconds * 1000).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : 'Recently';
+        document.getElementById('winnerDisplay').innerHTML = `
+          <div style="font-size:52px;margin-bottom:10px;animation:bounce 1.5s ease infinite;">🏆</div>
+          <div style="font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:4px;">${w.username}</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:6px;">UID: ${w.uid}</div>
+          <div style="display:inline-block;background:rgba(212,170,60,0.15);border:1px solid rgba(212,170,60,0.3);border-radius:20px;padding:5px 14px;font-size:11px;color:var(--gold);letter-spacing:2px;">🎉 DRAWN ON ${date}</div>
+          <div style="margin-top:14px;font-size:12px;color:rgba(255,255,255,0.25);letter-spacing:1px;">Could be YOUR name here next 😏</div>
+        `;
+      }
+    } catch(e) { console.error('Could not load winner:', e); }
+  }
+  loadLatestWinner();
 
   // Tab switcher
   window.showTab = function(tab) {
@@ -462,10 +451,18 @@
       document.getElementById('enteredName').textContent = username;
       launchConfetti();
     } catch (err) {
-      console.error(err);
-      alert('Something went wrong. Even the servers are having a skill issue 😢 Try again!');
+      console.error('Firebase error:', err);
+      let msg = 'Something went wrong 😢\n\n';
+      if (err.code === 'permission-denied') {
+        msg += '🔒 Firestore rules are blocking writes. Go to Firebase Console → Firestore → Rules and allow writes.';
+      } else if (err.message && err.message.includes('network')) {
+        msg += '🌐 Network error — check your internet.';
+      } else {
+        msg += 'Error: ' + (err.message || err.code || 'Unknown');
+      }
+      alert(msg);
       btn.disabled = false;
-      btn.textContent = "🎰 ENTER NOW — IT'S FREE!";
+      btn.textContent = '🎰 ENTER NOW — IT\'S FREE!';
     }
   };
 
