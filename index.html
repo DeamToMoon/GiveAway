@@ -8,236 +8,321 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --gold: #F5C842; --gold2: #e8a800;
-    --blue: #60c8ff; --purple: #b57bee;
-    --green: #3dffa0; --pink: #ff6eb4; --orange: #ff9640; --red: #ff5252;
-    --bg: #07091a;
-    --glass: rgba(255,255,255,0.04);
-    --glass-border: rgba(255,255,255,0.09);
-    --text: #e8eaf6;
-    --text-dim: rgba(232,234,246,0.45);
+    --gold:#F5C518; --blue:#38bdf8; --purple:#a78bfa;
+    --green:#34d399; --pink:#f472b6; --orange:#fb923c; --red:#f87171;
+    --bg:#0a0e1a; --card:#111827; --border:rgba(255,255,255,0.07);
+    --text:#f1f5f9; --dim:rgba(241,245,249,0.4);
   }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { min-height:100vh; font-family:'Exo 2',sans-serif; background:var(--bg); overflow-x:hidden; color:var(--text); }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{min-height:100vh;font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
 
-/* ── ANIMATED MESH BACKGROUND ── */
-.bg {
-position:fixed; inset:0; z-index:0;
+.bg{position:fixed;inset:0;z-index:0;
 background:
-radial-gradient(ellipse at 15% 10%, rgba(181,123,238,.22) 0%, transparent 45%),
-radial-gradient(ellipse at 85% 15%, rgba(245,200,66,.16) 0%, transparent 45%),
-radial-gradient(ellipse at 50% 60%, rgba(96,200,255,.1) 0%, transparent 50%),
-radial-gradient(ellipse at 10% 85%, rgba(61,255,160,.08) 0%, transparent 40%),
-radial-gradient(ellipse at 90% 90%, rgba(255,150,64,.1) 0%, transparent 40%),
-var(–bg);
-animation: bgPulse 10s ease-in-out infinite alternate;
-}
-@keyframes bgPulse { 0%{filter:hue-rotate(0deg) brightness(1)} 100%{filter:hue-rotate(12deg) brightness(1.04)} }
+radial-gradient(ellipse 600px 400px at 20% 0%,rgba(167,139,250,.13),transparent 70%),
+radial-gradient(ellipse 500px 350px at 80% 10%,rgba(245,197,24,.1),transparent 70%),
+radial-gradient(ellipse 400px 400px at 90% 80%,rgba(56,189,248,.08),transparent 70%),
+radial-gradient(ellipse 350px 300px at 5% 90%,rgba(52,211,153,.07),transparent 70%),
+var(–bg);}
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.star{position:absolute;border-radius:50%;background:#fff;opacity:0;animation:twinkle var(–dur) ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:0}50%{opacity:var(–op)}}
+.page{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:28px 18px 60px;display:flex;flex-direction:column;align-items:center;gap:20px;}
 
-/* Floating orbs */
-.orb { position:fixed; border-radius:50%; filter:blur(80px); pointer-events:none; z-index:0; animation:orbFloat var(–dur,8s) ease-in-out infinite alternate; }
-@keyframes orbFloat { 0%{transform:translateY(0) scale(1)} 100%{transform:translateY(-40px) scale(1.12)} }
+/* ══ HEADER ══ */
+.header{text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px;}
 
-/* Twinkling stars */
-.stars { position:fixed; inset:0; z-index:0; pointer-events:none; }
-.star { position:absolute; border-radius:50%; background:#fff; animation:twinkle var(–dur) ease-in-out infinite; opacity:0; }
-@keyframes twinkle { 0%,100%{opacity:0} 50%{opacity:var(–op)} }
+/* Orbit system */
+.moon-system{position:relative;width:180px;height:180px;display:flex;align-items:center;justify-content:center;}
+.orbit-ring{position:absolute;inset:0;border-radius:50%;border:1px dashed rgba(245,197,24,.2);}
 
-.page { position:relative; z-index:1; max-width:500px; margin:0 auto; padding:30px 20px 60px; display:flex; flex-direction:column; align-items:center; gap:22px; }
+/* Orbiting arms */
+.orbit-arm{position:absolute;inset:0;border-radius:50%;animation:spin var(–spd,8s) linear infinite;}
+.orbit-arm.rev{animation-direction:reverse;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.orbit-char{position:absolute;top:-15px;left:50%;transform:translateX(-50%);}
+.orbit-char svg{animation:unSpin var(–spd,8s) linear infinite;}
+.orbit-arm.rev .orbit-char svg{animation-direction:reverse;}
+@keyframes unSpin{from{transform:rotate(0)}to{transform:rotate(-360deg)}}
 
-/* ── HEADER ── */
-.header { text-align:center; display:flex; flex-direction:column; align-items:center; gap:10px; }
-.logo-wrap { position:relative; width:110px; height:110px; }
-.logo-ring { position:absolute; inset:-6px; border-radius:50%; background:conic-gradient(var(–gold),var(–blue),var(–purple),var(–green),var(–gold)); animation:spin 3s linear infinite; }
-@keyframes spin { to{transform:rotate(360deg)} }
-.logo-ring-inner { position:absolute; inset:3px; border-radius:50%; background:var(–bg); }
-.logo-img { position:absolute; inset:6px; width:calc(100% - 12px); height:calc(100% - 12px); object-fit:contain; border-radius:50%; z-index:1; }
-.logo-moon { position:absolute; inset:6px; border-radius:50%; z-index:1; background:radial-gradient(circle at 35% 35%,#0d0a1e,#07091a); display:flex; align-items:center; justify-content:center; overflow:hidden; box-shadow:inset 0 0 20px rgba(181,123,238,.15); }
-.moon-body { position:absolute; width:68%; height:68%; border-radius:50%; background:linear-gradient(135deg,#f7d860 0%,#e8a800 55%,#b87000 100%); top:12%; left:16%; box-shadow:0 0 22px rgba(245,200,66,.7),0 0 44px rgba(245,200,66,.3); }
-.moon-shadow { position:absolute; width:52%; height:52%; border-radius:50%; background:radial-gradient(circle at 30% 30%,#0d0a1e,#1a1035); top:10%; left:28%; }
-.moon-glow { position:absolute; inset:0; border-radius:50%; background:radial-gradient(circle at 60% 40%,rgba(245,200,66,.1),transparent 70%); }
-.ms { position:absolute; background:#f7d860; border-radius:50%; animation:mst var(–d,2s) ease-in-out infinite; opacity:0; }
-@keyframes mst { 0%,100%{opacity:0} 50%{opacity:.9} }
-.brand { font-family:‘Orbitron’,sans-serif; font-size:24px; font-weight:900; letter-spacing:4px; background:linear-gradient(135deg,var(–gold),var(–orange),var(–pink)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; filter:drop-shadow(0 0 16px rgba(245,200,66,.4)); }
-.tagline { font-size:10px; letter-spacing:5px; color:var(–text-dim); text-transform:uppercase; }
+/* Moon center */
+.moon-center{position:relative;width:90px;height:90px;z-index:2;}
+.logo-ring{position:absolute;inset:-5px;border-radius:50%;background:conic-gradient(var(–gold),var(–blue),var(–purple),var(–green),var(–pink),var(–gold));animation:spin 4s linear infinite;}
+.logo-ring-inner{position:absolute;inset:3px;border-radius:50%;background:var(–bg);}
+.logo-moon{position:absolute;inset:5px;border-radius:50%;background:radial-gradient(circle at 38% 35%,#12103a,#0a0e1a);overflow:hidden;}
+.moon-body{position:absolute;width:66%;height:66%;border-radius:50%;background:linear-gradient(135deg,#ffe566,#f5c518 45%,#c47f00);top:13%;left:17%;box-shadow:0 0 24px rgba(245,197,24,.8),0 0 50px rgba(245,197,24,.35);}
+.moon-shadow{position:absolute;width:50%;height:50%;border-radius:50%;background:radial-gradient(circle at 35% 35%,#12103a,#1e1850);top:11%;left:29%;}
+.moon-glow{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 65% 35%,rgba(245,197,24,.12),transparent 65%);}
+.ms{position:absolute;background:#ffe566;border-radius:50%;animation:mst var(–d,2s) ease-in-out infinite;opacity:0;}
+@keyframes mst{0%,100%{opacity:0}50%{opacity:1}}
 
-/* ── TICKER ── */
-.ticker-wrap { width:100%; overflow:hidden; background:var(–glass); backdrop-filter:blur(12px); border:1px solid var(–glass-border); border-radius:12px; padding:10px 0; }
-.ticker { display:flex; white-space:nowrap; animation:tickMove 35s linear infinite; }
-.ticker span { font-size:12px; color:var(–text-dim); padding:0 24px; }
-.ticker span.hl { color:var(–gold); font-weight:700; }
-@keyframes tickMove { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+.brand{font-family:‘Orbitron’,sans-serif;font-size:22px;font-weight:900;letter-spacing:4px;background:linear-gradient(90deg,var(–gold),var(–orange),var(–pink),var(–purple));background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:gradShift 4s ease infinite;}
+@keyframes gradShift{0%,100%{background-position:0%}50%{background-position:100%}}
+.tagline{font-size:10px;letter-spacing:5px;color:var(–dim);text-transform:uppercase;}
 
-/* ── BADGE ── */
-.week-badge { background:linear-gradient(135deg,rgba(245,200,66,.12),rgba(255,150,64,.08)); border:1px solid rgba(245,200,66,.35); border-radius:40px; padding:10px 28px; font-family:‘Orbitron’,sans-serif; font-size:12px; font-weight:700; color:var(–gold); letter-spacing:2px; text-align:center; box-shadow:0 0 20px rgba(245,200,66,.15); animation:pulse 2s ease-in-out infinite; }
-@keyframes pulse { 0%,100%{box-shadow:0 0 20px rgba(245,200,66,.15)} 50%{box-shadow:0 0 40px rgba(245,200,66,.4),0 0 80px rgba(245,200,66,.1)} }
+/* TICKER */
+.ticker-wrap{width:100%;overflow:hidden;background:var(–card);border:1px solid var(–border);border-radius:12px;padding:9px 0;}
+.ticker{display:flex;white-space:nowrap;animation:tickMove 35s linear infinite;}
+.ticker span{font-size:12px;color:var(–dim);padding:0 22px;}
+.ticker span.hl{color:var(–gold);font-weight:700;}
+@keyframes tickMove{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-/* ── ENTRY COUNTER ── */
-.entry-counter { width:100%; background:var(–glass); backdrop-filter:blur(16px); border:1px solid var(–glass-border); border-radius:18px; padding:18px 22px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 8px 32px rgba(0,0,0,.3); position:relative; overflow:hidden; }
-.entry-counter::before { content:’’; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(245,200,66,.5),transparent); }
-.ec-left { display:flex; flex-direction:column; gap:4px; }
-.ec-label { font-size:10px; letter-spacing:3px; color:var(–text-dim); text-transform:uppercase; font-weight:700; }
-.ec-sub   { font-size:11px; color:rgba(245,200,66,.5); }
-.ec-num   { font-family:‘Orbitron’,sans-serif; font-size:40px; font-weight:900; color:var(–gold); line-height:1; text-shadow:0 0 30px rgba(245,200,66,.5); }
-.ec-unit  { font-size:10px; font-weight:700; color:rgba(245,200,66,.5); letter-spacing:2px; }
-.ec-right { display:flex; flex-direction:column; align-items:center; gap:2px; }
-.ec-icon  { font-size:36px; filter:drop-shadow(0 0 10px rgba(245,200,66,.4)); animation:bounce 2s ease infinite; }
+/* BADGE */
+.week-badge{background:linear-gradient(135deg,rgba(245,197,24,.1),rgba(251,146,60,.07));border:1px solid rgba(245,197,24,.3);border-radius:40px;padding:9px 26px;font-family:‘Orbitron’,sans-serif;font-size:11px;font-weight:700;color:var(–gold);letter-spacing:2px;text-align:center;animation:badgePulse 2.5s ease-in-out infinite;}
+@keyframes badgePulse{0%,100%{box-shadow:0 0 0 0 rgba(245,197,24,0)}50%{box-shadow:0 0 22px rgba(245,197,24,.35)}}
 
-/* ── MAIN COUNTDOWN ── */
-.countdown-wrap { width:100%; background:var(–glass); backdrop-filter:blur(16px); border:1px solid var(–glass-border); border-radius:22px; padding:22px 18px; text-align:center; position:relative; overflow:hidden; box-shadow:0 8px 40px rgba(0,0,0,.3); }
-.countdown-wrap::before { content:’’; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(–gold),var(–orange),var(–gold),transparent); animation:shimmer 3s linear infinite; background-size:200%; }
-@keyframes shimmer { to{background-position:200% center} }
-.cd-label { font-size:10px; letter-spacing:3px; color:var(–text-dim); text-transform:uppercase; margin-bottom:16px; font-weight:700; }
-.cd-timer { display:flex; justify-content:center; align-items:flex-start; gap:8px; flex-wrap:wrap; }
-.cd-unit { display:flex; flex-direction:column; align-items:center; gap:6px; }
-.cd-num { font-family:‘Orbitron’,sans-serif; font-size:30px; font-weight:900; color:var(–gold); background:rgba(245,200,66,.07); border:1px solid rgba(245,200,66,.2); border-radius:12px; padding:8px 14px; min-width:58px; line-height:1; text-shadow:0 0 20px rgba(245,200,66,.4); box-shadow:0 4px 16px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.05); }
-.cd-sep { font-family:‘Orbitron’,sans-serif; font-size:26px; font-weight:900; color:rgba(245,200,66,.35); margin-top:8px; }
-.cd-unit-label { font-size:9px; letter-spacing:2px; color:var(–text-dim); text-transform:uppercase; font-weight:700; }
-.cd-sub { margin-top:14px; font-size:12px; color:var(–text-dim); }
-.cd-sub strong { color:var(–gold); }
+/* ENTRY COUNTER */
+.entry-counter{width:100%;background:var(–card);border:1px solid var(–border);border-radius:18px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;}
+.entry-counter::before{content:’’;position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(–purple),var(–blue),var(–green));border-radius:18px 18px 0 0;}
+.ec-left{display:flex;flex-direction:column;gap:3px;}
+.ec-label{font-size:10px;letter-spacing:3px;color:var(–dim);text-transform:uppercase;font-weight:700;}
+.ec-sub{font-size:11px;color:rgba(245,197,24,.55);}
+.ec-right{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+.ec-num{font-family:‘Orbitron’,sans-serif;font-size:38px;font-weight:900;color:var(–gold);line-height:1;text-shadow:0 0 24px rgba(245,197,24,.5);}
+.ec-unit{font-size:9px;font-weight:700;color:rgba(245,197,24,.45);letter-spacing:3px;text-transform:uppercase;}
 
-/* ── PRIZES ── */
-.prizes { display:flex; gap:12px; width:100%; }
-.prize-card { flex:1; border-radius:18px; padding:18px 12px; text-align:center; position:relative; overflow:hidden; background:var(–glass); backdrop-filter:blur(12px); box-shadow:0 8px 32px rgba(0,0,0,.25); }
-.prize-card::before { content:’’; position:absolute; inset:0; border-radius:18px; padding:1px; background:var(–grad); -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
-.prize-card::after { content:’’; position:absolute; top:0; left:0; right:0; height:1px; background:var(–grad); opacity:.6; }
-.prize-weekly { –grad:linear-gradient(135deg,var(–blue),var(–purple)); }
-.prize-monthly { –grad:linear-gradient(135deg,var(–gold),var(–orange)); }
-.prize-card .icon { font-size:28px; margin-bottom:8px; filter:drop-shadow(0 0 8px rgba(255,255,255,.3)); }
-.prize-card .plabel { font-size:9px; font-weight:700; letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
-.prize-weekly .plabel { color:var(–blue); }
-.prize-monthly .plabel { color:var(–gold); }
-.prize-card .pval { font-family:‘Orbitron’,sans-serif; font-size:13px; font-weight:700; color:var(–text); }
+/* COUNTDOWN */
+.countdown-wrap{width:100%;background:var(–card);border:1px solid var(–border);border-radius:20px;padding:20px 16px;text-align:center;position:relative;overflow:hidden;}
+.countdown-wrap::before{content:’’;position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(–gold),var(–orange),var(–pink),var(–purple),var(–blue));background-size:200%;animation:shimmer 3s linear infinite;}
+@keyframes shimmer{to{background-position:200% center}}
+.cd-label{font-size:9px;letter-spacing:3px;color:var(–dim);text-transform:uppercase;margin-bottom:14px;font-weight:700;}
+.cd-timer{display:flex;justify-content:center;align-items:flex-start;gap:6px;flex-wrap:wrap;}
+.cd-unit{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.cd-num{font-family:‘Orbitron’,sans-serif;font-size:28px;font-weight:900;color:var(–gold);background:rgba(245,197,24,.06);border:1px solid rgba(245,197,24,.15);border-radius:10px;padding:8px 12px;min-width:54px;line-height:1;text-shadow:0 0 16px rgba(245,197,24,.4);}
+.cd-sep{font-family:‘Orbitron’,sans-serif;font-size:24px;font-weight:900;color:rgba(245,197,24,.3);margin-top:8px;}
+.cd-unit-label{font-size:8px;letter-spacing:2px;color:var(–dim);text-transform:uppercase;font-weight:700;}
+.cd-sub{margin-top:12px;font-size:11px;color:var(–dim);}
+.cd-sub strong{color:var(–gold);}
 
-/* ── FORM ── */
-.form-card { width:100%; background:var(–glass); backdrop-filter:blur(20px); border-radius:24px; padding:28px 22px; position:relative; overflow:hidden; border:1px solid var(–glass-border); box-shadow:0 12px 48px rgba(0,0,0,.35); }
-.form-card::before { content:’’; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(–gold),var(–blue),var(–purple),var(–green),transparent); background-size:200%; animation:shimmer 3s linear infinite; }
-.form-title { font-family:‘Orbitron’,sans-serif; font-size:16px; font-weight:700; color:var(–text); letter-spacing:2px; margin-bottom:22px; text-align:center; }
-.field { margin-bottom:18px; }
-.field label { display:block; font-size:11px; font-weight:700; letter-spacing:3px; color:var(–text-dim); text-transform:uppercase; margin-bottom:8px; }
-.field input { width:100%; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:14px 18px; font-family:‘Exo 2’,sans-serif; font-size:15px; color:var(–text); outline:none; transition:all .3s; }
-.field input:focus { border-color:var(–gold); box-shadow:0 0 0 3px rgba(245,200,66,.12),0 0 20px rgba(245,200,66,.08); background:rgba(245,200,66,.04); }
-.field input::placeholder { color:rgba(232,234,246,.2); }
-.submit-btn { width:100%; padding:18px; background:linear-gradient(135deg,var(–gold),var(–orange),var(–gold)); background-size:200%; border:none; border-radius:14px; font-family:‘Orbitron’,sans-serif; font-size:15px; font-weight:900; color:#07091a; letter-spacing:2px; cursor:pointer; transition:all .3s; box-shadow:0 4px 24px rgba(245,200,66,.35),0 0 60px rgba(245,200,66,.1); animation:btnShimmer 3s linear infinite; }
-@keyframes btnShimmer { to{background-position:200% center} }
-.submit-btn:hover { transform:translateY(-3px); box-shadow:0 8px 40px rgba(245,200,66,.55),0 0 80px rgba(245,200,66,.2); }
-.submit-btn:active { transform:translateY(0); }
-.submit-btn:disabled { background:rgba(255,255,255,.08); color:rgba(255,255,255,.2); cursor:not-allowed; box-shadow:none; transform:none; animation:none; }
+/* PRIZES */
+.prizes{display:flex;gap:10px;width:100%;}
+.prize-card{flex:1;border-radius:16px;padding:16px 10px;text-align:center;position:relative;overflow:hidden;background:var(–card);border:1px solid var(–border);}
+.prize-card::before{content:’’;position:absolute;inset:0;border-radius:16px;padding:1px;background:var(–grad);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;}
+.prize-weekly{–grad:linear-gradient(135deg,var(–blue),var(–purple));}
+.prize-monthly{–grad:linear-gradient(135deg,var(–gold),var(–orange));}
+.prize-card .icon{font-size:26px;margin-bottom:6px;}
+.prize-card .plabel{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;}
+.prize-weekly .plabel{color:var(–blue);}
+.prize-monthly .plabel{color:var(–gold);}
+.prize-card .pval{font-family:‘Orbitron’,sans-serif;font-size:12px;font-weight:700;color:var(–text);}
 
-/* ── THANK YOU ── */
-.thankyou { width:100%; display:none; flex-direction:column; align-items:center; gap:16px; background:var(–glass); backdrop-filter:blur(20px); border-radius:24px; padding:40px 24px; text-align:center; border:1px solid rgba(61,255,160,.15); box-shadow:0 12px 48px rgba(0,0,0,.35),0 0 60px rgba(61,255,160,.05); animation:popIn .6s cubic-bezier(.34,1.56,.64,1); position:relative; overflow:hidden; }
-.thankyou::before { content:’’; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(–green),var(–blue),var(–purple),transparent); }
-@keyframes popIn { from{transform:scale(.7);opacity:0} to{transform:scale(1);opacity:1} }
-.thankyou .big-emoji { font-size:60px; animation:bounce 1.5s ease infinite; }
-@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
-.thankyou h2 { font-family:‘Orbitron’,sans-serif; font-size:22px; font-weight:900; background:linear-gradient(135deg,var(–green),var(–blue)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-.thankyou .msg { font-size:15px; color:var(–text-dim); line-height:1.6; }
-.thankyou .msg span { color:var(–gold); font-weight:700; }
-.waiting-pill { background:linear-gradient(135deg,rgba(96,200,255,.1),rgba(181,123,238,.08)); border:1px solid rgba(96,200,255,.25); border-radius:40px; padding:12px 24px; font-size:13px; font-weight:600; color:var(–blue); display:flex; align-items:center; gap:8px; animation:pulse 2s ease infinite; }
-.dot { width:8px; height:8px; border-radius:50%; background:var(–green); box-shadow:0 0 8px var(–green); animation:dotPulse 1s ease infinite; }
-@keyframes dotPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.5);opacity:.5} }
-.saturday-box { background:rgba(245,200,66,.05); border:1px solid rgba(245,200,66,.18); border-radius:12px; padding:14px 20px; font-size:13px; color:var(–text-dim); line-height:1.6; width:100%; }
-.saturday-box strong { color:var(–gold); }
+/* FORM */
+.form-card{width:100%;background:var(–card);border-radius:22px;padding:26px 20px;position:relative;overflow:hidden;border:1px solid var(–border);}
+.form-card::before{content:’’;position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(–gold),var(–blue),var(–purple),var(–green),var(–gold));background-size:200%;animation:shimmer 3s linear infinite;}
+.form-title{font-family:‘Orbitron’,sans-serif;font-size:15px;font-weight:700;color:var(–text);letter-spacing:2px;margin-bottom:20px;text-align:center;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:10px;font-weight:700;letter-spacing:3px;color:var(–dim);text-transform:uppercase;margin-bottom:7px;}
+.field input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:11px;padding:13px 16px;font-family:‘Exo 2’,sans-serif;font-size:14px;color:var(–text);outline:none;transition:all .3s;}
+.field input:focus{border-color:var(–gold);box-shadow:0 0 0 3px rgba(245,197,24,.1);}
+.field input::placeholder{color:rgba(241,245,249,.18);}
+.submit-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(–gold),var(–orange),var(–gold));background-size:200%;border:none;border-radius:12px;font-family:‘Orbitron’,sans-serif;font-size:14px;font-weight:900;color:#0a0e1a;letter-spacing:2px;cursor:pointer;transition:all .3s;box-shadow:0 4px 20px rgba(245,197,24,.3);animation:btnShimmer 3s linear infinite;}
+@keyframes btnShimmer{to{background-position:200% center}}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(245,197,24,.5);}
+.submit-btn:active{transform:translateY(0);}
+.submit-btn:disabled{background:rgba(255,255,255,.07);color:rgba(255,255,255,.2);cursor:not-allowed;box-shadow:none;transform:none;animation:none;}
 
-/* ── NEXT WINNER COUNTDOWN ── */
-.next-winner-cd { width:100%; background:rgba(245,200,66,.05); border:1px solid rgba(245,200,66,.18); border-radius:14px; padding:14px 18px; text-align:center; }
-.nw-label { font-size:10px; letter-spacing:3px; color:var(–text-dim); text-transform:uppercase; margin-bottom:6px; font-weight:700; }
-.nw-text { font-family:‘Orbitron’,sans-serif; font-size:13px; font-weight:900; color:var(–gold); text-shadow:0 0 16px rgba(245,200,66,.4); }
+/* THANK YOU */
+.thankyou{width:100%;display:none;flex-direction:column;align-items:center;gap:14px;background:var(–card);border-radius:22px;padding:36px 22px;text-align:center;border:1px solid rgba(52,211,153,.2);animation:popIn .6s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden;}
+.thankyou::before{content:’’;position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(–green),var(–blue),var(–purple));}
+@keyframes popIn{from{transform:scale(.75);opacity:0}to{transform:scale(1);opacity:1}}
+.thankyou .big-emoji{font-size:56px;animation:bigBounce 1.5s ease infinite;}
+@keyframes bigBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.thankyou h2{font-family:‘Orbitron’,sans-serif;font-size:20px;font-weight:900;background:linear-gradient(135deg,var(–green),var(–blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.thankyou .msg{font-size:14px;color:var(–dim);line-height:1.6;}
+.thankyou .msg span{color:var(–gold);font-weight:700;}
+.waiting-pill{background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);border-radius:40px;padding:10px 22px;font-size:13px;font-weight:600;color:var(–blue);display:flex;align-items:center;gap:8px;}
+.dot{width:8px;height:8px;border-radius:50%;background:var(–green);box-shadow:0 0 8px var(–green);animation:dotPulse 1s ease infinite;}
+@keyframes dotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.6);opacity:.5}}
+.saturday-box{background:rgba(245,197,24,.05);border:1px solid rgba(245,197,24,.15);border-radius:12px;padding:12px 18px;font-size:12px;color:var(–dim);line-height:1.7;width:100%;}
+.saturday-box strong{color:var(–gold);}
+.next-winner-cd{width:100%;background:rgba(245,197,24,.04);border:1px solid rgba(245,197,24,.14);border-radius:12px;padding:12px 16px;text-align:center;}
+.nw-label{font-size:9px;letter-spacing:3px;color:var(–dim);text-transform:uppercase;margin-bottom:5px;font-weight:700;}
+.nw-text{font-family:‘Orbitron’,sans-serif;font-size:12px;font-weight:900;color:var(–gold);text-shadow:0 0 14px rgba(245,197,24,.4);}
 
-/* ── LATEST WINNERS ── */
-.hof-card { width:100%; background:var(–glass); backdrop-filter:blur(20px); border:1px solid var(–glass-border); border-radius:22px; padding:22px 18px; position:relative; overflow:hidden; box-shadow:0 12px 48px rgba(0,0,0,.3); }
-.hof-card::before { content:’’; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(–gold),var(–orange),var(–pink),var(–gold),transparent); background-size:200%; animation:shimmer 4s linear infinite; }
-.hof-title { font-family:‘Orbitron’,sans-serif; font-size:14px; font-weight:900; color:var(–gold); letter-spacing:3px; margin-bottom:4px; text-align:center; text-shadow:0 0 20px rgba(245,200,66,.4); }
-.hof-subtitle { font-size:11px; color:var(–text-dim); letter-spacing:2px; text-align:center; margin-bottom:18px; }
+/* WINNERS */
+.hof-card{width:100%;background:var(–card);border:1px solid var(–border);border-radius:22px;padding:20px 16px;position:relative;overflow:hidden;}
+.hof-card::before{content:’’;position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(–gold),var(–orange),var(–pink),var(–purple),var(–gold));background-size:200%;animation:shimmer 4s linear infinite;}
+.hof-title{font-family:‘Orbitron’,sans-serif;font-size:13px;font-weight:900;color:var(–gold);letter-spacing:3px;margin-bottom:3px;text-align:center;}
+.hof-subtitle{font-size:10px;color:var(–dim);letter-spacing:2px;text-align:center;margin-bottom:16px;}
+.winners-duo{display:flex;gap:10px;margin-bottom:14px;}
+.winner-duo-card{flex:1;border-radius:14px;padding:14px 10px;text-align:center;position:relative;overflow:hidden;}
+.winner-duo-card.monthly{background:linear-gradient(160deg,rgba(245,197,24,.08),rgba(251,146,60,.05));border:1px solid rgba(245,197,24,.2);}
+.winner-duo-card.weekly{background:linear-gradient(160deg,rgba(56,189,248,.07),rgba(167,139,250,.05));border:1px solid rgba(56,189,248,.18);}
+.winner-duo-card.monthly::after{content:’’;position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(–gold),transparent);}
+.winner-duo-card.weekly::after{content:’’;position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(–blue),transparent);}
+.wdc-badge{display:inline-block;font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 9px;border-radius:20px;margin-bottom:7px;}
+.monthly .wdc-badge{background:rgba(245,197,24,.1);color:var(–gold);}
+.weekly .wdc-badge{background:rgba(56,189,248,.1);color:var(–blue);}
+.wdc-icon{font-size:26px;margin-bottom:5px;}
+.wdc-name{font-family:‘Orbitron’,sans-serif;font-size:11px;font-weight:900;color:var(–text);margin-bottom:4px;word-break:break-all;}
+.wdc-uid{font-size:9px;color:var(–dim);}
+.wdc-drawn{display:inline-block;margin-top:7px;font-size:9px;padding:2px 9px;border-radius:8px;}
+.monthly .wdc-drawn{background:rgba(245,197,24,.09);color:var(–gold);}
+.weekly .wdc-drawn{background:rgba(56,189,248,.08);color:var(–blue);}
+.winner-placeholder{text-align:center;padding:18px 0;color:var(–dim);font-size:13px;width:100%;}
+.hof-note{text-align:center;margin-top:4px;font-size:10px;color:rgba(241,245,249,.18);letter-spacing:2px;}
 
-/* Two winner cards */
-.winners-duo { display:flex; gap:12px; margin-bottom:16px; }
-.winner-duo-card { flex:1; border-radius:16px; padding:16px 10px; text-align:center; position:relative; overflow:hidden; }
-.winner-duo-card.monthly { background:linear-gradient(135deg,rgba(245,200,66,.09),rgba(255,150,64,.06)); border:1px solid rgba(245,200,66,.25); }
-.winner-duo-card.weekly  { background:linear-gradient(135deg,rgba(96,200,255,.08),rgba(181,123,238,.06)); border:1px solid rgba(96,200,255,.2); }
-.winner-duo-card.monthly::before { content:’’; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(–gold),transparent); }
-.winner-duo-card.weekly::before  { content:’’; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(–blue),transparent); }
-.wdc-badge { display:inline-block; font-size:9px; font-weight:700; letter-spacing:1px; text-transform:uppercase; padding:3px 10px; border-radius:20px; margin-bottom:8px; }
-.monthly .wdc-badge { background:rgba(245,200,66,.12); color:var(–gold); }
-.weekly  .wdc-badge { background:rgba(96,200,255,.1); color:var(–blue); }
-.wdc-icon { font-size:28px; margin-bottom:6px; filter:drop-shadow(0 0 8px rgba(255,255,255,.3)); }
-.wdc-name { font-family:‘Orbitron’,sans-serif; font-size:12px; font-weight:900; color:var(–text); margin-bottom:4px; word-break:break-all; }
-.wdc-uid  { font-size:10px; color:var(–text-dim); }
-.wdc-drawn { display:inline-block; margin-top:8px; font-size:10px; padding:3px 10px; border-radius:10px; }
-.monthly .wdc-drawn { background:rgba(245,200,66,.1); color:var(–gold); }
-.weekly  .wdc-drawn { background:rgba(96,200,255,.08); color:var(–blue); }
+/* FF */
+.ff-section{width:100%;}
+.ff-title{font-family:‘Orbitron’,sans-serif;font-size:13px;font-weight:900;color:var(–purple);letter-spacing:3px;margin-bottom:12px;text-align:center;}
+.ff-tabs{display:flex;gap:8px;margin-bottom:12px;}
+.ff-tab{flex:1;padding:9px;border-radius:10px;font-family:‘Exo 2’,sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;border:none;transition:all .3s;text-transform:uppercase;}
+.ff-tab.myth{background:rgba(248,113,113,.07);color:var(–red);border:1px solid rgba(248,113,113,.18);}
+.ff-tab.myth.active{background:rgba(248,113,113,.15);box-shadow:0 0 16px rgba(248,113,113,.18);}
+.ff-tab.fact{background:rgba(52,211,153,.07);color:var(–green);border:1px solid rgba(52,211,153,.18);}
+.ff-tab.fact.active{background:rgba(52,211,153,.15);box-shadow:0 0 16px rgba(52,211,153,.18);}
+.ff-list{display:none;flex-direction:column;gap:8px;}
+.ff-list.active{display:flex;animation:fadeSlide .4s ease;}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.ff-item{border-radius:12px;padding:13px 14px;display:flex;gap:10px;align-items:flex-start;}
+.ff-item.myth-item{background:rgba(248,113,113,.04);border:1px solid rgba(248,113,113,.12);}
+.ff-item.fact-item{background:rgba(52,211,153,.04);border:1px solid rgba(52,211,153,.12);}
+.ff-item-icon{font-size:20px;flex-shrink:0;margin-top:2px;}
+.ff-item-text{font-size:12px;line-height:1.6;color:rgba(241,245,249,.7);}
+.ff-item-text strong{display:block;margin-bottom:3px;font-size:12px;}
+.myth-item .ff-item-text strong{color:var(–red);}
+.fact-item .ff-item-text strong{color:var(–green);}
+.ff-badge{display:inline-block;margin-top:5px;font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 7px;border-radius:5px;}
+.myth-item .ff-badge{background:rgba(248,113,113,.1);color:var(–red);}
+.fact-item .ff-badge{background:rgba(52,211,153,.1);color:var(–green);}
 
-.winner-placeholder { text-align:center; padding:20px 0; color:var(–text-dim); font-size:13px; letter-spacing:1px; width:100%; }
-.hof-note { text-align:center; margin-top:4px; font-size:11px; color:rgba(232,234,246,.2); letter-spacing:2px; }
+/* RULES */
+.rules-card{width:100%;background:var(–card);border:1px solid var(–border);border-radius:16px;padding:16px 18px;}
+.rules-title{font-size:10px;font-weight:700;letter-spacing:3px;color:var(–dim);text-transform:uppercase;margin-bottom:12px;}
+.rule-item{display:flex;align-items:center;gap:10px;font-size:12px;color:rgba(241,245,249,.65);margin-bottom:8px;line-height:1.4;}
+.rule-item .dot2{width:5px;height:5px;border-radius:50%;background:var(–gold);box-shadow:0 0 5px rgba(245,197,24,.6);flex-shrink:0;}
 
-/* ── FF SECTION ── */
-.ff-section { width:100%; }
-.ff-title { font-family:‘Orbitron’,sans-serif; font-size:14px; font-weight:900; color:var(–purple); letter-spacing:3px; margin-bottom:14px; text-align:center; text-shadow:0 0 20px rgba(181,123,238,.4); }
-.ff-tabs { display:flex; gap:8px; margin-bottom:14px; }
-.ff-tab { flex:1; padding:10px; border-radius:10px; font-family:‘Exo 2’,sans-serif; font-size:12px; font-weight:700; letter-spacing:1px; cursor:pointer; border:none; transition:all .3s; text-transform:uppercase; }
-.ff-tab.myth { background:rgba(255,82,82,.08); color:var(–red); border:1px solid rgba(255,82,82,.2); }
-.ff-tab.myth.active { background:rgba(255,82,82,.18); box-shadow:0 0 20px rgba(255,82,82,.2); }
-.ff-tab.fact { background:rgba(61,255,160,.07); color:var(–green); border:1px solid rgba(61,255,160,.2); }
-.ff-tab.fact.active { background:rgba(61,255,160,.16); box-shadow:0 0 20px rgba(61,255,160,.2); }
-.ff-list { display:none; flex-direction:column; gap:10px; }
-.ff-list.active { display:flex; animation:fadeSlide .4s ease; }
-@keyframes fadeSlide { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-.ff-item { border-radius:14px; padding:14px 16px; display:flex; gap:12px; align-items:flex-start; }
-.ff-item.myth-item { background:rgba(255,82,82,.05); border:1px solid rgba(255,82,82,.15); }
-.ff-item.fact-item { background:rgba(61,255,160,.04); border:1px solid rgba(61,255,160,.14); }
-.ff-item-icon { font-size:22px; flex-shrink:0; margin-top:2px; }
-.ff-item-text { font-size:13px; line-height:1.6; color:rgba(232,234,246,.75); }
-.ff-item-text strong { display:block; margin-bottom:4px; font-size:13px; }
-.myth-item .ff-item-text strong { color:var(–red); }
-.fact-item .ff-item-text strong { color:var(–green); }
-.ff-badge { display:inline-block; margin-top:6px; font-size:10px; font-weight:700; letter-spacing:1px; padding:3px 8px; border-radius:6px; }
-.myth-item .ff-badge { background:rgba(255,82,82,.12); color:var(–red); }
-.fact-item .ff-badge { background:rgba(61,255,160,.1); color:var(–green); }
-
-/* ── RULES ── */
-.rules-card { width:100%; background:var(–glass); backdrop-filter:blur(12px); border:1px solid var(–glass-border); border-radius:18px; padding:18px 20px; box-shadow:0 8px 32px rgba(0,0,0,.2); }
-.rules-title { font-size:11px; font-weight:700; letter-spacing:3px; color:var(–text-dim); text-transform:uppercase; margin-bottom:14px; }
-.rule-item { display:flex; align-items:center; gap:10px; font-size:13px; color:rgba(232,234,246,.7); margin-bottom:8px; line-height:1.4; }
-.rule-item .dot2 { width:6px; height:6px; border-radius:50%; background:var(–gold); box-shadow:0 0 6px rgba(245,200,66,.6); flex-shrink:0; }
-
-.footer { font-size:11px; color:rgba(232,234,246,.2); letter-spacing:2px; text-align:center; }
-.footer a { color:var(–gold); text-decoration:none; }
-
-.confetti-wrap { position:fixed; inset:0; pointer-events:none; z-index:999; overflow:hidden; }
-.cp { position:absolute; top:-10px; animation:fall var(–fd) ease-in forwards; border-radius:var(–br); }
-@keyframes fall { 0%{transform:translateY(0) rotate(0deg) translateX(0);opacity:1} 100%{transform:translateY(110vh) rotate(720deg) translateX(var(–dx));opacity:0} }
-
-.sec-label { font-size:10px; letter-spacing:4px; color:rgba(232,234,246,.2); text-transform:uppercase; text-align:center; }
-
-.admin-link { display:inline-block; margin-top:4px; padding:8px 20px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); border-radius:20px; font-size:11px; font-weight:700; letter-spacing:2px; color:rgba(232,234,246,.2); text-decoration:none; transition:all .3s; }
-.admin-link:hover { background:rgba(245,200,66,.08); border-color:rgba(245,200,66,.3); color:var(–gold); }
+.footer{font-size:10px;color:rgba(241,245,249,.18);letter-spacing:2px;text-align:center;}
+.footer a{color:var(–gold);text-decoration:none;}
+.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:999;overflow:hidden;}
+.cp{position:absolute;top:-10px;animation:fall var(–fd) ease-in forwards;border-radius:var(–br);}
+@keyframes fall{0%{transform:translateY(0) rotate(0deg) translateX(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg) translateX(var(–dx));opacity:0}}
+.sec-label{font-size:9px;letter-spacing:4px;color:rgba(241,245,249,.18);text-transform:uppercase;text-align:center;}
+.admin-link{display:inline-block;margin-top:4px;padding:7px 18px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:20px;font-size:10px;font-weight:700;letter-spacing:2px;color:rgba(241,245,249,.2);text-decoration:none;transition:all .3s;}
+.admin-link:hover{background:rgba(245,197,24,.07);border-color:rgba(245,197,24,.25);color:var(–gold);}
 </style>
 
 </head>
 <body>
 <div class="bg"></div>
 <div class="stars" id="stars"></div>
-<div class="orb" style="width:350px;height:350px;background:rgba(181,123,238,.12);top:-80px;left:-100px;--dur:7s;"></div>
-<div class="orb" style="width:280px;height:280px;background:rgba(245,200,66,.09);top:30%;right:-80px;--dur:9s;"></div>
-<div class="orb" style="width:220px;height:220px;background:rgba(96,200,255,.08);bottom:20%;left:-60px;--dur:11s;"></div>
 <div class="confetti-wrap" id="confetti"></div>
 
 <div class="page">
 
-  <!-- Header -->
+  <!-- HEADER with orbiting FF characters -->
 
   <div class="header">
-    <div class="logo-wrap">
-      <div class="logo-ring"></div>
-      <div class="logo-ring-inner"></div>
-      <div class="logo-moon" id="logoMoon">
-        <div class="moon-body"></div>
-        <div class="moon-shadow"></div>
-        <div class="moon-glow"></div>
-      </div>
+    <div class="moon-system">
+
+```
+  <div class="orbit-ring"></div>
+
+  <!-- Soldier (orange) clockwise 7s -->
+  <div class="orbit-arm" style="--spd:7s;">
+    <div class="orbit-char">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <ellipse cx="14" cy="6" rx="3.8" ry="4.2" fill="#fb923c"/>
+        <path d="M10 5.5 Q10 1.5 14 1.5 Q18 1.5 18 5.5Z" fill="#c2410c"/>
+        <rect x="9.5" y="5" width="9" height="2" rx="1" fill="#7c2d12"/>
+        <rect x="10.5" y="10" width="7" height="8" rx="1.5" fill="#ea580c"/>
+        <rect x="10" y="17" width="8" height="1.5" rx=".75" fill="#7c2d12"/>
+        <path d="M10.5 11 L7 15.5 L8.5 16 L12 12Z" fill="#fb923c"/>
+        <path d="M17.5 11 L21 14.5 L19.5 16 L16 12Z" fill="#fb923c"/>
+        <rect x="19.5" y="13" width="5.5" height="1.6" rx=".6" fill="#374151"/>
+        <rect x="21" y="11.5" width="1.4" height="2" rx=".3" fill="#374151"/>
+        <rect x="10.5" y="18.5" width="2.8" height="5.5" rx="1.2" fill="#c2410c"/>
+        <rect x="14.7" y="18.5" width="2.8" height="5.5" rx="1.2" fill="#c2410c"/>
+        <rect x="10" y="23" width="3.5" height="2.5" rx="1" fill="#1c1917"/>
+        <rect x="14.2" y="23" width="3.5" height="2.5" rx="1" fill="#1c1917"/>
+      </svg>
     </div>
-    <div class="brand">DREAM.2MOON</div>
-    <div class="tagline">Play With Purpose</div>
+  </div>
+
+  <!-- Sniper (purple) counter-clockwise 11s, start 90° -->
+  <div class="orbit-arm rev" style="--spd:11s;transform:rotate(90deg);">
+    <div class="orbit-char">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <ellipse cx="14" cy="6" rx="3.3" ry="3.8" fill="#c4b5fd"/>
+        <path d="M10.5 5.5 Q10.5 1.5 14 1.5 Q17.5 1.5 17.5 5.5Z" fill="#5b21b6"/>
+        <rect x="10" y="5" width="8" height="2.2" rx="1.1" fill="#4c1d95"/>
+        <rect x="10.5" y="8" width="7" height="2" rx="1" fill="#4c1d95"/>
+        <path d="M8.5 10 Q7.5 17.5 10 23 L12 23 L12 10Z" fill="#7c3aed"/>
+        <path d="M19.5 10 Q20.5 17.5 18 23 L16 23 L16 10Z" fill="#7c3aed"/>
+        <rect x="12" y="10" width="4" height="13" fill="#8b5cf6"/>
+        <rect x="17.5" y="12" width="7.5" height="1.8" rx=".7" fill="#292524"/>
+        <rect x="22" y="10.5" width="1.2" height="1.6" rx=".3" fill="#292524"/>
+        <rect x="20" y="11.2" width="2.5" height="1.2" rx=".4" fill="#1c1917"/>
+        <circle cx="12.5" cy="7" r="1" fill="#a78bfa"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Medic (green) clockwise 14s, start 180° -->
+  <div class="orbit-arm" style="--spd:14s;transform:rotate(180deg);">
+    <div class="orbit-char">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <ellipse cx="14" cy="6" rx="3.3" ry="3.8" fill="#d1fae5"/>
+        <path d="M10.5 5 Q10.5 1.5 14 1.5 Q17.5 1.5 17.5 5Z" fill="#065f46"/>
+        <rect x="9.5" y="4.5" width="9" height="1.8" rx=".9" fill="#064e3b"/>
+        <rect x="13.2" y="2.2" width="1.6" height=".9" rx=".2" fill="#f87171"/>
+        <rect x="13.7" y="1.7" width=".6" height="1.9" rx=".2" fill="#f87171"/>
+        <rect x="10.5" y="10" width="7" height="8" rx="1.5" fill="#059669"/>
+        <rect x="13.2" y="11.5" width="1.6" height=".8" rx=".2" fill="#fff"/>
+        <rect x="13.7" y="11" width=".6" height="1.8" rx=".2" fill="#fff"/>
+        <path d="M10.5 11 L7.5 15.5 L9 16 L12 12Z" fill="#a7f3d0"/>
+        <path d="M17.5 11 L20.5 14.5 L19 16 L16 12Z" fill="#a7f3d0"/>
+        <rect x="19" y="13" width="4" height="3" rx=".7" fill="#065f46"/>
+        <rect x="20" y="13.8" width="2" height=".7" rx=".2" fill="#fff"/>
+        <rect x="20.7" y="13.3" width=".6" height="1.7" rx=".2" fill="#fff"/>
+        <rect x="10.5" y="18.5" width="2.8" height="5.5" rx="1.2" fill="#065f46"/>
+        <rect x="14.7" y="18.5" width="2.8" height="5.5" rx="1.2" fill="#065f46"/>
+        <rect x="10" y="23" width="3.5" height="2.5" rx="1" fill="#1c1917"/>
+        <rect x="14.2" y="23" width="3.5" height="2.5" rx="1" fill="#1c1917"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Rusher (blue) counter-clockwise 9s, start 270° -->
+  <div class="orbit-arm rev" style="--spd:9s;transform:rotate(270deg);">
+    <div class="orbit-char">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <ellipse cx="14" cy="6" rx="3.5" ry="4" fill="#bae6fd"/>
+        <path d="M10 5 Q10 1 14 1 Q18 1 18 5Z" fill="#0369a1"/>
+        <rect x="9.5" y="4.5" width="9" height="2.2" rx="1.1" fill="#0c4a6e"/>
+        <rect x="10.5" y="6.8" width="7" height="1.4" rx=".6" fill="#38bdf8" opacity=".75"/>
+        <rect x="10.5" y="10" width="7" height="8" rx="1.5" fill="#0284c7"/>
+        <rect x="11" y="11.2" width="2.2" height="1.7" rx=".4" fill="#0c4a6e"/>
+        <rect x="14.8" y="11.2" width="2.2" height="1.7" rx=".4" fill="#0c4a6e"/>
+        <path d="M10.5 11 L7 16 L8.5 16.5 L12 12Z" fill="#bae6fd"/>
+        <path d="M17.5 11 L21 14.5 L19.5 16 L16 12Z" fill="#bae6fd"/>
+        <rect x="19.5" y="12" width="6" height="1.6" rx=".6" fill="#1e293b"/>
+        <rect x="20" y="10.5" width="1.4" height="2.2" rx=".3" fill="#1e293b"/>
+        <rect x="23" y="11" width="1.2" height="1" rx=".2" fill="#475569"/>
+        <rect x="10.5" y="18.5" width="2.8" height="5.5" rx="1.2" fill="#0369a1"/>
+        <rect x="14.7" y="18.5" width="2.8" height="5.5" rx="1.2" fill="#0369a1"/>
+        <rect x="10" y="23" width="3.5" height="2.5" rx="1" fill="#0f172a"/>
+        <rect x="14.2" y="23" width="3.5" height="2.5" rx="1" fill="#0f172a"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Moon -->
+  <div class="moon-center">
+    <div class="logo-ring"></div>
+    <div class="logo-ring-inner"></div>
+    <div class="logo-moon" id="logoMoon">
+      <div class="moon-body"></div>
+      <div class="moon-shadow"></div>
+      <div class="moon-glow"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="brand">DREAM.2MOON</div>
+<div class="tagline">Play With Purpose</div>
+```
+
   </div>
 
   <!-- Ticker -->
@@ -263,11 +348,9 @@ animation: bgPulse 10s ease-in-out infinite alternate;
     </div>
   </div>
 
-  <!-- Week badge -->
-
   <div class="week-badge">🎁 WEEKLY GIVEAWAY — EVERY SATURDAY 10AM NPT!</div>
 
-  <!-- Live Entry Counter -->
+  <!-- Entry Counter -->
 
   <div class="entry-counter">
     <div class="ec-left">
@@ -280,30 +363,18 @@ animation: bgPulse 10s ease-in-out infinite alternate;
     </div>
   </div>
 
-  <!-- Main countdown -->
+  <!-- Countdown -->
 
   <div class="countdown-wrap">
     <div class="cd-label">⏳ Next Draw Countdown · Saturday 10:00 AM Nepal Time</div>
     <div class="cd-timer">
-      <div class="cd-unit">
-        <div class="cd-num" id="cd-days">--</div>
-        <div class="cd-unit-label">Days</div>
-      </div>
+      <div class="cd-unit"><div class="cd-num" id="cd-days">--</div><div class="cd-unit-label">Days</div></div>
       <div class="cd-sep">:</div>
-      <div class="cd-unit">
-        <div class="cd-num" id="cd-hours">--</div>
-        <div class="cd-unit-label">Hours</div>
-      </div>
+      <div class="cd-unit"><div class="cd-num" id="cd-hours">--</div><div class="cd-unit-label">Hours</div></div>
       <div class="cd-sep">:</div>
-      <div class="cd-unit">
-        <div class="cd-num" id="cd-mins">--</div>
-        <div class="cd-unit-label">Mins</div>
-      </div>
+      <div class="cd-unit"><div class="cd-num" id="cd-mins">--</div><div class="cd-unit-label">Mins</div></div>
       <div class="cd-sep">:</div>
-      <div class="cd-unit">
-        <div class="cd-num" id="cd-secs">--</div>
-        <div class="cd-unit-label">Secs</div>
-      </div>
+      <div class="cd-unit"><div class="cd-num" id="cd-secs">--</div><div class="cd-unit-label">Secs</div></div>
     </div>
     <div class="cd-sub">🏆 <strong>2 winners</strong> announced every Saturday at 10:00 AM Nepal Time</div>
   </div>
@@ -311,45 +382,26 @@ animation: bgPulse 10s ease-in-out infinite alternate;
   <!-- Prizes -->
 
   <div class="prizes">
-    <div class="prize-card prize-weekly">
-      <div class="icon">🏆</div>
-      <div class="plabel">Lucky Draw</div>
-      <div class="pval">Weekly 💎</div>
-    </div>
-    <div class="prize-card prize-monthly">
-      <div class="icon">👑</div>
-      <div class="plabel">Lucky Draw</div>
-      <div class="pval">Monthly 💎💎</div>
-    </div>
+    <div class="prize-card prize-weekly"><div class="icon">🏆</div><div class="plabel">Lucky Draw</div><div class="pval">Weekly 💎</div></div>
+    <div class="prize-card prize-monthly"><div class="icon">👑</div><div class="plabel">Lucky Draw</div><div class="pval">Monthly 💎💎</div></div>
   </div>
 
   <!-- Form -->
 
   <div class="form-card" id="formCard">
     <div class="form-title">🚀 ENTER THE GIVEAWAY</div>
-    <div class="field">
-      <label>Username</label>
-      <input type="text" id="username" placeholder="@yourusername">
-    </div>
-    <div class="field">
-      <label>UID</label>
-      <input type="text" id="uid" placeholder="Enter your UID">
-    </div>
-    <button class="submit-btn" id="submitBtn" onclick="submitEntry()">
-      🎰 ENTER NOW — IT'S FREE!
-    </button>
+    <div class="field"><label>Username</label><input type="text" id="username" placeholder="@yourusername"></div>
+    <div class="field"><label>UID</label><input type="text" id="uid" placeholder="Enter your UID"></div>
+    <button class="submit-btn" id="submitBtn" onclick="submitEntry()">🎰 ENTER NOW — IT'S FREE!</button>
   </div>
 
-  <!-- Thank you -->
+  <!-- Thank You -->
 
   <div class="thankyou" id="thankyou">
     <div class="big-emoji">🎉</div>
     <h2>YOU'RE IN!</h2>
     <div class="msg">Entry locked in, <span id="enteredName"></span>! 🔥<br>Now go practice headshots while you wait 😂🍀</div>
-    <div class="waiting-pill">
-      <div class="dot"></div>
-      The universe is spinning the wheel...
-    </div>
+    <div class="waiting-pill"><div class="dot"></div>The universe is spinning the wheel...</div>
     <div class="next-winner-cd">
       <div class="nw-label">🏆 Next Winner Announcement</div>
       <div class="nw-text" id="nw-countdown">Calculating...</div>
@@ -367,23 +419,14 @@ animation: bgPulse 10s ease-in-out infinite alternate;
   <div class="hof-card" id="latestWinnerCard">
     <div class="hof-title">🏆 LUCKY DRAW WINNERS 🏆</div>
     <div class="hof-subtitle" id="winnersDrawnDate">Loading...</div>
-
-```
-<div class="winners-duo" id="winnersDuo">
-  <div class="winner-placeholder">
-    <div style="font-size:36px;margin-bottom:8px;">🎰</div>
-    No winners drawn yet...<br>Stay tuned for Saturday! 👀
-  </div>
-</div>
-
-<div class="next-winner-cd">
-  <div class="nw-label">⏳ Next Winner Announcement In</div>
-  <div class="nw-text" id="hof-countdown">Calculating...</div>
-</div>
-
-<div class="hof-note">Could be YOUR name here next 😏</div>
-```
-
+    <div class="winners-duo" id="winnersDuo">
+      <div class="winner-placeholder"><div style="font-size:34px;margin-bottom:8px;">🎰</div>No winners drawn yet...<br>Stay tuned for Saturday! 👀</div>
+    </div>
+    <div class="next-winner-cd">
+      <div class="nw-label">⏳ Next Winner Announcement In</div>
+      <div class="nw-text" id="hof-countdown">Calculating...</div>
+    </div>
+    <div class="hof-note">Could be YOUR name here next 😏</div>
   </div>
 
   <!-- FF Section -->
@@ -396,88 +439,18 @@ animation: bgPulse 10s ease-in-out infinite alternate;
       <button class="ff-tab fact" onclick="showTab('fact')">✅ FACTS</button>
     </div>
     <div class="ff-list active" id="tab-myth">
-      <div class="ff-item myth-item">
-        <div class="ff-item-icon">💀</div>
-        <div class="ff-item-text">
-          <strong>MYTH: Crouching makes you harder to hit</strong>
-          You crouch → enemy gets a bigger, slower target 🎯. You're not sneaky, you're a crouching duck. 🦆
-          <div class="ff-badge">BUSTED 100%</div>
-        </div>
-      </div>
-      <div class="ff-item myth-item">
-        <div class="ff-item-icon">🤣</div>
-        <div class="ff-item-text">
-          <strong>MYTH: Expensive skins = more damage</strong>
-          Your ₹5,000 Alok skin does the SAME damage as the default guy in boxers. 😭
-          <div class="ff-badge">BUSTED — looks cool tho 💅</div>
-        </div>
-      </div>
-      <div class="ff-item myth-item">
-        <div class="ff-item-icon">😂</div>
-        <div class="ff-item-text">
-          <strong>MYTH: Prone in grass = invisible</strong>
-          Bro you're a full-grown character lying in 3 blades of grass. Everyone can see you. 😴
-          <div class="ff-badge">MEGA BUSTED</div>
-        </div>
-      </div>
-      <div class="ff-item myth-item">
-        <div class="ff-item-icon">💀</div>
-        <div class="ff-item-text">
-          <strong>MYTH: Jumping while shooting = unkillable</strong>
-          You jump → aim goes to the moon 🌕 → you miss everything → die mid-air.
-          <div class="ff-badge">BUSTED (funny to watch tho 👀)</div>
-        </div>
-      </div>
-      <div class="ff-item myth-item">
-        <div class="ff-item-icon">🥲</div>
-        <div class="ff-item-text">
-          <strong>MYTH: "I'll carry my squad, it's fine"</strong>
-          Famous last words. Two seconds later you're knocked and the chicken dinner is gone. 🍗
-          <div class="ff-badge">SKILL ISSUE CONFIRMED</div>
-        </div>
-      </div>
+      <div class="ff-item myth-item"><div class="ff-item-icon">💀</div><div class="ff-item-text"><strong>MYTH: Crouching makes you harder to hit</strong>You crouch → enemy gets a bigger, slower target 🎯. You're not sneaky, you're a crouching duck. 🦆<div class="ff-badge">BUSTED 100%</div></div></div>
+      <div class="ff-item myth-item"><div class="ff-item-icon">🤣</div><div class="ff-item-text"><strong>MYTH: Expensive skins = more damage</strong>Your ₹5,000 Alok skin does the SAME damage as the default guy in boxers. 😭<div class="ff-badge">BUSTED — looks cool tho 💅</div></div></div>
+      <div class="ff-item myth-item"><div class="ff-item-icon">😂</div><div class="ff-item-text"><strong>MYTH: Prone in grass = invisible</strong>Bro you're a full-grown character lying in 3 blades of grass. Everyone can see you. 😴<div class="ff-badge">MEGA BUSTED</div></div></div>
+      <div class="ff-item myth-item"><div class="ff-item-icon">💀</div><div class="ff-item-text"><strong>MYTH: Jumping while shooting = unkillable</strong>You jump → aim goes to the moon 🌕 → you miss everything → die mid-air.<div class="ff-badge">BUSTED (funny to watch tho 👀)</div></div></div>
+      <div class="ff-item myth-item"><div class="ff-item-icon">🥲</div><div class="ff-item-text"><strong>MYTH: "I'll carry my squad, it's fine"</strong>Famous last words. Two seconds later you're knocked and the chicken dinner is gone. 🍗<div class="ff-badge">SKILL ISSUE CONFIRMED</div></div></div>
     </div>
     <div class="ff-list" id="tab-fact">
-      <div class="ff-item fact-item">
-        <div class="ff-item-icon">✅</div>
-        <div class="ff-item-text">
-          <strong>FACT: Safe zone damages through walls</strong>
-          The blue zone disagrees with your hiding strategy. It damages through cover. Rotate early or DIE slowly. ☢️
-          <div class="ff-badge">100% TRUE — ROTATE EARLY</div>
-        </div>
-      </div>
-      <div class="ff-item fact-item">
-        <div class="ff-item-icon">🔥</div>
-        <div class="ff-item-text">
-          <strong>FACT: Headshots deal 200% damage with some guns</strong>
-          The M1014 shotgun to the head is a one-way ticket to the lobby. Wear a helmet. 🪖
-          <div class="ff-badge">AIM HIGH, LITERALLY</div>
-        </div>
-      </div>
-      <div class="ff-item fact-item">
-        <div class="ff-item-icon">🎯</div>
-        <div class="ff-item-text">
-          <strong>FACT: Strafing saves your life vs snipers</strong>
-          Moving side-to-side while getting sniped actually works. Stay still = mannequin with a gun. 🪆
-          <div class="ff-badge">DODGE = SURVIVAL</div>
-        </div>
-      </div>
-      <div class="ff-item fact-item">
-        <div class="ff-item-icon">💡</div>
-        <div class="ff-item-text">
-          <strong>FACT: Vehicles make you an easy target</strong>
-          Driving = "HERE I AM, SHOOT MY TYRES PLEASE 🚗💥". Walk. Be sneaky.
-          <div class="ff-badge">USE WITH EXTREME CAUTION</div>
-        </div>
-      </div>
-      <div class="ff-item fact-item">
-        <div class="ff-item-icon">🧠</div>
-        <div class="ff-item-text">
-          <strong>FACT: Third-partying wins more than raw skill</strong>
-          Let two squads fight → both get low → you swoop in → Booyah! 🏆 It's chess. With guns.
-          <div class="ff-badge">BIG BRAIN STRATEGY ✅</div>
-        </div>
-      </div>
+      <div class="ff-item fact-item"><div class="ff-item-icon">✅</div><div class="ff-item-text"><strong>FACT: Safe zone damages through walls</strong>The blue zone disagrees with your hiding strategy. It damages through cover. Rotate early or DIE slowly. ☢️<div class="ff-badge">100% TRUE — ROTATE EARLY</div></div></div>
+      <div class="ff-item fact-item"><div class="ff-item-icon">🔥</div><div class="ff-item-text"><strong>FACT: Headshots deal 200% damage with some guns</strong>The M1014 shotgun to the head is a one-way ticket to the lobby. Wear a helmet. 🪖<div class="ff-badge">AIM HIGH, LITERALLY</div></div></div>
+      <div class="ff-item fact-item"><div class="ff-item-icon">🎯</div><div class="ff-item-text"><strong>FACT: Strafing saves your life vs snipers</strong>Moving side-to-side while getting sniped actually works. Stay still = mannequin with a gun. 🪆<div class="ff-badge">DODGE = SURVIVAL</div></div></div>
+      <div class="ff-item fact-item"><div class="ff-item-icon">💡</div><div class="ff-item-text"><strong>FACT: Vehicles make you an easy target</strong>Driving = "HERE I AM, SHOOT MY TYRES PLEASE 🚗💥". Walk. Be sneaky.<div class="ff-badge">USE WITH EXTREME CAUTION</div></div></div>
+      <div class="ff-item fact-item"><div class="ff-item-icon">🧠</div><div class="ff-item-text"><strong>FACT: Third-partying wins more than raw skill</strong>Let two squads fight → both get low → you swoop in → Booyah! 🏆 It's chess. With guns.<div class="ff-badge">BIG BRAIN STRATEGY ✅</div></div></div>
     </div>
   </div>
 
@@ -493,11 +466,8 @@ animation: bgPulse 10s ease-in-out infinite alternate;
     <div class="rule-item"><div class="dot2"></div>Both winners announced Saturday at 10AM NPT!</div>
   </div>
 
-  <div class="footer">
-    🌙 <span style="color:rgba(26,18,8,.35)">Powered by</span> <a href="#">Dream2Moon</a> &nbsp;|&nbsp; Play With Purpose
-  </div>
-
-<a href="admin.html" class="admin-link">🔐 Admin Panel</a>
+  <div class="footer">🌙 <span style="color:rgba(241,245,249,.2)">Powered by</span> <a href="#">Dream2Moon</a> &nbsp;|&nbsp; Play With Purpose</div>
+  <a href="admin.html" class="admin-link">🔐 Admin Panel</a>
 
 </div>
 
@@ -517,203 +487,126 @@ animation: bgPulse 10s ease-in-out infinite alternate;
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // Background stars
+  // Stars
   const sf = document.getElementById('stars');
-  for (let i = 0; i < 120; i++) {
+  for (let i = 0; i < 130; i++) {
     const s = document.createElement('div');
     s.className = 'star';
-    const sz = Math.random()*2+0.5;
-    s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${2+Math.random()*4}s;--op:${0.2+Math.random()*0.6};animation-delay:${Math.random()*6}s;`;
+    const sz = Math.random()*2+0.4;
+    s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${2+Math.random()*4}s;--op:${0.15+Math.random()*0.5};animation-delay:${Math.random()*6}s;`;
     sf.appendChild(s);
   }
 
-  // Moon mini-stars
+  // Moon stars
   const moon = document.getElementById('logoMoon');
   if (moon) {
     for (let i = 0; i < 8; i++) {
       const s = document.createElement('div');
       s.className = 'ms';
-      const sz = 1 + Math.random() * 2;
-      s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*90}%;top:${Math.random()*90}%;--d:${1.5+Math.random()*2.5}s;animation-delay:${Math.random()*3}s;`;
+      const sz = 1 + Math.random()*1.5;
+      s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*85}%;top:${Math.random()*85}%;--d:${1.5+Math.random()*2.5}s;animation-delay:${Math.random()*3}s;`;
       moon.appendChild(s);
     }
   }
 
-  // ── COUNTDOWN — Nepal Standard Time = UTC+5:45 ────────────────────────────
-  const NPT_OFFSET_MS = (5 * 60 + 45) * 60 * 1000;
-
-  function getNextSaturdayNPT() {
-    const nowUTC = Date.now();
-    const nowNPT = new Date(nowUTC + NPT_OFFSET_MS);
-    const dayOfWeek = nowNPT.getUTCDay(); // 0=Sun…6=Sat
-    let daysUntilSat = (6 - dayOfWeek + 7) % 7;
-
-    const targetNPT = new Date(Date.UTC(
-      nowNPT.getUTCFullYear(), nowNPT.getUTCMonth(),
-      nowNPT.getUTCDate() + daysUntilSat,
-      10, 0, 0, 0   // 10:00 AM NPT
-    ));
-    const targetUTC = targetNPT.getTime() - NPT_OFFSET_MS;
-
-    // If today is Saturday but already past 10am NPT, jump to next week
-    if (targetUTC <= nowUTC) return targetUTC + 7 * 24 * 3600 * 1000;
-    return targetUTC;
+  // Countdown — Nepal Standard Time UTC+5:45
+  const NPT = (5*60+45)*60*1000;
+  function nextSat() {
+    const now = Date.now(), npt = new Date(now+NPT);
+    const dts = (6-npt.getUTCDay()+7)%7;
+    const t = new Date(Date.UTC(npt.getUTCFullYear(),npt.getUTCMonth(),npt.getUTCDate()+dts,10,0,0,0)).getTime()-NPT;
+    return t<=now ? t+7*864e5 : t;
   }
-
-  function formatCountdown(ms) {
-    if (ms <= 0) return 'Drawing NOW! 🎉';
-    const s = Math.floor(ms / 1000);
-    const d = Math.floor(s / 86400);
-    const h = Math.floor((s % 86400) / 3600);
-    const m = Math.floor((s % 3600) / 60);
-    const sec = s % 60;
-    const parts = [];
-    if (d > 0) parts.push(d + ' day' + (d !== 1 ? 's' : ''));
-    if (h > 0 || d > 0) parts.push(h + ' hr' + (h !== 1 ? 's' : ''));
-    parts.push(m + ' min' + (m !== 1 ? 's' : ''));
-    parts.push(sec + 's');
-    return parts.join(' ');
+  function fmtCd(ms) {
+    if(ms<=0) return 'Drawing NOW! 🎉';
+    const s=Math.floor(ms/1000),d=Math.floor(s/86400),h=Math.floor((s%86400)/3600),m=Math.floor((s%3600)/60),sc=s%60;
+    const p=[];
+    if(d) p.push(d+' day'+(d!==1?'s':''));
+    if(h||d) p.push(h+' hr'+(h!==1?'s':''));
+    p.push(m+' min'+(m!==1?'s':'')); p.push(sc+'s');
+    return p.join(' ');
   }
-
-  function pad(n) { return String(n).padStart(2, '0'); }
-
-  function updateCountdowns() {
-    const targetUTC = getNextSaturdayNPT();
-    const ms = Math.max(0, targetUTC - Date.now());
-    const totalSec = Math.floor(ms / 1000);
-    const d = Math.floor(totalSec / 86400);
-    const h = Math.floor((totalSec % 86400) / 3600);
-    const m = Math.floor((totalSec % 3600) / 60);
-    const s = totalSec % 60;
-
-    const dEl = document.getElementById('cd-days');
-    const hEl = document.getElementById('cd-hours');
-    const mEl = document.getElementById('cd-mins');
-    const sEl = document.getElementById('cd-secs');
-    if (dEl) dEl.textContent = pad(d);
-    if (hEl) hEl.textContent = pad(h);
-    if (mEl) mEl.textContent = pad(m);
-    if (sEl) sEl.textContent = pad(s);
-
-    const text = ms > 0 ? formatCountdown(ms) : 'Drawing NOW! 🎉';
-    const nw  = document.getElementById('nw-countdown');
-    const hof = document.getElementById('hof-countdown');
-    if (nw)  nw.textContent  = text;
-    if (hof) hof.textContent = text;
+  function pad(n){return String(n).padStart(2,'0');}
+  function tick(){
+    const ms=Math.max(0,nextSat()-Date.now()),ts=Math.floor(ms/1000);
+    const d=Math.floor(ts/86400),h=Math.floor((ts%86400)/3600),m=Math.floor((ts%3600)/60),s=ts%60;
+    ['cd-days','cd-hours','cd-mins','cd-secs'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=pad([d,h,m,s][i]);});
+    const txt=ms>0?fmtCd(ms):'Drawing NOW! 🎉';
+    ['nw-countdown','hof-countdown'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=txt;});
   }
+  tick(); setInterval(tick,1000);
 
-  updateCountdowns();
-  setInterval(updateCountdowns, 1000);
-
-  // ── LOAD WINNERS ──────────────────────────────────────────────────────────
-  async function loadLatestWinner() {
-    try {
-      const snap = await getDoc(doc(db, 'winners', 'latest'));
-      const dateEl = document.getElementById('winnersDrawnDate');
-      const duoEl  = document.getElementById('winnersDuo');
-
-      if (snap.exists()) {
-        const w = snap.data();
-        const date = w.drawnAt
-          ? new Date(w.drawnAt.seconds * 1000).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })
-          : 'Recently';
-
-        if (dateEl) dateEl.textContent = '🎉 Drawn on ' + date;
-
-        // Support both new dual-winner fields and old single-winner fields
-        const monthlyName = w.monthlyUsername || w.username || '???';
-        const monthlyUID  = w.monthlyUID      || w.uid      || '???';
-        const weeklyName  = w.weeklyUsername  || '—';
-        const weeklyUID   = w.weeklyUID       || '—';
-
-        if (duoEl) duoEl.innerHTML = `
-          <div class="winner-duo-card monthly">
-            <div class="wdc-badge">Monthly Pass 💎💎</div>
-            <div class="wdc-icon">👑</div>
-            <div class="wdc-name">${monthlyName}</div>
-            <div class="wdc-uid">UID: ${monthlyUID}</div>
-            <div class="wdc-drawn">🏆 Winner!</div>
-          </div>
-          <div class="winner-duo-card weekly">
-            <div class="wdc-badge">Weekly Pass 💎</div>
-            <div class="wdc-icon">🏆</div>
-            <div class="wdc-name">${weeklyName}</div>
-            <div class="wdc-uid">UID: ${weeklyUID}</div>
-            <div class="wdc-drawn">🏆 Winner!</div>
-          </div>
-        `;
-      } else {
-        if (dateEl) dateEl.textContent = 'No draw yet — stay tuned!';
-      }
-    } catch(e) { console.error('Could not load winner:', e); }
+  // Winners
+  async function loadLatestWinner(){
+    try{
+      const snap=await getDoc(doc(db,'winners','latest'));
+      const dEl=document.getElementById('winnersDrawnDate'),duoEl=document.getElementById('winnersDuo');
+      if(snap.exists()){
+        const w=snap.data();
+        const date=w.drawnAt?new Date(w.drawnAt.seconds*1000).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'Recently';
+        if(dEl)dEl.textContent='🎉 Drawn on '+date;
+        const mn=w.monthlyUsername||w.username||'???',mu=w.monthlyUID||w.uid||'???',wn=w.weeklyUsername||'—',wu=w.weeklyUID||'—';
+        if(duoEl)duoEl.innerHTML=`
+          <div class="winner-duo-card monthly"><div class="wdc-badge">Monthly Pass 💎💎</div><div class="wdc-icon">👑</div><div class="wdc-name">${mn}</div><div class="wdc-uid">UID: ${mu}</div><div class="wdc-drawn">🏆 Winner!</div></div>
+          <div class="winner-duo-card weekly"><div class="wdc-badge">Weekly Pass 💎</div><div class="wdc-icon">🏆</div><div class="wdc-name">${wn}</div><div class="wdc-uid">UID: ${wu}</div><div class="wdc-drawn">🏆 Winner!</div></div>`;
+      }else{if(dEl)dEl.textContent='No draw yet — stay tuned!';}
+    }catch(e){console.error(e);}
   }
   loadLatestWinner();
 
-  // ── LIVE PUBLIC ENTRY COUNT ───────────────────────────────────────────────
-  async function loadEntryCount() {
-    try {
-      const snap = await getDocs(collection(db, 'entries'));
-      const el = document.getElementById('publicEntryCount');
-      if (el) el.textContent = snap.size;
-    } catch(e) { console.error('Could not load entry count:', e); }
+  // Entry count
+  async function loadEntryCount(){
+    try{const snap=await getDocs(collection(db,'entries'));const el=document.getElementById('publicEntryCount');if(el)el.textContent=snap.size;}catch(e){}
   }
   loadEntryCount();
 
-  // ── TAB SWITCHER ─────────────────────────────────────────────────────────
-  window.showTab = function(tab) {
-    document.querySelectorAll('.ff-list').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.ff-tab').forEach(el => el.classList.remove('active'));
-    document.getElementById('tab-' + tab).classList.add('active');
-    document.querySelector('.ff-tab.' + tab).classList.add('active');
+  // Tab
+  window.showTab=function(tab){
+    document.querySelectorAll('.ff-list').forEach(e=>e.classList.remove('active'));
+    document.querySelectorAll('.ff-tab').forEach(e=>e.classList.remove('active'));
+    document.getElementById('tab-'+tab).classList.add('active');
+    document.querySelector('.ff-tab.'+tab).classList.add('active');
   };
 
-  // ── SUBMIT ───────────────────────────────────────────────────────────────
-  window.submitEntry = async function() {
-    const username = document.getElementById('username').value.trim();
-    const uid = document.getElementById('uid').value.trim();
-    if (!username || !uid) { alert('Bro fill in BOTH fields! The giveaway gods demand it 😤'); return; }
-    const btn = document.getElementById('submitBtn');
-    btn.disabled = true;
-    btn.textContent = '⏳ Checking entry...';
-    try {
-      const dupUID = await getDocs(query(collection(db, 'entries'), where('uid', '==', uid)));
-      if (!dupUID.empty) { alert('🚫 This UID has already entered!\nOnly one entry per person is allowed 😊'); btn.disabled = false; btn.textContent = "🎰 ENTER NOW — IT'S FREE!"; return; }
-      const dupUser = await getDocs(query(collection(db, 'entries'), where('username', '==', username)));
-      if (!dupUser.empty) { alert('🚫 This username has already entered!\nOnly one entry per person is allowed 😊'); btn.disabled = false; btn.textContent = "🎰 ENTER NOW — IT'S FREE!"; return; }
-      btn.textContent = '⏳ Sending your vibes...';
-      await addDoc(collection(db, 'entries'), { username, uid, timestamp: serverTimestamp() });
-      // Update public counter live
-      const countEl = document.getElementById('publicEntryCount');
-      if (countEl && countEl.textContent !== '—') countEl.textContent = parseInt(countEl.textContent || '0') + 1;
-      document.getElementById('formCard').style.display = 'none';
-      const ty = document.getElementById('thankyou');
-      ty.style.display = 'flex';
-      document.getElementById('enteredName').textContent = username;
+  // Submit
+  window.submitEntry=async function(){
+    const username=document.getElementById('username').value.trim(),uid=document.getElementById('uid').value.trim();
+    if(!username||!uid){alert('Bro fill in BOTH fields! The giveaway gods demand it 😤');return;}
+    const btn=document.getElementById('submitBtn');
+    btn.disabled=true;btn.textContent='⏳ Checking entry...';
+    try{
+      const dU=await getDocs(query(collection(db,'entries'),where('uid','==',uid)));
+      if(!dU.empty){alert('🚫 This UID has already entered!\nOnly one entry per person is allowed 😊');btn.disabled=false;btn.textContent="🎰 ENTER NOW — IT'S FREE!";return;}
+      const dN=await getDocs(query(collection(db,'entries'),where('username','==',username)));
+      if(!dN.empty){alert('🚫 This username has already entered!\nOnly one entry per person is allowed 😊');btn.disabled=false;btn.textContent="🎰 ENTER NOW — IT'S FREE!";return;}
+      btn.textContent='⏳ Sending your vibes...';
+      await addDoc(collection(db,'entries'),{username,uid,timestamp:serverTimestamp()});
+      const cEl=document.getElementById('publicEntryCount');
+      if(cEl&&cEl.textContent!=='—')cEl.textContent=parseInt(cEl.textContent||'0')+1;
+      document.getElementById('formCard').style.display='none';
+      const ty=document.getElementById('thankyou');ty.style.display='flex';
+      document.getElementById('enteredName').textContent=username;
       launchConfetti();
-    } catch (err) {
-      console.error('Firebase error:', err);
-      let msg = 'Something went wrong 😢\n\n';
-      if (err.code === 'permission-denied') msg += '🔒 Firestore rules are blocking writes.';
-      else if (err.message && err.message.includes('network')) msg += '🌐 Network error — check your internet.';
-      else msg += 'Error: ' + (err.message || err.code || 'Unknown');
-      alert(msg);
-      btn.disabled = false;
-      btn.textContent = "🎰 ENTER NOW — IT'S FREE!";
+    }catch(err){
+      console.error(err);
+      let msg='Something went wrong 😢\n\n';
+      if(err.code==='permission-denied')msg+='🔒 Firestore rules are blocking writes.';
+      else if(err.message&&err.message.includes('network'))msg+='🌐 Network error — check your internet.';
+      else msg+='Error: '+(err.message||err.code||'Unknown');
+      alert(msg);btn.disabled=false;btn.textContent="🎰 ENTER NOW — IT'S FREE!";
     }
   };
 
-  function launchConfetti() {
-    const wrap = document.getElementById('confetti');
-    wrap.innerHTML = '';
-    const colors = ['#F5C842','#60c8ff','#b57bee','#3dffa0','#ff6eb4','#ff9640','#fff'];
-    for (let i = 0; i < 120; i++) {
-      const c = document.createElement('div');
-      c.className = 'cp';
-      const drift = (Math.random()-0.5)*400;
-      c.style.cssText = `left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};--fd:${1.5+Math.random()*2.5}s;--dx:${drift}px;--br:${Math.random()>.5?'50%':'2px'};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*.8}s;`;
+  function launchConfetti(){
+    const wrap=document.getElementById('confetti');wrap.innerHTML='';
+    const colors=['#F5C518','#38bdf8','#a78bfa','#34d399','#f472b6','#fb923c','#fff'];
+    for(let i=0;i<120;i++){
+      const c=document.createElement('div');c.className='cp';
+      const drift=(Math.random()-.5)*400;
+      c.style.cssText=`left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};--fd:${1.5+Math.random()*2.5}s;--dx:${drift}px;--br:${Math.random()>.5?'50%':'2px'};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*.8}s;`;
       wrap.appendChild(c);
     }
-    setTimeout(() => wrap.innerHTML = '', 5000);
+    setTimeout(()=>wrap.innerHTML='',5000);
   }
 </script>
 
