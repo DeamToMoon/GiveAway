@@ -14,491 +14,119 @@
     --green: #69F0AE;
     --red: #e74c3c;
   }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { min-height: 100vh; font-family: 'Exo 2', sans-serif; background: #030810; color: #fff; overflow-x: hidden; }
+  .bg { position: fixed; inset: 0; z-index: 0; background: radial-gradient(ellipse at 20% 30%, rgba(212,170,60,0.1) 0%, transparent 50%), radial-gradient(ellipse at 80% 70%, rgba(79,195,247,0.08) 0%, transparent 50%), #030810; }
+  .stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  .star { position: absolute; border-radius: 50%; background: #fff; animation: twinkle var(--dur) ease-in-out infinite; opacity: 0; }
+  @keyframes twinkle { 0%,100%{opacity:0} 50%{opacity:var(--op)} }
 
-- { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-min-height: 100vh;
-font-family: ‘Exo 2’, sans-serif;
-background: #030810;
-color: #fff;
-overflow-x: hidden;
-}
-
-.bg {
-position: fixed; inset: 0; z-index: 0;
-background:
-radial-gradient(ellipse at 20% 30%, rgba(212,170,60,0.1) 0%, transparent 50%),
-radial-gradient(ellipse at 80% 70%, rgba(79,195,247,0.08) 0%, transparent 50%),
-#030810;
-}
-
-.stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-.star { position: absolute; border-radius: 50%; background: #fff; animation: twinkle var(–dur) ease-in-out infinite; opacity: 0; }
-@keyframes twinkle { 0%,100%{opacity:0} 50%{opacity:var(–op)} }
-
-/* Login screen */
-#loginScreen {
-position: relative; z-index: 1;
-min-height: 100vh;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-padding: 20px;
-gap: 20px;
-}
-
+#loginScreen { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; gap: 20px; }
 .lock-icon { font-size: 56px; animation: bounce 2s ease infinite; }
 @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-
-.login-title {
-font-family: ‘Orbitron’, sans-serif;
-font-size: 18px;
-font-weight: 900;
-color: var(–gold);
-letter-spacing: 3px;
-text-align: center;
-}
-
-.login-card {
-width: 100%;
-max-width: 360px;
-background: rgba(255,255,255,0.03);
-border: 1px solid rgba(212,170,60,0.2);
-border-radius: 20px;
-padding: 30px 24px;
-display: flex;
-flex-direction: column;
-gap: 16px;
-position: relative;
-overflow: hidden;
-}
-
-.login-card::before {
-content: ‘’;
-position: absolute;
-top: 0; left: 0; right: 0;
-height: 2px;
-background: linear-gradient(90deg, var(–gold), var(–blue), var(–gold));
-background-size: 200%;
-animation: shimmer 3s linear infinite;
-}
+.login-title { font-family: ‘Orbitron’, sans-serif; font-size: 18px; font-weight: 900; color: var(–gold); letter-spacing: 3px; text-align: center; }
+.login-card { width: 100%; max-width: 360px; background: rgba(255,255,255,0.03); border: 1px solid rgba(212,170,60,0.2); border-radius: 20px; padding: 30px 24px; display: flex; flex-direction: column; gap: 16px; position: relative; overflow: hidden; }
+.login-card::before { content: ‘’; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(–gold), var(–blue), var(–gold)); background-size: 200%; animation: shimmer 3s linear infinite; }
 @keyframes shimmer { to { background-position: 200% center; } }
-
-.login-input {
-width: 100%;
-background: rgba(0,0,0,0.3);
-border: 1px solid rgba(255,255,255,0.1);
-border-radius: 12px;
-padding: 14px 18px;
-font-family: ‘Exo 2’, sans-serif;
-font-size: 15px;
-color: #fff;
-outline: none;
-transition: all 0.3s;
-}
+.login-input { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 18px; font-family: ‘Exo 2’, sans-serif; font-size: 15px; color: #fff; outline: none; transition: all 0.3s; }
 .login-input:focus { border-color: var(–gold); box-shadow: 0 0 0 3px rgba(212,170,60,0.1); }
 .login-input::placeholder { color: rgba(255,255,255,0.2); }
-
-.login-btn {
-padding: 16px;
-background: linear-gradient(135deg, var(–gold), #e6920a);
-border: none;
-border-radius: 12px;
-font-family: ‘Orbitron’, sans-serif;
-font-size: 14px;
-font-weight: 900;
-color: #000;
-letter-spacing: 2px;
-cursor: pointer;
-transition: all 0.3s;
-box-shadow: 0 4px 20px rgba(212,170,60,0.3);
-}
+.login-btn { padding: 16px; background: linear-gradient(135deg, var(–gold), #e6920a); border: none; border-radius: 12px; font-family: ‘Orbitron’, sans-serif; font-size: 14px; font-weight: 900; color: #000; letter-spacing: 2px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 20px rgba(212,170,60,0.3); }
 .login-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(212,170,60,0.5); }
+.login-error { color: var(–red); font-size: 13px; text-align: center; display: none; }
 
-.login-error {
-color: var(–red);
-font-size: 13px;
-text-align: center;
-display: none;
-}
-
-/* Admin panel */
-#adminPanel {
-display: none;
-position: relative;
-z-index: 1;
-max-width: 680px;
-margin: 0 auto;
-padding: 30px 20px 60px;
-flex-direction: column;
-gap: 24px;
-}
-
-/* Header */
-.admin-header {
-display: flex;
-align-items: center;
-justify-content: space-between;
-flex-wrap: wrap;
-gap: 12px;
-}
-
-.admin-brand {
-font-family: ‘Orbitron’, sans-serif;
-font-size: 18px;
-font-weight: 900;
-color: var(–gold);
-letter-spacing: 3px;
-}
-
-.logout-btn {
-background: rgba(231,76,60,0.1);
-border: 1px solid rgba(231,76,60,0.3);
-border-radius: 8px;
-padding: 8px 16px;
-font-size: 12px;
-font-weight: 700;
-color: var(–red);
-cursor: pointer;
-letter-spacing: 1px;
-transition: all 0.3s;
-}
+#adminPanel { display: none; position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 30px 20px 60px; flex-direction: column; gap: 24px; }
+.admin-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.admin-brand { font-family: ‘Orbitron’, sans-serif; font-size: 18px; font-weight: 900; color: var(–gold); letter-spacing: 3px; }
+.logout-btn { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.3); border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 700; color: var(–red); cursor: pointer; letter-spacing: 1px; transition: all 0.3s; }
 .logout-btn:hover { background: rgba(231,76,60,0.2); }
-
-.admin-sub {
-font-size: 11px;
-color: rgba(255,255,255,0.3);
-letter-spacing: 3px;
-text-transform: uppercase;
-}
-
-/* Stats row */
-.stats-row {
-display: flex;
-gap: 12px;
-flex-wrap: wrap;
-}
-
-.stat-card {
-flex: 1;
-min-width: 100px;
-background: rgba(255,255,255,0.03);
-border-radius: 14px;
-padding: 16px;
-text-align: center;
-border: 1px solid rgba(255,255,255,0.05);
-}
-
-.stat-num {
-font-family: ‘Orbitron’, sans-serif;
-font-size: 28px;
-font-weight: 900;
-color: var(–gold);
-}
-
-.stat-label {
-font-size: 10px;
-color: rgba(255,255,255,0.35);
-letter-spacing: 2px;
-text-transform: uppercase;
-margin-top: 4px;
-}
-
-/* Card */
-.card {
-width: 100%;
-background: rgba(255,255,255,0.03);
-border: 1px solid rgba(255,255,255,0.06);
-border-radius: 20px;
-padding: 22px;
-}
-
-.card-header {
-font-size: 11px;
-font-weight: 700;
-letter-spacing: 3px;
-color: rgba(255,255,255,0.35);
-text-transform: uppercase;
-margin-bottom: 16px;
-display: flex;
-align-items: center;
-justify-content: space-between;
-}
-
-/* Entries list */
-.entries-list {
-display: flex;
-flex-direction: column;
-gap: 8px;
-max-height: 300px;
-overflow-y: auto;
-}
-
-.entry-item {
-display: flex;
-align-items: center;
-gap: 12px;
-background: rgba(255,255,255,0.03);
-border: 1px solid rgba(255,255,255,0.05);
-border-radius: 10px;
-padding: 10px 14px;
-animation: slideIn 0.3s ease;
-}
+.admin-sub { font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 3px; text-transform: uppercase; }
+.stats-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.stat-card { flex: 1; min-width: 100px; background: rgba(255,255,255,0.03); border-radius: 14px; padding: 16px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
+.stat-num { font-family: ‘Orbitron’, sans-serif; font-size: 28px; font-weight: 900; color: var(–gold); }
+.stat-label { font-size: 10px; color: rgba(255,255,255,0.35); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
+.card { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 22px; }
+.card-header { font-size: 11px; font-weight: 700; letter-spacing: 3px; color: rgba(255,255,255,0.35); text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+.entries-list { display: flex; flex-direction: column; gap: 8px; max-height: 300px; overflow-y: auto; }
+.entry-item { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 10px 14px; animation: slideIn 0.3s ease; }
 @keyframes slideIn { from{transform:translateX(-10px);opacity:0} to{transform:translateX(0);opacity:1} }
-
-.entry-num {
-font-family: ‘Orbitron’, sans-serif;
-font-size: 10px;
-color: var(–gold);
-min-width: 28px;
-}
-
+.entry-num { font-family: ‘Orbitron’, sans-serif; font-size: 10px; color: var(–gold); min-width: 28px; }
 .entry-info { flex: 1; }
 .entry-username { font-size: 14px; font-weight: 700; color: #fff; }
 .entry-uid { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
-
-.entry-time {
-font-size: 10px;
-color: rgba(255,255,255,0.2);
-text-align: right;
-}
-
-.no-entries {
-text-align: center;
-color: rgba(255,255,255,0.25);
-font-size: 14px;
-padding: 20px;
-}
-
-/* Copy area */
+.entry-time { font-size: 10px; color: rgba(255,255,255,0.2); text-align: right; }
+.no-entries { text-align: center; color: rgba(255,255,255,0.25); font-size: 14px; padding: 20px; }
 .copy-section { display: flex; flex-direction: column; gap: 10px; }
-
-.copy-textarea {
-width: 100%;
-min-height: 100px;
-background: rgba(0,0,0,0.3);
-border: 1px solid rgba(255,255,255,0.08);
-border-radius: 10px;
-padding: 14px;
-font-family: ‘Exo 2’, sans-serif;
-font-size: 12px;
-color: rgba(255,255,255,0.7);
-resize: vertical;
-outline: none;
-}
-
-.copy-btn {
-padding: 12px 20px;
-border-radius: 10px;
-font-family: ‘Orbitron’, sans-serif;
-font-size: 11px;
-font-weight: 700;
-letter-spacing: 2px;
-cursor: pointer;
-transition: all 0.3s;
-border: none;
-}
-
-.copy-btn-blue {
-background: rgba(79,195,247,0.12);
-border: 1px solid rgba(79,195,247,0.3);
-color: var(–blue);
-}
+.copy-textarea { width: 100%; min-height: 100px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px; font-family: ‘Exo 2’, sans-serif; font-size: 12px; color: rgba(255,255,255,0.7); resize: vertical; outline: none; }
+.copy-btn { padding: 12px 20px; border-radius: 10px; font-family: ‘Orbitron’, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2px; cursor: pointer; transition: all 0.3s; border: none; }
+.copy-btn-blue { background: rgba(79,195,247,0.12); border: 1px solid rgba(79,195,247,0.3); color: var(–blue); }
 .copy-btn-blue:hover { background: rgba(79,195,247,0.2); }
-
-.copy-btn-green {
-background: rgba(105,240,174,0.1);
-border: 1px solid rgba(105,240,174,0.25);
-color: var(–green);
-}
+.copy-btn-green { background: rgba(105,240,174,0.1); border: 1px solid rgba(105,240,174,0.25); color: var(–green); }
 .copy-btn-green:hover { background: rgba(105,240,174,0.18); }
-
 .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
-
-/* Manual paste */
-.manual-input {
-width: 100%;
-min-height: 80px;
-background: rgba(0,0,0,0.3);
-border: 1px solid rgba(212,170,60,0.2);
-border-radius: 10px;
-padding: 14px;
-font-family: ‘Exo 2’, sans-serif;
-font-size: 13px;
-color: rgba(255,255,255,0.8);
-resize: vertical;
-outline: none;
-transition: all 0.3s;
-}
+.manual-input { width: 100%; min-height: 80px; background: rgba(0,0,0,0.3); border: 1px solid rgba(212,170,60,0.2); border-radius: 10px; padding: 14px; font-family: ‘Exo 2’, sans-serif; font-size: 13px; color: rgba(255,255,255,0.8); resize: vertical; outline: none; transition: all 0.3s; }
 .manual-input:focus { border-color: var(–gold); }
 .manual-input::placeholder { color: rgba(255,255,255,0.2); }
-
-.add-manual-btn {
-padding: 12px 20px;
-background: rgba(212,170,60,0.12);
-border: 1px solid rgba(212,170,60,0.3);
-border-radius: 10px;
-font-family: ‘Orbitron’, sans-serif;
-font-size: 11px;
-font-weight: 700;
-color: var(–gold);
-letter-spacing: 2px;
-cursor: pointer;
-transition: all 0.3s;
-}
+.add-manual-btn { padding: 12px 20px; background: rgba(212,170,60,0.12); border: 1px solid rgba(212,170,60,0.3); border-radius: 10px; font-family: ‘Orbitron’, sans-serif; font-size: 11px; font-weight: 700; color: var(–gold); letter-spacing: 2px; cursor: pointer; transition: all 0.3s; }
 .add-manual-btn:hover { background: rgba(212,170,60,0.2); }
 
-/* Pick winner */
-.pick-btn {
-width: 100%;
-padding: 20px;
-background: linear-gradient(135deg, var(–gold), #e6920a, var(–gold));
-background-size: 200%;
-border: none;
-border-radius: 14px;
-font-family: ‘Orbitron’, sans-serif;
-font-size: 16px;
-font-weight: 900;
-color: #000;
-letter-spacing: 3px;
-cursor: pointer;
-transition: all 0.3s;
-box-shadow: 0 4px 30px rgba(212,170,60,0.4);
-animation: btnShimmer 3s linear infinite;
-}
+/* DRAW SECTION */
+.pick-btn { width: 100%; padding: 20px; background: linear-gradient(135deg, var(–gold), #e6920a, var(–gold)); background-size: 200%; border: none; border-radius: 14px; font-family: ‘Orbitron’, sans-serif; font-size: 16px; font-weight: 900; color: #000; letter-spacing: 3px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 30px rgba(212,170,60,0.4); animation: btnShimmer 3s linear infinite; }
 @keyframes btnShimmer { to { background-position: 200% center; } }
 .pick-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 40px rgba(212,170,60,0.6); }
 .pick-btn:disabled { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.3); box-shadow: none; transform: none; animation: none; cursor: not-allowed; }
 
-/* Rolling */
-.rolling-box {
-background: rgba(0,0,0,0.4);
-border: 1px solid rgba(79,195,247,0.2);
-border-radius: 14px;
-padding: 20px;
-text-align: center;
-display: none;
-min-height: 70px;
-align-items: center;
-justify-content: center;
-}
+/* Rolling: show 2 slots simultaneously */
+.rolling-box { background: rgba(0,0,0,0.4); border: 1px solid rgba(79,195,247,0.2); border-radius: 14px; padding: 20px; text-align: center; display: none; flex-direction: column; gap: 12px; margin-top: 16px; }
+.rolling-slot { display: flex; flex-direction: column; gap: 4px; }
+.rolling-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; }
+.rolling-label.monthly { color: var(–gold); }
+.rolling-label.weekly  { color: var(–blue); }
+.rolling-name { font-family: ‘Orbitron’, sans-serif; font-size: clamp(16px,4vw,22px); font-weight: 700; animation: flicker 0.1s infinite; }
+.rolling-name.monthly { color: var(–gold); }
+.rolling-name.weekly  { color: var(–blue); }
+@keyframes flicker { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
-.rolling-name {
-font-family: ‘Orbitron’, sans-serif;
-font-size: clamp(18px,5vw,26px);
-font-weight: 700;
-color: var(–blue);
-animation: flicker 0.1s infinite;
-}
-@keyframes flicker { 0%,100%{opacity:1} 50%{opacity:0.6} }
-
-/* Winner */
-.winner-box {
-background: linear-gradient(135deg, rgba(212,170,60,0.1), rgba(212,170,60,0.04));
-border: 2px solid rgba(212,170,60,0.5);
-border-radius: 18px;
-padding: 28px 20px;
-text-align: center;
-display: none;
-flex-direction: column;
-align-items: center;
-gap: 12px;
-animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
-}
+/* Winner display: side by side cards */
+.winner-box { display: none; flex-direction: column; align-items: center; gap: 16px; margin-top: 16px; animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1); }
 @keyframes popIn { from{transform:scale(0.7);opacity:0} to{transform:scale(1);opacity:1} }
+.winner-duo { display: flex; gap: 12px; width: 100%; }
+.winner-duo-card { flex: 1; border-radius: 16px; padding: 18px 12px; text-align: center; }
+.winner-duo-card.monthly { background: linear-gradient(135deg, rgba(212,170,60,0.12), rgba(212,170,60,0.05)); border: 2px solid rgba(212,170,60,0.5); }
+.winner-duo-card.weekly  { background: linear-gradient(135deg, rgba(79,195,247,0.1), rgba(79,195,247,0.04)); border: 2px solid rgba(79,195,247,0.4); }
+.wdc-trophy { font-size: 36px; margin-bottom: 6px; }
+.wdc-badge { display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
+.monthly .wdc-badge { background: rgba(212,170,60,0.2); color: var(–gold); }
+.weekly  .wdc-badge { background: rgba(79,195,247,0.15); color: var(–blue); }
+.wdc-name { font-family: ‘Orbitron’, sans-serif; font-size: clamp(13px,3.5vw,18px); font-weight: 900; margin-bottom: 4px; word-break: break-all; }
+.monthly .wdc-name { color: var(–gold); text-shadow: 0 0 20px rgba(212,170,60,0.6); }
+.weekly  .wdc-name { color: var(–blue); text-shadow: 0 0 20px rgba(79,195,247,0.4); }
+.wdc-uid { font-size: 11px; color: rgba(255,255,255,0.4); }
 
-.winner-trophy { font-size: 48px; animation: bounce 1.5s ease infinite; }
-.winner-name {
-font-family: ‘Orbitron’, sans-serif;
-font-size: clamp(20px,6vw,32px);
-font-weight: 900;
-color: var(–gold);
-text-shadow: 0 0 30px rgba(212,170,60,0.8);
-word-break: break-all;
-}
-.winner-uid { font-size: 13px; color: rgba(255,255,255,0.4); }
-.winner-label { font-size: 11px; color: rgba(255,255,255,0.35); letter-spacing: 3px; text-transform: uppercase; }
-
-.end-btn {
-margin-top: 12px;
-padding: 12px 28px;
-background: linear-gradient(135deg, #FF5252, #c0392b);
-border: none;
-border-radius: 10px;
-font-family: ‘Orbitron’, sans-serif;
-font-size: 13px;
-font-weight: 900;
-color: #fff;
-letter-spacing: 2px;
-cursor: pointer;
-transition: all 0.3s;
-box-shadow: 0 4px 20px rgba(255,82,82,0.4);
-}
+.end-btn { padding: 14px 32px; background: linear-gradient(135deg, #FF5252, #c0392b); border: none; border-radius: 10px; font-family: ‘Orbitron’, sans-serif; font-size: 13px; font-weight: 900; color: #fff; letter-spacing: 2px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 20px rgba(255,82,82,0.4); }
 .end-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(255,82,82,0.6); }
 .end-btn:disabled { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.3); box-shadow: none; transform: none; cursor: not-allowed; }
 
-.again-btn {
-background: rgba(79,195,247,0.1);
-border: 1px solid rgba(79,195,247,0.3);
-border-radius: 10px;
-padding: 12px 24px;
-font-family: ‘Orbitron’, sans-serif;
-font-size: 11px;
-font-weight: 700;
-color: var(–blue);
-letter-spacing: 2px;
-cursor: pointer;
-transition: all 0.3s;
-margin-top: 4px;
-}
-.again-btn:hover { background: rgba(79,195,247,0.2); }
-
-/* History */
-.history-list { display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto; }
-.history-item {
-display: flex; align-items: center; gap: 10px;
-background: rgba(255,255,255,0.02);
-border: 1px solid rgba(255,255,255,0.04);
-border-radius: 10px;
-padding: 10px 14px;
-font-size: 13px;
-}
+.history-list { display: flex; flex-direction: column; gap: 8px; max-height: 240px; overflow-y: auto; }
+.history-item { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 10px; padding: 10px 14px; font-size: 13px; flex-wrap: wrap; }
 .h-num { font-family:‘Orbitron’,sans-serif; font-size:10px; color:var(–gold); min-width:24px; }
-.h-name { font-weight:700; flex:1; }
+.h-badge { font-size:9px; font-weight:700; letter-spacing:1px; padding:2px 8px; border-radius:8px; }
+.h-badge.monthly { background:rgba(212,170,60,.15); color:var(–gold); }
+.h-badge.weekly  { background:rgba(79,195,247,.12); color:var(–blue); }
+.h-name { font-weight:700; }
 .h-uid { font-size:11px; color:rgba(255,255,255,0.35); }
 
-/* Scrollbar */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(212,170,60,0.3); border-radius: 2px; }
 
-/* Confetti */
 .confetti-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 999; overflow: hidden; }
 .cp { position:absolute; top:-10px; animation: fall var(–fd) ease-in forwards; border-radius: var(–br); }
 @keyframes fall { 0%{transform:translateY(0) rotate(0deg) translateX(0);opacity:1} 100%{transform:translateY(110vh) rotate(720deg) translateX(var(–dx));opacity:0} }
 
-/* Refresh btn */
-.refresh-btn {
-background: rgba(105,240,174,0.08);
-border: 1px solid rgba(105,240,174,0.2);
-border-radius: 8px;
-padding: 6px 14px;
-font-size: 11px;
-font-weight: 700;
-color: var(–green);
-cursor: pointer;
-letter-spacing: 1px;
-transition: all 0.3s;
-}
+.refresh-btn { background: rgba(105,240,174,0.08); border: 1px solid rgba(105,240,174,0.2); border-radius: 8px; padding: 6px 14px; font-size: 11px; font-weight: 700; color: var(–green); cursor: pointer; letter-spacing: 1px; transition: all 0.3s; }
 .refresh-btn:hover { background: rgba(105,240,174,0.15); }
-
-.divider {
-width: 100%;
-height: 1px;
-background: linear-gradient(90deg, transparent, rgba(212,170,60,0.3), transparent);
-}
+.divider { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(212,170,60,0.3), transparent); }
 </style>
 
 </head>
@@ -530,12 +158,10 @@ background: linear-gradient(90deg, transparent, rgba(212,170,60,0.3), transparen
       <div class="admin-sub">Dream2Moon Giveaway Manager</div>
     </div>
     <div style="display:flex;gap:8px;">
-      <a href="index.html" style="background:rgba(79,195,247,0.1);border:1px solid rgba(79,195,247,0.3);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;color:#4FC3F7;text-decoration:none;letter-spacing:1px;transition:all 0.3s;">🏠 Main Page</a>
+      <a href="index.html" style="background:rgba(79,195,247,0.1);border:1px solid rgba(79,195,247,0.3);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;color:#4FC3F7;text-decoration:none;letter-spacing:1px;">🏠 Main Page</a>
       <button class="logout-btn" onclick="doLogout()">🚪 Logout</button>
     </div>
   </div>
-
-  <!-- Stats -->
 
   <div class="stats-row">
     <div class="stat-card">
@@ -544,7 +170,7 @@ background: linear-gradient(90deg, transparent, rgba(212,170,60,0.3), transparen
     </div>
     <div class="stat-card">
       <div class="stat-num" id="totalWins">0</div>
-      <div class="stat-label">Winners Picked</div>
+      <div class="stat-label">Draws Done</div>
     </div>
   </div>
 
@@ -565,7 +191,7 @@ background: linear-gradient(90deg, transparent, rgba(212,170,60,0.3), transparen
   <!-- Copy/Export -->
 
   <div class="card">
-    <div class="card-header">📤 Copy Usernames & UIDs</div>
+    <div class="card-header">📤 Copy Usernames &amp; UIDs</div>
     <div class="copy-section">
       <textarea class="copy-textarea" id="copyArea" readonly placeholder="Click a button below to load entries here..."></textarea>
       <div class="btn-row">
@@ -587,21 +213,46 @@ background: linear-gradient(90deg, transparent, rgba(212,170,60,0.3), transparen
     </div>
   </div>
 
-  <!-- Pick Winner -->
+  <!-- Pick 2 Winners -->
 
   <div class="card">
-    <div class="card-header">🎰 Pick a Winner</div>
-    <button class="pick-btn" id="pickBtn" onclick="pickWinner()">🎲 DRAW THE LUCKY WINNER</button>
-    <div class="rolling-box" id="rollingBox" style="margin-top:16px">
-      <div class="rolling-name" id="rollingName">...</div>
+    <div class="card-header">🎰 Pick 2 Winners — Monthly Pass 💎💎 &amp; Weekly Pass 💎</div>
+    <button class="pick-btn" id="pickBtn" onclick="pickWinners()">🎲 DRAW BOTH WINNERS NOW!</button>
+
+```
+<!-- Rolling slots for both winners simultaneously -->
+<div class="rolling-box" id="rollingBox">
+  <div class="rolling-slot">
+    <div class="rolling-label monthly">👑 Monthly Pass 💎💎</div>
+    <div class="rolling-name monthly" id="rollingNameMonthly">...</div>
+  </div>
+  <div style="height:1px;background:rgba(255,255,255,.08);"></div>
+  <div class="rolling-slot">
+    <div class="rolling-label weekly">🏆 Weekly Pass 💎</div>
+    <div class="rolling-name weekly" id="rollingNameWeekly">...</div>
+  </div>
+</div>
+
+<!-- Winner reveal: two cards side by side -->
+<div class="winner-box" id="winnerBox">
+  <div class="winner-duo">
+    <div class="winner-duo-card monthly">
+      <div class="wdc-trophy">👑</div>
+      <div class="wdc-badge">Monthly Pass 💎💎</div>
+      <div class="wdc-name" id="winnerNameMonthly"></div>
+      <div class="wdc-uid" id="winnerUIDMonthly"></div>
     </div>
-    <div class="winner-box" id="winnerBox" style="margin-top:16px">
-      <div class="winner-label">🏆 Lucky Winner</div>
-      <div class="winner-trophy">🏆</div>
-      <div class="winner-name" id="winnerName"></div>
-      <div class="winner-uid" id="winnerUID"></div>
-      <button class="end-btn" id="endDrawBtn" onclick="endDraw()">🏁 END THIS DRAW</button>
+    <div class="winner-duo-card weekly">
+      <div class="wdc-trophy">🏆</div>
+      <div class="wdc-badge">Weekly Pass 💎</div>
+      <div class="wdc-name" id="winnerNameWeekly"></div>
+      <div class="wdc-uid" id="winnerUIDWeekly"></div>
     </div>
+  </div>
+  <button class="end-btn" id="endDrawBtn" onclick="endDraw()">🏁 END THIS DRAW &amp; CLEAR ENTRIES</button>
+</div>
+```
+
   </div>
 
   <!-- History -->
@@ -617,7 +268,7 @@ background: linear-gradient(90deg, transparent, rgba(212,170,60,0.3), transparen
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, collection, getDocs, addDoc, setDoc, deleteDoc, doc, serverTimestamp, orderBy, query, where, getDocs as gd } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, addDoc, setDoc, deleteDoc, doc, serverTimestamp, orderBy, query } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyDPp-JsePgIM4Y3MrFrXEMLiv1GW3sJGKU",
@@ -665,31 +316,21 @@ background: linear-gradient(90deg, transparent, rgba(212,170,60,0.3), transparen
     document.getElementById('loginPass').value = '';
   };
 
-  // Allow Enter key on login
   document.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') {
-      window.doLogin();
-    }
+    if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') window.doLogin();
   });
 
-  // Load entries from Firebase
+  // Load entries
   window.loadEntries = async function() {
     const list = document.getElementById('entriesList');
     list.innerHTML = '<div class="no-entries">⏳ Loading...</div>';
-
     try {
       const q = query(collection(db, 'entries'), orderBy('timestamp', 'desc'));
       const snap = await getDocs(q);
       allEntries = [];
-      snap.forEach(doc => allEntries.push({ id: doc.id, ...doc.data() }));
-
+      snap.forEach(d => allEntries.push({ id: d.id, ...d.data() }));
       document.getElementById('totalCount').textContent = allEntries.length;
-
-      if (allEntries.length === 0) {
-        list.innerHTML = '<div class="no-entries">No entries yet 😊</div>';
-        return;
-      }
-
+      if (allEntries.length === 0) { list.innerHTML = '<div class="no-entries">No entries yet 😊</div>'; return; }
       list.innerHTML = allEntries.map((e, i) => `
         <div class="entry-item">
           <span class="entry-num">#${allEntries.length - i}</span>
@@ -700,22 +341,14 @@ background: linear-gradient(90deg, transparent, rgba(212,170,60,0.3), transparen
           <div class="entry-time">${e.timestamp ? new Date(e.timestamp.seconds*1000).toLocaleString() : 'Just now'}</div>
         </div>
       `).join('');
-
     } catch (err) {
       list.innerHTML = '<div class="no-entries">❌ Error loading. Check Firestore rules.</div>';
       console.error(err);
     }
   };
 
-  // Copy
-  window.loadUsernames = function() {
-    document.getElementById('copyArea').value = allEntries.map(e => e.username).join('\n');
-  };
-
-  window.loadUIDs = function() {
-    document.getElementById('copyArea').value = allEntries.map(e => e.uid).join('\n');
-  };
-
+  window.loadUsernames = function() { document.getElementById('copyArea').value = allEntries.map(e => e.username).join('\n'); };
+  window.loadUIDs = function() { document.getElementById('copyArea').value = allEntries.map(e => e.uid).join('\n'); };
   window.copyToClipboard = function() {
     const area = document.getElementById('copyArea');
     if (!area.value) { alert('Load usernames or UIDs first!'); return; }
@@ -725,144 +358,131 @@ background: linear-gradient(90deg, transparent, rgba(212,170,60,0.3), transparen
   // Manual add
   window.addManualEntries = async function() {
     const usersRaw = document.getElementById('manualInput').value.trim();
-    const uidsRaw = document.getElementById('manualUIDs').value.trim();
+    const uidsRaw  = document.getElementById('manualUIDs').value.trim();
     if (!usersRaw) { alert('Please enter at least usernames!'); return; }
-
     const usernames = usersRaw.split('\n').map(u => u.trim()).filter(Boolean);
     const uids = uidsRaw.split('\n').map(u => u.trim()).filter(Boolean);
-
-    if (uids.length > 0 && uids.length !== usernames.length) {
-      alert(`⚠️ Mismatch: ${usernames.length} usernames but ${uids.length} UIDs. Please match them!`);
-      return;
-    }
-
+    if (uids.length > 0 && uids.length !== usernames.length) { alert(`⚠️ Mismatch: ${usernames.length} usernames but ${uids.length} UIDs.`); return; }
     const btn = document.querySelector('.add-manual-btn');
-    btn.textContent = '⏳ Adding...';
-    btn.disabled = true;
-
+    btn.textContent = '⏳ Adding...'; btn.disabled = true;
     try {
       for (let i = 0; i < usernames.length; i++) {
-        await addDoc(collection(db, 'entries'), {
-          username: usernames[i],
-          uid: uids[i] || 'N/A',
-          timestamp: serverTimestamp(),
-          manual: true
-        });
+        await addDoc(collection(db, 'entries'), { username: usernames[i], uid: uids[i] || 'N/A', timestamp: serverTimestamp(), manual: true });
       }
       document.getElementById('manualInput').value = '';
       document.getElementById('manualUIDs').value = '';
       alert(`✅ Added ${usernames.length} entries!`);
       loadEntries();
-    } catch (err) {
-      alert('❌ Error adding entries.');
-      console.error(err);
-    }
-
-    btn.textContent = '➕ Add These Entries';
-    btn.disabled = false;
+    } catch (err) { alert('❌ Error adding entries.'); console.error(err); }
+    btn.textContent = '➕ Add These Entries'; btn.disabled = false;
   };
 
-  // Pick winner
-  window.pickWinner = function() {
+  // ── PICK 2 WINNERS SIMULTANEOUSLY ───────────────────────────────────────────
+  window.pickWinners = function() {
     if (rolling) return;
-    if (allEntries.length === 0) { alert('No entries yet! 😊'); return; }
+    if (allEntries.length < 2) { alert('Need at least 2 entries to pick 2 winners! 😊'); return; }
 
     rolling = true;
     const btn = document.getElementById('pickBtn');
     btn.disabled = true;
-
     document.getElementById('winnerBox').style.display = 'none';
+
+    // Pick 2 DIFFERENT random winners
+    const pool = [...allEntries];
+    const idx1 = Math.floor(Math.random() * pool.length);
+    const monthlyWinner = pool.splice(idx1, 1)[0];
+    const weeklyWinner  = pool[Math.floor(Math.random() * pool.length)];
+
     const rollingBox = document.getElementById('rollingBox');
-    const rollingName = document.getElementById('rollingName');
+    const rollingMonthly = document.getElementById('rollingNameMonthly');
+    const rollingWeekly  = document.getElementById('rollingNameWeekly');
     rollingBox.style.display = 'flex';
 
-    const winner = allEntries[Math.floor(Math.random() * allEntries.length)];
     let count = 0;
     const totalRolls = 30 + Math.floor(Math.random()*15);
 
     const roll = setInterval(() => {
-      const r = allEntries[Math.floor(Math.random()*allEntries.length)];
-      rollingName.textContent = r.username;
+      const r1 = allEntries[Math.floor(Math.random()*allEntries.length)];
+      const r2 = allEntries[Math.floor(Math.random()*allEntries.length)];
+      rollingMonthly.textContent = r1.username;
+      rollingWeekly.textContent  = r2.username;
       count++;
       if (count >= totalRolls) {
         clearInterval(roll);
         rollingBox.style.display = 'none';
-        revealWinner(winner);
+        revealWinners(monthlyWinner, weeklyWinner);
         rolling = false;
-        // Keep draw button disabled until End Draw is clicked
       }
     }, 80);
   };
 
-  async function revealWinner(winner) {
-    document.getElementById('winnerName').textContent = winner.username;
-    document.getElementById('winnerUID').textContent = `UID: ${winner.uid}`;
+  async function revealWinners(monthly, weekly) {
+    document.getElementById('winnerNameMonthly').textContent = monthly.username;
+    document.getElementById('winnerUIDMonthly').textContent  = 'UID: ' + monthly.uid;
+    document.getElementById('winnerNameWeekly').textContent  = weekly.username;
+    document.getElementById('winnerUIDWeekly').textContent   = 'UID: ' + weekly.uid;
+
     const wb = document.getElementById('winnerBox');
     wb.style.display = 'flex';
 
-    winnerHistory.unshift(winner);
+    winnerHistory.unshift({ monthly, weekly });
     document.getElementById('totalWins').textContent = winnerHistory.length;
     updateHistory();
     launchConfetti();
 
-    // Save winner to Firebase — index.html reads this live
+    // Save both winners to Firebase — index.html reads these fields
     try {
       await setDoc(doc(db, 'winners', 'latest'), {
-        username: winner.username,
-        uid: winner.uid,
+        monthlyUsername: monthly.username,
+        monthlyUID:      monthly.uid,
+        weeklyUsername:  weekly.username,
+        weeklyUID:       weekly.uid,
         drawnAt: serverTimestamp()
       });
-      console.log('✅ Winner saved to Firebase');
-    } catch(e) { console.error('Could not save winner:', e); }
+      console.log('✅ Both winners saved to Firebase');
+    } catch(e) { console.error('Could not save winners:', e); }
   }
 
-  // End draw: clear all entries, reset for next round
+  // End draw: clear all entries
   window.endDraw = async function() {
-    const confirm1 = confirm('🏁 End this draw?\n\nThis will:\n• Lock in the winner on the main page\n• Clear ALL entries for the next round\n\nAre you sure?');
-    if (!confirm1) return;
-
+    const ok = confirm('🏁 End this draw?\n\nThis will:\n• Lock in both winners on the main page\n• Clear ALL entries for the next round\n\nAre you sure?');
+    if (!ok) return;
     const btn = document.getElementById('endDrawBtn');
-    btn.disabled = true;
-    btn.textContent = '⏳ Clearing entries...';
-
+    btn.disabled = true; btn.textContent = '⏳ Clearing entries...';
     try {
-      // Delete all entries from Firestore
       const snap = await getDocs(collection(db, 'entries'));
-      const delPromises = [];
-      snap.forEach(d => delPromises.push(deleteDoc(doc(db, 'entries', d.id))));
-      await Promise.all(delPromises);
-
-      // Reset UI
+      const dels = [];
+      snap.forEach(d => dels.push(deleteDoc(doc(db, 'entries', d.id))));
+      await Promise.all(dels);
       allEntries = [];
       document.getElementById('totalCount').textContent = '0';
       document.getElementById('entriesList').innerHTML = '<div class="no-entries">No entries yet 😊</div>';
       document.getElementById('winnerBox').style.display = 'none';
       document.getElementById('pickBtn').disabled = false;
-      document.getElementById('pickBtn').textContent = '🎲 DRAW THE LUCKY WINNER';
-
-      btn.disabled = false;
-      btn.textContent = '🏁 END THIS DRAW';
-
-      alert('✅ Draw ended! All entries cleared.\nThe winner is now live on the main page!\nReady for the next round 🎉');
+      btn.disabled = false; btn.textContent = '🏁 END THIS DRAW & CLEAR ENTRIES';
+      alert('✅ Draw ended! All entries cleared.\nBoth winners are now live on the main page!\nReady for the next round 🎉');
     } catch(e) {
       console.error(e);
       alert('❌ Error clearing entries: ' + e.message);
-      btn.disabled = false;
-      btn.textContent = '🏁 END THIS DRAW';
+      btn.disabled = false; btn.textContent = '🏁 END THIS DRAW & CLEAR ENTRIES';
     }
   };
 
   function updateHistory() {
     const list = document.getElementById('historyList');
-    if (winnerHistory.length === 0) {
-      list.innerHTML = '<div class="no-entries">No winners yet</div>';
-      return;
-    }
+    if (winnerHistory.length === 0) { list.innerHTML = '<div class="no-entries">No winners yet</div>'; return; }
     list.innerHTML = winnerHistory.map((w, i) => `
       <div class="history-item">
         <span class="h-num">#${i+1}</span>
-        <span class="h-name">${w.username}</span>
-        <span class="h-uid">UID: ${w.uid}</span>
+        <span class="h-badge monthly">Monthly</span>
+        <span class="h-name">${w.monthly.username}</span>
+        <span class="h-uid">UID: ${w.monthly.uid}</span>
+      </div>
+      <div class="history-item">
+        <span class="h-num"></span>
+        <span class="h-badge weekly">Weekly</span>
+        <span class="h-name">${w.weekly.username}</span>
+        <span class="h-uid">UID: ${w.weekly.uid}</span>
       </div>
     `).join('');
   }
@@ -883,4 +503,4 @@ background: linear-gradient(90deg, transparent, rgba(212,170,60,0.3), transparen
 </script>
 
 </body>
-</html
+</html>
