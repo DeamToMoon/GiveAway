@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -7,170 +8,186 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --gold: #D4AA3C; --blue: #4FC3F7; --purple: #CE93D8;
-    --green: #69F0AE; --pink: #F48FB1; --orange: #FFB74D; --red: #FF5252;
+    --gold: #B8820A; --blue: #1a7ab8; --purple: #8e44ad;
+    --green: #1a9e60; --pink: #c0396e; --orange: #d47000; --red: #c0392b;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { min-height:100vh; font-family:'Exo 2',sans-serif; background:#050a18; overflow-x:hidden; color:#fff; }
-  .bg { position:fixed; inset:0; z-index:0; background: radial-gradient(ellipse at 20% 20%,rgba(212,170,60,.15) 0%,transparent 50%), radial-gradient(ellipse at 80% 80%,rgba(79,195,247,.12) 0%,transparent 50%), radial-gradient(ellipse at 50% 50%,rgba(206,147,216,.08) 0%,transparent 60%), radial-gradient(ellipse at 10% 80%,rgba(105,240,174,.08) 0%,transparent 40%), #050a18; animation:bgShift 8s ease-in-out infinite alternate; }
-  @keyframes bgShift { 0%{filter:hue-rotate(0deg)} 100%{filter:hue-rotate(20deg)} }
-  .stars { position:fixed; inset:0; z-index:0; pointer-events:none; }
-  .star { position:absolute; border-radius:50%; background:#fff; animation:twinkle var(--dur) ease-in-out infinite; opacity:0; }
-  @keyframes twinkle { 0%,100%{opacity:0} 50%{opacity:var(--op)} }
-  .orb { position:fixed; border-radius:50%; filter:blur(60px); animation:float var(--dur) ease-in-out infinite alternate; z-index:0; pointer-events:none; }
-  @keyframes float { 0%{transform:translateY(0) scale(1)} 100%{transform:translateY(-30px) scale(1.1)} }
-  .page { position:relative; z-index:1; max-width:500px; margin:0 auto; padding:30px 20px 60px; display:flex; flex-direction:column; align-items:center; gap:24px; }
+  body { min-height:100vh; font-family:'Exo 2',sans-serif; background:#f7f2e9; overflow-x:hidden; color:#1a1208; }
 
-  /* HEADER */
-  .header { text-align:center; display:flex; flex-direction:column; align-items:center; gap:8px; }
-  .logo-wrap { position:relative; width:110px; height:110px; }
-  .logo-ring { position:absolute; inset:-6px; border-radius:50%; background:conic-gradient(var(--gold),var(--blue),var(--purple),var(--green),var(--gold)); animation:spin 3s linear infinite; }
-  @keyframes spin { to{transform:rotate(360deg)} }
-  .logo-ring-inner { position:absolute; inset:3px; border-radius:50%; background:#050a18; }
-  .logo-img { position:absolute; inset:6px; width:calc(100% - 12px); height:calc(100% - 12px); object-fit:contain; border-radius:50%; z-index:1; }
-  .brand { font-family:'Orbitron',sans-serif; font-size:24px; font-weight:900; letter-spacing:4px; background:linear-gradient(135deg,var(--gold),var(--orange),var(--gold)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; filter:drop-shadow(0 0 20px rgba(212,170,60,.5)); }
-  .tagline { font-size:10px; letter-spacing:5px; color:rgba(255,255,255,.35); text-transform:uppercase; }
+.bg { position:fixed; inset:0; z-index:0;
+background:
+radial-gradient(ellipse at 20% 20%, rgba(200,150,20,.14) 0%, transparent 50%),
+radial-gradient(ellipse at 80% 80%, rgba(79,195,247,.08) 0%, transparent 50%),
+#f7f2e9;
+}
+.page { position:relative; z-index:1; max-width:500px; margin:0 auto; padding:30px 20px 60px; display:flex; flex-direction:column; align-items:center; gap:24px; }
 
-  /* TICKER */
-  .ticker-wrap { width:100%; overflow:hidden; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06); border-radius:12px; padding:10px 0; }
-  .ticker { display:flex; white-space:nowrap; animation:tickMove 35s linear infinite; }
-  .ticker span { font-size:12px; color:rgba(255,255,255,.5); padding:0 24px; }
-  .ticker span.hl { color:var(--gold); font-weight:700; }
-  @keyframes tickMove { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+/* HEADER */
+.header { text-align:center; display:flex; flex-direction:column; align-items:center; gap:8px; }
+.logo-wrap { position:relative; width:110px; height:110px; }
+.logo-ring { position:absolute; inset:-6px; border-radius:50%; background:conic-gradient(var(–gold),var(–blue),var(–purple),var(–green),var(–gold)); animation:spin 3s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg)} }
+.logo-ring-inner { position:absolute; inset:3px; border-radius:50%; background:#f7f2e9; }
+.logo-img { position:absolute; inset:6px; width:calc(100% - 12px); height:calc(100% - 12px); object-fit:contain; border-radius:50%; z-index:1; }
+.brand { font-family:‘Orbitron’,sans-serif; font-size:24px; font-weight:900; letter-spacing:4px; background:linear-gradient(135deg,var(–gold),var(–orange)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.tagline { font-size:10px; letter-spacing:5px; color:rgba(26,18,8,.4); text-transform:uppercase; }
 
-  /* BADGE */
-  .week-badge { background:linear-gradient(135deg,rgba(212,170,60,.2),rgba(255,183,77,.1)); border:1px solid rgba(212,170,60,.4); border-radius:40px; padding:10px 28px; font-family:'Orbitron',sans-serif; font-size:12px; font-weight:700; color:var(--gold); letter-spacing:2px; text-align:center; box-shadow:0 0 20px rgba(212,170,60,.2); animation:pulse 2s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{box-shadow:0 0 20px rgba(212,170,60,.2)} 50%{box-shadow:0 0 40px rgba(212,170,60,.4)} }
+/* TICKER */
+.ticker-wrap { width:100%; overflow:hidden; background:rgba(255,255,255,.75); border:1px solid rgba(184,130,10,.2); border-radius:12px; padding:10px 0; }
+.ticker { display:flex; white-space:nowrap; animation:tickMove 35s linear infinite; }
+.ticker span { font-size:12px; color:rgba(26,18,8,.5); padding:0 24px; }
+.ticker span.hl { color:var(–gold); font-weight:700; }
+@keyframes tickMove { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
-  /* PRIZES */
-  .prizes { display:flex; gap:12px; width:100%; }
-  .prize-card { flex:1; border-radius:16px; padding:16px 12px; text-align:center; position:relative; overflow:hidden; }
-  .prize-card::before { content:''; position:absolute; inset:0; border-radius:16px; padding:1px; background:var(--grad); -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
-  .prize-weekly { background:rgba(79,195,247,.08); --grad:linear-gradient(135deg,var(--blue),var(--purple)); }
-  .prize-monthly { background:rgba(212,170,60,.08); --grad:linear-gradient(135deg,var(--gold),var(--orange)); }
-  .prize-card .icon { font-size:26px; margin-bottom:6px; }
-  .prize-card .plabel { font-size:9px; font-weight:700; letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
-  .prize-weekly .plabel { color:var(--blue); }
-  .prize-monthly .plabel { color:var(--gold); }
-  .prize-card .pval { font-family:'Orbitron',sans-serif; font-size:13px; font-weight:700; color:#fff; }
+/* BADGE */
+.week-badge { background:linear-gradient(135deg,rgba(212,170,60,.18),rgba(212,112,0,.1)); border:1px solid rgba(184,130,10,.4); border-radius:40px; padding:10px 28px; font-family:‘Orbitron’,sans-serif; font-size:12px; font-weight:700; color:var(–gold); letter-spacing:2px; text-align:center; box-shadow:0 0 16px rgba(184,130,10,.15); animation:pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{box-shadow:0 0 16px rgba(184,130,10,.15)} 50%{box-shadow:0 0 32px rgba(184,130,10,.35)} }
 
-  /* FORM */
-  .form-card { width:100%; background:rgba(255,255,255,.03); border-radius:24px; padding:28px 22px; position:relative; overflow:hidden; border:1px solid rgba(255,255,255,.06); }
-  .form-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--gold),var(--blue),var(--purple),var(--green),var(--gold)); background-size:200%; animation:shimmer 3s linear infinite; }
-  @keyframes shimmer { to{background-position:200% center} }
-  .form-title { font-family:'Orbitron',sans-serif; font-size:16px; font-weight:700; color:#fff; letter-spacing:2px; margin-bottom:20px; text-align:center; }
-  .field { margin-bottom:18px; }
-  .field label { display:block; font-size:11px; font-weight:700; letter-spacing:3px; color:rgba(255,255,255,.4); text-transform:uppercase; margin-bottom:8px; }
-  .field input { width:100%; background:rgba(0,0,0,.3); border:1px solid rgba(255,255,255,.1); border-radius:12px; padding:14px 18px; font-family:'Exo 2',sans-serif; font-size:15px; color:#fff; outline:none; transition:all .3s; }
-  .field input:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(212,170,60,.1); background:rgba(212,170,60,.05); }
-  .field input::placeholder { color:rgba(255,255,255,.2); }
-  .submit-btn { width:100%; padding:18px; background:linear-gradient(135deg,var(--gold),#e6920a,var(--gold)); background-size:200%; border:none; border-radius:14px; font-family:'Orbitron',sans-serif; font-size:15px; font-weight:900; color:#000; letter-spacing:2px; cursor:pointer; transition:all .3s; box-shadow:0 4px 30px rgba(212,170,60,.4); animation:btnShimmer 3s linear infinite; }
-  @keyframes btnShimmer { to{background-position:200% center} }
-  .submit-btn:hover { transform:translateY(-3px); box-shadow:0 8px 40px rgba(212,170,60,.6); }
-  .submit-btn:active { transform:translateY(0); }
-  .submit-btn:disabled { background:rgba(255,255,255,.1); color:rgba(255,255,255,.3); cursor:not-allowed; box-shadow:none; transform:none; animation:none; }
+/* ENTRY COUNTER */
+.entry-counter { width:100%; background:#fff; border:1px solid rgba(184,130,10,.2); border-radius:16px; padding:16px 20px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 2px 12px rgba(184,130,10,.06); }
+.ec-left { display:flex; flex-direction:column; gap:2px; }
+.ec-label { font-size:10px; letter-spacing:3px; color:rgba(26,18,8,.4); text-transform:uppercase; font-weight:700; }
+.ec-sub   { font-size:11px; color:rgba(26,18,8,.35); }
+.ec-num   { font-family:‘Orbitron’,sans-serif; font-size:36px; font-weight:900; color:var(–gold); line-height:1; }
+.ec-unit  { font-size:11px; font-weight:700; color:rgba(184,130,10,.6); letter-spacing:1px; }
+.ec-right { display:flex; flex-direction:column; align-items:center; gap:2px; }
 
-  /* THANK YOU */
-  .thankyou { width:100%; display:none; flex-direction:column; align-items:center; gap:16px; background:rgba(255,255,255,.03); border-radius:24px; padding:40px 24px; text-align:center; border:1px solid rgba(105,240,174,.2); animation:popIn .6s cubic-bezier(.34,1.56,.64,1); position:relative; overflow:hidden; }
-  .thankyou::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--green),var(--blue),var(--purple)); }
-  @keyframes popIn { from{transform:scale(.7);opacity:0} to{transform:scale(1);opacity:1} }
-  .thankyou .big-emoji { font-size:60px; animation:bounce 1.5s ease infinite; }
-  @keyframes bounce { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-12px) rotate(5deg)} }
-  .thankyou h2 { font-family:'Orbitron',sans-serif; font-size:22px; font-weight:900; background:linear-gradient(135deg,var(--green),var(--blue)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-  .thankyou .msg { font-size:15px; color:rgba(255,255,255,.7); line-height:1.6; }
-  .thankyou .msg span { color:var(--gold); font-weight:700; }
-  .waiting-pill { background:linear-gradient(135deg,rgba(79,195,247,.15),rgba(206,147,216,.1)); border:1px solid rgba(79,195,247,.3); border-radius:40px; padding:12px 24px; font-size:13px; font-weight:600; color:var(--blue); display:flex; align-items:center; gap:8px; animation:pulse 2s ease infinite; }
-  .dot { width:8px; height:8px; border-radius:50%; background:var(--green); animation:dotPulse 1s ease infinite; }
-  @keyframes dotPulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:.5} }
-  .saturday-box { background:rgba(212,170,60,.08); border:1px solid rgba(212,170,60,.25); border-radius:12px; padding:14px 20px; font-size:13px; color:rgba(255,255,255,.6); line-height:1.6; width:100%; }
-  .saturday-box strong { color:var(--gold); }
+/* MAIN COUNTDOWN */
+.countdown-wrap { width:100%; background:#fff; border:1px solid rgba(184,130,10,.2); border-radius:20px; padding:20px 18px; text-align:center; position:relative; overflow:hidden; box-shadow:0 4px 20px rgba(184,130,10,.07); }
+.countdown-wrap::before { content:’’; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(–gold),var(–orange),var(–gold)); background-size:200%; animation:shimmer 3s linear infinite; }
+@keyframes shimmer { to{background-position:200% center} }
+.cd-label { font-size:10px; letter-spacing:3px; color:rgba(26,18,8,.4); text-transform:uppercase; margin-bottom:14px; font-weight:700; }
+.cd-timer { display:flex; justify-content:center; align-items:flex-start; gap:8px; flex-wrap:wrap; }
+.cd-unit { display:flex; flex-direction:column; align-items:center; gap:4px; }
+.cd-num { font-family:‘Orbitron’,sans-serif; font-size:30px; font-weight:900; color:var(–gold); background:#fdf8ef; border:1px solid rgba(184,130,10,.2); border-radius:10px; padding:6px 14px; min-width:56px; line-height:1; }
+.cd-sep { font-family:‘Orbitron’,sans-serif; font-size:26px; font-weight:900; color:rgba(184,130,10,.4); margin-top:6px; }
+.cd-unit-label { font-size:9px; letter-spacing:2px; color:rgba(26,18,8,.4); text-transform:uppercase; font-weight:700; }
+.cd-sub { margin-top:12px; font-size:12px; color:rgba(26,18,8,.5); }
+.cd-sub strong { color:var(–gold); }
 
-  /* HALL OF FAME */
-  .hof-card { width:100%; background:rgba(255,255,255,.02); border:1px solid rgba(212,170,60,.15); border-radius:20px; padding:22px 18px; position:relative; overflow:hidden; }
-  .hof-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(--gold),var(--orange),var(--pink),var(--gold)); background-size:200%; animation:shimmer 4s linear infinite; }
-  .hof-title { font-family:'Orbitron',sans-serif; font-size:14px; font-weight:900; color:var(--gold); letter-spacing:3px; margin-bottom:16px; text-align:center; }
-  .winner-row { display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:12px; margin-bottom:8px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.04); transition:all .3s; cursor:default; }
-  .winner-row:hover { background:rgba(212,170,60,.06); border-color:rgba(212,170,60,.2); transform:translateX(4px); }
-  .winner-rank { font-size:20px; width:32px; text-align:center; flex-shrink:0; }
-  .winner-info { flex:1; }
-  .winner-name { font-size:14px; font-weight:700; color:#fff; }
-  .winner-detail { font-size:11px; color:rgba(255,255,255,.4); margin-top:2px; }
-  .winner-prize { font-size:16px; }
-  .hof-note { text-align:center; margin-top:12px; font-size:11px; color:rgba(255,255,255,.25); letter-spacing:2px; }
+/* PRIZES */
+.prizes { display:flex; gap:12px; width:100%; }
+.prize-card { flex:1; border-radius:16px; padding:16px 12px; text-align:center; position:relative; overflow:hidden; background:#fff; box-shadow:0 2px 12px rgba(0,0,0,.05); }
+.prize-card::before { content:’’; position:absolute; inset:0; border-radius:16px; padding:1px; background:var(–grad); -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; }
+.prize-weekly { –grad:linear-gradient(135deg,var(–blue),var(–purple)); }
+.prize-monthly { –grad:linear-gradient(135deg,var(–gold),var(–orange)); }
+.prize-card .icon { font-size:26px; margin-bottom:6px; }
+.prize-card .plabel { font-size:9px; font-weight:700; letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
+.prize-weekly .plabel { color:var(–blue); }
+.prize-monthly .plabel { color:var(–gold); }
+.prize-card .pval { font-family:‘Orbitron’,sans-serif; font-size:13px; font-weight:700; color:#1a1208; }
 
-  /* FF SECTION */
-  .ff-section { width:100%; }
-  .ff-title { font-family:'Orbitron',sans-serif; font-size:14px; font-weight:900; color:var(--purple); letter-spacing:3px; margin-bottom:14px; text-align:center; }
-  .ff-tabs { display:flex; gap:8px; margin-bottom:14px; }
-  .ff-tab { flex:1; padding:10px; border-radius:10px; font-family:'Exo 2',sans-serif; font-size:12px; font-weight:700; letter-spacing:1px; cursor:pointer; border:none; transition:all .3s; text-transform:uppercase; }
-  .ff-tab.myth { background:rgba(255,82,82,.15); color:var(--red); border:1px solid rgba(255,82,82,.3); }
-  .ff-tab.myth.active { background:rgba(255,82,82,.3); box-shadow:0 0 20px rgba(255,82,82,.3); }
-  .ff-tab.fact { background:rgba(105,240,174,.1); color:var(--green); border:1px solid rgba(105,240,174,.3); }
-  .ff-tab.fact.active { background:rgba(105,240,174,.25); box-shadow:0 0 20px rgba(105,240,174,.3); }
-  .ff-list { display:none; flex-direction:column; gap:10px; }
-  .ff-list.active { display:flex; animation:fadeSlide .4s ease; }
-  @keyframes fadeSlide { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-  .ff-item { border-radius:14px; padding:14px 16px; display:flex; gap:12px; align-items:flex-start; }
-  .ff-item.myth-item { background:rgba(255,82,82,.07); border:1px solid rgba(255,82,82,.2); }
-  .ff-item.fact-item { background:rgba(105,240,174,.06); border:1px solid rgba(105,240,174,.2); }
-  .ff-item-icon { font-size:22px; flex-shrink:0; margin-top:2px; }
-  .ff-item-text { font-size:13px; line-height:1.6; color:rgba(255,255,255,.8); }
-  .ff-item-text strong { display:block; margin-bottom:4px; font-size:13px; }
-  .myth-item .ff-item-text strong { color:var(--red); }
-  .fact-item .ff-item-text strong { color:var(--green); }
-  .ff-badge { display:inline-block; margin-top:6px; font-size:10px; font-weight:700; letter-spacing:1px; padding:3px 8px; border-radius:6px; }
-  .myth-item .ff-badge { background:rgba(255,82,82,.2); color:var(--red); }
-  .fact-item .ff-badge { background:rgba(105,240,174,.15); color:var(--green); }
+/* FORM */
+.form-card { width:100%; background:#fff; border-radius:24px; padding:28px 22px; position:relative; overflow:hidden; border:1px solid rgba(184,130,10,.15); box-shadow:0 4px 24px rgba(184,130,10,.07); }
+.form-card::before { content:’’; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(–gold),var(–blue),var(–purple),var(–green),var(–gold)); background-size:200%; animation:shimmer 3s linear infinite; }
+.form-title { font-family:‘Orbitron’,sans-serif; font-size:16px; font-weight:700; color:#1a1208; letter-spacing:2px; margin-bottom:20px; text-align:center; }
+.field { margin-bottom:18px; }
+.field label { display:block; font-size:11px; font-weight:700; letter-spacing:3px; color:rgba(26,18,8,.4); text-transform:uppercase; margin-bottom:8px; }
+.field input { width:100%; background:#faf8f3; border:1px solid rgba(184,130,10,.2); border-radius:12px; padding:14px 18px; font-family:‘Exo 2’,sans-serif; font-size:15px; color:#1a1208; outline:none; transition:all .3s; }
+.field input:focus { border-color:var(–gold); box-shadow:0 0 0 3px rgba(184,130,10,.1); }
+.field input::placeholder { color:rgba(26,18,8,.25); }
+.submit-btn { width:100%; padding:18px; background:linear-gradient(135deg,var(–gold),var(–orange),var(–gold)); background-size:200%; border:none; border-radius:14px; font-family:‘Orbitron’,sans-serif; font-size:15px; font-weight:900; color:#fff; letter-spacing:2px; cursor:pointer; transition:all .3s; box-shadow:0 4px 20px rgba(184,130,10,.3); animation:btnShimmer 3s linear infinite; }
+@keyframes btnShimmer { to{background-position:200% center} }
+.submit-btn:hover { transform:translateY(-3px); box-shadow:0 8px 32px rgba(184,130,10,.5); }
+.submit-btn:active { transform:translateY(0); }
+.submit-btn:disabled { background:rgba(0,0,0,.08); color:rgba(0,0,0,.3); cursor:not-allowed; box-shadow:none; transform:none; animation:none; }
 
-  /* RULES */
-  .rules-card { width:100%; background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.05); border-radius:16px; padding:18px; }
-  .rules-title { font-size:11px; font-weight:700; letter-spacing:3px; color:rgba(255,255,255,.35); text-transform:uppercase; margin-bottom:12px; }
-  .rule-item { display:flex; align-items:center; gap:10px; font-size:13px; color:rgba(255,255,255,.65); margin-bottom:8px; line-height:1.4; }
-  .rule-item .dot2 { width:6px; height:6px; border-radius:50%; background:var(--gold); flex-shrink:0; }
+/* THANK YOU */
+.thankyou { width:100%; display:none; flex-direction:column; align-items:center; gap:16px; background:#fff; border-radius:24px; padding:40px 24px; text-align:center; border:1px solid rgba(26,158,96,.2); box-shadow:0 4px 24px rgba(26,158,96,.07); animation:popIn .6s cubic-bezier(.34,1.56,.64,1); position:relative; overflow:hidden; }
+.thankyou::before { content:’’; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(–green),var(–blue),var(–purple)); }
+@keyframes popIn { from{transform:scale(.7);opacity:0} to{transform:scale(1);opacity:1} }
+.thankyou .big-emoji { font-size:60px; animation:bounce 1.5s ease infinite; }
+@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+.thankyou h2 { font-family:‘Orbitron’,sans-serif; font-size:22px; font-weight:900; background:linear-gradient(135deg,var(–green),var(–blue)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.thankyou .msg { font-size:15px; color:rgba(26,18,8,.65); line-height:1.6; }
+.thankyou .msg span { color:var(–gold); font-weight:700; }
+.waiting-pill { background:linear-gradient(135deg,rgba(26,122,184,.1),rgba(142,68,173,.07)); border:1px solid rgba(26,122,184,.25); border-radius:40px; padding:12px 24px; font-size:13px; font-weight:600; color:var(–blue); display:flex; align-items:center; gap:8px; animation:pulse 2s ease infinite; }
+.dot { width:8px; height:8px; border-radius:50%; background:var(–green); animation:dotPulse 1s ease infinite; }
+@keyframes dotPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.5);opacity:.5} }
+.saturday-box { background:rgba(184,130,10,.06); border:1px solid rgba(184,130,10,.2); border-radius:12px; padding:14px 20px; font-size:13px; color:rgba(26,18,8,.6); line-height:1.6; width:100%; }
+.saturday-box strong { color:var(–gold); }
 
-  /* FOOTER */
-  .footer { font-size:11px; color:rgba(255,255,255,.2); letter-spacing:2px; text-align:center; }
-  .footer a { color:var(--gold); text-decoration:none; }
+/* NEXT WINNER COUNTDOWN */
+.next-winner-cd { width:100%; background:rgba(184,130,10,.06); border:1px solid rgba(184,130,10,.2); border-radius:14px; padding:14px 18px; text-align:center; }
+.nw-label { font-size:10px; letter-spacing:3px; color:rgba(26,18,8,.4); text-transform:uppercase; margin-bottom:6px; font-weight:700; }
+.nw-text { font-family:‘Orbitron’,sans-serif; font-size:13px; font-weight:900; color:var(–gold); }
 
-  /* CONFETTI */
-  .confetti-wrap { position:fixed; inset:0; pointer-events:none; z-index:999; overflow:hidden; }
-  .cp { position:absolute; top:-10px; animation:fall var(--fd) ease-in forwards; border-radius:var(--br); }
-  @keyframes fall { 0%{transform:translateY(0) rotate(0deg) translateX(0);opacity:1} 100%{transform:translateY(110vh) rotate(720deg) translateX(var(--dx));opacity:0} }
+/* LATEST WINNERS */
+.hof-card { width:100%; background:#fff; border:1px solid rgba(184,130,10,.18); border-radius:20px; padding:22px 18px; position:relative; overflow:hidden; box-shadow:0 4px 20px rgba(184,130,10,.06); }
+.hof-card::before { content:’’; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,var(–gold),var(–orange),var(–pink),var(–gold)); background-size:200%; animation:shimmer 4s linear infinite; }
+.hof-title { font-family:‘Orbitron’,sans-serif; font-size:14px; font-weight:900; color:var(–gold); letter-spacing:3px; margin-bottom:4px; text-align:center; }
+.hof-subtitle { font-size:11px; color:rgba(26,18,8,.35); letter-spacing:2px; text-align:center; margin-bottom:18px; }
 
-  .sec-label { font-size:10px; letter-spacing:4px; color:rgba(255,255,255,.2); text-transform:uppercase; text-align:center; }
+/* Two winner cards side by side */
+.winners-duo { display:flex; gap:12px; margin-bottom:16px; }
+.winner-duo-card { flex:1; border-radius:14px; padding:14px 10px; text-align:center; }
+.winner-duo-card.monthly { background:linear-gradient(135deg,rgba(184,130,10,.09),rgba(212,112,0,.06)); border:1px solid rgba(184,130,10,.28); }
+.winner-duo-card.weekly  { background:linear-gradient(135deg,rgba(26,122,184,.07),rgba(142,68,173,.05)); border:1px solid rgba(26,122,184,.22); }
+.wdc-badge { display:inline-block; font-size:9px; font-weight:700; letter-spacing:1px; text-transform:uppercase; padding:3px 10px; border-radius:20px; margin-bottom:8px; }
+.monthly .wdc-badge { background:rgba(184,130,10,.12); color:var(–gold); }
+.weekly  .wdc-badge { background:rgba(26,122,184,.1); color:var(–blue); }
+.wdc-icon { font-size:28px; margin-bottom:6px; }
+.wdc-name { font-family:‘Orbitron’,sans-serif; font-size:12px; font-weight:900; color:#1a1208; margin-bottom:4px; word-break:break-all; }
+.wdc-uid  { font-size:10px; color:rgba(26,18,8,.35); }
+.wdc-drawn { display:inline-block; margin-top:8px; font-size:10px; padding:3px 10px; border-radius:10px; }
+.monthly .wdc-drawn { background:rgba(184,130,10,.1); color:var(–gold); }
+.weekly  .wdc-drawn { background:rgba(26,122,184,.08); color:var(–blue); }
 
-  .admin-link {
-    display: inline-block;
-    margin-top: 4px;
-    padding: 8px 20px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: rgba(255,255,255,0.25);
-    text-decoration: none;
-    transition: all 0.3s;
-  }
-  .admin-link:hover {
-    background: rgba(212,170,60,0.08);
-    border-color: rgba(212,170,60,0.3);
-    color: var(--gold);
-  }
+.winner-placeholder { text-align:center; padding:20px 0; color:rgba(26,18,8,.3); font-size:13px; letter-spacing:1px; width:100%; }
+.hof-note { text-align:center; margin-top:4px; font-size:11px; color:rgba(26,18,8,.25); letter-spacing:2px; }
+
+/* FF SECTION */
+.ff-section { width:100%; }
+.ff-title { font-family:‘Orbitron’,sans-serif; font-size:14px; font-weight:900; color:var(–purple); letter-spacing:3px; margin-bottom:14px; text-align:center; }
+.ff-tabs { display:flex; gap:8px; margin-bottom:14px; }
+.ff-tab { flex:1; padding:10px; border-radius:10px; font-family:‘Exo 2’,sans-serif; font-size:12px; font-weight:700; letter-spacing:1px; cursor:pointer; border:none; transition:all .3s; text-transform:uppercase; }
+.ff-tab.myth { background:rgba(192,57,46,.07); color:var(–red); border:1px solid rgba(192,57,46,.22); }
+.ff-tab.myth.active { background:rgba(192,57,46,.16); box-shadow:0 0 14px rgba(192,57,46,.15); }
+.ff-tab.fact { background:rgba(26,158,96,.07); color:var(–green); border:1px solid rgba(26,158,96,.22); }
+.ff-tab.fact.active { background:rgba(26,158,96,.16); box-shadow:0 0 14px rgba(26,158,96,.15); }
+.ff-list { display:none; flex-direction:column; gap:10px; }
+.ff-list.active { display:flex; animation:fadeSlide .4s ease; }
+@keyframes fadeSlide { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.ff-item { border-radius:14px; padding:14px 16px; display:flex; gap:12px; align-items:flex-start; }
+.ff-item.myth-item { background:rgba(192,57,46,.04); border:1px solid rgba(192,57,46,.15); }
+.ff-item.fact-item { background:rgba(26,158,96,.04); border:1px solid rgba(26,158,96,.15); }
+.ff-item-icon { font-size:22px; flex-shrink:0; margin-top:2px; }
+.ff-item-text { font-size:13px; line-height:1.6; color:rgba(26,18,8,.7); }
+.ff-item-text strong { display:block; margin-bottom:4px; font-size:13px; }
+.myth-item .ff-item-text strong { color:var(–red); }
+.fact-item .ff-item-text strong { color:var(–green); }
+.ff-badge { display:inline-block; margin-top:6px; font-size:10px; font-weight:700; letter-spacing:1px; padding:3px 8px; border-radius:6px; }
+.myth-item .ff-badge { background:rgba(192,57,46,.1); color:var(–red); }
+.fact-item .ff-badge { background:rgba(26,158,96,.1); color:var(–green); }
+
+/* RULES */
+.rules-card { width:100%; background:#fff; border:1px solid rgba(0,0,0,.07); border-radius:16px; padding:18px; box-shadow:0 2px 12px rgba(0,0,0,.03); }
+.rules-title { font-size:11px; font-weight:700; letter-spacing:3px; color:rgba(26,18,8,.35); text-transform:uppercase; margin-bottom:12px; }
+.rule-item { display:flex; align-items:center; gap:10px; font-size:13px; color:rgba(26,18,8,.65); margin-bottom:8px; line-height:1.4; }
+.rule-item .dot2 { width:6px; height:6px; border-radius:50%; background:var(–gold); flex-shrink:0; }
+
+.footer { font-size:11px; color:rgba(26,18,8,.25); letter-spacing:2px; text-align:center; }
+.footer a { color:var(–gold); text-decoration:none; }
+
+.confetti-wrap { position:fixed; inset:0; pointer-events:none; z-index:999; overflow:hidden; }
+.cp { position:absolute; top:-10px; animation:fall var(–fd) ease-in forwards; border-radius:var(–br); }
+@keyframes fall { 0%{transform:translateY(0) rotate(0deg) translateX(0);opacity:1} 100%{transform:translateY(110vh) rotate(720deg) translateX(var(–dx));opacity:0} }
+
+.sec-label { font-size:10px; letter-spacing:4px; color:rgba(26,18,8,.25); text-transform:uppercase; text-align:center; }
+
+.admin-link { display:inline-block; margin-top:4px; padding:8px 20px; background:rgba(0,0,0,.03); border:1px solid rgba(0,0,0,.08); border-radius:20px; font-size:11px; font-weight:700; letter-spacing:2px; color:rgba(26,18,8,.25); text-decoration:none; transition:all .3s; }
+.admin-link:hover { background:rgba(184,130,10,.07); border-color:rgba(184,130,10,.3); color:var(–gold); }
 </style>
+
 </head>
 <body>
 <div class="bg"></div>
-<div class="stars" id="stars"></div>
 <div class="confetti-wrap" id="confetti"></div>
-<div class="orb" style="width:300px;height:300px;background:rgba(212,170,60,.08);top:-50px;left:-80px;--dur:6s;"></div>
-<div class="orb" style="width:250px;height:250px;background:rgba(79,195,247,.07);bottom:100px;right:-60px;--dur:8s;"></div>
-<div class="orb" style="width:200px;height:200px;background:rgba(206,147,216,.06);top:40%;left:50%;--dur:7s;"></div>
 
 <div class="page">
 
   <!-- Header -->
+
   <div class="header">
     <div class="logo-wrap">
       <div class="logo-ring"></div>
@@ -181,7 +198,8 @@
     <div class="tagline">Play With Purpose</div>
   </div>
 
-  <!-- Funny ticker -->
+  <!-- Ticker -->
+
   <div class="ticker-wrap">
     <div class="ticker">
       <span>🔥 Free Fire players be like: "bro I'm not camping I'm just strategic" 💀</span>
@@ -204,9 +222,52 @@
   </div>
 
   <!-- Week badge -->
-  <div class="week-badge">🎁 WEEKLY GIVEAWAY — EVERY SATURDAY!</div>
+
+  <div class="week-badge">🎁 WEEKLY GIVEAWAY — EVERY SATURDAY 10AM NPT!</div>
+
+  <!-- Live Entry Counter -->
+
+  <div class="entry-counter">
+    <div class="ec-left">
+      <div class="ec-label">🎟️ Entries for Next Draw</div>
+      <div class="ec-sub">Everyone in the pool so far</div>
+    </div>
+    <div class="ec-right">
+      <div class="ec-num" id="publicEntryCount">—</div>
+      <div class="ec-unit">PLAYERS</div>
+    </div>
+  </div>
+
+  <!-- Main countdown -->
+
+  <div class="countdown-wrap">
+    <div class="cd-label">⏳ Next Draw Countdown · Saturday 10:00 AM Nepal Time</div>
+    <div class="cd-timer">
+      <div class="cd-unit">
+        <div class="cd-num" id="cd-days">--</div>
+        <div class="cd-unit-label">Days</div>
+      </div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit">
+        <div class="cd-num" id="cd-hours">--</div>
+        <div class="cd-unit-label">Hours</div>
+      </div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit">
+        <div class="cd-num" id="cd-mins">--</div>
+        <div class="cd-unit-label">Mins</div>
+      </div>
+      <div class="cd-sep">:</div>
+      <div class="cd-unit">
+        <div class="cd-num" id="cd-secs">--</div>
+        <div class="cd-unit-label">Secs</div>
+      </div>
+    </div>
+    <div class="cd-sub">🏆 <strong>2 winners</strong> announced every Saturday at 10:00 AM Nepal Time</div>
+  </div>
 
   <!-- Prizes -->
+
   <div class="prizes">
     <div class="prize-card prize-weekly">
       <div class="icon">🏆</div>
@@ -221,6 +282,7 @@
   </div>
 
   <!-- Form -->
+
   <div class="form-card" id="formCard">
     <div class="form-title">🚀 ENTER THE GIVEAWAY</div>
     <div class="field">
@@ -237,6 +299,7 @@
   </div>
 
   <!-- Thank you -->
+
   <div class="thankyou" id="thankyou">
     <div class="big-emoji">🎉</div>
     <h2>YOU'RE IN!</h2>
@@ -245,24 +308,44 @@
       <div class="dot"></div>
       The universe is spinning the wheel...
     </div>
+    <div class="next-winner-cd">
+      <div class="nw-label">🏆 Next Winner Announcement</div>
+      <div class="nw-text" id="nw-countdown">Calculating...</div>
+    </div>
     <div class="saturday-box">
-      📅 Results announced every <strong>Saturday!</strong><br>
+      📅 Results announced every <strong>Saturday at 10:00 AM Nepal Time!</strong><br>
       Follow <strong>@Dream2Moon</strong> on TikTok so you don't miss it!<br>
       <span style="font-size:11px;opacity:.5;">(unless you're busy dying in solo vs squad 💀)</span>
     </div>
   </div>
 
-  <!-- Latest Winner (live from Firebase) -->
-  <div class="sec-label">🏆 Latest Winner</div>
+  <!-- Latest Winners -->
+
+  <div class="sec-label">🏆 Latest Winners</div>
   <div class="hof-card" id="latestWinnerCard">
-    <div class="hof-title">🏆 LUCKY DRAW WINNER 🏆</div>
-    <div id="winnerDisplay" style="text-align:center;padding:10px 0;">
-      <div style="font-size:36px;margin-bottom:8px;">🎰</div>
-      <div style="font-size:13px;color:rgba(255,255,255,0.3);letter-spacing:1px;">No winner drawn yet...<br>Stay tuned for Saturday! 👀</div>
-    </div>
+    <div class="hof-title">🏆 LUCKY DRAW WINNERS 🏆</div>
+    <div class="hof-subtitle" id="winnersDrawnDate">Loading...</div>
+
+```
+<div class="winners-duo" id="winnersDuo">
+  <div class="winner-placeholder">
+    <div style="font-size:36px;margin-bottom:8px;">🎰</div>
+    No winners drawn yet...<br>Stay tuned for Saturday! 👀
+  </div>
+</div>
+
+<div class="next-winner-cd">
+  <div class="nw-label">⏳ Next Winner Announcement In</div>
+  <div class="nw-text" id="hof-countdown">Calculating...</div>
+</div>
+
+<div class="hof-note">Could be YOUR name here next 😏</div>
+```
+
   </div>
 
-  <!-- FF Myths & Facts -->
+  <!-- FF Section -->
+
   <div class="sec-label">🔫 Free Fire Corner</div>
   <div class="ff-section">
     <div class="ff-title">🔫 FREE FIRE MYTHS &amp; FACTS 🔫</div>
@@ -270,14 +353,12 @@
       <button class="ff-tab myth active" onclick="showTab('myth')">💀 MYTHS</button>
       <button class="ff-tab fact" onclick="showTab('fact')">✅ FACTS</button>
     </div>
-
-    <!-- MYTHS -->
     <div class="ff-list active" id="tab-myth">
       <div class="ff-item myth-item">
         <div class="ff-item-icon">💀</div>
         <div class="ff-item-text">
           <strong>MYTH: Crouching makes you harder to hit</strong>
-          You crouch → enemy gets a bigger, slower target 🎯. You literally gift yourself to them. You're not sneaky, you're a crouching duck. 🦆
+          You crouch → enemy gets a bigger, slower target 🎯. You're not sneaky, you're a crouching duck. 🦆
           <div class="ff-badge">BUSTED 100%</div>
         </div>
       </div>
@@ -285,7 +366,7 @@
         <div class="ff-item-icon">🤣</div>
         <div class="ff-item-text">
           <strong>MYTH: Expensive skins = more damage</strong>
-          Your ₹5,000 Alok skin does the SAME damage as the default guy in boxers. The only thing it boosted is your parents' blood pressure. 😭
+          Your ₹5,000 Alok skin does the SAME damage as the default guy in boxers. 😭
           <div class="ff-badge">BUSTED — looks cool tho 💅</div>
         </div>
       </div>
@@ -293,7 +374,7 @@
         <div class="ff-item-icon">😂</div>
         <div class="ff-item-text">
           <strong>MYTH: Prone in grass = invisible</strong>
-          Bro you're a full-grown character lying in 3 blades of grass. Everyone can see you. You look like a sleeping tourist. 😴
+          Bro you're a full-grown character lying in 3 blades of grass. Everyone can see you. 😴
           <div class="ff-badge">MEGA BUSTED</div>
         </div>
       </div>
@@ -301,7 +382,7 @@
         <div class="ff-item-icon">💀</div>
         <div class="ff-item-text">
           <strong>MYTH: Jumping while shooting = unkillable</strong>
-          You jump → aim goes to the moon 🌕 → you miss everything → die mid-air. Congratulations, at least it was dramatic.
+          You jump → aim goes to the moon 🌕 → you miss everything → die mid-air.
           <div class="ff-badge">BUSTED (funny to watch tho 👀)</div>
         </div>
       </div>
@@ -309,19 +390,17 @@
         <div class="ff-item-icon">🥲</div>
         <div class="ff-item-text">
           <strong>MYTH: "I'll carry my squad, it's fine"</strong>
-          Famous last words. Two seconds later you're knocked, teammates are AFK, and the chicken dinner belongs to someone else. 🍗
+          Famous last words. Two seconds later you're knocked and the chicken dinner is gone. 🍗
           <div class="ff-badge">SKILL ISSUE CONFIRMED</div>
         </div>
       </div>
     </div>
-
-    <!-- FACTS -->
     <div class="ff-list" id="tab-fact">
       <div class="ff-item fact-item">
         <div class="ff-item-icon">✅</div>
         <div class="ff-item-text">
           <strong>FACT: Safe zone damages through walls</strong>
-          That building you're hiding in? The blue zone disagrees with your strategy. It damages through cover. Rotate early or DIE slowly. ☢️
+          The blue zone disagrees with your hiding strategy. It damages through cover. Rotate early or DIE slowly. ☢️
           <div class="ff-badge">100% TRUE — ROTATE EARLY</div>
         </div>
       </div>
@@ -329,7 +408,7 @@
         <div class="ff-item-icon">🔥</div>
         <div class="ff-item-text">
           <strong>FACT: Headshots deal 200% damage with some guns</strong>
-          The M1014 shotgun to the head is a one-way ticket to the lobby. Wear a helmet. Wear TWO if you could. 🪖
+          The M1014 shotgun to the head is a one-way ticket to the lobby. Wear a helmet. 🪖
           <div class="ff-badge">AIM HIGH, LITERALLY</div>
         </div>
       </div>
@@ -337,7 +416,7 @@
         <div class="ff-item-icon">🎯</div>
         <div class="ff-item-text">
           <strong>FACT: Strafing saves your life vs snipers</strong>
-          Moving side-to-side while getting sniped actually works. Stay still and you're just a mannequin with a gun. 🪆
+          Moving side-to-side while getting sniped actually works. Stay still = mannequin with a gun. 🪆
           <div class="ff-badge">DODGE = SURVIVAL</div>
         </div>
       </div>
@@ -345,7 +424,7 @@
         <div class="ff-item-icon">💡</div>
         <div class="ff-item-text">
           <strong>FACT: Vehicles make you an easy target</strong>
-          Driving = "HERE I AM, SHOOT MY TYRES PLEASE 🚗💥". Walk. Be humble. Be sneaky. The car is a trap with wheels.
+          Driving = "HERE I AM, SHOOT MY TYRES PLEASE 🚗💥". Walk. Be sneaky.
           <div class="ff-badge">USE WITH EXTREME CAUTION</div>
         </div>
       </div>
@@ -353,7 +432,7 @@
         <div class="ff-item-icon">🧠</div>
         <div class="ff-item-text">
           <strong>FACT: Third-partying wins more than raw skill</strong>
-          Let two squads fight → both get low → you swoop in → free kills → Booyah! 🏆 It's not dirty. It's chess. With guns. And no mercy.
+          Let two squads fight → both get low → you swoop in → Booyah! 🏆 It's chess. With guns.
           <div class="ff-badge">BIG BRAIN STRATEGY ✅</div>
         </div>
       </div>
@@ -361,21 +440,22 @@
   </div>
 
   <!-- Rules -->
+
   <div class="rules-card">
     <div class="rules-title">📋 Rules to Win</div>
     <div class="rule-item"><div class="dot2"></div>Must follow @Dream2Moon on TikTok</div>
     <div class="rule-item"><div class="dot2"></div>Must like the giveaway video</div>
     <div class="rule-item"><div class="dot2"></div>Comment under the video to enter</div>
-    <div class="rule-item"><div class="dot2"></div>Lucky draw winner = Weekly 💎 prize</div>
-    <div class="rule-item"><div class="dot2"></div>Lucky draw winner = Monthly 💎💎 prize</div>
-    <div class="rule-item"><div class="dot2"></div>Results every Saturday! (no, really 😂)</div>
+    <div class="rule-item"><div class="dot2"></div>Monthly Pass 💎💎 winner picked every draw</div>
+    <div class="rule-item"><div class="dot2"></div>Weekly Pass 💎 winner picked every draw</div>
+    <div class="rule-item"><div class="dot2"></div>Both winners announced Saturday at 10AM NPT!</div>
   </div>
 
   <div class="footer">
-    🌙 <span style="color:rgba(255,255,255,.4)">Powered by</span> <a href="#">Dream2Moon</a> &nbsp;|&nbsp; Play With Purpose
+    🌙 <span style="color:rgba(26,18,8,.35)">Powered by</span> <a href="#">Dream2Moon</a> &nbsp;|&nbsp; Play With Purpose
   </div>
 
-  <a href="admin.html" class="admin-link">🔐 Admin Panel</a>
+<a href="admin.html" class="admin-link">🔐 Admin Panel</a>
 
 </div>
 
@@ -395,36 +475,127 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // Stars
-  const sf = document.getElementById('stars');
-  for (let i = 0; i < 100; i++) {
-    const s = document.createElement('div');
-    s.className = 'star';
-    const size = Math.random() * 2 + 0.5;
-    s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${2+Math.random()*4}s;--op:${0.3+Math.random()*0.7};animation-delay:${Math.random()*5}s;`;
-    sf.appendChild(s);
+  // ── COUNTDOWN — Nepal Standard Time = UTC+5:45 ────────────────────────────
+  const NPT_OFFSET_MS = (5 * 60 + 45) * 60 * 1000;
+
+  function getNextSaturdayNPT() {
+    const nowUTC = Date.now();
+    const nowNPT = new Date(nowUTC + NPT_OFFSET_MS);
+    const dayOfWeek = nowNPT.getUTCDay(); // 0=Sun…6=Sat
+    let daysUntilSat = (6 - dayOfWeek + 7) % 7;
+
+    const targetNPT = new Date(Date.UTC(
+      nowNPT.getUTCFullYear(), nowNPT.getUTCMonth(),
+      nowNPT.getUTCDate() + daysUntilSat,
+      10, 0, 0, 0   // 10:00 AM NPT
+    ));
+    const targetUTC = targetNPT.getTime() - NPT_OFFSET_MS;
+
+    // If today is Saturday but already past 10am NPT, jump to next week
+    if (targetUTC <= nowUTC) return targetUTC + 7 * 24 * 3600 * 1000;
+    return targetUTC;
   }
 
-  // Load latest winner from Firebase
+  function formatCountdown(ms) {
+    if (ms <= 0) return 'Drawing NOW! 🎉';
+    const s = Math.floor(ms / 1000);
+    const d = Math.floor(s / 86400);
+    const h = Math.floor((s % 86400) / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+    const parts = [];
+    if (d > 0) parts.push(d + ' day' + (d !== 1 ? 's' : ''));
+    if (h > 0 || d > 0) parts.push(h + ' hr' + (h !== 1 ? 's' : ''));
+    parts.push(m + ' min' + (m !== 1 ? 's' : ''));
+    parts.push(sec + 's');
+    return parts.join(' ');
+  }
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function updateCountdowns() {
+    const targetUTC = getNextSaturdayNPT();
+    const ms = Math.max(0, targetUTC - Date.now());
+    const totalSec = Math.floor(ms / 1000);
+    const d = Math.floor(totalSec / 86400);
+    const h = Math.floor((totalSec % 86400) / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
+
+    const dEl = document.getElementById('cd-days');
+    const hEl = document.getElementById('cd-hours');
+    const mEl = document.getElementById('cd-mins');
+    const sEl = document.getElementById('cd-secs');
+    if (dEl) dEl.textContent = pad(d);
+    if (hEl) hEl.textContent = pad(h);
+    if (mEl) mEl.textContent = pad(m);
+    if (sEl) sEl.textContent = pad(s);
+
+    const text = ms > 0 ? formatCountdown(ms) : 'Drawing NOW! 🎉';
+    const nw  = document.getElementById('nw-countdown');
+    const hof = document.getElementById('hof-countdown');
+    if (nw)  nw.textContent  = text;
+    if (hof) hof.textContent = text;
+  }
+
+  updateCountdowns();
+  setInterval(updateCountdowns, 1000);
+
+  // ── LOAD WINNERS ──────────────────────────────────────────────────────────
   async function loadLatestWinner() {
     try {
       const snap = await getDoc(doc(db, 'winners', 'latest'));
+      const dateEl = document.getElementById('winnersDrawnDate');
+      const duoEl  = document.getElementById('winnersDuo');
+
       if (snap.exists()) {
         const w = snap.data();
-        const date = w.drawnAt ? new Date(w.drawnAt.seconds * 1000).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) : 'Recently';
-        document.getElementById('winnerDisplay').innerHTML = `
-          <div style="font-size:52px;margin-bottom:10px;animation:bounce 1.5s ease infinite;">🏆</div>
-          <div style="font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:#fff;margin-bottom:4px;">${w.username}</div>
-          <div style="font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:6px;">UID: ${w.uid}</div>
-          <div style="display:inline-block;background:rgba(212,170,60,0.15);border:1px solid rgba(212,170,60,0.3);border-radius:20px;padding:5px 14px;font-size:11px;color:var(--gold);letter-spacing:2px;">🎉 DRAWN ON ${date}</div>
-          <div style="margin-top:14px;font-size:12px;color:rgba(255,255,255,0.25);letter-spacing:1px;">Could be YOUR name here next 😏</div>
+        const date = w.drawnAt
+          ? new Date(w.drawnAt.seconds * 1000).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })
+          : 'Recently';
+
+        if (dateEl) dateEl.textContent = '🎉 Drawn on ' + date;
+
+        // Support both new dual-winner fields and old single-winner fields
+        const monthlyName = w.monthlyUsername || w.username || '???';
+        const monthlyUID  = w.monthlyUID      || w.uid      || '???';
+        const weeklyName  = w.weeklyUsername  || '—';
+        const weeklyUID   = w.weeklyUID       || '—';
+
+        if (duoEl) duoEl.innerHTML = `
+          <div class="winner-duo-card monthly">
+            <div class="wdc-badge">Monthly Pass 💎💎</div>
+            <div class="wdc-icon">👑</div>
+            <div class="wdc-name">${monthlyName}</div>
+            <div class="wdc-uid">UID: ${monthlyUID}</div>
+            <div class="wdc-drawn">🏆 Winner!</div>
+          </div>
+          <div class="winner-duo-card weekly">
+            <div class="wdc-badge">Weekly Pass 💎</div>
+            <div class="wdc-icon">🏆</div>
+            <div class="wdc-name">${weeklyName}</div>
+            <div class="wdc-uid">UID: ${weeklyUID}</div>
+            <div class="wdc-drawn">🏆 Winner!</div>
+          </div>
         `;
+      } else {
+        if (dateEl) dateEl.textContent = 'No draw yet — stay tuned!';
       }
     } catch(e) { console.error('Could not load winner:', e); }
   }
   loadLatestWinner();
 
-  // Tab switcher
+  // ── LIVE PUBLIC ENTRY COUNT ───────────────────────────────────────────────
+  async function loadEntryCount() {
+    try {
+      const snap = await getDocs(collection(db, 'entries'));
+      const el = document.getElementById('publicEntryCount');
+      if (el) el.textContent = snap.size;
+    } catch(e) { console.error('Could not load entry count:', e); }
+  }
+  loadEntryCount();
+
+  // ── TAB SWITCHER ─────────────────────────────────────────────────────────
   window.showTab = function(tab) {
     document.querySelectorAll('.ff-list').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.ff-tab').forEach(el => el.classList.remove('active'));
@@ -432,36 +603,24 @@
     document.querySelector('.ff-tab.' + tab).classList.add('active');
   };
 
-  // Submit
+  // ── SUBMIT ───────────────────────────────────────────────────────────────
   window.submitEntry = async function() {
     const username = document.getElementById('username').value.trim();
     const uid = document.getElementById('uid').value.trim();
-    if (!username || !uid) {
-      alert('Bro fill in BOTH fields! The giveaway gods demand it 😤');
-      return;
-    }
+    if (!username || !uid) { alert('Bro fill in BOTH fields! The giveaway gods demand it 😤'); return; }
     const btn = document.getElementById('submitBtn');
     btn.disabled = true;
     btn.textContent = '⏳ Checking entry...';
     try {
-      // Duplicate check — same UID or same username
       const dupUID = await getDocs(query(collection(db, 'entries'), where('uid', '==', uid)));
-      if (!dupUID.empty) {
-        alert('🚫 This UID has already entered!\nOnly one entry per person is allowed 😊');
-        btn.disabled = false;
-        btn.textContent = '🎰 ENTER NOW — IT\'S FREE!';
-        return;
-      }
+      if (!dupUID.empty) { alert('🚫 This UID has already entered!\nOnly one entry per person is allowed 😊'); btn.disabled = false; btn.textContent = "🎰 ENTER NOW — IT'S FREE!"; return; }
       const dupUser = await getDocs(query(collection(db, 'entries'), where('username', '==', username)));
-      if (!dupUser.empty) {
-        alert('🚫 This username has already entered!\nOnly one entry per person is allowed 😊');
-        btn.disabled = false;
-        btn.textContent = '🎰 ENTER NOW — IT\'S FREE!';
-        return;
-      }
-
+      if (!dupUser.empty) { alert('🚫 This username has already entered!\nOnly one entry per person is allowed 😊'); btn.disabled = false; btn.textContent = "🎰 ENTER NOW — IT'S FREE!"; return; }
       btn.textContent = '⏳ Sending your vibes...';
       await addDoc(collection(db, 'entries'), { username, uid, timestamp: serverTimestamp() });
+      // Update public counter live
+      const countEl = document.getElementById('publicEntryCount');
+      if (countEl && countEl.textContent !== '—') countEl.textContent = parseInt(countEl.textContent || '0') + 1;
       document.getElementById('formCard').style.display = 'none';
       const ty = document.getElementById('thankyou');
       ty.style.display = 'flex';
@@ -470,23 +629,19 @@
     } catch (err) {
       console.error('Firebase error:', err);
       let msg = 'Something went wrong 😢\n\n';
-      if (err.code === 'permission-denied') {
-        msg += '🔒 Firestore rules are blocking writes.';
-      } else if (err.message && err.message.includes('network')) {
-        msg += '🌐 Network error — check your internet.';
-      } else {
-        msg += 'Error: ' + (err.message || err.code || 'Unknown');
-      }
+      if (err.code === 'permission-denied') msg += '🔒 Firestore rules are blocking writes.';
+      else if (err.message && err.message.includes('network')) msg += '🌐 Network error — check your internet.';
+      else msg += 'Error: ' + (err.message || err.code || 'Unknown');
       alert(msg);
       btn.disabled = false;
-      btn.textContent = '🎰 ENTER NOW — IT\'S FREE!';
+      btn.textContent = "🎰 ENTER NOW — IT'S FREE!";
     }
   };
 
   function launchConfetti() {
     const wrap = document.getElementById('confetti');
     wrap.innerHTML = '';
-    const colors = ['#D4AA3C','#4FC3F7','#CE93D8','#69F0AE','#F48FB1','#FFB74D','#fff'];
+    const colors = ['#B8820A','#1a7ab8','#8e44ad','#1a9e60','#c0396e','#d47000','#fff'];
     for (let i = 0; i < 120; i++) {
       const c = document.createElement('div');
       c.className = 'cp';
@@ -497,5 +652,6 @@
     setTimeout(() => wrap.innerHTML = '', 5000);
   }
 </script>
+
 </body>
 </html>
