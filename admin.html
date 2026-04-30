@@ -5,150 +5,415 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dream2Moon — Admin Panel</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --gold: #D4AA3C;
-    --blue: #4FC3F7;
-    --purple: #CE93D8;
-    --green: #69F0AE;
-    --red: #e74c3c;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { min-height: 100vh; font-family: 'Exo 2', sans-serif; background: #030810; color: #fff; overflow-x: hidden; }
-  .bg { position: fixed; inset: 0; z-index: 0; background: radial-gradient(ellipse at 20% 30%, rgba(212,170,60,0.1) 0%, transparent 50%), radial-gradient(ellipse at 80% 70%, rgba(79,195,247,0.08) 0%, transparent 50%), #030810; }
-  .stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-  .star { position: absolute; border-radius: 50%; background: #fff; animation: twinkle var(--dur) ease-in-out infinite; opacity: 0; }
-  @keyframes twinkle { 0%,100%{opacity:0} 50%{opacity:var(--op)} }
+:root {
+  --navy: #020b18;
+  --navy2: #071428;
+  --navy3: #0a1e38;
+  --navy4: #0d2548;
+  --gold: #F5C518;
+  --gold2: #ffd966;
+  --blue: #38bdf8;
+  --blue2: #7dd3fc;
+  --cyan: #00e5ff;
+  --purple: #a78bfa;
+  --green: #34d399;
+  --pink: #f472b6;
+  --orange: #fb923c;
+  --red: #f87171;
+  --text: #e8f4fd;
+  --dim: rgba(232,244,253,0.4);
+  --card: rgba(7,20,40,0.9);
+  --border: rgba(56,189,248,0.12);
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body {
+  min-height: 100vh;
+  font-family: 'Rajdhani', sans-serif;
+  background: var(--navy);
+  color: var(--text);
+  overflow-x: hidden;
+}
 
-#loginScreen { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; gap: 20px; }
-.lock-icon { font-size: 56px; animation: bounce 2s ease infinite; }
-@keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-.login-title { font-family: ‘Orbitron’, sans-serif; font-size: 18px; font-weight: 900; color: var(–gold); letter-spacing: 3px; text-align: center; }
-.login-card { width: 100%; max-width: 360px; background: rgba(255,255,255,0.03); border: 1px solid rgba(212,170,60,0.2); border-radius: 20px; padding: 30px 24px; display: flex; flex-direction: column; gap: 16px; position: relative; overflow: hidden; }
-.login-card::before { content: ‘’; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(–gold), var(–blue), var(–gold)); background-size: 200%; animation: shimmer 3s linear infinite; }
-@keyframes shimmer { to { background-position: 200% center; } }
-.login-input { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 18px; font-family: ‘Exo 2’, sans-serif; font-size: 15px; color: #fff; outline: none; transition: all 0.3s; }
-.login-input:focus { border-color: var(–gold); box-shadow: 0 0 0 3px rgba(212,170,60,0.1); }
+/* Background */
+.bg-space {
+position: fixed; inset: 0; z-index: 0;
+background:
+radial-gradient(ellipse 800px 500px at 50% 0%, rgba(10,30,60,0.9), transparent 70%),
+radial-gradient(ellipse 600px 400px at 10% 50%, rgba(2,20,60,0.5), transparent),
+radial-gradient(ellipse 500px 400px at 90% 60%, rgba(0,15,50,0.5), transparent),
+linear-gradient(180deg, #020b18 0%, #040f24 50%, #020b18 100%);
+}
+.nebula {
+position: fixed; inset: 0; z-index: 0; pointer-events: none;
+background:
+radial-gradient(ellipse 600px 300px at 20% 20%, rgba(56,189,248,0.04), transparent),
+radial-gradient(ellipse 400px 300px at 80% 70%, rgba(167,139,250,0.03), transparent);
+}
+.stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.star { position: absolute; border-radius: 50%; background: #fff; opacity: 0; animation: twinkle var(–dur) ease-in-out infinite; }
+@keyframes twinkle { 0%,100%{opacity:0} 50%{opacity:var(–op)} }
+
+/* ═══ LOGIN SCREEN ═══ */
+#loginScreen {
+position: relative; z-index: 1;
+min-height: 100vh; display: flex; flex-direction: column;
+align-items: center; justify-content: center; padding: 20px; gap: 20px;
+}
+.login-moon {
+width: 80px; height: 80px; border-radius: 50%;
+background: radial-gradient(circle at 38% 35%, #ffe566, #f5c518 40%, #c47f00 70%, #6b3d00);
+box-shadow: 0 0 40px rgba(245,197,24,0.4), 0 0 80px rgba(245,197,24,0.15);
+position: relative; animation: moonFloat 3s ease-in-out infinite;
+}
+.login-moon::after {
+content: ‘’;
+position: absolute; inset: 0; border-radius: 50%;
+background: radial-gradient(circle at 65% 40%, rgba(30,10,0,0.7), transparent 60%);
+}
+@keyframes moonFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+.login-glow {
+position: absolute; inset: -20px; border-radius: 50%;
+background: radial-gradient(circle, rgba(245,197,24,0.15), transparent 70%);
+animation: glowPulse 2.5s ease-in-out infinite;
+}
+@keyframes glowPulse { 0%,100%{opacity:0.5} 50%{opacity:1} }
+
+.login-title {
+font-family: ‘Orbitron’, sans-serif; font-size: 18px; font-weight: 900;
+color: var(–gold); letter-spacing: 4px; text-align: center;
+text-shadow: 0 0 30px rgba(245,197,24,0.3);
+}
+.login-sub { font-size: 10px; letter-spacing: 4px; color: var(–dim); text-transform: uppercase; text-align: center; margin-top: -12px; }
+
+.login-card {
+width: 100%; max-width: 360px;
+background: linear-gradient(135deg, rgba(7,20,40,0.95), rgba(10,25,60,0.9));
+border: 1px solid rgba(56,189,248,0.15);
+border-radius: 22px; padding: 30px 24px;
+display: flex; flex-direction: column; gap: 16px;
+position: relative; overflow: hidden;
+box-shadow: 0 20px 60px rgba(0,0,30,0.6), inset 0 1px 0 rgba(56,189,248,0.1);
+}
+.login-card::before {
+content: ‘’; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+background: linear-gradient(90deg, var(–gold), var(–blue), var(–cyan), var(–gold));
+background-size: 200%; animation: shimmer 3s linear infinite;
+}
+@keyframes shimmer { to{ background-position: 200% center } }
+
+.login-input {
+width: 100%;
+background: rgba(56,189,248,0.04);
+border: 1px solid rgba(56,189,248,0.15);
+border-radius: 12px; padding: 14px 18px;
+font-family: ‘Rajdhani’, sans-serif; font-size: 15px; color: #fff;
+outline: none; transition: all 0.3s;
+}
+.login-input:focus {
+border-color: var(–gold);
+box-shadow: 0 0 0 3px rgba(245,197,24,0.1);
+background: rgba(245,197,24,0.03);
+}
 .login-input::placeholder { color: rgba(255,255,255,0.2); }
-.login-btn { padding: 16px; background: linear-gradient(135deg, var(–gold), #e6920a); border: none; border-radius: 12px; font-family: ‘Orbitron’, sans-serif; font-size: 14px; font-weight: 900; color: #000; letter-spacing: 2px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 20px rgba(212,170,60,0.3); }
-.login-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(212,170,60,0.5); }
-.login-error { color: var(–red); font-size: 13px; text-align: center; display: none; }
+.login-btn {
+padding: 16px;
+background: linear-gradient(135deg, #1a5fa0, var(–gold), #1a5fa0);
+background-size: 300%; border: none; border-radius: 12px;
+font-family: ‘Orbitron’, sans-serif; font-size: 14px; font-weight: 900;
+color: #fff; letter-spacing: 2px; cursor: pointer; transition: all 0.3s;
+box-shadow: 0 4px 25px rgba(56,189,248,0.2);
+animation: btnShimmer 4s linear infinite;
+}
+@keyframes btnShimmer { to{background-position:200% center} }
+.login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(56,189,248,0.35); }
+.login-error { color: var(–red); font-size: 13px; text-align: center; display: none; font-weight: 600; }
 
-#adminPanel { display: none; position: relative; z-index: 1; max-width: 680px; margin: 0 auto; padding: 30px 20px 60px; flex-direction: column; gap: 24px; }
-.admin-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-.admin-brand { font-family: ‘Orbitron’, sans-serif; font-size: 18px; font-weight: 900; color: var(–gold); letter-spacing: 3px; }
-.logout-btn { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.3); border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 700; color: var(–red); cursor: pointer; letter-spacing: 1px; transition: all 0.3s; }
-.logout-btn:hover { background: rgba(231,76,60,0.2); }
-.admin-sub { font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 3px; text-transform: uppercase; }
+/* ═══ ADMIN PANEL ═══ */
+#adminPanel {
+display: none; position: relative; z-index: 1;
+max-width: 700px; margin: 0 auto;
+padding: 30px 20px 60px;
+flex-direction: column; gap: 22px;
+}
+.admin-header {
+display: flex; align-items: center; justify-content: space-between;
+flex-wrap: wrap; gap: 12px;
+padding: 20px 22px;
+background: linear-gradient(135deg, rgba(7,20,40,0.95), rgba(10,25,60,0.9));
+border: 1px solid rgba(56,189,248,0.15);
+border-radius: 18px; position: relative; overflow: hidden;
+box-shadow: 0 8px 30px rgba(0,0,30,0.4);
+}
+.admin-header::before {
+content: ‘’; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+background: linear-gradient(90deg, var(–blue), var(–cyan), var(–gold), var(–purple), var(–blue));
+background-size: 200%; animation: shimmer 4s linear infinite;
+}
+.admin-brand {
+font-family: ‘Orbitron’, sans-serif; font-size: 18px; font-weight: 900;
+color: var(–gold); letter-spacing: 3px;
+text-shadow: 0 0 20px rgba(245,197,24,0.3);
+}
+.admin-sub { font-size: 10px; color: var(–dim); letter-spacing: 3px; text-transform: uppercase; margin-top: 3px; }
+.logout-btn {
+background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25);
+border-radius: 10px; padding: 9px 18px;
+font-size: 12px; font-weight: 700; color: var(–red); cursor: pointer;
+letter-spacing: 1px; transition: all 0.3s; font-family: ‘Rajdhani’, sans-serif;
+}
+.logout-btn:hover { background: rgba(248,113,113,0.18); transform: translateY(-1px); }
+
+/* Stats */
 .stats-row { display: flex; gap: 12px; flex-wrap: wrap; }
-.stat-card { flex: 1; min-width: 100px; background: rgba(255,255,255,0.03); border-radius: 14px; padding: 16px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
-.stat-num { font-family: ‘Orbitron’, sans-serif; font-size: 28px; font-weight: 900; color: var(–gold); }
-.stat-label { font-size: 10px; color: rgba(255,255,255,0.35); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; }
-.card { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 22px; }
-.card-header { font-size: 11px; font-weight: 700; letter-spacing: 3px; color: rgba(255,255,255,0.35); text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
-.entries-list { display: flex; flex-direction: column; gap: 8px; max-height: 300px; overflow-y: auto; }
-.entry-item { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 10px 14px; animation: slideIn 0.3s ease; }
+.stat-card {
+flex: 1; min-width: 100px;
+background: linear-gradient(135deg, rgba(7,20,40,0.95), rgba(13,37,72,0.9));
+border-radius: 16px; padding: 18px; text-align: center;
+border: 1px solid var(–border);
+box-shadow: 0 4px 20px rgba(0,0,30,0.3), inset 0 1px 0 rgba(56,189,248,0.08);
+position: relative; overflow: hidden;
+}
+.stat-card::before {
+content:’’; position:absolute; top:0; left:0; right:0; height:2px;
+background:linear-gradient(90deg,var(–blue),var(–cyan));
+}
+.stat-num {
+font-family: ‘Orbitron’, sans-serif; font-size: 32px; font-weight: 900; color: var(–gold);
+text-shadow: 0 0 20px rgba(245,197,24,0.4);
+}
+.stat-label { font-size: 10px; color: var(–dim); letter-spacing: 2px; text-transform: uppercase; margin-top: 5px; font-weight: 600; }
+
+/* Cards */
+.card {
+width: 100%;
+background: linear-gradient(135deg, rgba(7,20,40,0.92), rgba(10,25,55,0.88));
+border: 1px solid var(–border);
+border-radius: 20px; padding: 22px;
+position: relative; overflow: hidden;
+box-shadow: 0 8px 32px rgba(0,0,30,0.4), inset 0 1px 0 rgba(56,189,248,0.06);
+}
+.card::before {
+content:’’; position:absolute; top:0; left:0; right:0; height:2px;
+background: linear-gradient(90deg, var(–blue), var(–cyan), var(–purple));
+background-size: 200%; animation: shimmer 4s linear infinite;
+}
+.card-header {
+font-size: 11px; font-weight: 700; letter-spacing: 3px;
+color: var(–dim); text-transform: uppercase;
+margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between;
+font-family: ‘Rajdhani’, sans-serif;
+}
+
+/* Entries */
+.entries-list { display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; }
+.entry-item {
+display: flex; align-items: center; gap: 12px;
+background: rgba(56,189,248,0.03); border: 1px solid rgba(56,189,248,0.08);
+border-radius: 12px; padding: 12px 16px;
+animation: slideIn 0.3s ease; transition: border-color 0.2s;
+}
+.entry-item:hover { border-color: rgba(56,189,248,0.2); }
 @keyframes slideIn { from{transform:translateX(-10px);opacity:0} to{transform:translateX(0);opacity:1} }
-.entry-num { font-family: ‘Orbitron’, sans-serif; font-size: 10px; color: var(–gold); min-width: 28px; }
+.entry-num { font-family:‘Orbitron’,sans-serif; font-size:10px; color:var(–gold); min-width:28px; }
 .entry-info { flex: 1; }
 .entry-username { font-size: 14px; font-weight: 700; color: #fff; }
-.entry-uid { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 2px; }
-.entry-time { font-size: 10px; color: rgba(255,255,255,0.2); text-align: right; }
-.no-entries { text-align: center; color: rgba(255,255,255,0.25); font-size: 14px; padding: 20px; }
+.entry-uid { font-size: 11px; color: var(–dim); margin-top: 2px; }
+.entry-time { font-size: 10px; color: rgba(232,244,253,0.2); text-align: right; }
+.no-entries { text-align: center; color: var(–dim); font-size: 14px; padding: 24px; }
+
+/* Copy section */
 .copy-section { display: flex; flex-direction: column; gap: 10px; }
-.copy-textarea { width: 100%; min-height: 100px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px; font-family: ‘Exo 2’, sans-serif; font-size: 12px; color: rgba(255,255,255,0.7); resize: vertical; outline: none; }
-.copy-btn { padding: 12px 20px; border-radius: 10px; font-family: ‘Orbitron’, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2px; cursor: pointer; transition: all 0.3s; border: none; }
-.copy-btn-blue { background: rgba(79,195,247,0.12); border: 1px solid rgba(79,195,247,0.3); color: var(–blue); }
-.copy-btn-blue:hover { background: rgba(79,195,247,0.2); }
-.copy-btn-green { background: rgba(105,240,174,0.1); border: 1px solid rgba(105,240,174,0.25); color: var(–green); }
-.copy-btn-green:hover { background: rgba(105,240,174,0.18); }
+.copy-textarea {
+width: 100%; min-height: 100px;
+background: rgba(0,0,0,0.25); border: 1px solid rgba(56,189,248,0.1);
+border-radius: 12px; padding: 14px;
+font-family: ‘Rajdhani’, sans-serif; font-size: 13px; color: rgba(232,244,253,0.7);
+resize: vertical; outline: none;
+}
+.copy-btn {
+padding: 12px 20px; border-radius: 10px;
+font-family: ‘Orbitron’, sans-serif; font-size: 11px; font-weight: 700;
+letter-spacing: 2px; cursor: pointer; transition: all 0.3s; border: none;
+}
+.copy-btn-blue { background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.25); color:var(–blue); }
+.copy-btn-blue:hover { background:rgba(56,189,248,0.16); transform:translateY(-1px); }
+.copy-btn-green { background:rgba(52,211,153,0.08); border:1px solid rgba(52,211,153,0.22); color:var(–green); }
+.copy-btn-green:hover { background:rgba(52,211,153,0.16); transform:translateY(-1px); }
 .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
-.manual-input { width: 100%; min-height: 80px; background: rgba(0,0,0,0.3); border: 1px solid rgba(212,170,60,0.2); border-radius: 10px; padding: 14px; font-family: ‘Exo 2’, sans-serif; font-size: 13px; color: rgba(255,255,255,0.8); resize: vertical; outline: none; transition: all 0.3s; }
-.manual-input:focus { border-color: var(–gold); }
-.manual-input::placeholder { color: rgba(255,255,255,0.2); }
-.add-manual-btn { padding: 12px 20px; background: rgba(212,170,60,0.12); border: 1px solid rgba(212,170,60,0.3); border-radius: 10px; font-family: ‘Orbitron’, sans-serif; font-size: 11px; font-weight: 700; color: var(–gold); letter-spacing: 2px; cursor: pointer; transition: all 0.3s; }
-.add-manual-btn:hover { background: rgba(212,170,60,0.2); }
 
-/* DRAW SECTION */
-.pick-btn { width: 100%; padding: 20px; background: linear-gradient(135deg, var(–gold), #e6920a, var(–gold)); background-size: 200%; border: none; border-radius: 14px; font-family: ‘Orbitron’, sans-serif; font-size: 16px; font-weight: 900; color: #000; letter-spacing: 3px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 30px rgba(212,170,60,0.4); animation: btnShimmer 3s linear infinite; }
-@keyframes btnShimmer { to { background-position: 200% center; } }
-.pick-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 40px rgba(212,170,60,0.6); }
-.pick-btn:disabled { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.3); box-shadow: none; transform: none; animation: none; cursor: not-allowed; }
+/* Manual input */
+.manual-input {
+width: 100%; min-height: 80px;
+background: rgba(245,197,24,0.02); border: 1px solid rgba(245,197,24,0.12);
+border-radius: 12px; padding: 14px;
+font-family: ‘Rajdhani’, sans-serif; font-size: 13px; color: rgba(232,244,253,0.8);
+resize: vertical; outline: none; transition: all 0.3s;
+}
+.manual-input:focus { border-color: rgba(245,197,24,0.35); box-shadow: 0 0 0 3px rgba(245,197,24,0.06); }
+.manual-input::placeholder { color: rgba(255,255,255,0.18); }
+.add-manual-btn {
+padding: 13px 22px;
+background: rgba(245,197,24,0.08); border: 1px solid rgba(245,197,24,0.25);
+border-radius: 12px; font-family: ‘Orbitron’, sans-serif; font-size: 11px; font-weight: 700;
+color: var(–gold); letter-spacing: 2px; cursor: pointer; transition: all 0.3s;
+}
+.add-manual-btn:hover { background:rgba(245,197,24,0.16); transform:translateY(-1px); }
 
-/* Rolling: show 2 slots simultaneously */
-.rolling-box { background: rgba(0,0,0,0.4); border: 1px solid rgba(79,195,247,0.2); border-radius: 14px; padding: 20px; text-align: center; display: none; flex-direction: column; gap: 12px; margin-top: 16px; }
-.rolling-slot { display: flex; flex-direction: column; gap: 4px; }
-.rolling-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; }
+/* Pick button */
+.pick-btn {
+width: 100%; padding: 22px;
+background: linear-gradient(135deg, #0e4fa0, var(–gold), #0e4fa0);
+background-size: 300%; border: none; border-radius: 16px;
+font-family: ‘Orbitron’, sans-serif; font-size: 16px; font-weight: 900;
+color: #fff; letter-spacing: 3px; cursor: pointer; transition: all 0.3s;
+box-shadow: 0 4px 30px rgba(56,189,248,0.2);
+animation: btnShimmer 4s linear infinite;
+position: relative; overflow: hidden;
+}
+.pick-btn::before {
+content:’’;
+position:absolute; inset:0;
+background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,0.05) 50%, transparent 70%);
+animation: sweepShine 3s ease-in-out infinite;
+}
+@keyframes sweepShine { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
+.pick-btn:hover { transform:translateY(-3px); box-shadow:0 10px 50px rgba(56,189,248,0.35); }
+.pick-btn:disabled { background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.2); box-shadow:none; transform:none; animation:none; cursor:not-allowed; }
+
+/* Rolling box */
+.rolling-box {
+background: rgba(0,0,0,0.3); border: 1px solid rgba(56,189,248,0.2);
+border-radius: 16px; padding: 22px; text-align: center;
+display: none; flex-direction: column; gap: 14px; margin-top: 18px;
+box-shadow: 0 0 30px rgba(56,189,248,0.08);
+}
+.rolling-slot { display: flex; flex-direction: column; gap: 5px; }
+.rolling-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; font-weight: 700; }
 .rolling-label.monthly { color: var(–gold); }
 .rolling-label.weekly  { color: var(–blue); }
-.rolling-name { font-family: ‘Orbitron’, sans-serif; font-size: clamp(16px,4vw,22px); font-weight: 700; animation: flicker 0.1s infinite; }
-.rolling-name.monthly { color: var(–gold); }
-.rolling-name.weekly  { color: var(–blue); }
-@keyframes flicker { 0%,100%{opacity:1} 50%{opacity:0.5} }
+.rolling-name {
+font-family: ‘Orbitron’, sans-serif; font-size: clamp(16px,4vw,24px); font-weight: 700;
+animation: flicker 0.1s infinite;
+}
+.rolling-name.monthly { color: var(–gold); text-shadow: 0 0 20px rgba(245,197,24,0.5); }
+.rolling-name.weekly  { color: var(–blue); text-shadow: 0 0 20px rgba(56,189,248,0.5); }
+@keyframes flicker { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-/* Winner display: side by side cards */
-.winner-box { display: none; flex-direction: column; align-items: center; gap: 16px; margin-top: 16px; animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+/* Winner box */
+.winner-box {
+display: none; flex-direction: column; align-items: center; gap: 18px;
+margin-top: 18px; animation: popIn 0.6s cubic-bezier(.34,1.56,.64,1);
+}
 @keyframes popIn { from{transform:scale(0.7);opacity:0} to{transform:scale(1);opacity:1} }
-.winner-duo { display: flex; gap: 12px; width: 100%; }
-.winner-duo-card { flex: 1; border-radius: 16px; padding: 18px 12px; text-align: center; }
-.winner-duo-card.monthly { background: linear-gradient(135deg, rgba(212,170,60,0.12), rgba(212,170,60,0.05)); border: 2px solid rgba(212,170,60,0.5); }
-.winner-duo-card.weekly  { background: linear-gradient(135deg, rgba(79,195,247,0.1), rgba(79,195,247,0.04)); border: 2px solid rgba(79,195,247,0.4); }
-.wdc-trophy { font-size: 36px; margin-bottom: 6px; }
-.wdc-badge { display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; margin-bottom: 8px; }
-.monthly .wdc-badge { background: rgba(212,170,60,0.2); color: var(–gold); }
-.weekly  .wdc-badge { background: rgba(79,195,247,0.15); color: var(–blue); }
-.wdc-name { font-family: ‘Orbitron’, sans-serif; font-size: clamp(13px,3.5vw,18px); font-weight: 900; margin-bottom: 4px; word-break: break-all; }
-.monthly .wdc-name { color: var(–gold); text-shadow: 0 0 20px rgba(212,170,60,0.6); }
-.weekly  .wdc-name { color: var(–blue); text-shadow: 0 0 20px rgba(79,195,247,0.4); }
-.wdc-uid { font-size: 11px; color: rgba(255,255,255,0.4); }
+.winner-duo { display: flex; gap: 14px; width: 100%; }
+.winner-duo-card {
+flex: 1; border-radius: 18px; padding: 20px 14px; text-align: center;
+position: relative; overflow: hidden;
+}
+.winner-duo-card.monthly {
+background: linear-gradient(160deg, rgba(245,197,24,0.1), rgba(251,146,60,0.05));
+border: 2px solid rgba(245,197,24,0.4);
+box-shadow: 0 0 30px rgba(245,197,24,0.1);
+}
+.winner-duo-card.weekly {
+background: linear-gradient(160deg, rgba(56,189,248,0.08), rgba(167,139,250,0.04));
+border: 2px solid rgba(56,189,248,0.35);
+box-shadow: 0 0 30px rgba(56,189,248,0.1);
+}
+.winner-duo-card.monthly::after { content:’’; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(–gold),transparent); }
+.winner-duo-card.weekly::after  { content:’’; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(–blue),transparent); }
+.wdc-trophy { font-size: 40px; margin-bottom: 8px; }
+.wdc-badge {
+display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 1px;
+text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 10px;
+}
+.monthly .wdc-badge { background: rgba(245,197,24,0.15); color: var(–gold); }
+.weekly  .wdc-badge { background: rgba(56,189,248,0.12); color: var(–blue); }
+.wdc-name {
+font-family: ‘Orbitron’, sans-serif; font-size: clamp(13px,3.5vw,18px); font-weight: 900;
+margin-bottom: 5px; word-break: break-all;
+}
+.monthly .wdc-name { color: var(–gold); text-shadow: 0 0 25px rgba(245,197,24,0.6); }
+.weekly  .wdc-name { color: var(–blue); text-shadow: 0 0 25px rgba(56,189,248,0.5); }
+.wdc-uid { font-size: 11px; color: var(–dim); }
 
-.end-btn { padding: 14px 32px; background: linear-gradient(135deg, #FF5252, #c0392b); border: none; border-radius: 10px; font-family: ‘Orbitron’, sans-serif; font-size: 13px; font-weight: 900; color: #fff; letter-spacing: 2px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 20px rgba(255,82,82,0.4); }
-.end-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(255,82,82,0.6); }
-.end-btn:disabled { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.3); box-shadow: none; transform: none; cursor: not-allowed; }
+.end-btn {
+padding: 15px 36px;
+background: linear-gradient(135deg, #991b1b, #dc2626);
+border: none; border-radius: 12px;
+font-family: ‘Orbitron’, sans-serif; font-size: 13px; font-weight: 900;
+color: #fff; letter-spacing: 2px; cursor: pointer; transition: all 0.3s;
+box-shadow: 0 4px 24px rgba(220,38,38,0.35);
+}
+.end-btn:hover { transform:translateY(-2px); box-shadow:0 8px 40px rgba(220,38,38,0.5); }
+.end-btn:disabled { background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.25); box-shadow:none; transform:none; cursor:not-allowed; }
 
-.history-list { display: flex; flex-direction: column; gap: 8px; max-height: 240px; overflow-y: auto; }
-.history-item { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); border-radius: 10px; padding: 10px 14px; font-size: 13px; flex-wrap: wrap; }
+/* History */
+.history-list { display:flex; flex-direction:column; gap:8px; max-height:260px; overflow-y:auto; }
+.history-item {
+display:flex; align-items:center; gap:10px;
+background:rgba(56,189,248,0.02); border:1px solid rgba(56,189,248,0.06);
+border-radius:12px; padding:11px 16px; font-size:13px; flex-wrap:wrap;
+transition: border-color 0.2s;
+}
+.history-item:hover { border-color: rgba(56,189,248,0.15); }
 .h-num { font-family:‘Orbitron’,sans-serif; font-size:10px; color:var(–gold); min-width:24px; }
-.h-badge { font-size:9px; font-weight:700; letter-spacing:1px; padding:2px 8px; border-radius:8px; }
-.h-badge.monthly { background:rgba(212,170,60,.15); color:var(–gold); }
-.h-badge.weekly  { background:rgba(79,195,247,.12); color:var(–blue); }
+.h-badge { font-size:9px; font-weight:700; letter-spacing:1px; padding:3px 9px; border-radius:8px; }
+.h-badge.monthly { background:rgba(245,197,24,0.12); color:var(–gold); }
+.h-badge.weekly  { background:rgba(56,189,248,0.1); color:var(–blue); }
 .h-name { font-weight:700; }
-.h-uid { font-size:11px; color:rgba(255,255,255,0.35); }
+.h-uid { font-size:11px; color:var(–dim); }
 
+/* Scrollbar */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(212,170,60,0.3); border-radius: 2px; }
+::-webkit-scrollbar-thumb { background: rgba(56,189,248,0.25); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(56,189,248,0.4); }
 
-.confetti-wrap { position: fixed; inset: 0; pointer-events: none; z-index: 999; overflow: hidden; }
-.cp { position:absolute; top:-10px; animation: fall var(–fd) ease-in forwards; border-radius: var(–br); }
-@keyframes fall { 0%{transform:translateY(0) rotate(0deg) translateX(0);opacity:1} 100%{transform:translateY(110vh) rotate(720deg) translateX(var(–dx));opacity:0} }
+/* Divider */
+.divider { width:100%; height:1px; background:linear-gradient(90deg,transparent,rgba(56,189,248,0.2),transparent); }
 
-.refresh-btn { background: rgba(105,240,174,0.08); border: 1px solid rgba(105,240,174,0.2); border-radius: 8px; padding: 6px 14px; font-size: 11px; font-weight: 700; color: var(–green); cursor: pointer; letter-spacing: 1px; transition: all 0.3s; }
-.refresh-btn:hover { background: rgba(105,240,174,0.15); }
-.divider { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, rgba(212,170,60,0.3), transparent); }
+/* Refresh btn */
+.refresh-btn {
+background:rgba(52,211,153,0.07); border:1px solid rgba(52,211,153,0.18);
+border-radius:8px; padding:7px 16px; font-size:11px; font-weight:700;
+color:var(–green); cursor:pointer; letter-spacing:1px; transition:all .3s;
+font-family:‘Rajdhani’,sans-serif;
+}
+.refresh-btn:hover { background:rgba(52,211,153,0.15); }
+
+/* Confetti */
+.confetti-wrap { position:fixed; inset:0; pointer-events:none; z-index:999; overflow:hidden; }
+.cp { position:absolute; top:-10px; animation:fall var(–fd) ease-in forwards; border-radius:var(–br); }
+@keyframes fall { 0%{transform:translateY(0) rotate(0) translateX(0);opacity:1} 100%{transform:translateY(110vh) rotate(720deg) translateX(var(–dx));opacity:0} }
 </style>
 
 </head>
 <body>
-<div class="bg"></div>
+<div class="bg-space"></div>
+<div class="nebula"></div>
 <div class="stars" id="stars"></div>
 <div class="confetti-wrap" id="confetti"></div>
 
-<!-- Login -->
+<!-- ═══ LOGIN ═══ -->
 
 <div id="loginScreen">
-  <div class="lock-icon">🔐</div>
+  <div class="login-moon" style="position:relative;">
+    <div class="login-glow"></div>
+  </div>
   <div class="login-title">DREAM2MOON ADMIN</div>
+  <div class="login-sub">🔐 Secure Access Portal</div>
   <div class="login-card">
-    <input class="login-input" type="text" id="loginUser" placeholder="Username">
+    <input class="login-input" type="text" id="loginUser" placeholder="Username" autocomplete="off">
     <input class="login-input" type="password" id="loginPass" placeholder="Password">
     <div class="login-error" id="loginError">❌ Wrong username or password</div>
-    <button class="login-btn" onclick="doLogin()">🚀 LOGIN</button>
+    <button class="login-btn" onclick="doLogin()">🚀 ENTER THE PANEL</button>
   </div>
 </div>
 
-<!-- Admin Panel -->
+<!-- ═══ ADMIN PANEL ═══ -->
 
 <div id="adminPanel">
 
@@ -157,8 +422,8 @@
       <div class="admin-brand">⚙️ ADMIN PANEL</div>
       <div class="admin-sub">Dream2Moon Giveaway Manager</div>
     </div>
-    <div style="display:flex;gap:8px;">
-      <a href="index.html" style="background:rgba(79,195,247,0.1);border:1px solid rgba(79,195,247,0.3);border-radius:8px;padding:8px 16px;font-size:12px;font-weight:700;color:#4FC3F7;text-decoration:none;letter-spacing:1px;">🏠 Main Page</a>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <a href="index.html" style="background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.25);border-radius:10px;padding:9px 18px;font-size:12px;font-weight:700;color:var(--blue);text-decoration:none;letter-spacing:1px;font-family:'Rajdhani',sans-serif;transition:all 0.3s;" onmouseover="this.style.background='rgba(56,189,248,0.16)'" onmouseout="this.style.background='rgba(56,189,248,0.08)'">🏠 Main Page</a>
       <button class="logout-btn" onclick="doLogout()">🚪 Logout</button>
     </div>
   </div>
@@ -168,8 +433,8 @@
       <div class="stat-num" id="totalCount">0</div>
       <div class="stat-label">Total Entries</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-num" id="totalWins">0</div>
+    <div class="stat-card" style="--border:rgba(52,211,153,0.12);">
+      <div class="stat-num" style="color:var(--green);text-shadow:0 0 20px rgba(52,211,153,0.4);" id="totalWins">0</div>
       <div class="stat-label">Draws Done</div>
     </div>
   </div>
@@ -205,7 +470,7 @@
   <!-- Manual add -->
 
   <div class="card">
-    <div class="card-header">✏️ Add Entries Manually (Paste Multiple)</div>
+    <div class="card-header">✏️ Add Entries Manually</div>
     <div class="copy-section">
       <textarea class="manual-input" id="manualInput" placeholder="Paste usernames here, one per line:&#10;@username1&#10;@username2&#10;@username3"></textarea>
       <textarea class="manual-input" id="manualUIDs" placeholder="Paste UIDs here, one per line (match order above):&#10;123456&#10;789012&#10;345678" style="margin-top:8px"></textarea>
@@ -213,27 +478,25 @@
     </div>
   </div>
 
-  <!-- Pick 2 Winners -->
+  <!-- Pick Winners -->
 
   <div class="card">
     <div class="card-header">🎰 Pick 2 Winners — Monthly Pass 💎💎 &amp; Weekly Pass 💎</div>
     <button class="pick-btn" id="pickBtn" onclick="pickWinners()">🎲 DRAW BOTH WINNERS NOW!</button>
 
 ```
-<!-- Rolling slots for both winners simultaneously -->
 <div class="rolling-box" id="rollingBox">
   <div class="rolling-slot">
     <div class="rolling-label monthly">👑 Monthly Pass 💎💎</div>
     <div class="rolling-name monthly" id="rollingNameMonthly">...</div>
   </div>
-  <div style="height:1px;background:rgba(255,255,255,.08);"></div>
+  <div style="height:1px;background:rgba(56,189,248,0.1);"></div>
   <div class="rolling-slot">
     <div class="rolling-label weekly">🏆 Weekly Pass 💎</div>
     <div class="rolling-name weekly" id="rollingNameWeekly">...</div>
   </div>
 </div>
 
-<!-- Winner reveal: two cards side by side -->
 <div class="winner-box" id="winnerBox">
   <div class="winner-duo">
     <div class="winner-duo-card monthly">
@@ -278,17 +541,16 @@
     messagingSenderId: "172765828532",
     appId: "1:172765828532:web:d31a0b1dae8cc5752bcee1"
   };
-
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
   // Stars
   const sf = document.getElementById('stars');
-  for (let i = 0; i < 80; i++) {
+  for (let i = 0; i < 100; i++) {
     const s = document.createElement('div');
     s.className = 'star';
-    const size = Math.random()*2+0.5;
-    s.style.cssText = `width:${size}px;height:${size}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${2+Math.random()*4}s;--op:${0.3+Math.random()*0.7};animation-delay:${Math.random()*5}s;`;
+    const sz = Math.random()*2+0.3;
+    s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${2+Math.random()*5}s;--op:${0.15+Math.random()*0.55};animation-delay:${Math.random()*6}s;`;
     sf.appendChild(s);
   }
 
@@ -296,7 +558,6 @@
   let winnerHistory = [];
   let rolling = false;
 
-  // Login
   window.doLogin = function() {
     const u = document.getElementById('loginUser').value;
     const p = document.getElementById('loginPass').value;
@@ -320,7 +581,6 @@
     if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') window.doLogin();
   });
 
-  // Load entries
   window.loadEntries = async function() {
     const list = document.getElementById('entriesList');
     list.innerHTML = '<div class="no-entries">⏳ Loading...</div>';
@@ -355,7 +615,6 @@
     navigator.clipboard.writeText(area.value).then(() => alert('✅ Copied to clipboard!'));
   };
 
-  // Manual add
   window.addManualEntries = async function() {
     const usersRaw = document.getElementById('manualInput').value.trim();
     const uidsRaw  = document.getElementById('manualUIDs').value.trim();
@@ -377,30 +636,23 @@
     btn.textContent = '➕ Add These Entries'; btn.disabled = false;
   };
 
-  // ── PICK 2 WINNERS SIMULTANEOUSLY ───────────────────────────────────────────
   window.pickWinners = function() {
     if (rolling) return;
     if (allEntries.length < 2) { alert('Need at least 2 entries to pick 2 winners! 😊'); return; }
-
     rolling = true;
     const btn = document.getElementById('pickBtn');
     btn.disabled = true;
     document.getElementById('winnerBox').style.display = 'none';
-
-    // Pick 2 DIFFERENT random winners
     const pool = [...allEntries];
     const idx1 = Math.floor(Math.random() * pool.length);
     const monthlyWinner = pool.splice(idx1, 1)[0];
     const weeklyWinner  = pool[Math.floor(Math.random() * pool.length)];
-
     const rollingBox = document.getElementById('rollingBox');
     const rollingMonthly = document.getElementById('rollingNameMonthly');
     const rollingWeekly  = document.getElementById('rollingNameWeekly');
     rollingBox.style.display = 'flex';
-
     let count = 0;
     const totalRolls = 30 + Math.floor(Math.random()*15);
-
     const roll = setInterval(() => {
       const r1 = allEntries[Math.floor(Math.random()*allEntries.length)];
       const r2 = allEntries[Math.floor(Math.random()*allEntries.length)];
@@ -421,29 +673,21 @@
     document.getElementById('winnerUIDMonthly').textContent  = 'UID: ' + monthly.uid;
     document.getElementById('winnerNameWeekly').textContent  = weekly.username;
     document.getElementById('winnerUIDWeekly').textContent   = 'UID: ' + weekly.uid;
-
     const wb = document.getElementById('winnerBox');
     wb.style.display = 'flex';
-
     winnerHistory.unshift({ monthly, weekly });
     document.getElementById('totalWins').textContent = winnerHistory.length;
     updateHistory();
     launchConfetti();
-
-    // Save both winners to Firebase — index.html reads these fields
     try {
       await setDoc(doc(db, 'winners', 'latest'), {
-        monthlyUsername: monthly.username,
-        monthlyUID:      monthly.uid,
-        weeklyUsername:  weekly.username,
-        weeklyUID:       weekly.uid,
+        monthlyUsername: monthly.username, monthlyUID: monthly.uid,
+        weeklyUsername: weekly.username, weeklyUID: weekly.uid,
         drawnAt: serverTimestamp()
       });
-      console.log('✅ Both winners saved to Firebase');
     } catch(e) { console.error('Could not save winners:', e); }
   }
 
-  // End draw: clear all entries
   window.endDraw = async function() {
     const ok = confirm('🏁 End this draw?\n\nThis will:\n• Lock in both winners on the main page\n• Clear ALL entries for the next round\n\nAre you sure?');
     if (!ok) return;
@@ -490,8 +734,8 @@
   function launchConfetti() {
     const wrap = document.getElementById('confetti');
     wrap.innerHTML = '';
-    const colors = ['#D4AA3C','#4FC3F7','#CE93D8','#69F0AE','#F48FB1','#FFB74D','#fff'];
-    for (let i = 0; i < 100; i++) {
+    const colors = ['#F5C518','#38bdf8','#00e5ff','#a78bfa','#34d399','#f472b6','#fb923c','#fff'];
+    for (let i = 0; i < 120; i++) {
       const c = document.createElement('div');
       c.className = 'cp';
       const drift = (Math.random()-0.5)*400;
