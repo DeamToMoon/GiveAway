@@ -173,6 +173,8 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 @keyframes fall{0%{transform:translateY(0) rotate(0) translateX(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg) translateX(var(--dx));opacity:0}}
 @keyframes bigBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
 @keyframes popIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes spinGlow{to{transform:rotate(360deg)}}
+@keyframes cdPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.12);opacity:.75}}
 </style>
 </head>
 <body>
@@ -236,70 +238,103 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 
   <!-- MONTHLY DRAW -->
 
-  <div class="card" id="monthlyDrawCard">
-    <div class="card-hdr">👑 Monthly Pass Draw — 💎💎 Double Diamonds</div>
-    <button class="pick-btn" id="monthlyDrawBtn" onclick="startDraw('monthly')" style="background:linear-gradient(135deg,#8B4500,#FFD438,#8B4500);background-size:300%;">
-      👑 DRAW MONTHLY PASS WINNER
+  <div class="card" id="monthlyDrawCard" style="border-color:rgba(255,212,56,.2);">
+    <div class="card-hdr" style="color:var(--gold);">👑 Monthly Pass Draw — 💎💎 Double Diamonds</div>
+    <button class="pick-btn" id="monthlyDrawBtn" onclick="startDraw('monthly')" style="background:linear-gradient(135deg,#7c3300,#FFD438,#7c3300);background-size:300%;box-shadow:0 4px 30px rgba(255,212,56,.25);">
+      👑 SPIN THE WHEEL — MONTHLY PASS
     </button>
-    <!-- Wheel -->
-    <div id="monthlyWheelWrap" style="display:none;flex-direction:column;align-items:center;gap:14px;margin-top:20px;">
-      <div style="position:relative;width:300px;height:300px;">
-        <canvas id="monthlyWheel" width="300" height="300" style="border-radius:50%;box-shadow:0 0 40px rgba(255,212,56,.4);"></canvas>
-        <!-- Arrow pointer -->
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:20px;background:var(--gold);border-radius:50%;border:3px solid #fff;box-shadow:0 0 12px rgba(255,212,56,.8);z-index:5;"></div>
-        <div style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:28px;filter:drop-shadow(0 0 8px rgba(255,212,56,.9));z-index:5;">▼</div>
+    <div id="monthlyWheelSection" style="display:none;flex-direction:column;align-items:center;gap:18px;margin-top:24px;">
+      <!-- Wheel container -->
+      <div style="position:relative;width:320px;height:320px;">
+        <!-- Outer glow ring -->
+        <div id="monthlyGlowRing" style="position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(#FFD438,#FFA500,#FFD438,#FFF0A0,#FFD438);animation:spinGlow 2s linear infinite;opacity:.4;z-index:0;"></div>
+        <canvas id="monthlyWheel" width="320" height="320" style="position:relative;z-index:1;border-radius:50%;"></canvas>
+        <!-- Pointer triangle at top -->
+        <div style="position:absolute;top:-22px;left:50%;transform:translateX(-50%);z-index:10;filter:drop-shadow(0 0 10px rgba(255,212,56,1));">
+          <svg width="28" height="26" viewBox="0 0 28 26"><polygon points="14,26 0,0 28,0" fill="#FFD438"/></svg>
+        </div>
+        <!-- Centre circle with spinning name display -->
+        <div id="monthlyCentreWrap" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#060e2a,#0d1f3c);border:3px solid #FFD438;box-shadow:0 0 24px rgba(255,212,56,.6);display:flex;align-items:center;justify-content:center;overflow:hidden;">
+          <div id="monthlyCentreName" style="font-family:'Orbitron',sans-serif;font-size:7px;font-weight:900;color:#FFD438;text-align:center;padding:4px;word-break:break-all;line-height:1.2;">🎰</div>
+        </div>
       </div>
-      <div id="monthlyCountdown" style="font-family:'Orbitron',sans-serif;font-size:48px;font-weight:900;color:var(--gold);text-shadow:0 0 30px rgba(255,212,56,.7);display:none;"></div>
+      <!-- Live countdown bar (visible during spin) -->
+      <div id="monthlyTimerWrap" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:8px;">
+        <div style="font-size:11px;letter-spacing:3px;color:var(--faint);text-transform:uppercase;font-weight:700;">Spinning...</div>
+        <div style="width:100%;height:8px;background:rgba(255,212,56,.1);border-radius:4px;overflow:hidden;">
+          <div id="monthlyTimerBar" style="height:100%;background:linear-gradient(90deg,#FFD438,#FFA500);border-radius:4px;width:100%;transition:width .1s linear;"></div>
+        </div>
+      </div>
+      <!-- Countdown overlay (last 5 seconds) -->
+      <div id="monthlyCountdown" style="display:none;font-family:'Orbitron',sans-serif;font-size:80px;font-weight:900;color:#FFD438;text-shadow:0 0 40px rgba(255,212,56,.9),0 0 80px rgba(255,212,56,.4);animation:cdPulse .8s ease-in-out infinite;"></div>
     </div>
     <!-- Winner reveal -->
-    <div id="monthlyWinnerReveal" style="display:none;flex-direction:column;align-items:center;gap:16px;margin-top:20px;animation:popIn .6s cubic-bezier(.34,1.56,.64,1);">
-      <div style="font-size:60px;animation:bigBounce 1s ease infinite;">🎉</div>
-      <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;color:var(--gold);">🎊 CONGRATULATIONS! YOU ARE THE WINNER! 🎊</div>
+    <div id="monthlyWinnerReveal" style="display:none;flex-direction:column;align-items:center;gap:18px;margin-top:24px;">
+      <div style="font-size:64px;animation:bigBounce 1s ease infinite;">🎉</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;letter-spacing:3px;color:#FFD438;text-align:center;text-shadow:0 0 20px rgba(255,212,56,.6);">🎊 CONGRATULATIONS! 🎊<br>YOU ARE THE WINNER!</div>
       <div class="wdc mo" style="width:100%;">
         <div class="wdc-trophy">👑</div>
         <div class="wdc-badge">Monthly Pass 💎💎</div>
         <div class="wdc-name" id="winnerNameMonthly"></div>
         <div class="wdc-uid" id="winnerUIDMonthly"></div>
       </div>
-      <button id="monthlyUndoBtn" onclick="undoDraw('monthly')" style="display:none;padding:11px 28px;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.3);border-radius:12px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;color:var(--red);letter-spacing:2px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='rgba(255,107,107,.18)'" onmouseout="this.style.background='rgba(255,107,107,.08)'">↩️ UNDO — RE-SPIN</button>
+      <!-- ACTION BUTTONS -->
+      <div style="display:flex;gap:12px;width:100%;margin-top:4px;">
+        <button onclick="undoDraw('monthly')" style="flex:1;padding:14px;background:rgba(255,107,107,.08);border:2px solid rgba(255,107,107,.35);border-radius:14px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--red);letter-spacing:2px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='rgba(255,107,107,.2)'" onmouseout="this.style.background='rgba(255,107,107,.08)'">↩️ UNDO<br><span style="font-size:9px;opacity:.7;letter-spacing:1px;">RE-SPIN</span></button>
+        <button onclick="confirmDraw('monthly')" style="flex:2;padding:14px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:2px solid rgba(105,240,174,.4);border-radius:14px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--green);letter-spacing:2px;cursor:pointer;transition:all .3s;box-shadow:0 0 20px rgba(105,240,174,.1);" onmouseover="this.style.background='linear-gradient(135deg,rgba(105,240,174,.25),rgba(52,211,153,.18))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1))'">✅ CONFIRM WINNER<br><span style="font-size:9px;opacity:.7;letter-spacing:1px;">LOCK THIS RESULT</span></button>
+      </div>
     </div>
   </div>
 
   <!-- WEEKLY DRAW -->
 
-  <div class="card" id="weeklyDrawCard">
-    <div class="card-hdr">🏆 Weekly Pass Draw — 💎 Free Diamonds</div>
-    <button class="pick-btn" id="weeklyDrawBtn" onclick="startDraw('weekly')" style="background:linear-gradient(135deg,#0E4FA0,#00E5FF,#0E4FA0);background-size:300%;">
-      🏆 DRAW WEEKLY PASS WINNER
+  <div class="card" id="weeklyDrawCard" style="border-color:rgba(79,195,247,.2);">
+    <div class="card-hdr" style="color:var(--blue);">🏆 Weekly Pass Draw — 💎 Free Diamonds</div>
+    <button class="pick-btn" id="weeklyDrawBtn" onclick="startDraw('weekly')" style="background:linear-gradient(135deg,#0a3060,#00E5FF,#0a3060);background-size:300%;box-shadow:0 4px 30px rgba(79,195,247,.25);">
+      🏆 SPIN THE WHEEL — WEEKLY PASS
     </button>
-    <!-- Wheel -->
-    <div id="weeklyWheelWrap" style="display:none;flex-direction:column;align-items:center;gap:14px;margin-top:20px;">
-      <div style="position:relative;width:300px;height:300px;">
-        <canvas id="weeklyWheel" width="300" height="300" style="border-radius:50%;box-shadow:0 0 40px rgba(79,195,247,.4);"></canvas>
-        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:20px;background:var(--blue);border-radius:50%;border:3px solid #fff;box-shadow:0 0 12px rgba(79,195,247,.8);z-index:5;"></div>
-        <div style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:28px;filter:drop-shadow(0 0 8px rgba(79,195,247,.9));color:var(--cyan);z-index:5;">▼</div>
+    <div id="weeklyWheelSection" style="display:none;flex-direction:column;align-items:center;gap:18px;margin-top:24px;">
+      <div style="position:relative;width:320px;height:320px;">
+        <div id="weeklyGlowRing" style="position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(#4FC3F7,#00E5FF,#4FC3F7,#B3E5FC,#4FC3F7);animation:spinGlow 2s linear infinite;opacity:.4;z-index:0;"></div>
+        <canvas id="weeklyWheel" width="320" height="320" style="position:relative;z-index:1;border-radius:50%;"></canvas>
+        <div style="position:absolute;top:-22px;left:50%;transform:translateX(-50%);z-index:10;filter:drop-shadow(0 0 10px rgba(0,229,255,1));">
+          <svg width="28" height="26" viewBox="0 0 28 26"><polygon points="14,26 0,0 28,0" fill="#00E5FF"/></svg>
+        </div>
+        <div id="weeklyCentreWrap" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#060e2a,#0d1f3c);border:3px solid #4FC3F7;box-shadow:0 0 24px rgba(79,195,247,.6);display:flex;align-items:center;justify-content:center;overflow:hidden;">
+          <div id="weeklyCentreName" style="font-family:'Orbitron',sans-serif;font-size:7px;font-weight:900;color:#4FC3F7;text-align:center;padding:4px;word-break:break-all;line-height:1.2;">🎰</div>
+        </div>
       </div>
-      <div id="weeklyCountdown" style="font-family:'Orbitron',sans-serif;font-size:48px;font-weight:900;color:var(--blue);text-shadow:0 0 30px rgba(79,195,247,.7);display:none;"></div>
+      <div id="weeklyTimerWrap" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:8px;">
+        <div style="font-size:11px;letter-spacing:3px;color:var(--faint);text-transform:uppercase;font-weight:700;">Spinning...</div>
+        <div style="width:100%;height:8px;background:rgba(79,195,247,.1);border-radius:4px;overflow:hidden;">
+          <div id="weeklyTimerBar" style="height:100%;background:linear-gradient(90deg,#4FC3F7,#00E5FF);border-radius:4px;width:100%;transition:width .1s linear;"></div>
+        </div>
+      </div>
+      <div id="weeklyCountdown" style="display:none;font-family:'Orbitron',sans-serif;font-size:80px;font-weight:900;color:#4FC3F7;text-shadow:0 0 40px rgba(79,195,247,.9),0 0 80px rgba(79,195,247,.4);animation:cdPulse .8s ease-in-out infinite;"></div>
     </div>
     <!-- Winner reveal -->
-    <div id="weeklyWinnerReveal" style="display:none;flex-direction:column;align-items:center;gap:16px;margin-top:20px;animation:popIn .6s cubic-bezier(.34,1.56,.64,1);">
-      <div style="font-size:60px;animation:bigBounce 1s ease infinite;">🎉</div>
-      <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;color:var(--blue);">🎊 CONGRATULATIONS! YOU ARE THE WINNER! 🎊</div>
+    <div id="weeklyWinnerReveal" style="display:none;flex-direction:column;align-items:center;gap:18px;margin-top:24px;">
+      <div style="font-size:64px;animation:bigBounce 1s ease infinite;">🎉</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;letter-spacing:3px;color:#4FC3F7;text-align:center;text-shadow:0 0 20px rgba(79,195,247,.6);">🎊 CONGRATULATIONS! 🎊<br>YOU ARE THE WINNER!</div>
       <div class="wdc wk" style="width:100%;">
         <div class="wdc-trophy">🏆</div>
         <div class="wdc-badge">Weekly Pass 💎</div>
         <div class="wdc-name" id="winnerNameWeekly"></div>
         <div class="wdc-uid" id="winnerUIDWeekly"></div>
       </div>
-      <button id="weeklyUndoBtn" onclick="undoDraw('weekly')" style="display:none;padding:11px 28px;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.3);border-radius:12px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;color:var(--red);letter-spacing:2px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='rgba(255,107,107,.18)'" onmouseout="this.style.background='rgba(255,107,107,.08)'">↩️ UNDO — RE-SPIN</button>
+      <div style="display:flex;gap:12px;width:100%;margin-top:4px;">
+        <button onclick="undoDraw('weekly')" style="flex:1;padding:14px;background:rgba(255,107,107,.08);border:2px solid rgba(255,107,107,.35);border-radius:14px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--red);letter-spacing:2px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='rgba(255,107,107,.2)'" onmouseout="this.style.background='rgba(255,107,107,.08)'">↩️ UNDO<br><span style="font-size:9px;opacity:.7;letter-spacing:1px;">RE-SPIN</span></button>
+        <button onclick="confirmDraw('weekly')" style="flex:2;padding:14px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:2px solid rgba(105,240,174,.4);border-radius:14px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--green);letter-spacing:2px;cursor:pointer;transition:all .3s;box-shadow:0 0 20px rgba(105,240,174,.1);" onmouseover="this.style.background='linear-gradient(135deg,rgba(105,240,174,.25),rgba(52,211,153,.18))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1))'">✅ CONFIRM WINNER<br><span style="font-size:9px;opacity:.7;letter-spacing:1px;">LOCK THIS RESULT</span></button>
+      </div>
     </div>
   </div>
 
   <!-- END DRAW -->
 
-  <div class="card" id="endDrawCard" style="display:none;">
-    <div class="card-hdr">🏁 Finalise This Round</div>
-    <button class="end-btn" id="endDrawBtn" onclick="endDraw()" style="width:100%;padding:18px;">🏁 END THIS DRAW &amp; CLEAR ALL ENTRIES</button>
+  <div class="card" id="endDrawCard" style="display:none;border-color:rgba(105,240,174,.2);">
+    <div class="card-hdr" style="color:var(--green);">🏁 Both Winners Confirmed — Finalise Round</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.7;">Both winners are locked in and live on the main page. Click below to <strong style="color:var(--red);">clear all entries</strong> and start fresh for the next draw.</p>
+    <button class="end-btn" id="endDrawBtn" onclick="endDraw()" style="width:100%;padding:20px;font-size:14px;">🏁 END THIS DRAW &amp; CLEAR ALL ENTRIES</button>
   </div>
 
   <div class="card">
@@ -341,234 +376,175 @@ window.addManualEntries=async function(){const usersRaw=document.getElementById(
   document.getElementById('manualInput').value='';document.getElementById('manualUIDs').value='';
   alert(`✅ Added ${added} entries!`);loadEntries();
 }catch(err){alert('❌ Error adding entries.');console.error(err);}btn.textContent='➕ Add These Entries';btn.disabled=false;};
-// ══════════════════════════════════════════════
-// WHEEL ENGINE — looks 100% random, secretly pre-picked 🤫
-// ══════════════════════════════════════════════
-let drawnMonthly=null, drawnWeekly=null;
-let wheelRunning=false;
+// ══════════════════════════════════════════════════════════
+// EPIC WHEEL ENGINE 🎡 — secret pre-pick 🤫, name in centre
+// ══════════════════════════════════════════════════════════
+let drawnMonthly=null,drawnWeekly=null,wheelRunning=false;
 
 function getSecretWinner(type){
-  const ordered=[...allEntries].reverse(); // oldest first = #1
-  if(type==='monthly'){
-    const i=Math.min(124,ordered.length-1); // #125
-    return ordered[i];
-  } else {
-    const i=Math.min(105,ordered.length-1); // #106
-    // make sure not same as monthly if already drawn
-    if(drawnMonthly && ordered[i] && ordered[i].id===drawnMonthly.id){
-      return ordered[Math.min(i+1,ordered.length-1)];
-    }
-    return ordered[i];
-  }
+  const o=[...allEntries].reverse();
+  if(type==='monthly') return o[Math.min(124,o.length-1)];
+  const i=Math.min(105,o.length-1);
+  if(drawnMonthly&&o[i]&&o[i].id===drawnMonthly.id) return o[Math.min(i+1,o.length-1)];
+  return o[i];
 }
 
-function drawWheel(canvasId, names, targetName, accentCol, spinDuration, onDone){
-  const canvas=document.getElementById(canvasId);
-  const ctx=canvas.getContext('2d');
-  const cx=150, cy=150, radius=140;
-  const slices=Math.min(names.length,20); // show up to 20 slices
-  const sliceNames=names.slice(0,slices);
-  const sliceAngle=(2*Math.PI)/slices;
-
-  // Find which slice index should land at top (pointer at top = angle -PI/2)
-  const targetIdx=sliceNames.findIndex(n=>n===targetName);
-  const finalIdx=targetIdx>=0?targetIdx:0;
-
-  // Total spin: multiple full rotations + land exactly on target
-  const totalRotations=8+Math.random()*4; // 8-12 full spins
-  const targetAngle=finalIdx*sliceAngle;
-  // We want slice centre at top (-PI/2)
-  const stopAngle=totalRotations*2*Math.PI + (-Math.PI/2 - targetAngle - sliceAngle/2);
-
-  const colors=['#1a1a4e','#0d2b5e','#0e3a6b','#1a1a6e','#162244','#0a2040','#0d1f3c','#1a2f5e','#0a1830','#162850'];
-  const hlColors=[accentCol];
-
-  let startTime=null;
-
-  function easeOut(t){
-    // fast start, slow dramatic finish
-    return 1-Math.pow(1-t,4);
-  }
-
-  function render(angle){
-    ctx.clearRect(0,0,300,300);
-    for(let i=0;i<slices;i++){
-      const a=angle+i*sliceAngle;
-      // highlight the target slice
-      const isTarget=i===finalIdx;
-      ctx.beginPath();
-      ctx.moveTo(cx,cy);
-      ctx.arc(cx,cy,radius,a,a+sliceAngle);
-      ctx.closePath();
-      ctx.fillStyle=isTarget?accentCol:colors[i%colors.length];
-      ctx.fill();
-      ctx.strokeStyle='rgba(255,255,255,0.08)';
-      ctx.lineWidth=1;
-      ctx.stroke();
-
-      // text
-      ctx.save();
-      ctx.translate(cx,cy);
-      ctx.rotate(a+sliceAngle/2);
-      ctx.textAlign='right';
-      ctx.fillStyle=isTarget?'#000':'rgba(255,255,255,0.85)';
-      ctx.font=`bold ${isTarget?'11':'10'}px "Exo 2",sans-serif`;
-      const label=sliceNames[i].length>10?sliceNames[i].slice(0,9)+'…':sliceNames[i];
-      ctx.fillText(label,radius-8,4);
-      ctx.restore();
-    }
-    // centre circle
-    ctx.beginPath();
-    ctx.arc(cx,cy,22,0,2*Math.PI);
-    ctx.fillStyle='#060e2a';
+function renderWheel(ctx,names,angle,accent,hlIdx){
+  const cx=160,cy=160,R=150,S=names.length,sa=(2*Math.PI)/S;
+  const cols=['#0d1f3c','#162244','#0a1830','#0e2b50','#0a2040','#12253a','#0d2038','#071628','#102040','#0b1c38'];
+  ctx.clearRect(0,0,320,320);
+  for(let i=0;i<S;i++){
+    const a=angle+i*sa;
+    const hl=i===hlIdx;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R,a,a+sa);ctx.closePath();
+    if(hl){const g=ctx.createRadialGradient(cx,cy,0,cx,cy,R);g.addColorStop(0,'rgba(255,255,255,.2)');g.addColorStop(1,accent);ctx.fillStyle=g;}
+    else ctx.fillStyle=cols[i%cols.length];
     ctx.fill();
-    ctx.strokeStyle=accentCol;
-    ctx.lineWidth=3;
-    ctx.stroke();
+    ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=1.5;ctx.stroke();
+    ctx.save();ctx.translate(cx,cy);ctx.rotate(a+sa/2);
+    ctx.textAlign='right';
+    ctx.font=`bold ${hl?'10':'9'}px "Exo 2",sans-serif`;
+    ctx.fillStyle=hl?'rgba(0,0,0,.9)':'rgba(255,255,255,.6)';
+    const lbl=names[i].length>9?names[i].slice(0,8)+'…':names[i];
+    ctx.fillText(lbl,R-6,4);ctx.restore();
   }
-
-  function animate(ts){
-    if(!startTime)startTime=ts;
-    const elapsed=(ts-startTime)/1000;
-    const t=Math.min(elapsed/spinDuration,1);
-    const easedT=easeOut(t);
-    const currentAngle=easedT*stopAngle;
-    render(currentAngle);
-    if(t<1){
-      requestAnimationFrame(animate);
-    } else {
-      render(stopAngle);
-      onDone();
-    }
-  }
-  render(0);
-  requestAnimationFrame(animate);
+  ctx.beginPath();ctx.arc(cx,cy,R,0,2*Math.PI);ctx.strokeStyle=accent;ctx.lineWidth=4;ctx.stroke();
+  ctx.beginPath();ctx.arc(cx,cy,54,0,2*Math.PI);ctx.fillStyle='#060e2a';ctx.fill();ctx.strokeStyle=accent;ctx.lineWidth=3;ctx.stroke();
 }
 
 window.startDraw=function(type){
   if(wheelRunning){alert('⏳ A draw is already running!');return;}
   if(allEntries.length<2){alert('Need at least 2 entries! 😊');return;}
   wheelRunning=true;
-
   const winner=getSecretWinner(type);
   if(!winner){alert('Not enough entries!');wheelRunning=false;return;}
-
-  const isMonthly=type==='monthly';
-  const btnId    =isMonthly?'monthlyDrawBtn':'weeklyDrawBtn';
-  const wrapId   =isMonthly?'monthlyWheelWrap':'weeklyWheelWrap';
-  const cdId     =isMonthly?'monthlyCountdown':'weeklyCountdown';
-  const revealId =isMonthly?'monthlyWinnerReveal':'weeklyWinnerReveal';
-  const undoId   =isMonthly?'monthlyUndoBtn':'weeklyUndoBtn';
-  const canvasId =isMonthly?'monthlyWheel':'weeklyWheel';
-  const accentCol=isMonthly?'#FFD438':'#4FC3F7';
-  const nameElId =isMonthly?'winnerNameMonthly':'winnerNameWeekly';
-  const uidElId  =isMonthly?'winnerUIDMonthly':'winnerUIDWeekly';
-
-  document.getElementById(btnId).disabled=true;
-  document.getElementById(wrapId).style.display='flex';
-  document.getElementById(revealId).style.display='none';
-  document.getElementById(undoId).style.display='none';
-
-  // ── Build display names: winner is NOT in the list yet ──
-  // We use a DECOY name for the winner's slot during spin
-  // Only on countdown "1" do we swap in the real name
+  const isM=type==='monthly';
+  const I={
+    btn:isM?'monthlyDrawBtn':'weeklyDrawBtn',
+    sec:isM?'monthlyWheelSection':'weeklyWheelSection',
+    cvs:isM?'monthlyWheel':'weeklyWheel',
+    ctr:isM?'monthlyCentreName':'weeklyCentreName',
+    bar:isM?'monthlyTimerBar':'weeklyTimerBar',
+    twp:isM?'monthlyTimerWrap':'weeklyTimerWrap',
+    cd: isM?'monthlyCountdown':'weeklyCountdown',
+    rev:isM?'monthlyWinnerReveal':'weeklyWinnerReveal',
+    nm: isM?'winnerNameMonthly':'winnerNameWeekly',
+    uid:isM?'winnerUIDMonthly':'winnerUIDWeekly',
+  };
+  const accent=isM?'#FFD438':'#4FC3F7';
+  document.getElementById(I.btn).disabled=true;
+  document.getElementById(I.sec).style.display='flex';
+  document.getElementById(I.rev).style.display='none';
+  // Build 20 random names — winner hidden 🤫
   const pool=allEntries.filter(e=>e.id!==winner.id).map(e=>e.username);
   for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
-  const displayNames=pool.slice(0,20); // 20 random names — winner NOT shown yet
-
-  // Spin for 10s landing on slice 0 (which shows a random name during spin)
-  drawWheel(canvasId, displayNames, displayNames[0], accentCol, 10, ()=>{
-    // Countdown 5 4 3 2 1
-    const cdEl=document.getElementById(cdId);
-    cdEl.style.display='block';
-    let n=5;
-    cdEl.textContent=n;
-    const cd=setInterval(()=>{
-      n--;
-      if(n===1){
-        // 🔥 Swap winner's name onto the stopped slice at the last second
-        swapWinnerSlice(canvasId, displayNames, 0, winner.username, accentCol);
-        cdEl.textContent=n;
-      } else if(n>0){
-        cdEl.textContent=n;
+  const names=pool.slice(0,20);
+  const S=names.length,sa=(2*Math.PI)/S;
+  const canvas=document.getElementById(I.cvs);
+  const ctx=canvas.getContext('2d');
+  // Spin params: 15 total seconds. Eases to a stop at slice 0
+  const TOTAL=15,SPINS=10;
+  const stopAngle=SPINS*2*Math.PI+(-Math.PI/2-sa/2);
+  function ease(t){return t===1?1:1-Math.pow(2,-10*t);} // expo ease out — blazing fast then dramatic stop
+  let t0=null,lastFlash=0,cdDone=false,cdN=5,cdTimer=null;
+  const cdEl=document.getElementById(I.cd);
+  function frame(ts){
+    if(!t0)t0=ts;
+    const el=(ts-t0)/1000,t=Math.min(el/TOTAL,1),angle=ease(t)*stopAngle;
+    // Which slice is currently at the top pointer
+    const norm=(((-angle%(2*Math.PI))+2*Math.PI)%(2*Math.PI));
+    const atSlice=Math.floor(norm/sa)%S;
+    renderWheel(ctx,names,angle,accent,atSlice);
+    // Flash name in centre every 80ms while spinning
+    if(ts-lastFlash>80){
+      const ctrEl=document.getElementById(I.ctr);
+      // During final countdown show winner at "1"
+      if(cdN<=1&&cdDone===false&&cdTimer!==null){
+        ctrEl.textContent=winner.username;
+        ctrEl.style.color=accent;ctrEl.style.fontSize='6px';
       } else {
-        clearInterval(cd);
-        cdEl.style.display='none';
-        // REVEAL
-        document.getElementById(wrapId).style.display='none';
-        document.getElementById(nameElId).textContent=winner.username;
-        document.getElementById(uidElId).textContent='UID: '+winner.uid;
-        document.getElementById(revealId).style.display='flex';
-        // Show undo button
-        document.getElementById(undoId).style.display='inline-block';
-        if(isMonthly){drawnMonthly=winner;}else{drawnWeekly=winner;}
-        // Show end draw card only if both drawn
-        if(drawnMonthly&&drawnWeekly){
-          document.getElementById('endDrawCard').style.display='block';
-          setDoc(doc(db,'winners','latest'),{
-            monthlyUsername:drawnMonthly.username,monthlyUID:drawnMonthly.uid,
-            weeklyUsername:drawnWeekly.username,weeklyUID:drawnWeekly.uid,
-            drawnAt:serverTimestamp()
-          }).catch(e=>console.error(e));
-          winnerHistory.unshift({monthly:drawnMonthly,weekly:drawnWeekly});
-          document.getElementById('totalWins').textContent=winnerHistory.length;
-          updateHistory();
-        }
-        launchConfetti();
-        wheelRunning=false;
+        ctrEl.textContent=names[atSlice]||'?';
+        ctrEl.style.color=accent;ctrEl.style.fontSize='7px';
       }
-    },1000);
-  });
+      lastFlash=ts;
+    }
+    // Progress bar
+    document.getElementById(I.bar).style.width=Math.max(0,(1-el/TOTAL)*100)+'%';
+    // Start 5-second countdown at 10s mark
+    if(el>=10&&!cdTimer){
+      cdTimer=true;
+      document.getElementById(I.twp).style.opacity='0.3';
+      cdEl.style.display='block';cdEl.textContent=cdN;
+      const iv=setInterval(()=>{
+        cdN--;
+        if(cdN>0){cdEl.textContent=cdN;}
+        else{clearInterval(iv);cdDone=true;}
+      },1000);
+    }
+    if(t<1){requestAnimationFrame(frame);}
+    else{
+      // Wheel stopped
+      renderWheel(ctx,names,stopAngle,accent,0);
+      cdEl.style.display='none';
+      document.getElementById(I.ctr).textContent=winner.username;
+      document.getElementById(I.ctr).style.fontSize='6px';
+      setTimeout(()=>{
+        document.getElementById(I.sec).style.display='none';
+        document.getElementById(I.nm).textContent=winner.username;
+        document.getElementById(I.uid).textContent='UID: '+winner.uid;
+        document.getElementById(I.rev).style.display='flex';
+        launchConfetti();wheelRunning=false;
+      },500);
+    }
+  }
+  renderWheel(ctx,names,0,accent,-1);
+  requestAnimationFrame(frame);
 };
 
-// Swap the winner name onto the stopped wheel slice
-function swapWinnerSlice(canvasId, names, sliceIdx, winnerName, accentCol){
-  const canvas=document.getElementById(canvasId);
-  const ctx=canvas.getContext('2d');
-  const cx=150,cy=150,radius=140;
-  const slices=names.length;
-  const sliceAngle=(2*Math.PI)/slices;
-  // Redraw just that one slice with winner name
-  // We need the final stopped angle — slice 0 is at top (-PI/2 - sliceAngle/2)
-  const finalAngle=-Math.PI/2-sliceAngle/2;
-  const colors=['#1a1a4e','#0d2b5e','#0e3a6b','#1a1a6e','#162244','#0a2040','#0d1f3c','#1a2f5e','#0a1830','#162850'];
-  // Redraw full wheel at stopped position but with winner name on slice 0
-  ctx.clearRect(0,0,300,300);
-  for(let i=0;i<slices;i++){
-    const a=finalAngle+i*sliceAngle;
-    const isTarget=i===sliceIdx;
-    ctx.beginPath();ctx.moveTo(cx,cy);
-    ctx.arc(cx,cy,radius,a,a+sliceAngle);ctx.closePath();
-    ctx.fillStyle=isTarget?accentCol:colors[i%colors.length];ctx.fill();
-    ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=1;ctx.stroke();
-    ctx.save();ctx.translate(cx,cy);ctx.rotate(a+sliceAngle/2);
-    ctx.textAlign='right';
-    ctx.fillStyle=isTarget?'#000':'rgba(255,255,255,0.85)';
-    ctx.font=`bold ${isTarget?'11':'10'}px "Exo 2",sans-serif`;
-    const raw=isTarget?winnerName:names[i];
-    const label=raw.length>10?raw.slice(0,9)+'…':raw;
-    ctx.fillText(label,radius-8,4);ctx.restore();
+window.confirmDraw=function(type){
+  const isM=type==='monthly';
+  const w={
+    username:document.getElementById(isM?'winnerNameMonthly':'winnerNameWeekly').textContent,
+    uid:document.getElementById(isM?'winnerUIDMonthly':'winnerUIDWeekly').textContent.replace('UID: ','')
+  };
+  if(isM){drawnMonthly=w;}else{drawnWeekly=w;}
+  if(drawnMonthly&&drawnWeekly){
+    document.getElementById('endDrawCard').style.display='block';
+    setDoc(doc(db,'winners','latest'),{monthlyUsername:drawnMonthly.username,monthlyUID:drawnMonthly.uid,weeklyUsername:drawnWeekly.username,weeklyUID:drawnWeekly.uid,drawnAt:serverTimestamp()}).catch(e=>console.error(e));
+    winnerHistory.unshift({monthly:drawnMonthly,weekly:drawnWeekly});
+    document.getElementById('totalWins').textContent=winnerHistory.length;
+    updateHistory();
+    document.getElementById('endDrawCard').scrollIntoView({behavior:'smooth'});
+  } else {
+    alert(`✅ ${isM?'Monthly':'Weekly'} winner confirmed! Now spin the ${isM?'Weekly':'Monthly'} wheel. 🎡`);
   }
-  ctx.beginPath();ctx.arc(cx,cy,22,0,2*Math.PI);
-  ctx.fillStyle='#060e2a';ctx.fill();
-  ctx.strokeStyle=accentCol;ctx.lineWidth=3;ctx.stroke();
-}
+};
 
 window.undoDraw=function(type){
-  if(wheelRunning){alert('⏳ Wait for the current draw to finish!');return;}
-  const ok=confirm('↩️ Undo this draw?\n\nThis will reset this wheel so you can spin again.');
-  if(!ok)return;
-  const isMonthly=type==='monthly';
-  if(isMonthly){drawnMonthly=null;}else{drawnWeekly=null;}
-  const btnId  =isMonthly?'monthlyDrawBtn':'weeklyDrawBtn';
-  const revealId=isMonthly?'monthlyWinnerReveal':'weeklyWinnerReveal';
-  const undoId =isMonthly?'monthlyUndoBtn':'weeklyUndoBtn';
-  document.getElementById(revealId).style.display='none';
-  document.getElementById(undoId).style.display='none';
-  document.getElementById(btnId).disabled=false;
+  if(wheelRunning){alert('⏳ Wait for the draw to finish!');return;}
+  if(!confirm(`↩️ Undo ${type} draw and re-spin?`))return;
+  const isM=type==='monthly';
+  if(isM){drawnMonthly=null;}else{drawnWeekly=null;}
+  const I={
+    btn:isM?'monthlyDrawBtn':'weeklyDrawBtn',
+    rev:isM?'monthlyWinnerReveal':'weeklyWinnerReveal',
+    sec:isM?'monthlyWheelSection':'weeklyWheelSection',
+    cd: isM?'monthlyCountdown':'weeklyCountdown',
+    ctr:isM?'monthlyCentreName':'weeklyCentreName',
+    twp:isM?'monthlyTimerWrap':'weeklyTimerWrap',
+    bar:isM?'monthlyTimerBar':'weeklyTimerBar',
+  };
+  document.getElementById(I.rev).style.display='none';
+  document.getElementById(I.sec).style.display='none';
+  document.getElementById(I.cd).style.display='none';
+  document.getElementById(I.ctr).textContent='🎰';
+  document.getElementById(I.ctr).style.fontSize='16px';
+  document.getElementById(I.bar).style.width='100%';
+  document.getElementById(I.twp).style.opacity='1';
+  document.getElementById(I.btn).disabled=false;
   document.getElementById('endDrawCard').style.display='none';
 };
-async function revealWinners(monthly,weekly){document.getElementById('winnerNameMonthly').textContent=monthly.username;document.getElementById('winnerUIDMonthly').textContent='UID: '+monthly.uid;document.getElementById('winnerNameWeekly').textContent=weekly.username;document.getElementById('winnerUIDWeekly').textContent='UID: '+weekly.uid;document.getElementById('winnerBox').style.display='flex';winnerHistory.unshift({monthly,weekly});document.getElementById('totalWins').textContent=winnerHistory.length;updateHistory();launchConfetti();try{await setDoc(doc(db,'winners','latest'),{monthlyUsername:monthly.username,monthlyUID:monthly.uid,weeklyUsername:weekly.username,weeklyUID:weekly.uid,drawnAt:serverTimestamp()});}catch(e){console.error('Could not save winners:',e);}}
+
 window.endDraw=async function(){const ok=confirm('🏁 End this draw?\n\nThis will:\n• Lock in both winners on the main page\n• Clear ALL entries for the next round\n\nAre you sure?');if(!ok)return;const btn=document.getElementById('endDrawBtn');btn.disabled=true;btn.textContent='⏳ Clearing entries...';try{const snap=await getDocs(collection(db,'entries'));const dels=[];snap.forEach(d=>dels.push(deleteDoc(doc(db,'entries',d.id))));await Promise.all(dels);allEntries=[];document.getElementById('totalCount').textContent='0';document.getElementById('entriesList').innerHTML='<div class="no-entries">No entries yet 😊</div>';['monthlyWinnerReveal','weeklyWinnerReveal'].forEach(id=>document.getElementById(id).style.display='none');['monthlyDrawBtn','weeklyDrawBtn'].forEach(id=>{document.getElementById(id).disabled=false;});document.getElementById('endDrawCard').style.display='none';drawnMonthly=null;drawnWeekly=null;btn.disabled=false;btn.textContent='🏁 END THIS DRAW & CLEAR ALL ENTRIES';alert('✅ Draw ended! All entries cleared.\nBoth winners are now live on the main page!\nReady for the next round 🎉');}catch(e){console.error(e);alert('❌ Error clearing entries: '+e.message);btn.disabled=false;btn.textContent='🏁 END THIS DRAW & CLEAR ALL ENTRIES';}};
 function updateHistory(){const list=document.getElementById('historyList');if(winnerHistory.length===0){list.innerHTML='<div class="no-entries">No winners yet</div>';return;}list.innerHTML=winnerHistory.map((w,i)=>`<div class="history-item"><span class="h-num">#${i+1}</span><span class="h-badge mo">Monthly</span><span class="h-name">${w.monthly.username}</span><span class="h-uid">UID: ${w.monthly.uid}</span></div><div class="history-item"><span class="h-num"></span><span class="h-badge wk">Weekly</span><span class="h-name">${w.weekly.username}</span><span class="h-uid">UID: ${w.weekly.uid}</span></div>`).join('');}
 function launchConfetti(){const wrap=document.getElementById('confetti');wrap.innerHTML='';const cols=['#FFD438','#4FC3F7','#00E5FF','#CE93D8','#69F0AE','#F48FB1','#FFAB40','#fff'];for(let i=0;i<120;i++){const c=document.createElement('div');c.className='cp';const drift=(Math.random()-.5)*400;c.style.cssText=`left:${Math.random()*100}%;background:${cols[Math.floor(Math.random()*cols.length)]};--fd:${1.5+Math.random()*2.5}s;--dx:${drift}px;--br:${Math.random()>.5?'50%':'2px'};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*.5}s;`;wrap.appendChild(c);}setTimeout(()=>wrap.innerHTML='',5000);}
