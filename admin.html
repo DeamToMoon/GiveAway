@@ -261,6 +261,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
         <div class="wdc-name" id="winnerNameMonthly"></div>
         <div class="wdc-uid" id="winnerUIDMonthly"></div>
       </div>
+      <button id="monthlyUndoBtn" onclick="undoDraw('monthly')" style="display:none;padding:11px 28px;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.3);border-radius:12px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;color:var(--red);letter-spacing:2px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='rgba(255,107,107,.18)'" onmouseout="this.style.background='rgba(255,107,107,.08)'">↩️ UNDO — RE-SPIN</button>
     </div>
   </div>
 
@@ -290,6 +291,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
         <div class="wdc-name" id="winnerNameWeekly"></div>
         <div class="wdc-uid" id="winnerUIDWeekly"></div>
       </div>
+      <button id="weeklyUndoBtn" onclick="undoDraw('weekly')" style="display:none;padding:11px 28px;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.3);border-radius:12px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;color:var(--red);letter-spacing:2px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='rgba(255,107,107,.18)'" onmouseout="this.style.background='rgba(255,107,107,.08)'">↩️ UNDO — RE-SPIN</button>
     </div>
   </div>
 
@@ -452,29 +454,30 @@ window.startDraw=function(type){
   if(!winner){alert('Not enough entries!');wheelRunning=false;return;}
 
   const isMonthly=type==='monthly';
-  const btnId=isMonthly?'monthlyDrawBtn':'weeklyDrawBtn';
-  const wrapId=isMonthly?'monthlyWheelWrap':'weeklyWheelWrap';
-  const cdId=isMonthly?'monthlyCountdown':'weeklyCountdown';
-  const revealId=isMonthly?'monthlyWinnerReveal':'weeklyWinnerReveal';
-  const canvasId=isMonthly?'monthlyWheel':'weeklyWheel';
+  const btnId    =isMonthly?'monthlyDrawBtn':'weeklyDrawBtn';
+  const wrapId   =isMonthly?'monthlyWheelWrap':'weeklyWheelWrap';
+  const cdId     =isMonthly?'monthlyCountdown':'weeklyCountdown';
+  const revealId =isMonthly?'monthlyWinnerReveal':'weeklyWinnerReveal';
+  const undoId   =isMonthly?'monthlyUndoBtn':'weeklyUndoBtn';
+  const canvasId =isMonthly?'monthlyWheel':'weeklyWheel';
   const accentCol=isMonthly?'#FFD438':'#4FC3F7';
-  const nameElId=isMonthly?'winnerNameMonthly':'winnerNameWeekly';
-  const uidElId=isMonthly?'winnerUIDMonthly':'winnerUIDWeekly';
+  const nameElId =isMonthly?'winnerNameMonthly':'winnerNameWeekly';
+  const uidElId  =isMonthly?'winnerUIDMonthly':'winnerUIDWeekly';
 
   document.getElementById(btnId).disabled=true;
   document.getElementById(wrapId).style.display='flex';
   document.getElementById(revealId).style.display='none';
+  document.getElementById(undoId).style.display='none';
 
-  // Build name list — shuffle so wheel looks random, but winner is at target slot
-  const pool=allEntries.map(e=>e.username);
-  // Fisher-Yates shuffle
+  // ── Build display names: winner is NOT in the list yet ──
+  // We use a DECOY name for the winner's slot during spin
+  // Only on countdown "1" do we swap in the real name
+  const pool=allEntries.filter(e=>e.id!==winner.id).map(e=>e.username);
   for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
-  // Make sure winner is in the list (at position 0 so we can target slice 0)
-  const displayNames=pool.slice(0,19);
-  displayNames.unshift(winner.username); // winner always first = slice 0
+  const displayNames=pool.slice(0,20); // 20 random names — winner NOT shown yet
 
-  // Spin for 10s, then countdown 5..1
-  drawWheel(canvasId, displayNames, winner.username, accentCol, 10, ()=>{
+  // Spin for 10s landing on slice 0 (which shows a random name during spin)
+  drawWheel(canvasId, displayNames, displayNames[0], accentCol, 10, ()=>{
     // Countdown 5 4 3 2 1
     const cdEl=document.getElementById(cdId);
     cdEl.style.display='block';
@@ -482,7 +485,11 @@ window.startDraw=function(type){
     cdEl.textContent=n;
     const cd=setInterval(()=>{
       n--;
-      if(n>0){
+      if(n===1){
+        // 🔥 Swap winner's name onto the stopped slice at the last second
+        swapWinnerSlice(canvasId, displayNames, 0, winner.username, accentCol);
+        cdEl.textContent=n;
+      } else if(n>0){
         cdEl.textContent=n;
       } else {
         clearInterval(cd);
@@ -492,11 +499,12 @@ window.startDraw=function(type){
         document.getElementById(nameElId).textContent=winner.username;
         document.getElementById(uidElId).textContent='UID: '+winner.uid;
         document.getElementById(revealId).style.display='flex';
+        // Show undo button
+        document.getElementById(undoId).style.display='inline-block';
         if(isMonthly){drawnMonthly=winner;}else{drawnWeekly=winner;}
-        // Show end draw button if both drawn
+        // Show end draw card only if both drawn
         if(drawnMonthly&&drawnWeekly){
           document.getElementById('endDrawCard').style.display='block';
-          // Save to Firebase
           setDoc(doc(db,'winners','latest'),{
             monthlyUsername:drawnMonthly.username,monthlyUID:drawnMonthly.uid,
             weeklyUsername:drawnWeekly.username,weeklyUID:drawnWeekly.uid,
@@ -511,6 +519,54 @@ window.startDraw=function(type){
       }
     },1000);
   });
+};
+
+// Swap the winner name onto the stopped wheel slice
+function swapWinnerSlice(canvasId, names, sliceIdx, winnerName, accentCol){
+  const canvas=document.getElementById(canvasId);
+  const ctx=canvas.getContext('2d');
+  const cx=150,cy=150,radius=140;
+  const slices=names.length;
+  const sliceAngle=(2*Math.PI)/slices;
+  // Redraw just that one slice with winner name
+  // We need the final stopped angle — slice 0 is at top (-PI/2 - sliceAngle/2)
+  const finalAngle=-Math.PI/2-sliceAngle/2;
+  const colors=['#1a1a4e','#0d2b5e','#0e3a6b','#1a1a6e','#162244','#0a2040','#0d1f3c','#1a2f5e','#0a1830','#162850'];
+  // Redraw full wheel at stopped position but with winner name on slice 0
+  ctx.clearRect(0,0,300,300);
+  for(let i=0;i<slices;i++){
+    const a=finalAngle+i*sliceAngle;
+    const isTarget=i===sliceIdx;
+    ctx.beginPath();ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,radius,a,a+sliceAngle);ctx.closePath();
+    ctx.fillStyle=isTarget?accentCol:colors[i%colors.length];ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=1;ctx.stroke();
+    ctx.save();ctx.translate(cx,cy);ctx.rotate(a+sliceAngle/2);
+    ctx.textAlign='right';
+    ctx.fillStyle=isTarget?'#000':'rgba(255,255,255,0.85)';
+    ctx.font=`bold ${isTarget?'11':'10'}px "Exo 2",sans-serif`;
+    const raw=isTarget?winnerName:names[i];
+    const label=raw.length>10?raw.slice(0,9)+'…':raw;
+    ctx.fillText(label,radius-8,4);ctx.restore();
+  }
+  ctx.beginPath();ctx.arc(cx,cy,22,0,2*Math.PI);
+  ctx.fillStyle='#060e2a';ctx.fill();
+  ctx.strokeStyle=accentCol;ctx.lineWidth=3;ctx.stroke();
+}
+
+window.undoDraw=function(type){
+  if(wheelRunning){alert('⏳ Wait for the current draw to finish!');return;}
+  const ok=confirm('↩️ Undo this draw?\n\nThis will reset this wheel so you can spin again.');
+  if(!ok)return;
+  const isMonthly=type==='monthly';
+  if(isMonthly){drawnMonthly=null;}else{drawnWeekly=null;}
+  const btnId  =isMonthly?'monthlyDrawBtn':'weeklyDrawBtn';
+  const revealId=isMonthly?'monthlyWinnerReveal':'weeklyWinnerReveal';
+  const undoId =isMonthly?'monthlyUndoBtn':'weeklyUndoBtn';
+  document.getElementById(revealId).style.display='none';
+  document.getElementById(undoId).style.display='none';
+  document.getElementById(btnId).disabled=false;
+  document.getElementById('endDrawCard').style.display='none';
 };
 async function revealWinners(monthly,weekly){document.getElementById('winnerNameMonthly').textContent=monthly.username;document.getElementById('winnerUIDMonthly').textContent='UID: '+monthly.uid;document.getElementById('winnerNameWeekly').textContent=weekly.username;document.getElementById('winnerUIDWeekly').textContent='UID: '+weekly.uid;document.getElementById('winnerBox').style.display='flex';winnerHistory.unshift({monthly,weekly});document.getElementById('totalWins').textContent=winnerHistory.length;updateHistory();launchConfetti();try{await setDoc(doc(db,'winners','latest'),{monthlyUsername:monthly.username,monthlyUID:monthly.uid,weeklyUsername:weekly.username,weeklyUID:weekly.uid,drawnAt:serverTimestamp()});}catch(e){console.error('Could not save winners:',e);}}
 window.endDraw=async function(){const ok=confirm('🏁 End this draw?\n\nThis will:\n• Lock in both winners on the main page\n• Clear ALL entries for the next round\n\nAre you sure?');if(!ok)return;const btn=document.getElementById('endDrawBtn');btn.disabled=true;btn.textContent='⏳ Clearing entries...';try{const snap=await getDocs(collection(db,'entries'));const dels=[];snap.forEach(d=>dels.push(deleteDoc(doc(db,'entries',d.id))));await Promise.all(dels);allEntries=[];document.getElementById('totalCount').textContent='0';document.getElementById('entriesList').innerHTML='<div class="no-entries">No entries yet 😊</div>';['monthlyWinnerReveal','weeklyWinnerReveal'].forEach(id=>document.getElementById(id).style.display='none');['monthlyDrawBtn','weeklyDrawBtn'].forEach(id=>{document.getElementById(id).disabled=false;});document.getElementById('endDrawCard').style.display='none';drawnMonthly=null;drawnWeekly=null;btn.disabled=false;btn.textContent='🏁 END THIS DRAW & CLEAR ALL ENTRIES';alert('✅ Draw ended! All entries cleared.\nBoth winners are now live on the main page!\nReady for the next round 🎉');}catch(e){console.error(e);alert('❌ Error clearing entries: '+e.message);btn.disabled=false;btn.textContent='🏁 END THIS DRAW & CLEAR ALL ENTRIES';}};
