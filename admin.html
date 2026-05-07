@@ -171,6 +171,8 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 .confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden;}
 .cp{position:absolute;top:-10px;animation:fall var(--fd) ease-in forwards;border-radius:var(--br);}
 @keyframes fall{0%{transform:translateY(0) rotate(0) translateX(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg) translateX(var(--dx));opacity:0}}
+@keyframes bigBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes popIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
 </style>
 </head>
 <body>
@@ -211,12 +213,6 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <div class="entries-list" id="entriesList"><div class="no-entries">Loading entries...</div></div>
   </div>
 
-  <div class="card" style="border-color:rgba(255,107,107,.2);">
-    <div class="card-hdr" style="color:var(--red);">🧹 Remove Duplicate Entries<span id="dupStatus" style="font-size:11px;color:var(--faint);font-weight:400;letter-spacing:1px;"></span></div>
-    <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Scans all entries and deletes duplicates — keeps the <strong style="color:var(--gold);">first/oldest</strong> entry for each username &amp; UID. Use this to fix accidental re-imports.</p>
-    <button class="copy-btn" id="dedupBtn" onclick="removeDuplicates()" style="background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.3);color:var(--red);width:100%;padding:14px;font-size:12px;letter-spacing:2px;">🧹 REMOVE DUPLICATE ENTRIES NOW</button>
-  </div>
-
   <div class="card">
     <div class="card-hdr">📤 Copy Usernames &amp; UIDs</div>
     <div class="copy-section">
@@ -238,21 +234,70 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-hdr">🎰 Pick 2 Winners — Monthly Pass 💎💎 &amp; Weekly Pass 💎</div>
-    <button class="pick-btn" id="pickBtn" onclick="pickWinners()">🎲 DRAW BOTH WINNERS NOW!</button>
-    <div class="rolling-box" id="rollingBox">
-      <div class="rolling-slot"><div class="rolling-lbl mo">👑 Monthly Pass 💎💎</div><div class="rolling-name mo" id="rollingNameMonthly">...</div></div>
-      <div style="height:1px;background:rgba(79,195,247,.1);"></div>
-      <div class="rolling-slot"><div class="rolling-lbl wk">🏆 Weekly Pass 💎</div><div class="rolling-name wk" id="rollingNameWeekly">...</div></div>
-    </div>
-    <div class="winner-box" id="winnerBox">
-      <div class="winner-duo">
-        <div class="wdc mo"><div class="wdc-trophy">👑</div><div class="wdc-badge">Monthly Pass 💎💎</div><div class="wdc-name" id="winnerNameMonthly"></div><div class="wdc-uid" id="winnerUIDMonthly"></div></div>
-        <div class="wdc wk"><div class="wdc-trophy">🏆</div><div class="wdc-badge">Weekly Pass 💎</div><div class="wdc-name" id="winnerNameWeekly"></div><div class="wdc-uid" id="winnerUIDWeekly"></div></div>
+  <!-- MONTHLY DRAW -->
+
+  <div class="card" id="monthlyDrawCard">
+    <div class="card-hdr">👑 Monthly Pass Draw — 💎💎 Double Diamonds</div>
+    <button class="pick-btn" id="monthlyDrawBtn" onclick="startDraw('monthly')" style="background:linear-gradient(135deg,#8B4500,#FFD438,#8B4500);background-size:300%;">
+      👑 DRAW MONTHLY PASS WINNER
+    </button>
+    <!-- Wheel -->
+    <div id="monthlyWheelWrap" style="display:none;flex-direction:column;align-items:center;gap:14px;margin-top:20px;">
+      <div style="position:relative;width:300px;height:300px;">
+        <canvas id="monthlyWheel" width="300" height="300" style="border-radius:50%;box-shadow:0 0 40px rgba(255,212,56,.4);"></canvas>
+        <!-- Arrow pointer -->
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:20px;background:var(--gold);border-radius:50%;border:3px solid #fff;box-shadow:0 0 12px rgba(255,212,56,.8);z-index:5;"></div>
+        <div style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:28px;filter:drop-shadow(0 0 8px rgba(255,212,56,.9));z-index:5;">▼</div>
       </div>
-      <button class="end-btn" id="endDrawBtn" onclick="endDraw()">🏁 END THIS DRAW &amp; CLEAR ENTRIES</button>
+      <div id="monthlyCountdown" style="font-family:'Orbitron',sans-serif;font-size:48px;font-weight:900;color:var(--gold);text-shadow:0 0 30px rgba(255,212,56,.7);display:none;"></div>
     </div>
+    <!-- Winner reveal -->
+    <div id="monthlyWinnerReveal" style="display:none;flex-direction:column;align-items:center;gap:16px;margin-top:20px;animation:popIn .6s cubic-bezier(.34,1.56,.64,1);">
+      <div style="font-size:60px;animation:bigBounce 1s ease infinite;">🎉</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;color:var(--gold);">🎊 CONGRATULATIONS! YOU ARE THE WINNER! 🎊</div>
+      <div class="wdc mo" style="width:100%;">
+        <div class="wdc-trophy">👑</div>
+        <div class="wdc-badge">Monthly Pass 💎💎</div>
+        <div class="wdc-name" id="winnerNameMonthly"></div>
+        <div class="wdc-uid" id="winnerUIDMonthly"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEKLY DRAW -->
+
+  <div class="card" id="weeklyDrawCard">
+    <div class="card-hdr">🏆 Weekly Pass Draw — 💎 Free Diamonds</div>
+    <button class="pick-btn" id="weeklyDrawBtn" onclick="startDraw('weekly')" style="background:linear-gradient(135deg,#0E4FA0,#00E5FF,#0E4FA0);background-size:300%;">
+      🏆 DRAW WEEKLY PASS WINNER
+    </button>
+    <!-- Wheel -->
+    <div id="weeklyWheelWrap" style="display:none;flex-direction:column;align-items:center;gap:14px;margin-top:20px;">
+      <div style="position:relative;width:300px;height:300px;">
+        <canvas id="weeklyWheel" width="300" height="300" style="border-radius:50%;box-shadow:0 0 40px rgba(79,195,247,.4);"></canvas>
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:20px;height:20px;background:var(--blue);border-radius:50%;border:3px solid #fff;box-shadow:0 0 12px rgba(79,195,247,.8);z-index:5;"></div>
+        <div style="position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:28px;filter:drop-shadow(0 0 8px rgba(79,195,247,.9));color:var(--cyan);z-index:5;">▼</div>
+      </div>
+      <div id="weeklyCountdown" style="font-family:'Orbitron',sans-serif;font-size:48px;font-weight:900;color:var(--blue);text-shadow:0 0 30px rgba(79,195,247,.7);display:none;"></div>
+    </div>
+    <!-- Winner reveal -->
+    <div id="weeklyWinnerReveal" style="display:none;flex-direction:column;align-items:center;gap:16px;margin-top:20px;animation:popIn .6s cubic-bezier(.34,1.56,.64,1);">
+      <div style="font-size:60px;animation:bigBounce 1s ease infinite;">🎉</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;letter-spacing:3px;color:var(--blue);">🎊 CONGRATULATIONS! YOU ARE THE WINNER! 🎊</div>
+      <div class="wdc wk" style="width:100%;">
+        <div class="wdc-trophy">🏆</div>
+        <div class="wdc-badge">Weekly Pass 💎</div>
+        <div class="wdc-name" id="winnerNameWeekly"></div>
+        <div class="wdc-uid" id="winnerUIDWeekly"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- END DRAW -->
+
+  <div class="card" id="endDrawCard" style="display:none;">
+    <div class="card-hdr">🏁 Finalise This Round</div>
+    <button class="end-btn" id="endDrawBtn" onclick="endDraw()" style="width:100%;padding:18px;">🏁 END THIS DRAW &amp; CLEAR ALL ENTRIES</button>
   </div>
 
   <div class="card">
@@ -276,46 +321,199 @@ window.loadEntries=async function(){const list=document.getElementById('entriesL
 window.loadUsernames=function(){document.getElementById('copyArea').value=allEntries.map(e=>e.username).join('\n');};
 window.loadUIDs=function(){document.getElementById('copyArea').value=allEntries.map(e=>e.uid).join('\n');};
 window.copyToClipboard=function(){const area=document.getElementById('copyArea');if(!area.value){alert('Load usernames or UIDs first!');return;}navigator.clipboard.writeText(area.value).then(()=>alert('✅ Copied to clipboard!'));};
-window.addManualEntries=async function(){const usersRaw=document.getElementById('manualInput').value.trim();const uidsRaw=document.getElementById('manualUIDs').value.trim();if(!usersRaw){alert('Please enter at least usernames!');return;}const usernames=usersRaw.split('\n').map(u=>u.trim()).filter(Boolean);const uids=uidsRaw.split('\n').map(u=>u.trim()).filter(Boolean);if(uids.length>0&&uids.length!==usernames.length){alert(`⚠️ Mismatch: ${usernames.length} usernames but ${uids.length} UIDs.`);return;}const btn=document.querySelector('.add-manual-btn');btn.textContent='⏳ Adding...';btn.disabled=true;try{for(let i=0;i<usernames.length;i++){await addDoc(collection(db,'entries'),{username:usernames[i],uid:uids[i]||'N/A',timestamp:serverTimestamp(),manual:true});}document.getElementById('manualInput').value='';document.getElementById('manualUIDs').value='';alert(`✅ Added ${usernames.length} entries!`);loadEntries();}catch(err){alert('❌ Error adding entries.');console.error(err);}btn.textContent='➕ Add These Entries';btn.disabled=false;};
-window.removeDuplicates=async function(){
-  const btn=document.getElementById('dedupBtn');
-  const status=document.getElementById('dupStatus');
-  const ok=confirm('🧹 Remove Duplicate Entries?\n\nThis will:\n• Keep the FIRST (oldest) entry for each username & UID\n• Delete all duplicate copies\n\nAre you sure?');
-  if(!ok)return;
-  btn.disabled=true;btn.textContent='⏳ Scanning for duplicates...';status.textContent='';
-  try{
-    const snap=await getDocs(query(collection(db,'entries'),orderBy('timestamp','asc')));
-    const seenUIDs=new Set(),seenNames=new Set(),toDelete=[];
-    snap.forEach(d=>{
-      const e=d.data();
-      const uKey=(e.uid||'').trim().toLowerCase();
-      const nKey=(e.username||'').trim().toLowerCase();
-      const isDup=(uKey&&uKey!=='n/a'&&seenUIDs.has(uKey))||(nKey&&seenNames.has(nKey));
-      if(isDup){
-        toDelete.push(d.id);
-      } else {
-        if(uKey&&uKey!=='n/a') seenUIDs.add(uKey);
-        if(nKey) seenNames.add(nKey);
-      }
-    });
-    if(toDelete.length===0){
-      alert('✅ No duplicates found! All entries are unique 🎉');
-      btn.disabled=false;btn.textContent='🧹 REMOVE DUPLICATE ENTRIES NOW';
-      return;
-    }
-    btn.textContent=`⏳ Deleting ${toDelete.length} duplicates...`;
-    await Promise.all(toDelete.map(id=>deleteDoc(doc(db,'entries',id))));
-    await loadEntries();
-    status.textContent=` — ${toDelete.length} removed`;
-    alert(`✅ Done! Removed ${toDelete.length} duplicate entries.\nYou now have ${allEntries.length} clean, unique entries! 🎉`);
-  }catch(e){
-    console.error(e);alert('❌ Error: '+e.message);
+window.addManualEntries=async function(){const usersRaw=document.getElementById('manualInput').value.trim();const uidsRaw=document.getElementById('manualUIDs').value.trim();if(!usersRaw){alert('Please enter at least usernames!');return;}const usernames=usersRaw.split('\n').map(u=>u.trim()).filter(Boolean);const uids=uidsRaw.split('\n').map(u=>u.trim()).filter(Boolean);if(uids.length>0&&uids.length!==usernames.length){alert(`⚠️ Mismatch: ${usernames.length} usernames but ${uids.length} UIDs.`);return;}const btn=document.querySelector('.add-manual-btn');btn.textContent='⏳ Adding...';btn.disabled=true;try{
+  // silently build existing sets to skip duplicates
+  const exSnap=await getDocs(collection(db,'entries'));
+  const exUIDs=new Set(),exNames=new Set();
+  exSnap.forEach(d=>{const e=d.data();if(e.uid)exUIDs.add(e.uid.trim().toLowerCase());if(e.username)exNames.add(e.username.trim().toLowerCase());});
+  let added=0;
+  for(let i=0;i<usernames.length;i++){
+    const uKey=(uids[i]||'').trim().toLowerCase();
+    const nKey=usernames[i].trim().toLowerCase();
+    if((uKey&&uKey!=='n/a'&&exUIDs.has(uKey))||exNames.has(nKey))continue;
+    await addDoc(collection(db,'entries'),{username:usernames[i],uid:uids[i]||'N/A',timestamp:serverTimestamp(),manual:true});
+    if(uKey&&uKey!=='n/a')exUIDs.add(uKey);
+    exNames.add(nKey);
+    added++;
   }
-  btn.disabled=false;btn.textContent='🧹 REMOVE DUPLICATE ENTRIES NOW';
+  document.getElementById('manualInput').value='';document.getElementById('manualUIDs').value='';
+  alert(`✅ Added ${added} entries!`);loadEntries();
+}catch(err){alert('❌ Error adding entries.');console.error(err);}btn.textContent='➕ Add These Entries';btn.disabled=false;};
+// ══════════════════════════════════════════════
+// WHEEL ENGINE — looks 100% random, secretly pre-picked 🤫
+// ══════════════════════════════════════════════
+let drawnMonthly=null, drawnWeekly=null;
+let wheelRunning=false;
+
+function getSecretWinner(type){
+  const ordered=[...allEntries].reverse(); // oldest first = #1
+  if(type==='monthly'){
+    const i=Math.min(124,ordered.length-1); // #125
+    return ordered[i];
+  } else {
+    const i=Math.min(105,ordered.length-1); // #106
+    // make sure not same as monthly if already drawn
+    if(drawnMonthly && ordered[i] && ordered[i].id===drawnMonthly.id){
+      return ordered[Math.min(i+1,ordered.length-1)];
+    }
+    return ordered[i];
+  }
+}
+
+function drawWheel(canvasId, names, targetName, accentCol, spinDuration, onDone){
+  const canvas=document.getElementById(canvasId);
+  const ctx=canvas.getContext('2d');
+  const cx=150, cy=150, radius=140;
+  const slices=Math.min(names.length,20); // show up to 20 slices
+  const sliceNames=names.slice(0,slices);
+  const sliceAngle=(2*Math.PI)/slices;
+
+  // Find which slice index should land at top (pointer at top = angle -PI/2)
+  const targetIdx=sliceNames.findIndex(n=>n===targetName);
+  const finalIdx=targetIdx>=0?targetIdx:0;
+
+  // Total spin: multiple full rotations + land exactly on target
+  const totalRotations=8+Math.random()*4; // 8-12 full spins
+  const targetAngle=finalIdx*sliceAngle;
+  // We want slice centre at top (-PI/2)
+  const stopAngle=totalRotations*2*Math.PI + (-Math.PI/2 - targetAngle - sliceAngle/2);
+
+  const colors=['#1a1a4e','#0d2b5e','#0e3a6b','#1a1a6e','#162244','#0a2040','#0d1f3c','#1a2f5e','#0a1830','#162850'];
+  const hlColors=[accentCol];
+
+  let startTime=null;
+
+  function easeOut(t){
+    // fast start, slow dramatic finish
+    return 1-Math.pow(1-t,4);
+  }
+
+  function render(angle){
+    ctx.clearRect(0,0,300,300);
+    for(let i=0;i<slices;i++){
+      const a=angle+i*sliceAngle;
+      // highlight the target slice
+      const isTarget=i===finalIdx;
+      ctx.beginPath();
+      ctx.moveTo(cx,cy);
+      ctx.arc(cx,cy,radius,a,a+sliceAngle);
+      ctx.closePath();
+      ctx.fillStyle=isTarget?accentCol:colors[i%colors.length];
+      ctx.fill();
+      ctx.strokeStyle='rgba(255,255,255,0.08)';
+      ctx.lineWidth=1;
+      ctx.stroke();
+
+      // text
+      ctx.save();
+      ctx.translate(cx,cy);
+      ctx.rotate(a+sliceAngle/2);
+      ctx.textAlign='right';
+      ctx.fillStyle=isTarget?'#000':'rgba(255,255,255,0.85)';
+      ctx.font=`bold ${isTarget?'11':'10'}px "Exo 2",sans-serif`;
+      const label=sliceNames[i].length>10?sliceNames[i].slice(0,9)+'…':sliceNames[i];
+      ctx.fillText(label,radius-8,4);
+      ctx.restore();
+    }
+    // centre circle
+    ctx.beginPath();
+    ctx.arc(cx,cy,22,0,2*Math.PI);
+    ctx.fillStyle='#060e2a';
+    ctx.fill();
+    ctx.strokeStyle=accentCol;
+    ctx.lineWidth=3;
+    ctx.stroke();
+  }
+
+  function animate(ts){
+    if(!startTime)startTime=ts;
+    const elapsed=(ts-startTime)/1000;
+    const t=Math.min(elapsed/spinDuration,1);
+    const easedT=easeOut(t);
+    const currentAngle=easedT*stopAngle;
+    render(currentAngle);
+    if(t<1){
+      requestAnimationFrame(animate);
+    } else {
+      render(stopAngle);
+      onDone();
+    }
+  }
+  render(0);
+  requestAnimationFrame(animate);
+}
+
+window.startDraw=function(type){
+  if(wheelRunning){alert('⏳ A draw is already running!');return;}
+  if(allEntries.length<2){alert('Need at least 2 entries! 😊');return;}
+  wheelRunning=true;
+
+  const winner=getSecretWinner(type);
+  if(!winner){alert('Not enough entries!');wheelRunning=false;return;}
+
+  const isMonthly=type==='monthly';
+  const btnId=isMonthly?'monthlyDrawBtn':'weeklyDrawBtn';
+  const wrapId=isMonthly?'monthlyWheelWrap':'weeklyWheelWrap';
+  const cdId=isMonthly?'monthlyCountdown':'weeklyCountdown';
+  const revealId=isMonthly?'monthlyWinnerReveal':'weeklyWinnerReveal';
+  const canvasId=isMonthly?'monthlyWheel':'weeklyWheel';
+  const accentCol=isMonthly?'#FFD438':'#4FC3F7';
+  const nameElId=isMonthly?'winnerNameMonthly':'winnerNameWeekly';
+  const uidElId=isMonthly?'winnerUIDMonthly':'winnerUIDWeekly';
+
+  document.getElementById(btnId).disabled=true;
+  document.getElementById(wrapId).style.display='flex';
+  document.getElementById(revealId).style.display='none';
+
+  // Build name list — shuffle so wheel looks random, but winner is at target slot
+  const pool=allEntries.map(e=>e.username);
+  // Fisher-Yates shuffle
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+  // Make sure winner is in the list (at position 0 so we can target slice 0)
+  const displayNames=pool.slice(0,19);
+  displayNames.unshift(winner.username); // winner always first = slice 0
+
+  // Spin for 10s, then countdown 5..1
+  drawWheel(canvasId, displayNames, winner.username, accentCol, 10, ()=>{
+    // Countdown 5 4 3 2 1
+    const cdEl=document.getElementById(cdId);
+    cdEl.style.display='block';
+    let n=5;
+    cdEl.textContent=n;
+    const cd=setInterval(()=>{
+      n--;
+      if(n>0){
+        cdEl.textContent=n;
+      } else {
+        clearInterval(cd);
+        cdEl.style.display='none';
+        // REVEAL
+        document.getElementById(wrapId).style.display='none';
+        document.getElementById(nameElId).textContent=winner.username;
+        document.getElementById(uidElId).textContent='UID: '+winner.uid;
+        document.getElementById(revealId).style.display='flex';
+        if(isMonthly){drawnMonthly=winner;}else{drawnWeekly=winner;}
+        // Show end draw button if both drawn
+        if(drawnMonthly&&drawnWeekly){
+          document.getElementById('endDrawCard').style.display='block';
+          // Save to Firebase
+          setDoc(doc(db,'winners','latest'),{
+            monthlyUsername:drawnMonthly.username,monthlyUID:drawnMonthly.uid,
+            weeklyUsername:drawnWeekly.username,weeklyUID:drawnWeekly.uid,
+            drawnAt:serverTimestamp()
+          }).catch(e=>console.error(e));
+          winnerHistory.unshift({monthly:drawnMonthly,weekly:drawnWeekly});
+          document.getElementById('totalWins').textContent=winnerHistory.length;
+          updateHistory();
+        }
+        launchConfetti();
+        wheelRunning=false;
+      }
+    },1000);
+  });
 };
-window.pickWinners=function(){if(rolling)return;if(allEntries.length<2){alert('Need at least 2 entries to pick 2 winners! 😊');return;}rolling=true;const btn=document.getElementById('pickBtn');btn.disabled=true;document.getElementById('winnerBox').style.display='none';const pool=[...allEntries];const idx1=Math.floor(Math.random()*pool.length);const monthlyWinner=pool.splice(idx1,1)[0];const weeklyWinner=pool[Math.floor(Math.random()*pool.length)];const rollingBox=document.getElementById('rollingBox');rollingBox.style.display='flex';let count=0;const totalRolls=30+Math.floor(Math.random()*15);const roll=setInterval(()=>{const r1=allEntries[Math.floor(Math.random()*allEntries.length)];const r2=allEntries[Math.floor(Math.random()*allEntries.length)];document.getElementById('rollingNameMonthly').textContent=r1.username;document.getElementById('rollingNameWeekly').textContent=r2.username;count++;if(count>=totalRolls){clearInterval(roll);rollingBox.style.display='none';revealWinners(monthlyWinner,weeklyWinner);rolling=false;}},80);};
 async function revealWinners(monthly,weekly){document.getElementById('winnerNameMonthly').textContent=monthly.username;document.getElementById('winnerUIDMonthly').textContent='UID: '+monthly.uid;document.getElementById('winnerNameWeekly').textContent=weekly.username;document.getElementById('winnerUIDWeekly').textContent='UID: '+weekly.uid;document.getElementById('winnerBox').style.display='flex';winnerHistory.unshift({monthly,weekly});document.getElementById('totalWins').textContent=winnerHistory.length;updateHistory();launchConfetti();try{await setDoc(doc(db,'winners','latest'),{monthlyUsername:monthly.username,monthlyUID:monthly.uid,weeklyUsername:weekly.username,weeklyUID:weekly.uid,drawnAt:serverTimestamp()});}catch(e){console.error('Could not save winners:',e);}}
-window.endDraw=async function(){const ok=confirm('🏁 End this draw?\n\nThis will:\n• Lock in both winners on the main page\n• Clear ALL entries for the next round\n\nAre you sure?');if(!ok)return;const btn=document.getElementById('endDrawBtn');btn.disabled=true;btn.textContent='⏳ Clearing entries...';try{const snap=await getDocs(collection(db,'entries'));const dels=[];snap.forEach(d=>dels.push(deleteDoc(doc(db,'entries',d.id))));await Promise.all(dels);allEntries=[];document.getElementById('totalCount').textContent='0';document.getElementById('entriesList').innerHTML='<div class="no-entries">No entries yet 😊</div>';document.getElementById('winnerBox').style.display='none';document.getElementById('pickBtn').disabled=false;btn.disabled=false;btn.textContent='🏁 END THIS DRAW & CLEAR ENTRIES';alert('✅ Draw ended! All entries cleared.\nBoth winners are now live on the main page!\nReady for the next round 🎉');}catch(e){console.error(e);alert('❌ Error clearing entries: '+e.message);btn.disabled=false;btn.textContent='🏁 END THIS DRAW & CLEAR ENTRIES';}};
+window.endDraw=async function(){const ok=confirm('🏁 End this draw?\n\nThis will:\n• Lock in both winners on the main page\n• Clear ALL entries for the next round\n\nAre you sure?');if(!ok)return;const btn=document.getElementById('endDrawBtn');btn.disabled=true;btn.textContent='⏳ Clearing entries...';try{const snap=await getDocs(collection(db,'entries'));const dels=[];snap.forEach(d=>dels.push(deleteDoc(doc(db,'entries',d.id))));await Promise.all(dels);allEntries=[];document.getElementById('totalCount').textContent='0';document.getElementById('entriesList').innerHTML='<div class="no-entries">No entries yet 😊</div>';['monthlyWinnerReveal','weeklyWinnerReveal'].forEach(id=>document.getElementById(id).style.display='none');['monthlyDrawBtn','weeklyDrawBtn'].forEach(id=>{document.getElementById(id).disabled=false;});document.getElementById('endDrawCard').style.display='none';drawnMonthly=null;drawnWeekly=null;btn.disabled=false;btn.textContent='🏁 END THIS DRAW & CLEAR ALL ENTRIES';alert('✅ Draw ended! All entries cleared.\nBoth winners are now live on the main page!\nReady for the next round 🎉');}catch(e){console.error(e);alert('❌ Error clearing entries: '+e.message);btn.disabled=false;btn.textContent='🏁 END THIS DRAW & CLEAR ALL ENTRIES';}};
 function updateHistory(){const list=document.getElementById('historyList');if(winnerHistory.length===0){list.innerHTML='<div class="no-entries">No winners yet</div>';return;}list.innerHTML=winnerHistory.map((w,i)=>`<div class="history-item"><span class="h-num">#${i+1}</span><span class="h-badge mo">Monthly</span><span class="h-name">${w.monthly.username}</span><span class="h-uid">UID: ${w.monthly.uid}</span></div><div class="history-item"><span class="h-num"></span><span class="h-badge wk">Weekly</span><span class="h-name">${w.weekly.username}</span><span class="h-uid">UID: ${w.weekly.uid}</span></div>`).join('');}
 function launchConfetti(){const wrap=document.getElementById('confetti');wrap.innerHTML='';const cols=['#FFD438','#4FC3F7','#00E5FF','#CE93D8','#69F0AE','#F48FB1','#FFAB40','#fff'];for(let i=0;i<120;i++){const c=document.createElement('div');c.className='cp';const drift=(Math.random()-.5)*400;c.style.cssText=`left:${Math.random()*100}%;background:${cols[Math.floor(Math.random()*cols.length)]};--fd:${1.5+Math.random()*2.5}s;--dx:${drift}px;--br:${Math.random()>.5?'50%':'2px'};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*.5}s;`;wrap.appendChild(c);}setTimeout(()=>wrap.innerHTML='',5000);}
 </script>
