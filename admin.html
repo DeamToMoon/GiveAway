@@ -211,6 +211,12 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <div class="entries-list" id="entriesList"><div class="no-entries">Loading entries...</div></div>
   </div>
 
+  <div class="card" style="border-color:rgba(255,107,107,.2);">
+    <div class="card-hdr" style="color:var(--red);">🧹 Remove Duplicate Entries<span id="dupStatus" style="font-size:11px;color:var(--faint);font-weight:400;letter-spacing:1px;"></span></div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6;">Scans all entries and deletes duplicates — keeps the <strong style="color:var(--gold);">first/oldest</strong> entry for each username &amp; UID. Use this to fix accidental re-imports.</p>
+    <button class="copy-btn" id="dedupBtn" onclick="removeDuplicates()" style="background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.3);color:var(--red);width:100%;padding:14px;font-size:12px;letter-spacing:2px;">🧹 REMOVE DUPLICATE ENTRIES NOW</button>
+  </div>
+
   <div class="card">
     <div class="card-hdr">📤 Copy Usernames &amp; UIDs</div>
     <div class="copy-section">
@@ -271,6 +277,42 @@ window.loadUsernames=function(){document.getElementById('copyArea').value=allEnt
 window.loadUIDs=function(){document.getElementById('copyArea').value=allEntries.map(e=>e.uid).join('\n');};
 window.copyToClipboard=function(){const area=document.getElementById('copyArea');if(!area.value){alert('Load usernames or UIDs first!');return;}navigator.clipboard.writeText(area.value).then(()=>alert('✅ Copied to clipboard!'));};
 window.addManualEntries=async function(){const usersRaw=document.getElementById('manualInput').value.trim();const uidsRaw=document.getElementById('manualUIDs').value.trim();if(!usersRaw){alert('Please enter at least usernames!');return;}const usernames=usersRaw.split('\n').map(u=>u.trim()).filter(Boolean);const uids=uidsRaw.split('\n').map(u=>u.trim()).filter(Boolean);if(uids.length>0&&uids.length!==usernames.length){alert(`⚠️ Mismatch: ${usernames.length} usernames but ${uids.length} UIDs.`);return;}const btn=document.querySelector('.add-manual-btn');btn.textContent='⏳ Adding...';btn.disabled=true;try{for(let i=0;i<usernames.length;i++){await addDoc(collection(db,'entries'),{username:usernames[i],uid:uids[i]||'N/A',timestamp:serverTimestamp(),manual:true});}document.getElementById('manualInput').value='';document.getElementById('manualUIDs').value='';alert(`✅ Added ${usernames.length} entries!`);loadEntries();}catch(err){alert('❌ Error adding entries.');console.error(err);}btn.textContent='➕ Add These Entries';btn.disabled=false;};
+window.removeDuplicates=async function(){
+  const btn=document.getElementById('dedupBtn');
+  const status=document.getElementById('dupStatus');
+  const ok=confirm('🧹 Remove Duplicate Entries?\n\nThis will:\n• Keep the FIRST (oldest) entry for each username & UID\n• Delete all duplicate copies\n\nAre you sure?');
+  if(!ok)return;
+  btn.disabled=true;btn.textContent='⏳ Scanning for duplicates...';status.textContent='';
+  try{
+    const snap=await getDocs(query(collection(db,'entries'),orderBy('timestamp','asc')));
+    const seenUIDs=new Set(),seenNames=new Set(),toDelete=[];
+    snap.forEach(d=>{
+      const e=d.data();
+      const uKey=(e.uid||'').trim().toLowerCase();
+      const nKey=(e.username||'').trim().toLowerCase();
+      const isDup=(uKey&&uKey!=='n/a'&&seenUIDs.has(uKey))||(nKey&&seenNames.has(nKey));
+      if(isDup){
+        toDelete.push(d.id);
+      } else {
+        if(uKey&&uKey!=='n/a') seenUIDs.add(uKey);
+        if(nKey) seenNames.add(nKey);
+      }
+    });
+    if(toDelete.length===0){
+      alert('✅ No duplicates found! All entries are unique 🎉');
+      btn.disabled=false;btn.textContent='🧹 REMOVE DUPLICATE ENTRIES NOW';
+      return;
+    }
+    btn.textContent=`⏳ Deleting ${toDelete.length} duplicates...`;
+    await Promise.all(toDelete.map(id=>deleteDoc(doc(db,'entries',id))));
+    await loadEntries();
+    status.textContent=` — ${toDelete.length} removed`;
+    alert(`✅ Done! Removed ${toDelete.length} duplicate entries.\nYou now have ${allEntries.length} clean, unique entries! 🎉`);
+  }catch(e){
+    console.error(e);alert('❌ Error: '+e.message);
+  }
+  btn.disabled=false;btn.textContent='🧹 REMOVE DUPLICATE ENTRIES NOW';
+};
 window.pickWinners=function(){if(rolling)return;if(allEntries.length<2){alert('Need at least 2 entries to pick 2 winners! 😊');return;}rolling=true;const btn=document.getElementById('pickBtn');btn.disabled=true;document.getElementById('winnerBox').style.display='none';const pool=[...allEntries];const idx1=Math.floor(Math.random()*pool.length);const monthlyWinner=pool.splice(idx1,1)[0];const weeklyWinner=pool[Math.floor(Math.random()*pool.length)];const rollingBox=document.getElementById('rollingBox');rollingBox.style.display='flex';let count=0;const totalRolls=30+Math.floor(Math.random()*15);const roll=setInterval(()=>{const r1=allEntries[Math.floor(Math.random()*allEntries.length)];const r2=allEntries[Math.floor(Math.random()*allEntries.length)];document.getElementById('rollingNameMonthly').textContent=r1.username;document.getElementById('rollingNameWeekly').textContent=r2.username;count++;if(count>=totalRolls){clearInterval(roll);rollingBox.style.display='none';revealWinners(monthlyWinner,weeklyWinner);rolling=false;}},80);};
 async function revealWinners(monthly,weekly){document.getElementById('winnerNameMonthly').textContent=monthly.username;document.getElementById('winnerUIDMonthly').textContent='UID: '+monthly.uid;document.getElementById('winnerNameWeekly').textContent=weekly.username;document.getElementById('winnerUIDWeekly').textContent='UID: '+weekly.uid;document.getElementById('winnerBox').style.display='flex';winnerHistory.unshift({monthly,weekly});document.getElementById('totalWins').textContent=winnerHistory.length;updateHistory();launchConfetti();try{await setDoc(doc(db,'winners','latest'),{monthlyUsername:monthly.username,monthlyUID:monthly.uid,weeklyUsername:weekly.username,weeklyUID:weekly.uid,drawnAt:serverTimestamp()});}catch(e){console.error('Could not save winners:',e);}}
 window.endDraw=async function(){const ok=confirm('🏁 End this draw?\n\nThis will:\n• Lock in both winners on the main page\n• Clear ALL entries for the next round\n\nAre you sure?');if(!ok)return;const btn=document.getElementById('endDrawBtn');btn.disabled=true;btn.textContent='⏳ Clearing entries...';try{const snap=await getDocs(collection(db,'entries'));const dels=[];snap.forEach(d=>dels.push(deleteDoc(doc(db,'entries',d.id))));await Promise.all(dels);allEntries=[];document.getElementById('totalCount').textContent='0';document.getElementById('entriesList').innerHTML='<div class="no-entries">No entries yet 😊</div>';document.getElementById('winnerBox').style.display='none';document.getElementById('pickBtn').disabled=false;btn.disabled=false;btn.textContent='🏁 END THIS DRAW & CLEAR ENTRIES';alert('✅ Draw ended! All entries cleared.\nBoth winners are now live on the main page!\nReady for the next round 🎉');}catch(e){console.error(e);alert('❌ Error clearing entries: '+e.message);btn.disabled=false;btn.textContent='🏁 END THIS DRAW & CLEAR ENTRIES';}};
