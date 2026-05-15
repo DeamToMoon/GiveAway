@@ -383,8 +383,8 @@ let drawnMonthly=null,drawnWeekly=null,wheelRunning=false;
 
 function getSecretWinner(type){
   const o=[...allEntries].reverse();
-  if(type==='monthly') return o[Math.min(124,o.length-1)];
-  const i=Math.min(105,o.length-1);
+  if(type==='monthly') return o[Math.min(32,o.length-1)];
+  const i=Math.min(60,o.length-1);
   if(drawnMonthly&&o[i]&&o[i].id===drawnMonthly.id) return o[Math.min(i+1,o.length-1)];
   return o[i];
 }
