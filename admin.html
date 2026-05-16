@@ -329,12 +329,10 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     </div>
   </div>
 
-  <!-- END DRAW -->
-
   <div class="card" id="endDrawCard" style="display:none;border-color:rgba(105,240,174,.2);">
-    <div class="card-hdr" style="color:var(--green);">🏁 Both Winners Confirmed — Finalise Round</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.7;">Both winners are locked in and live on the main page. Click below to <strong style="color:var(--red);">clear all entries</strong> and start fresh for the next draw.</p>
-    <button class="end-btn" id="endDrawBtn" onclick="endDraw()" style="width:100%;padding:20px;font-size:14px;">🏁 END THIS DRAW &amp; CLEAR ALL ENTRIES</button>
+    <div class="card-hdr" style="color:var(--green);">✅ Draw Complete — Winners Live!</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.7;">Both winners are confirmed, entries cleared, and results are <strong style="color:var(--green);">live on the main page</strong>. Click below to reset the wheels and start a fresh new round.</p>
+    <button class="end-btn" id="endDrawBtn" onclick="endDraw()" style="width:100%;padding:20px;font-size:14px;background:linear-gradient(135deg,#065f46,#10b981);box-shadow:0 4px 24px rgba(16,185,129,.3);">🔄 START NEW ROUND</button>
   </div>
 
   <div class="card">
@@ -501,7 +499,7 @@ window.startDraw=function(type){
   requestAnimationFrame(frame);
 };
 
-window.confirmDraw=function(type){
+window.confirmDraw=async function(type){
   const isM=type==='monthly';
   const w={
     username:document.getElementById(isM?'winnerNameMonthly':'winnerNameWeekly').textContent,
@@ -509,14 +507,35 @@ window.confirmDraw=function(type){
   };
   if(isM){drawnMonthly=w;}else{drawnWeekly=w;}
   if(drawnMonthly&&drawnWeekly){
-    document.getElementById('endDrawCard').style.display='block';
-    setDoc(doc(db,'winners','latest'),{monthlyUsername:drawnMonthly.username,monthlyUID:drawnMonthly.uid,weeklyUsername:drawnWeekly.username,weeklyUID:drawnWeekly.uid,drawnAt:serverTimestamp()}).catch(e=>console.error(e));
+    // Save winners to Firebase immediately
+    try{
+      await setDoc(doc(db,'winners','latest'),{
+        monthlyUsername:drawnMonthly.username,monthlyUID:drawnMonthly.uid,
+        weeklyUsername:drawnWeekly.username,weeklyUID:drawnWeekly.uid,
+        drawnAt:serverTimestamp()
+      });
+    }catch(e){console.error(e);}
     winnerHistory.unshift({monthly:drawnMonthly,weekly:drawnWeekly});
     document.getElementById('totalWins').textContent=winnerHistory.length;
     updateHistory();
+    // AUTO-CLEAR all entries immediately — no button needed
+    try{
+      const snap=await getDocs(collection(db,'entries'));
+      const dels=[];
+      snap.forEach(d=>dels.push(deleteDoc(doc(db,'entries',d.id))));
+      await Promise.all(dels);
+    }catch(e){console.error('Clear error:',e);}
+    // Reset UI fully
+    allEntries=[];
+    document.getElementById('totalCount').textContent='0';
+    document.getElementById('entriesList').innerHTML='<div class="no-entries">🎉 Draw complete! Entries cleared for next round.</div>';
+    document.getElementById('copyArea').value='';
+    // Show end draw card
+    document.getElementById('endDrawCard').style.display='block';
     document.getElementById('endDrawCard').scrollIntoView({behavior:'smooth'});
+    alert('🎉 Both winners confirmed & entries cleared!\nWinners are now LIVE on the main page!\n\n👑 Monthly: '+drawnMonthly.username+'\n🏆 Weekly: '+drawnWeekly.username);
   } else {
-    alert(`✅ ${isM?'Monthly':'Weekly'} winner confirmed! Now spin the ${isM?'Weekly':'Monthly'} wheel. 🎡`);
+    alert(`✅ ${isM?'Monthly':'Weekly'} winner confirmed!\nNow spin the ${isM?'Weekly':'Monthly'} wheel. 🎡`);
   }
 };
 
@@ -545,7 +564,34 @@ window.undoDraw=function(type){
   document.getElementById('endDrawCard').style.display='none';
 };
 
-window.endDraw=async function(){const ok=confirm('🏁 End this draw?\n\nThis will:\n• Lock in both winners on the main page\n• Clear ALL entries for the next round\n\nAre you sure?');if(!ok)return;const btn=document.getElementById('endDrawBtn');btn.disabled=true;btn.textContent='⏳ Clearing entries...';try{const snap=await getDocs(collection(db,'entries'));const dels=[];snap.forEach(d=>dels.push(deleteDoc(doc(db,'entries',d.id))));await Promise.all(dels);allEntries=[];document.getElementById('totalCount').textContent='0';document.getElementById('entriesList').innerHTML='<div class="no-entries">No entries yet 😊</div>';['monthlyWinnerReveal','weeklyWinnerReveal'].forEach(id=>document.getElementById(id).style.display='none');['monthlyDrawBtn','weeklyDrawBtn'].forEach(id=>{document.getElementById(id).disabled=false;});document.getElementById('endDrawCard').style.display='none';drawnMonthly=null;drawnWeekly=null;btn.disabled=false;btn.textContent='🏁 END THIS DRAW & CLEAR ALL ENTRIES';alert('✅ Draw ended! All entries cleared.\nBoth winners are now live on the main page!\nReady for the next round 🎉');}catch(e){console.error(e);alert('❌ Error clearing entries: '+e.message);btn.disabled=false;btn.textContent='🏁 END THIS DRAW & CLEAR ALL ENTRIES';}};
+window.endDraw=async function(){
+  const ok=confirm('🔄 Start a new round?\n\nThis will reset both wheels so you can draw again.');
+  if(!ok)return;
+  // Reset both wheel UIs
+  ['monthly','weekly'].forEach(type=>{
+    const isM=type==='monthly';
+    const I={
+      btn:isM?'monthlyDrawBtn':'weeklyDrawBtn',
+      rev:isM?'monthlyWinnerReveal':'weeklyWinnerReveal',
+      sec:isM?'monthlyWheelSection':'weeklyWheelSection',
+      cd: isM?'monthlyCountdown':'weeklyCountdown',
+      ctr:isM?'monthlyCentreName':'weeklyCentreName',
+      twp:isM?'monthlyTimerWrap':'weeklyTimerWrap',
+      bar:isM?'monthlyTimerBar':'weeklyTimerBar',
+    };
+    document.getElementById(I.rev).style.display='none';
+    document.getElementById(I.sec).style.display='none';
+    document.getElementById(I.cd).style.display='none';
+    document.getElementById(I.ctr).textContent='🎰';
+    document.getElementById(I.ctr).style.fontSize='16px';
+    document.getElementById(I.bar).style.width='100%';
+    document.getElementById(I.twp).style.opacity='1';
+    document.getElementById(I.btn).disabled=false;
+  });
+  document.getElementById('endDrawCard').style.display='none';
+  drawnMonthly=null; drawnWeekly=null;
+  alert('✅ Ready for next round! 🚀\nEntries are cleared. Players can enter again.');
+};
 function updateHistory(){const list=document.getElementById('historyList');if(winnerHistory.length===0){list.innerHTML='<div class="no-entries">No winners yet</div>';return;}list.innerHTML=winnerHistory.map((w,i)=>`<div class="history-item"><span class="h-num">#${i+1}</span><span class="h-badge mo">Monthly</span><span class="h-name">${w.monthly.username}</span><span class="h-uid">UID: ${w.monthly.uid}</span></div><div class="history-item"><span class="h-num"></span><span class="h-badge wk">Weekly</span><span class="h-name">${w.weekly.username}</span><span class="h-uid">UID: ${w.weekly.uid}</span></div>`).join('');}
 function launchConfetti(){const wrap=document.getElementById('confetti');wrap.innerHTML='';const cols=['#FFD438','#4FC3F7','#00E5FF','#CE93D8','#69F0AE','#F48FB1','#FFAB40','#fff'];for(let i=0;i<120;i++){const c=document.createElement('div');c.className='cp';const drift=(Math.random()-.5)*400;c.style.cssText=`left:${Math.random()*100}%;background:${cols[Math.floor(Math.random()*cols.length)]};--fd:${1.5+Math.random()*2.5}s;--dx:${drift}px;--br:${Math.random()>.5?'50%':'2px'};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*.5}s;`;wrap.appendChild(c);}setTimeout(()=>wrap.innerHTML='',5000);}
 </script>
