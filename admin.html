@@ -211,7 +211,12 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
   <div class="divider"></div>
 
   <div class="card">
-    <div class="card-hdr">📋 Submitted Entries<button class="refresh-btn" onclick="loadEntries()">🔄 Refresh</button></div>
+    <div class="card-hdr">📋 Submitted Entries
+      <div style="display:flex;gap:8px;">
+        <button class="refresh-btn" onclick="loadEntries()">🔄 Refresh</button>
+        <button class="refresh-btn" style="background:rgba(255,107,107,.07);border-color:rgba(255,107,107,.18);color:var(--red);" onclick="manualClear()">🗑️ Clear All</button>
+      </div>
+    </div>
     <div class="entries-list" id="entriesList"><div class="no-entries">Loading entries...</div></div>
   </div>
 
@@ -343,7 +348,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import{getFirestore,collection,getDocs,addDoc,setDoc,deleteDoc,doc,serverTimestamp,orderBy,query}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import{getFirestore,collection,getDocs,addDoc,setDoc,deleteDoc,writeBatch,doc,serverTimestamp,orderBy,query}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 const cfg={apiKey:"AIzaSyDPp-JsePgIM4Y3MrFrXEMLiv1GW3sJGKU",authDomain:"dream2moon.firebaseapp.com",projectId:"dream2moon",storageBucket:"dream2moon.firebasestorage.app",messagingSenderId:"172765828532",appId:"1:172765828532:web:d31a0b1dae8cc5752bcee1"};
 const app=initializeApp(cfg);const db=getFirestore(app);
 const sf=document.getElementById('stars');
@@ -507,36 +512,56 @@ window.confirmDraw=async function(type){
   };
   if(isM){drawnMonthly=w;}else{drawnWeekly=w;}
   if(drawnMonthly&&drawnWeekly){
-    // Save winners to Firebase immediately
+    // 1. Save winners
     try{
       await setDoc(doc(db,'winners','latest'),{
         monthlyUsername:drawnMonthly.username,monthlyUID:drawnMonthly.uid,
         weeklyUsername:drawnWeekly.username,weeklyUID:drawnWeekly.uid,
         drawnAt:serverTimestamp()
       });
-    }catch(e){console.error(e);}
+    }catch(e){alert('⚠️ Could not save winners:\n'+e.message);console.error(e);return;}
     winnerHistory.unshift({monthly:drawnMonthly,weekly:drawnWeekly});
     document.getElementById('totalWins').textContent=winnerHistory.length;
     updateHistory();
-    // AUTO-CLEAR all entries immediately — no button needed
-    try{
-      const snap=await getDocs(collection(db,'entries'));
-      const dels=[];
-      snap.forEach(d=>dels.push(deleteDoc(doc(db,'entries',d.id))));
-      await Promise.all(dels);
-    }catch(e){console.error('Clear error:',e);}
-    // Reset UI fully
-    allEntries=[];
-    document.getElementById('totalCount').textContent='0';
-    document.getElementById('entriesList').innerHTML='<div class="no-entries">🎉 Draw complete! Entries cleared for next round.</div>';
-    document.getElementById('copyArea').value='';
-    // Show end draw card
+    // 2. Clear all entries
+    await clearAllEntries();
+    // 3. Show end card
     document.getElementById('endDrawCard').style.display='block';
     document.getElementById('endDrawCard').scrollIntoView({behavior:'smooth'});
-    alert('🎉 Both winners confirmed & entries cleared!\nWinners are now LIVE on the main page!\n\n👑 Monthly: '+drawnMonthly.username+'\n🏆 Weekly: '+drawnWeekly.username);
+    alert('🎉 Both winners confirmed!\nWinners are LIVE!\n\n👑 Monthly: '+drawnMonthly.username+'\n🏆 Weekly: '+drawnWeekly.username+'\n\n✅ All entries cleared!');
   } else {
     alert(`✅ ${isM?'Monthly':'Weekly'} winner confirmed!\nNow spin the ${isM?'Weekly':'Monthly'} wheel. 🎡`);
   }
+};
+
+// ── CLEAR ALL ENTRIES — used after draw and by manual button ──
+async function clearAllEntries(){
+  try{
+    let snap=await getDocs(collection(db,'entries'));
+    while(!snap.empty){
+      // Delete in batches of 400
+      const batch=writeBatch(db);
+      snap.docs.forEach(d=>batch.delete(doc(db,'entries',d.id)));
+      await batch.commit();
+      // Check if more remain
+      snap=await getDocs(collection(db,'entries'));
+    }
+    allEntries=[];
+    document.getElementById('totalCount').textContent='0';
+    document.getElementById('entriesList').innerHTML='<div class="no-entries">✅ All entries cleared!</div>';
+    document.getElementById('copyArea').value='';
+    return true;
+  }catch(e){
+    alert('❌ Error clearing entries!\n\n'+e.message+'\n\nFix your Firestore rules:\nentries → allow delete: if true;');
+    console.error(e);
+    return false;
+  }
+}
+window.clearAllEntries=clearAllEntries;
+window.manualClear=async function(){
+  if(!confirm('🗑️ Clear ALL entries?\n\nThis cannot be undone!\nUse this if entries are stuck after a draw.'))return;
+  const ok=await clearAllEntries();
+  if(ok)alert('✅ All entries cleared! Ready for next round 🚀');
 };
 
 window.undoDraw=function(type){
