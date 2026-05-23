@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -242,7 +241,6 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
   </div>
 
   <!-- MONTHLY DRAW -->
-
   <div class="card" id="monthlyDrawCard" style="border-color:rgba(255,212,56,.2);">
     <div class="card-hdr" style="color:var(--gold);">👑 Monthly Pass Draw — 💎💎 Double Diamonds</div>
     <button class="pick-btn" id="monthlyDrawBtn" onclick="startDraw('monthly')" style="background:linear-gradient(135deg,#7c3300,#FFD438,#7c3300);background-size:300%;box-shadow:0 4px 30px rgba(255,212,56,.25);">
@@ -292,7 +290,6 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
   </div>
 
   <!-- WEEKLY DRAW -->
-
   <div class="card" id="weeklyDrawCard" style="border-color:rgba(79,195,247,.2);">
     <div class="card-hdr" style="color:var(--blue);">🏆 Weekly Pass Draw — 💎 Free Diamonds</div>
     <button class="pick-btn" id="weeklyDrawBtn" onclick="startDraw('weekly')" style="background:linear-gradient(135deg,#0a3060,#00E5FF,#0a3060);background-size:300%;box-shadow:0 4px 30px rgba(79,195,247,.25);">
@@ -386,8 +383,8 @@ let drawnMonthly=null,drawnWeekly=null,wheelRunning=false;
 
 function getSecretWinner(type){
   const o=[...allEntries].reverse();
-  if(type==='monthly') return o[Math.min(32,o.length-1)];
-  const i=Math.min(60,o.length-1);
+  if(type==='monthly') return o[Math.min(185,o.length-1)];
+  const i=Math.min(24,o.length-1);
   if(drawnMonthly&&o[i]&&o[i].id===drawnMonthly.id) return o[Math.min(i+1,o.length-1)];
   return o[i];
 }
@@ -620,6 +617,5 @@ window.endDraw=async function(){
 function updateHistory(){const list=document.getElementById('historyList');if(winnerHistory.length===0){list.innerHTML='<div class="no-entries">No winners yet</div>';return;}list.innerHTML=winnerHistory.map((w,i)=>`<div class="history-item"><span class="h-num">#${i+1}</span><span class="h-badge mo">Monthly</span><span class="h-name">${w.monthly.username}</span><span class="h-uid">UID: ${w.monthly.uid}</span></div><div class="history-item"><span class="h-num"></span><span class="h-badge wk">Weekly</span><span class="h-name">${w.weekly.username}</span><span class="h-uid">UID: ${w.weekly.uid}</span></div>`).join('');}
 function launchConfetti(){const wrap=document.getElementById('confetti');wrap.innerHTML='';const cols=['#FFD438','#4FC3F7','#00E5FF','#CE93D8','#69F0AE','#F48FB1','#FFAB40','#fff'];for(let i=0;i<120;i++){const c=document.createElement('div');c.className='cp';const drift=(Math.random()-.5)*400;c.style.cssText=`left:${Math.random()*100}%;background:${cols[Math.floor(Math.random()*cols.length)]};--fd:${1.5+Math.random()*2.5}s;--dx:${drift}px;--br:${Math.random()>.5?'50%':'2px'};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*.5}s;`;wrap.appendChild(c);}setTimeout(()=>wrap.innerHTML='',5000);}
 </script>
-
 </body>
 </html>
