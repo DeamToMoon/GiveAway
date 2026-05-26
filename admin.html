@@ -209,6 +209,90 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 
   <div class="divider"></div>
 
+  <!-- ══════════════════════════════════════
+       TOURNAMENT WHEEL DRAW
+  ══════════════════════════════════════ -->
+  <div class="card" style="border-color:rgba(105,240,174,.2);">
+    <div class="card-hdr" style="color:var(--green);">🦑 Squid Tournament — Wheel Draw</div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.7;">
+      Spin to pick <strong style="color:var(--blue);">1st winner</strong> (Weekly Membership Pass 💎) and <strong style="color:var(--cyan);">2nd winner</strong> (Weekly Membership Pass 💎) from registered tournament teams.
+    </p>
+    <div style="display:flex;gap:10px;margin-bottom:16px;">
+      <button id="tourn1Btn" onclick="startTournDraw(1)"
+        style="flex:1;padding:14px;background:linear-gradient(135deg,#0a3060,#00E5FF,#0a3060);background-size:300%;border:none;border-radius:12px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:#fff;letter-spacing:1px;cursor:pointer;animation:btnShimmer 4s linear infinite;box-shadow:0 4px 20px rgba(79,195,247,.2);">
+        🥇 DRAW 1ST WINNER
+      </button>
+      <button id="tourn2Btn" onclick="startTournDraw(2)"
+        style="flex:1;padding:14px;background:linear-gradient(135deg,#0a3060,#69F0AE,#0a3060);background-size:300%;border:none;border-radius:12px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:#fff;letter-spacing:1px;cursor:pointer;animation:btnShimmer 4s linear infinite;box-shadow:0 4px 20px rgba(105,240,174,.2);">
+        🥈 DRAW 2ND WINNER
+      </button>
+    </div>
+
+    <!-- Wheel -->
+    <div id="tournWheelSection" style="display:none;flex-direction:column;align-items:center;gap:18px;margin-top:4px;">
+      <div id="tournWheelTitle" style="font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;letter-spacing:2px;color:var(--green);text-align:center;"></div>
+      <div style="position:relative;width:320px;height:320px;">
+        <div style="position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(#69F0AE,#00E5FF,#69F0AE,#B2DFDB,#69F0AE);animation:spinGlow 2s linear infinite;opacity:.4;z-index:0;"></div>
+        <canvas id="tournWheel" width="320" height="320" style="position:relative;z-index:1;border-radius:50%;"></canvas>
+        <div style="position:absolute;top:-22px;left:50%;transform:translateX(-50%);z-index:10;filter:drop-shadow(0 0 10px rgba(105,240,174,1));">
+          <svg width="28" height="26" viewBox="0 0 28 26"><polygon points="14,26 0,0 28,0" fill="#69F0AE"/></svg>
+        </div>
+        <div id="tournCentreWrap" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#060e2a,#0d1f3c);border:3px solid #69F0AE;box-shadow:0 0 24px rgba(105,240,174,.6);display:flex;align-items:center;justify-content:center;overflow:hidden;">
+          <div id="tournCentreName" style="font-family:'Orbitron',sans-serif;font-size:7px;font-weight:900;color:#69F0AE;text-align:center;padding:4px;word-break:break-all;line-height:1.2;">🦑</div>
+        </div>
+      </div>
+      <div id="tournTimerWrap" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:8px;">
+        <div style="font-size:11px;letter-spacing:3px;color:var(--faint);text-transform:uppercase;font-weight:700;">Spinning...</div>
+        <div style="width:100%;height:8px;background:rgba(105,240,174,.1);border-radius:4px;overflow:hidden;">
+          <div id="tournTimerBar" style="height:100%;background:linear-gradient(90deg,#69F0AE,#00E5FF);border-radius:4px;width:100%;transition:width .1s linear;"></div>
+        </div>
+      </div>
+      <div id="tournCountdown" style="display:none;font-family:'Orbitron',sans-serif;font-size:80px;font-weight:900;color:#69F0AE;text-shadow:0 0 40px rgba(105,240,174,.9);animation:cdPulse .8s ease-in-out infinite;"></div>
+    </div>
+
+    <!-- Winners reveal -->
+    <div id="tourn1Reveal" style="display:none;flex-direction:column;align-items:center;gap:14px;margin-top:18px;">
+      <div style="font-size:52px;animation:bigBounce 1s ease infinite;">🥇</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;letter-spacing:2px;color:var(--blue);text-align:center;">🎊 1ST PLACE WINNER 🎊</div>
+      <div style="width:100%;background:linear-gradient(135deg,rgba(79,195,247,.1),rgba(0,229,255,.05));border:2px solid rgba(79,195,247,.4);border-radius:16px;padding:18px;text-align:center;">
+        <div style="font-size:11px;font-weight:800;letter-spacing:2px;color:var(--blue);margin-bottom:8px;">💎 Weekly Membership Pass</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:#fff;margin-bottom:4px;" id="tourn1Name"></div>
+        <div style="font-size:11px;color:var(--faint);" id="tourn1UID"></div>
+      </div>
+      <div style="display:flex;gap:10px;width:100%;">
+        <button onclick="undoTournDraw(1)" style="flex:1;padding:12px;background:rgba(255,107,107,.08);border:2px solid rgba(255,107,107,.3);border-radius:12px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:var(--red);cursor:pointer;">↩️ UNDO</button>
+        <button onclick="confirmTournDraw(1)" style="flex:2;padding:12px;background:linear-gradient(135deg,rgba(79,195,247,.15),rgba(0,229,255,.1));border:2px solid rgba(79,195,247,.4);border-radius:12px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:var(--blue);cursor:pointer;">✅ CONFIRM 1ST WINNER</button>
+      </div>
+    </div>
+
+    <div id="tourn2Reveal" style="display:none;flex-direction:column;align-items:center;gap:14px;margin-top:18px;">
+      <div style="font-size:52px;animation:bigBounce 1s ease infinite;">🥈</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;letter-spacing:2px;color:var(--green);text-align:center;">🎊 2ND PLACE WINNER 🎊</div>
+      <div style="width:100%;background:linear-gradient(135deg,rgba(105,240,174,.1),rgba(0,229,255,.05));border:2px solid rgba(105,240,174,.4);border-radius:16px;padding:18px;text-align:center;">
+        <div style="font-size:11px;font-weight:800;letter-spacing:2px;color:var(--green);margin-bottom:8px;">💎 Weekly Membership Pass</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:#fff;margin-bottom:4px;" id="tourn2Name"></div>
+        <div style="font-size:11px;color:var(--faint);" id="tourn2UID"></div>
+      </div>
+      <div style="display:flex;gap:10px;width:100%;">
+        <button onclick="undoTournDraw(2)" style="flex:1;padding:12px;background:rgba(255,107,107,.08);border:2px solid rgba(255,107,107,.3);border-radius:12px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:var(--red);cursor:pointer;">↩️ UNDO</button>
+        <button onclick="confirmTournDraw(2)" style="flex:2;padding:12px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(0,229,255,.1));border:2px solid rgba(105,240,174,.4);border-radius:12px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:var(--green);cursor:pointer;">✅ CONFIRM 2ND WINNER</button>
+      </div>
+    </div>
+
+    <!-- Tournament teams list for reference -->
+    <div style="margin-top:18px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:var(--faint);text-transform:uppercase;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
+        Registered Teams
+        <button class="refresh-btn" onclick="loadTournTeams()">🔄 Refresh</button>
+      </div>
+      <div id="tournTeamsList" style="max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;">
+        <div class="no-entries">Loading teams...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
   <div class="card">
     <div class="card-hdr">📋 Submitted Entries
       <div style="display:flex;gap:8px;">
@@ -377,16 +461,14 @@ window.addManualEntries=async function(){const usersRaw=document.getElementById(
   alert(`✅ Added ${added} entries!`);loadEntries();
 }catch(err){alert('❌ Error adding entries.');console.error(err);}btn.textContent='➕ Add These Entries';btn.disabled=false;};
 // ══════════════════════════════════════════════════════════
-// EPIC WHEEL ENGINE 🎡 — secret pre-pick 🤫, name in centre
+// WHEEL ENGINE 🎡 — fully random from here onwards!
 // ══════════════════════════════════════════════════════════
 let drawnMonthly=null,drawnWeekly=null,wheelRunning=false;
 
-function getSecretWinner(type){
-  const o=[...allEntries].reverse();
-  if(type==='monthly') return o[Math.min(192,o.length-1)];
-  const i=Math.min(24,o.length-1);
-  if(drawnMonthly&&o[i]&&o[i].id===drawnMonthly.id) return o[Math.min(i+1,o.length-1)];
-  return o[i];
+function getRandomWinner(type,pool){
+  // Truly random — pick any entry from the pool
+  if(!pool||pool.length===0) return null;
+  return pool[Math.floor(Math.random()*pool.length)];
 }
 
 function renderWheel(ctx,names,angle,accent,hlIdx){
@@ -416,7 +498,9 @@ window.startDraw=function(type){
   if(wheelRunning){alert('⏳ A draw is already running!');return;}
   if(allEntries.length<2){alert('Need at least 2 entries! 😊');return;}
   wheelRunning=true;
-  const winner=getSecretWinner(type);
+  // Truly random — exclude already drawn winner from pool
+  const pool=allEntries.filter(e=>!(drawnMonthly&&e.id===drawnMonthly.id)&&!(drawnWeekly&&e.id===drawnWeekly.id));
+  const winner=getRandomWinner(type,pool);
   if(!winner){alert('Not enough entries!');wheelRunning=false;return;}
   const isM=type==='monthly';
   const I={
@@ -614,7 +698,136 @@ window.endDraw=async function(){
   drawnMonthly=null; drawnWeekly=null;
   alert('✅ Ready for next round! 🚀\nEntries are cleared. Players can enter again.');
 };
-function updateHistory(){const list=document.getElementById('historyList');if(winnerHistory.length===0){list.innerHTML='<div class="no-entries">No winners yet</div>';return;}list.innerHTML=winnerHistory.map((w,i)=>`<div class="history-item"><span class="h-num">#${i+1}</span><span class="h-badge mo">Monthly</span><span class="h-name">${w.monthly.username}</span><span class="h-uid">UID: ${w.monthly.uid}</span></div><div class="history-item"><span class="h-num"></span><span class="h-badge wk">Weekly</span><span class="h-name">${w.weekly.username}</span><span class="h-uid">UID: ${w.weekly.uid}</span></div>`).join('');}
+// ══════════════════════════════════════════════════════════
+// TOURNAMENT WHEEL ENGINE 🦑
+// ══════════════════════════════════════════════════════════
+let tournTeams=[],tournWinner1=null,tournWinner2=null,tournWheelRunning=false;
+
+async function loadTournTeams(){
+  const list=document.getElementById('tournTeamsList');
+  if(list)list.innerHTML='<div class="no-entries">⏳ Loading...</div>';
+  try{
+    const snap=await getDocs(query(collection(db,'tournament_teams'),orderBy('registeredAt','asc')));
+    tournTeams=[];snap.forEach(d=>tournTeams.push({id:d.id,...d.data()}));
+    if(!list)return;
+    if(tournTeams.length===0){list.innerHTML='<div class="no-entries">No teams registered yet.</div>';return;}
+    list.innerHTML=tournTeams.map((t,i)=>`
+      <div class="entry-item">
+        <span class="entry-num">#${i+1}</span>
+        <div class="entry-info">
+          <div class="entry-username">👑 ${t.leaderName}</div>
+          <div class="entry-uid">UID: ${t.leaderUID} · ${t.member1}, ${t.member2}, ${t.member3}</div>
+        </div>
+      </div>`).join('');
+  }catch(e){console.error(e);if(list)list.innerHTML='<div class="no-entries">❌ Error loading teams.</div>';}
+}
+loadTournTeams();
+
+window.startTournDraw=function(place){
+  if(tournWheelRunning){alert('⏳ A draw is already running!');return;}
+  if(tournTeams.length<2){alert('Need at least 2 teams registered! 😊');return;}
+  tournWheelRunning=true;
+
+  // Exclude already drawn winner
+  const pool=tournTeams.filter(t=>
+    !(tournWinner1&&t.id===tournWinner1.id)&&
+    !(tournWinner2&&t.id===tournWinner2.id)
+  );
+  if(pool.length===0){alert('No more teams to draw!');tournWheelRunning=false;return;}
+
+  // Truly random pick
+  const winner=pool[Math.floor(Math.random()*pool.length)];
+  const accent='#69F0AE';
+  const titleEl=document.getElementById('tournWheelTitle');
+  if(titleEl)titleEl.textContent=place===1?'🥇 Drawing 1st Place Winner...':'🥈 Drawing 2nd Place Winner...';
+
+  document.getElementById(place===1?'tourn1Btn':'tourn2Btn').disabled=true;
+  document.getElementById('tournWheelSection').style.display='flex';
+  document.getElementById('tourn'+(place===1?'1':'2')+'Reveal').style.display='none';
+
+  // Build names list — winner NOT shown yet
+  const names=pool.filter(t=>t.id!==winner.id).map(t=>t.leaderName);
+  for(let i=names.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[names[i],names[j]]=[names[j],names[i]];}
+  const displayNames=names.slice(0,19);
+  // Pad if less than 5
+  while(displayNames.length<5)displayNames.push('???');
+
+  const canvas=document.getElementById('tournWheel');
+  const ctx=canvas.getContext('2d');
+  const S=displayNames.length,sa=(2*Math.PI)/S;
+  const TOTAL=15,SPINS=10;
+  const stopAngle=SPINS*2*Math.PI+(-Math.PI/2-sa/2);
+  function ease(t){return t===1?1:1-Math.pow(2,-10*t);}
+  let t0=null,lastFlash=0,cdDone=false,cdN=5,cdTimer=null;
+  const cdEl=document.getElementById('tournCountdown');
+
+  function frame(ts){
+    if(!t0)t0=ts;
+    const el=(ts-t0)/1000,t=Math.min(el/TOTAL,1),angle=ease(t)*stopAngle;
+    const norm=(((-angle%(2*Math.PI))+2*Math.PI)%(2*Math.PI));
+    const atSlice=Math.floor(norm/sa)%S;
+    renderWheel(ctx,displayNames,angle,accent,atSlice);
+    if(ts-lastFlash>80){
+      const ctr=document.getElementById('tournCentreName');
+      if(cdN<=1&&cdTimer!==null){
+        ctr.textContent=winner.leaderName;ctr.style.color=accent;ctr.style.fontSize='6px';
+      } else {
+        ctr.textContent=displayNames[atSlice]||'?';ctr.style.color=accent;ctr.style.fontSize='7px';
+      }
+      lastFlash=ts;
+    }
+    document.getElementById('tournTimerBar').style.width=Math.max(0,(1-el/TOTAL)*100)+'%';
+    if(el>=10&&!cdTimer){
+      cdTimer=true;document.getElementById('tournTimerWrap').style.opacity='0.3';
+      cdEl.style.display='block';cdEl.textContent=cdN;
+      const iv=setInterval(()=>{cdN--;if(cdN>0){cdEl.textContent=cdN;}else{clearInterval(iv);cdDone=true;}},1000);
+    }
+    if(t<1){requestAnimationFrame(frame);}
+    else{
+      renderWheel(ctx,displayNames,stopAngle,accent,0);
+      cdEl.style.display='none';
+      document.getElementById('tournCentreName').textContent=winner.leaderName;
+      document.getElementById('tournCentreName').style.fontSize='6px';
+      setTimeout(()=>{
+        document.getElementById('tournWheelSection').style.display='none';
+        document.getElementById('tournTimerWrap').style.opacity='1';
+        document.getElementById('tournTimerBar').style.width='100%';
+        document.getElementById('tournCentreName').textContent='🦑';
+        document.getElementById('tournCentreName').style.fontSize='16px';
+        // Show reveal
+        const revId='tourn'+place+'Reveal';
+        document.getElementById('tourn'+place+'Name').textContent=winner.leaderName;
+        document.getElementById('tourn'+place+'UID').textContent='UID: '+winner.leaderUID+' · Members: '+winner.member1+', '+winner.member2+', '+winner.member3;
+        document.getElementById(revId).style.display='flex';
+        if(place===1)tournWinner1=winner; else tournWinner2=winner;
+        launchConfetti();tournWheelRunning=false;
+      },500);
+    }
+  }
+  renderWheel(ctx,displayNames,0,accent,-1);requestAnimationFrame(frame);
+};
+
+window.confirmTournDraw=async function(place){
+  const winner=place===1?tournWinner1:tournWinner2;
+  if(!winner)return;
+  try{
+    await setDoc(doc(db,'tournament_winners','place'+place),{
+      leaderName:winner.leaderName,leaderUID:winner.leaderUID,
+      member1:winner.member1,member2:winner.member2,member3:winner.member3,
+      place:place,prize:place===1?'Weekly Membership Pass 💎 (1st)':'Weekly Membership Pass 💎 (2nd)',
+      drawnAt:serverTimestamp()
+    });
+    alert(`✅ ${place===1?'1st':'2nd'} place winner confirmed!\n\n👑 Team: ${winner.leaderName}\nPrize: Weekly Membership Pass 💎`);
+  }catch(e){alert('❌ Could not save: '+e.message);console.error(e);}
+};
+
+window.undoTournDraw=function(place){
+  if(tournWheelRunning){alert('⏳ Wait for draw to finish!');return;}
+  if(!confirm(`↩️ Undo ${place===1?'1st':'2nd'} place draw?`))return;
+  if(place===1){tournWinner1=null;}else{tournWinner2=null;}
+  document.getElementById('tourn'+place+'Reveal').style.display='none';
+  document.getElementById(place===1?'tourn1Btn':'tourn2Btn').disabled=false;
+};const list=document.getElementById('historyList');if(winnerHistory.length===0){list.innerHTML='<div class="no-entries">No winners yet</div>';return;}list.innerHTML=winnerHistory.map((w,i)=>`<div class="history-item"><span class="h-num">#${i+1}</span><span class="h-badge mo">Monthly</span><span class="h-name">${w.monthly.username}</span><span class="h-uid">UID: ${w.monthly.uid}</span></div><div class="history-item"><span class="h-num"></span><span class="h-badge wk">Weekly</span><span class="h-name">${w.weekly.username}</span><span class="h-uid">UID: ${w.weekly.uid}</span></div>`).join('');}
 function launchConfetti(){const wrap=document.getElementById('confetti');wrap.innerHTML='';const cols=['#FFD438','#4FC3F7','#00E5FF','#CE93D8','#69F0AE','#F48FB1','#FFAB40','#fff'];for(let i=0;i<120;i++){const c=document.createElement('div');c.className='cp';const drift=(Math.random()-.5)*400;c.style.cssText=`left:${Math.random()*100}%;background:${cols[Math.floor(Math.random()*cols.length)]};--fd:${1.5+Math.random()*2.5}s;--dx:${drift}px;--br:${Math.random()>.5?'50%':'2px'};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*.5}s;`;wrap.appendChild(c);}setTimeout(()=>wrap.innerHTML='',5000);}
 </script>
 </body>
