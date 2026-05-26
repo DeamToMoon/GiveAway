@@ -324,64 +324,56 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     </div>
   </div>
 
-  <!-- MONTHLY DRAW -->
+  <!-- 1ST LUCKY DRAW -->
   <div class="card" id="monthlyDrawCard" style="border-color:rgba(255,212,56,.2);">
-    <div class="card-hdr" style="color:var(--gold);">👑 Monthly Pass Draw — 💎💎 Double Diamonds</div>
+    <div class="card-hdr" style="color:var(--gold);">🎰 1st Lucky Draw — Weekly Membership Pass 💎</div>
     <button class="pick-btn" id="monthlyDrawBtn" onclick="startDraw('monthly')" style="background:linear-gradient(135deg,#7c3300,#FFD438,#7c3300);background-size:300%;box-shadow:0 4px 30px rgba(255,212,56,.25);">
-      👑 SPIN THE WHEEL — MONTHLY PASS
+      🎰 SPIN — 1ST LUCKY DRAW WINNER
     </button>
     <div id="monthlyWheelSection" style="display:none;flex-direction:column;align-items:center;gap:18px;margin-top:24px;">
-      <!-- Wheel container -->
       <div style="position:relative;width:320px;height:320px;">
-        <!-- Outer glow ring -->
-        <div id="monthlyGlowRing" style="position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(#FFD438,#FFA500,#FFD438,#FFF0A0,#FFD438);animation:spinGlow 2s linear infinite;opacity:.4;z-index:0;"></div>
+        <div style="position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(#FFD438,#FFA500,#FFD438,#FFF0A0,#FFD438);animation:spinGlow 2s linear infinite;opacity:.4;z-index:0;"></div>
         <canvas id="monthlyWheel" width="320" height="320" style="position:relative;z-index:1;border-radius:50%;"></canvas>
-        <!-- Pointer triangle at top -->
         <div style="position:absolute;top:-22px;left:50%;transform:translateX(-50%);z-index:10;filter:drop-shadow(0 0 10px rgba(255,212,56,1));">
           <svg width="28" height="26" viewBox="0 0 28 26"><polygon points="14,26 0,0 28,0" fill="#FFD438"/></svg>
         </div>
-        <!-- Centre circle with spinning name display -->
         <div id="monthlyCentreWrap" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#060e2a,#0d1f3c);border:3px solid #FFD438;box-shadow:0 0 24px rgba(255,212,56,.6);display:flex;align-items:center;justify-content:center;overflow:hidden;">
           <div id="monthlyCentreName" style="font-family:'Orbitron',sans-serif;font-size:7px;font-weight:900;color:#FFD438;text-align:center;padding:4px;word-break:break-all;line-height:1.2;">🎰</div>
         </div>
       </div>
-      <!-- Live countdown bar (visible during spin) -->
       <div id="monthlyTimerWrap" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:8px;">
         <div style="font-size:11px;letter-spacing:3px;color:var(--faint);text-transform:uppercase;font-weight:700;">Spinning...</div>
         <div style="width:100%;height:8px;background:rgba(255,212,56,.1);border-radius:4px;overflow:hidden;">
           <div id="monthlyTimerBar" style="height:100%;background:linear-gradient(90deg,#FFD438,#FFA500);border-radius:4px;width:100%;transition:width .1s linear;"></div>
         </div>
       </div>
-      <!-- Countdown overlay (last 5 seconds) -->
       <div id="monthlyCountdown" style="display:none;font-family:'Orbitron',sans-serif;font-size:80px;font-weight:900;color:#FFD438;text-shadow:0 0 40px rgba(255,212,56,.9),0 0 80px rgba(255,212,56,.4);animation:cdPulse .8s ease-in-out infinite;"></div>
     </div>
-    <!-- Winner reveal -->
     <div id="monthlyWinnerReveal" style="display:none;flex-direction:column;align-items:center;gap:18px;margin-top:24px;">
       <div style="font-size:64px;animation:bigBounce 1s ease infinite;">🎉</div>
-      <div style="font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;letter-spacing:3px;color:#FFD438;text-align:center;text-shadow:0 0 20px rgba(255,212,56,.6);">🎊 CONGRATULATIONS! 🎊<br>YOU ARE THE WINNER!</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;letter-spacing:3px;color:#FFD438;text-align:center;text-shadow:0 0 20px rgba(255,212,56,.6);">🎊 CONGRATULATIONS! 🎊<br>1ST LUCKY DRAW WINNER!</div>
       <div class="wdc mo" style="width:100%;">
-        <div class="wdc-trophy">👑</div>
-        <div class="wdc-badge">Monthly Pass 💎💎</div>
+        <div class="wdc-trophy">🎰</div>
+        <div class="wdc-badge">Weekly Membership Pass 💎</div>
         <div class="wdc-name" id="winnerNameMonthly"></div>
         <div class="wdc-uid" id="winnerUIDMonthly"></div>
       </div>
-      <!-- ACTION BUTTONS -->
       <div style="display:flex;gap:12px;width:100%;margin-top:4px;">
         <button onclick="undoDraw('monthly')" style="flex:1;padding:14px;background:rgba(255,107,107,.08);border:2px solid rgba(255,107,107,.35);border-radius:14px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--red);letter-spacing:2px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='rgba(255,107,107,.2)'" onmouseout="this.style.background='rgba(255,107,107,.08)'">↩️ UNDO<br><span style="font-size:9px;opacity:.7;letter-spacing:1px;">RE-SPIN</span></button>
-        <button onclick="confirmDraw('monthly')" style="flex:2;padding:14px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:2px solid rgba(105,240,174,.4);border-radius:14px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--green);letter-spacing:2px;cursor:pointer;transition:all .3s;box-shadow:0 0 20px rgba(105,240,174,.1);" onmouseover="this.style.background='linear-gradient(135deg,rgba(105,240,174,.25),rgba(52,211,153,.18))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1))'">✅ CONFIRM WINNER<br><span style="font-size:9px;opacity:.7;letter-spacing:1px;">LOCK THIS RESULT</span></button>
+        <button onclick="confirmDraw('monthly')" style="flex:2;padding:14px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:2px solid rgba(105,240,174,.4);border-radius:14px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--green);letter-spacing:2px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(105,240,174,.25),rgba(52,211,153,.18))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1))'">✅ CONFIRM WINNER<br><span style="font-size:9px;opacity:.7;letter-spacing:1px;">LOCK THIS RESULT</span></button>
       </div>
     </div>
   </div>
 
-  <!-- WEEKLY DRAW -->
+  <!-- 2ND LUCKY DRAW -->
   <div class="card" id="weeklyDrawCard" style="border-color:rgba(79,195,247,.2);">
-    <div class="card-hdr" style="color:var(--blue);">🏆 Weekly Pass Draw — 💎 Free Diamonds</div>
+    <div class="card-hdr" style="color:var(--blue);">🎰 2nd Lucky Draw — Weekly Membership Pass 💎</div>
     <button class="pick-btn" id="weeklyDrawBtn" onclick="startDraw('weekly')" style="background:linear-gradient(135deg,#0a3060,#00E5FF,#0a3060);background-size:300%;box-shadow:0 4px 30px rgba(79,195,247,.25);">
-      🏆 SPIN THE WHEEL — WEEKLY PASS
+      🎰 SPIN — 2ND LUCKY DRAW WINNER
     </button>
     <div id="weeklyWheelSection" style="display:none;flex-direction:column;align-items:center;gap:18px;margin-top:24px;">
       <div style="position:relative;width:320px;height:320px;">
-        <div id="weeklyGlowRing" style="position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(#4FC3F7,#00E5FF,#4FC3F7,#B3E5FC,#4FC3F7);animation:spinGlow 2s linear infinite;opacity:.4;z-index:0;"></div>
+        <div style="position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(#4FC3F7,#00E5FF,#4FC3F7,#B3E5FC,#4FC3F7);animation:spinGlow 2s linear infinite;opacity:.4;z-index:0;"></div>
         <canvas id="weeklyWheel" width="320" height="320" style="position:relative;z-index:1;border-radius:50%;"></canvas>
         <div style="position:absolute;top:-22px;left:50%;transform:translateX(-50%);z-index:10;filter:drop-shadow(0 0 10px rgba(0,229,255,1));">
           <svg width="28" height="26" viewBox="0 0 28 26"><polygon points="14,26 0,0 28,0" fill="#00E5FF"/></svg>
@@ -398,25 +390,24 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       </div>
       <div id="weeklyCountdown" style="display:none;font-family:'Orbitron',sans-serif;font-size:80px;font-weight:900;color:#4FC3F7;text-shadow:0 0 40px rgba(79,195,247,.9),0 0 80px rgba(79,195,247,.4);animation:cdPulse .8s ease-in-out infinite;"></div>
     </div>
-    <!-- Winner reveal -->
     <div id="weeklyWinnerReveal" style="display:none;flex-direction:column;align-items:center;gap:18px;margin-top:24px;">
       <div style="font-size:64px;animation:bigBounce 1s ease infinite;">🎉</div>
-      <div style="font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;letter-spacing:3px;color:#4FC3F7;text-align:center;text-shadow:0 0 20px rgba(79,195,247,.6);">🎊 CONGRATULATIONS! 🎊<br>YOU ARE THE WINNER!</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;letter-spacing:3px;color:#4FC3F7;text-align:center;text-shadow:0 0 20px rgba(79,195,247,.6);">🎊 CONGRATULATIONS! 🎊<br>2ND LUCKY DRAW WINNER!</div>
       <div class="wdc wk" style="width:100%;">
-        <div class="wdc-trophy">🏆</div>
-        <div class="wdc-badge">Weekly Pass 💎</div>
+        <div class="wdc-trophy">🎰</div>
+        <div class="wdc-badge">Weekly Membership Pass 💎</div>
         <div class="wdc-name" id="winnerNameWeekly"></div>
         <div class="wdc-uid" id="winnerUIDWeekly"></div>
       </div>
       <div style="display:flex;gap:12px;width:100%;margin-top:4px;">
         <button onclick="undoDraw('weekly')" style="flex:1;padding:14px;background:rgba(255,107,107,.08);border:2px solid rgba(255,107,107,.35);border-radius:14px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--red);letter-spacing:2px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='rgba(255,107,107,.2)'" onmouseout="this.style.background='rgba(255,107,107,.08)'">↩️ UNDO<br><span style="font-size:9px;opacity:.7;letter-spacing:1px;">RE-SPIN</span></button>
-        <button onclick="confirmDraw('weekly')" style="flex:2;padding:14px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:2px solid rgba(105,240,174,.4);border-radius:14px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--green);letter-spacing:2px;cursor:pointer;transition:all .3s;box-shadow:0 0 20px rgba(105,240,174,.1);" onmouseover="this.style.background='linear-gradient(135deg,rgba(105,240,174,.25),rgba(52,211,153,.18))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1))'">✅ CONFIRM WINNER<br><span style="font-size:9px;opacity:.7;letter-spacing:1px;">LOCK THIS RESULT</span></button>
+        <button onclick="confirmDraw('weekly')" style="flex:2;padding:14px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:2px solid rgba(105,240,174,.4);border-radius:14px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--green);letter-spacing:2px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(105,240,174,.25),rgba(52,211,153,.18))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1))'">✅ CONFIRM WINNER<br><span style="font-size:9px;opacity:.7;letter-spacing:1px;">LOCK THIS RESULT</span></button>
       </div>
     </div>
   </div>
 
   <div class="card" id="endDrawCard" style="display:none;border-color:rgba(105,240,174,.2);">
-    <div class="card-hdr" style="color:var(--green);">✅ Draw Complete — Winners Live!</div>
+    <div class="card-hdr" style="color:var(--green);">✅ Both Lucky Draw Winners Confirmed!</div>
     <p style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.7;">Both winners are confirmed, entries cleared, and results are <strong style="color:var(--green);">live on the main page</strong>. Click below to reset the wheels and start a fresh new round.</p>
     <button class="end-btn" id="endDrawBtn" onclick="endDraw()" style="width:100%;padding:20px;font-size:14px;background:linear-gradient(135deg,#065f46,#10b981);box-shadow:0 4px 24px rgba(16,185,129,.3);">🔄 START NEW ROUND</button>
   </div>
@@ -602,7 +593,7 @@ window.confirmDraw=async function(type){
     // 3. Show end card
     document.getElementById('endDrawCard').style.display='block';
     document.getElementById('endDrawCard').scrollIntoView({behavior:'smooth'});
-    alert('🎉 Both winners confirmed!\nWinners are LIVE!\n\n👑 Monthly: '+drawnMonthly.username+'\n🏆 Weekly: '+drawnWeekly.username+'\n\n✅ All entries cleared!');
+    alert('🎉 Both winners confirmed!\nWinners are LIVE!\n\n🎰 1st Lucky Draw: '+drawnMonthly.username+'\n🎰 2nd Lucky Draw: '+drawnWeekly.username+'\n\n✅ All entries cleared!');
   } else {
     alert(`✅ ${isM?'Monthly':'Weekly'} winner confirmed!\nNow spin the ${isM?'Weekly':'Monthly'} wheel. 🎡`);
   }
