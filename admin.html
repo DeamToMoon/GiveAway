@@ -209,50 +209,6 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 
   <div class="divider"></div>
 
-  <!-- ══════════════════════════════════════
-       TOURNAMENT WHEEL DRAW
-  ══════════════════════════════════════ -->
-  <div class="card" style="border-color:rgba(105,240,174,.2);">
-    <div class="card-hdr" style="color:var(--green);">🦑 Squid Tournament — Management
-      <button class="refresh-btn" onclick="loadTournTeams()">🔄 Refresh</button>
-    </div>
-
-    <!-- Tournament Result Input -->
-    <div style="background:rgba(255,212,56,.04);border:1px solid rgba(255,212,56,.15);border-radius:14px;padding:16px;margin-bottom:16px;">
-      <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;">🏆 Set Tournament Results (visible on main page)</div>
-      <div style="display:flex;flex-direction:column;gap:10px;">
-        <div><label style="font-size:10px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥇 Champion Team Name</label>
-          <input id="res-1st" type="text" placeholder="1st place team name" style="width:100%;background:rgba(255,212,56,.05);border:1px solid rgba(255,212,56,.2);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
-        <div><label style="font-size:10px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥈 2nd Place Team Name</label>
-          <input id="res-2nd" type="text" placeholder="2nd place team name" style="width:100%;background:rgba(79,195,247,.04);border:1px solid rgba(79,195,247,.15);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
-        <div><label style="font-size:10px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥉 3rd Place Team Name</label>
-          <input id="res-3rd" type="text" placeholder="3rd place team name" style="width:100%;background:rgba(206,147,216,.04);border:1px solid rgba(206,147,216,.15);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
-        <div><label style="font-size:10px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">📝 Note (optional)</label>
-          <input id="res-note" type="text" placeholder="e.g. GG to all teams!" style="width:100%;background:rgba(79,195,247,.03);border:1px solid rgba(79,195,247,.1);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
-        <button onclick="saveTournResult()" style="padding:14px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:2px solid rgba(105,240,174,.4);border-radius:12px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--green);letter-spacing:2px;cursor:pointer;transition:all .3s;">✅ SAVE & PUBLISH RESULTS</button>
-      </div>
-    </div>
-
-    <!-- Bracket display -->
-    <div style="margin-bottom:16px;">
-      <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--blue);text-transform:uppercase;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
-        ⚔️ Match Bracket
-        <button class="refresh-btn" style="background:rgba(79,195,247,.07);border-color:rgba(79,195,247,.2);color:var(--blue);" onclick="generateBracket()">⚡ Generate</button>
-      </div>
-      <div id="bracketDisplay" style="font-size:12px;color:var(--muted);text-align:center;padding:12px;">Click Generate to create match groups from registered teams.</div>
-    </div>
-
-    <!-- Teams List with delete/edit -->
-    <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--faint);text-transform:uppercase;margin-bottom:10px;">
-      Registered Teams
-    </div>
-    <div id="tournTeamsList" style="max-height:400px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;">
-      <div class="no-entries">Loading teams...</div>
-    </div>
-  </div>
-
-  <div class="divider"></div>
-
   <div class="card">
     <div class="card-hdr">📋 Submitted Entries
       <div style="display:flex;gap:8px;">
@@ -375,6 +331,51 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
   <div class="card">
     <div class="card-hdr">📜 Winner History</div>
     <div class="history-list" id="historyList"><div class="no-entries">No winners picked yet</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════════════════════
+       🦑 SQUID TOURNAMENT MANAGEMENT
+  ══════════════════════════════════════════════ -->
+  <div class="card" style="border-color:rgba(105,240,174,.25);box-shadow:0 8px 32px rgba(0,0,30,.4),0 0 30px rgba(105,240,174,.05);">
+    <div class="card-hdr" style="color:var(--green);font-size:13px;">
+      🦑 SQUID TOURNAMENT MANAGEMENT
+      <button class="refresh-btn" onclick="loadTournTeams()">🔄 Refresh</button>
+    </div>
+
+    <!-- ── Registered Teams with edit/delete ── -->
+    <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--faint);text-transform:uppercase;margin-bottom:10px;">Registered Teams</div>
+    <div id="tournTeamsList" style="max-height:380px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:18px;">
+      <div class="no-entries">Loading teams...</div>
+    </div>
+
+    <div class="divider" style="margin-bottom:18px;"></div>
+
+    <!-- ── Bracket Generator ── -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--blue);text-transform:uppercase;">⚔️ Match Bracket Generator</div>
+      <button onclick="generateBracket()" style="padding:8px 18px;background:rgba(79,195,247,.08);border:1px solid rgba(79,195,247,.25);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;color:var(--blue);letter-spacing:1px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='rgba(79,195,247,.18)'" onmouseout="this.style.background='rgba(79,195,247,.08)'">⚡ GENERATE BRACKET</button>
+    </div>
+    <div id="bracketDisplay" style="font-size:12px;color:var(--muted);text-align:center;padding:16px;background:rgba(79,195,247,.03);border:1px solid rgba(79,195,247,.08);border-radius:12px;margin-bottom:18px;">
+      Click Generate to auto-create esports match groups from registered teams.
+    </div>
+
+    <div class="divider" style="margin-bottom:18px;"></div>
+
+    <!-- ── Publish Results ── -->
+    <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;">🏆 Publish Tournament Results</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥇 Champion (Rs.1,200)</label>
+        <input id="res-1st" type="text" placeholder="1st place team name" style="width:100%;background:rgba(255,212,56,.05);border:1px solid rgba(255,212,56,.2);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
+      <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥈 2nd Place (Rs.800)</label>
+        <input id="res-2nd" type="text" placeholder="2nd place team name" style="width:100%;background:rgba(79,195,247,.04);border:1px solid rgba(79,195,247,.15);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
+      <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥉 3rd Place (Rs.400)</label>
+        <input id="res-3rd" type="text" placeholder="3rd place team name" style="width:100%;background:rgba(206,147,216,.04);border:1px solid rgba(206,147,216,.15);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
+      <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">📝 Note (optional)</label>
+        <input id="res-note" type="text" placeholder="e.g. GG to all teams! 🙏" style="width:100%;background:rgba(79,195,247,.03);border:1px solid rgba(79,195,247,.1);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
+      <button onclick="saveTournResult()" style="padding:16px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:2px solid rgba(105,240,174,.45);border-radius:12px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--green);letter-spacing:2px;cursor:pointer;transition:all .3s;box-shadow:0 0 20px rgba(105,240,174,.08);">🚀 SAVE &amp; PUBLISH RESULTS LIVE</button>
+    </div>
   </div>
 </div>
 
@@ -656,40 +657,36 @@ async function loadTournTeams(){
     if(!list)return;
     if(tournTeams.length===0){list.innerHTML='<div class="no-entries">No teams registered yet.</div>';return;}
     list.innerHTML=tournTeams.map((t,i)=>`
-      <div class="entry-item" id="team-row-${t.id}">
-        <span class="entry-num">#${i+1}</span>
-        <div class="entry-info" id="team-view-${t.id}">
-          <div class="entry-username">👑 ${t.leaderName}</div>
-          <div class="entry-uid">UID: ${t.leaderUID} · ${t.member1}, ${t.member2}, ${t.member3}</div>
-        </div>
-        <div id="team-edit-${t.id}" style="display:none;flex:1;flex-direction:column;gap:6px;">
-          <input id="edit-leader-${t.id}" value="${t.leaderName}" style="background:rgba(79,195,247,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:6px 10px;font-size:12px;color:#fff;outline:none;width:100%;">
-          <input id="edit-uid-${t.id}" value="${t.leaderUID}" style="background:rgba(79,195,247,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:6px 10px;font-size:12px;color:#fff;outline:none;width:100%;">
-          <input id="edit-m1-${t.id}" value="${t.member1}" placeholder="Member 1" style="background:rgba(79,195,247,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:6px 10px;font-size:12px;color:#fff;outline:none;width:100%;">
-          <input id="edit-m2-${t.id}" value="${t.member2}" placeholder="Member 2" style="background:rgba(79,195,247,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:6px 10px;font-size:12px;color:#fff;outline:none;width:100%;">
-          <input id="edit-m3-${t.id}" value="${t.member3}" placeholder="Member 3" style="background:rgba(79,195,247,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:6px 10px;font-size:12px;color:#fff;outline:none;width:100%;">
-          <div style="display:flex;gap:6px;">
-            <button onclick="saveTeamEdit('${t.id}')" style="flex:1;padding:7px;background:rgba(105,240,174,.1);border:1px solid rgba(105,240,174,.3);border-radius:8px;font-size:11px;font-weight:700;color:var(--green);cursor:pointer;">💾 Save</button>
-            <button onclick="cancelTeamEdit('${t.id}')" style="flex:1;padding:7px;background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.2);border-radius:8px;font-size:11px;font-weight:700;color:var(--gold);cursor:pointer;">✕ Cancel</button>
+      <div class="entry-item" style="flex-direction:column;align-items:stretch;gap:8px;" id="team-row-${t.id}">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="entry-num">#${i+1}</span>
+          <div class="entry-info">
+            <div class="entry-username">👑 ${t.leaderName}</div>
+            <div class="entry-uid">UID: ${t.leaderUID} · ${t.member1}, ${t.member2}, ${t.member3}</div>
+          </div>
+          <div style="display:flex;gap:6px;flex-shrink:0;">
+            <button onclick="editTeam('${t.id}')" style="padding:7px 12px;background:rgba(79,195,247,.1);border:1px solid rgba(79,195,247,.3);border-radius:8px;font-size:12px;color:var(--blue);cursor:pointer;">✏️</button>
+            <button onclick="deleteTeam('${t.id}','${t.leaderName.replace(/'/g,'\\'')}')" style="padding:7px 12px;background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.3);border-radius:8px;font-size:12px;color:var(--red);cursor:pointer;">🗑️</button>
           </div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:4px;margin-left:8px;">
-          <button onclick="editTeam('${t.id}')" style="padding:5px 10px;background:rgba(79,195,247,.08);border:1px solid rgba(79,195,247,.2);border-radius:7px;font-size:10px;font-weight:700;color:var(--blue);cursor:pointer;">✏️</button>
-          <button onclick="deleteTeam('${t.id}','${t.leaderName}')" style="padding:5px 10px;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.2);border-radius:7px;font-size:10px;font-weight:700;color:var(--red);cursor:pointer;">🗑️</button>
+        <div id="team-edit-${t.id}" style="display:none;flex-direction:column;gap:6px;padding:10px;background:rgba(79,195,247,.04);border:1px solid rgba(79,195,247,.12);border-radius:10px;">
+          <input id="edit-leader-${t.id}" value="${t.leaderName}" placeholder="Leader name" style="background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;">
+          <input id="edit-uid-${t.id}" value="${t.leaderUID}" placeholder="Leader UID" style="background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;">
+          <input id="edit-m1-${t.id}" value="${t.member1}" placeholder="Member 1" style="background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;">
+          <input id="edit-m2-${t.id}" value="${t.member2}" placeholder="Member 2" style="background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;">
+          <input id="edit-m3-${t.id}" value="${t.member3}" placeholder="Member 3" style="background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;">
+          <div style="display:flex;gap:8px;">
+            <button onclick="saveTeamEdit('${t.id}')" style="flex:1;padding:9px;background:rgba(105,240,174,.12);border:1px solid rgba(105,240,174,.35);border-radius:8px;font-size:12px;font-weight:700;color:var(--green);cursor:pointer;">💾 Save</button>
+            <button onclick="cancelTeamEdit('${t.id}')" style="flex:1;padding:9px;background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.2);border-radius:8px;font-size:12px;font-weight:700;color:var(--gold);cursor:pointer;">✕ Cancel</button>
+          </div>
         </div>
       </div>`).join('');
   }catch(e){console.error(e);if(list)list.innerHTML='<div class="no-entries">❌ Error loading teams.</div>';}
 }
 loadTournTeams();
 
-window.editTeam=function(id){
-  document.getElementById('team-view-'+id).style.display='none';
-  document.getElementById('team-edit-'+id).style.display='flex';
-};
-window.cancelTeamEdit=function(id){
-  document.getElementById('team-view-'+id).style.display='flex';
-  document.getElementById('team-edit-'+id).style.display='none';
-};
+window.editTeam=function(id){document.getElementById('team-edit-'+id).style.display='flex';};
+window.cancelTeamEdit=function(id){document.getElementById('team-edit-'+id).style.display='none';};
 window.saveTeamEdit=async function(id){
   const data={
     leaderName:document.getElementById('edit-leader-'+id).value.trim(),
@@ -699,20 +696,16 @@ window.saveTeamEdit=async function(id){
     member3:document.getElementById('edit-m3-'+id).value.trim(),
   };
   if(!data.leaderName){alert('Leader name cannot be empty!');return;}
-  try{
-    await setDoc(doc(db,'tournament_teams',id),data,{merge:true});
-    alert('✅ Team updated!');
-    loadTournTeams();
-  }catch(e){alert('❌ Error: '+e.message);}
+  try{await setDoc(doc(db,'tournament_teams',id),data,{merge:true});alert('✅ Team updated!');loadTournTeams();}
+  catch(e){alert('❌ Error: '+e.message);}
 };
 window.deleteTeam=async function(id,name){
-  if(!confirm(`🗑️ Delete team "${name}"?\nThis cannot be undone!`))return;
+  if(!confirm('🗑️ Delete team "'+name+'"?\nThis cannot be undone!'))return;
   try{
     await deleteDoc(doc(db,'tournament_teams',id));
-    tournTeams=tournTeams.filter(t=>t.id!==id);
-    alert('✅ Team deleted!');
+    alert('✅ Team "'+name+'" deleted!');
     loadTournTeams();
-  }catch(e){alert('❌ Error: '+e.message);}
+  }catch(e){alert('❌ Delete failed: '+e.message);console.error(e);}
 };
 
 window.saveTournResult=async function(){
@@ -728,55 +721,121 @@ window.saveTournResult=async function(){
 };
 
 window.generateBracket=function(){
-  const total=tournTeams.length;
-  if(total===0){alert('No teams registered yet!');return;}
   const display=document.getElementById('bracketDisplay');
-
-  // Max 13 teams — split into groups with top 4 each going to finals
-  const maxTeams=13;
-  const teams=tournTeams.slice(0,maxTeams);
+  if(tournTeams.length===0){
+    display.innerHTML='<div style="color:var(--red);font-size:12px;">No teams yet — register teams first!</div>';
+    return;
+  }
+  const MAX=13;
+  const teams=tournTeams.slice(0,MAX);
   const T=teams.length;
-
-  // Calculate groups: divide teams as evenly as possible
-  let numGroups;
-  if(T<=4) numGroups=1;
-  else if(T<=8) numGroups=2;
-  else numGroups=3;
-
-  const groups=[];
-  for(let g=0;g<numGroups;g++) groups.push([]);
+  let numGroups = T<=4?1 : T<=8?2 : 3;
+  const groups=Array.from({length:numGroups},()=>[]);
   teams.forEach((t,i)=>groups[i%numGroups].push(t));
+  const topPer=4;
+  const groupColors=['#4FC3F7','#69F0AE','#CE93D8'];
+  const groupLabels=['A','B','C'];
 
-  const advancePerGroup=4;
-  let html=`<div style="font-size:11px;color:var(--muted);margin-bottom:12px;text-align:center;">
-    <strong style="color:var(--cyan);">${T} teams</strong> → <strong style="color:var(--gold);">${numGroups} group${numGroups>1?'s':''}</strong> → Top ${advancePerGroup} per group advance to Final
-    ${T>maxTeams?`<br><span style="color:var(--red);font-size:10px;">⚠️ Only first ${maxTeams} teams shown (max slots)</span>`:''}
-  </div>`;
+  let html=`
+  <div style="background:linear-gradient(135deg,rgba(5,10,30,.98),rgba(8,18,45,.95));border:2px solid rgba(79,195,247,.2);border-radius:16px;overflow:hidden;font-family:'Exo 2',sans-serif;">
+    <!-- Header -->
+    <div style="background:linear-gradient(135deg,rgba(8,20,55,.98),rgba(5,12,35,.98));padding:16px 18px;border-bottom:1px solid rgba(79,195,247,.15);display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:#fff;letter-spacing:3px;">🦑 SQUID TOURNAMENT</div>
+        <div style="font-size:10px;color:rgba(144,202,249,.6);letter-spacing:2px;margin-top:3px;">DREAM2MOON · FULL MAP · FREE FIRE</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:#FFD438;">${T}</div>
+        <div style="font-size:9px;color:rgba(144,202,249,.5);letter-spacing:2px;">TEAMS</div>
+      </div>
+    </div>
+
+    <!-- Prize Pool -->
+    <div style="display:flex;border-bottom:1px solid rgba(79,195,247,.1);">
+      <div style="flex:1;padding:12px;text-align:center;border-right:1px solid rgba(79,195,247,.08);">
+        <div style="font-size:18px;">🥇</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:#FFD438;">Rs.1,200</div>
+        <div style="font-size:9px;color:rgba(144,202,249,.5);letter-spacing:1px;margin-top:2px;">CHAMPION</div>
+      </div>
+      <div style="flex:1;padding:12px;text-align:center;border-right:1px solid rgba(79,195,247,.08);">
+        <div style="font-size:18px;">🥈</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:#90CAF9;">Rs.800</div>
+        <div style="font-size:9px;color:rgba(144,202,249,.5);letter-spacing:1px;margin-top:2px;">2ND PLACE</div>
+      </div>
+      <div style="flex:1;padding:12px;text-align:center;">
+        <div style="font-size:18px;">🥉</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:#CE93D8;">Rs.400</div>
+        <div style="font-size:9px;color:rgba(144,202,249,.5);letter-spacing:1px;margin-top:2px;">3RD PLACE</div>
+      </div>
+    </div>
+
+    <!-- Format info -->
+    <div style="padding:10px 18px;background:rgba(79,195,247,.04);border-bottom:1px solid rgba(79,195,247,.1);display:flex;align-items:center;gap:8px;">
+      <span style="font-size:10px;color:rgba(144,202,249,.7);">📋 FORMAT:</span>
+      <span style="font-size:10px;color:#fff;font-weight:700;">${numGroups} Group${numGroups>1?'s':''} → Top ${topPer} per group → FINALS</span>
+      <span style="margin-left:auto;font-size:9px;color:rgba(255,107,107,.7);">💚 Prizes via eSewa</span>
+    </div>
+
+    <!-- Groups -->
+    <div style="padding:14px;display:flex;flex-direction:column;gap:12px;">`;
 
   groups.forEach((grp,gi)=>{
-    const letter=String.fromCharCode(65+gi);
-    html+=`<div style="background:rgba(79,195,247,.04);border:1px solid rgba(79,195,247,.12);border-radius:12px;padding:14px;margin-bottom:10px;">
-      <div style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--cyan);letter-spacing:2px;margin-bottom:10px;">
-        ⚔️ GROUP ${letter} <span style="color:var(--faint);font-size:9px;">(${grp.length} teams · top ${Math.min(advancePerGroup,grp.length)} advance)</span>
-      </div>
-      ${grp.map((t,i)=>`
-        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(79,195,247,.06);">
-          <span style="font-family:'Orbitron',sans-serif;font-size:10px;color:var(--gold);min-width:22px;">${i+1}.</span>
-          <div>
-            <div style="font-size:13px;font-weight:700;color:#fff;">👑 ${t.leaderName}</div>
-            <div style="font-size:10px;color:var(--faint);">⚔️ ${t.member1} · ${t.member2} · ${t.member3}</div>
+    const col=groupColors[gi];
+    const lbl=groupLabels[gi];
+    html+=`
+      <div style="border:1px solid ${col}30;border-radius:12px;overflow:hidden;">
+        <!-- Group header -->
+        <div style="background:${col}18;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid ${col}20;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:${col}30;border:2px solid ${col};display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:${col};">G${lbl}</div>
+            <div>
+              <div style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:${col};letter-spacing:2px;">GROUP ${lbl}</div>
+              <div style="font-size:9px;color:rgba(144,202,249,.5);margin-top:1px;">${grp.length} teams · top ${Math.min(topPer,grp.length)} advance</div>
+            </div>
           </div>
+          <div style="font-size:9px;color:${col};background:${col}18;padding:3px 10px;border-radius:20px;border:1px solid ${col}40;font-weight:700;">GAME ${gi+1}</div>
+        </div>
+        <!-- Teams in group -->
+        ${grp.map((t,ti)=>`
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04);${ti<topPer?'background:'+col+'08;':''}">
+          <div style="width:22px;height:22px;border-radius:50%;background:${ti<topPer?col+'25':'rgba(255,255,255,.06)'};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:${ti<topPer?col:'rgba(144,202,249,.4)'};flex-shrink:0;">${ti+1}</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:700;color:${ti<topPer?'#fff':'rgba(232,244,253,.6)'};">👑 ${t.leaderName}</div>
+            <div style="font-size:10px;color:rgba(144,202,249,.45);margin-top:2px;">⚔️ ${t.member1} · ${t.member2} · ${t.member3}</div>
+          </div>
+          ${ti<topPer?`<div style="font-size:9px;color:${col};background:${col}18;padding:2px 8px;border-radius:10px;font-weight:700;white-space:nowrap;">→ FINALS</div>`:''}
         </div>`).join('')}
-    </div>`;
+      </div>`;
   });
 
   if(numGroups>1){
-    html+=`<div style="background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.2);border-radius:12px;padding:14px;">
-      <div style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--gold);letter-spacing:2px;margin-bottom:8px;">🏆 FINAL</div>
-      <div style="font-size:12px;color:var(--muted);">Top ${advancePerGroup} teams from each group advance → <strong style="color:var(--gold);">${numGroups*advancePerGroup} teams compete for the championship!</strong></div>
-    </div>`;
+    const finalists=numGroups*topPer;
+    html+=`
+      <!-- Final -->
+      <div style="border:2px solid rgba(255,212,56,.35);border-radius:12px;overflow:hidden;">
+        <div style="background:rgba(255,212,56,.1);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,212,56,.2);">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:28px;height:28px;border-radius:50%;background:rgba(255,212,56,.2);border:2px solid #FFD438;display:flex;align-items:center;justify-content:center;font-size:14px;">🏆</div>
+            <div>
+              <div style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:#FFD438;letter-spacing:2px;">GRAND FINAL</div>
+              <div style="font-size:9px;color:rgba(144,202,249,.5);margin-top:1px;">Top ${topPer} from each group · ${finalists} teams</div>
+            </div>
+          </div>
+          <div style="font-size:9px;color:#FFD438;background:rgba(255,212,56,.12);padding:3px 10px;border-radius:20px;border:1px solid rgba(255,212,56,.3);font-weight:700;">GAME ${numGroups+1}</div>
+        </div>
+        <div style="padding:12px 14px;display:flex;flex-direction:column;gap:6px;">
+          ${groups.map((grp,gi)=>`
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,212,56,.04);border:1px solid rgba(255,212,56,.1);border-radius:8px;">
+            <div style="width:8px;height:8px;border-radius:50%;background:${groupColors[gi]};flex-shrink:0;"></div>
+            <div style="font-size:12px;color:rgba(232,244,253,.8);font-weight:600;">Top ${Math.min(topPer,grp.length)} from <span style="color:${groupColors[gi]};font-weight:700;">Group ${groupLabels[gi]}</span></div>
+            <div style="margin-left:auto;font-size:10px;color:rgba(255,212,56,.6);">${Math.min(topPer,grp.length)} teams</div>
+          </div>`).join('')}
+          <div style="text-align:center;padding:10px;font-size:11px;color:rgba(255,212,56,.7);font-weight:600;margin-top:4px;">🏆 Winner takes Rs.1,200 · 🥈 Rs.800 · 🥉 Rs.400 via eSewa 💚</div>
+        </div>
+      </div>`;
   }
 
+  html+=`</div></div>`;
   display.innerHTML=html;
 };
 
