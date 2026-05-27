@@ -336,11 +336,11 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
   <div class="divider"></div>
 
   <!-- ══════════════════════════════════════════════
-       🦑 SQUID TOURNAMENT MANAGEMENT
+       🦑 SQUAD TOURNAMENT MANAGEMENT
   ══════════════════════════════════════════════ -->
   <div class="card" style="border-color:rgba(105,240,174,.25);box-shadow:0 8px 32px rgba(0,0,30,.4),0 0 30px rgba(105,240,174,.05);">
     <div class="card-hdr" style="color:var(--green);font-size:13px;">
-      🦑 SQUID TOURNAMENT MANAGEMENT
+      🦑 SQUAD TOURNAMENT MANAGEMENT
       <button class="refresh-btn" onclick="loadTournTeams()">🔄 Refresh</button>
     </div>
 
@@ -728,22 +728,32 @@ window.generateBracket=function(){
     display.innerHTML='<div style="color:var(--red);font-size:12px;">No teams yet — register teams first!</div>';
     return;
   }
-  const MAX=13;
-  const teams=tournTeams.slice(0,MAX);
+  // NO cap — use ALL registered teams
+  const teams=[...tournTeams];
   const T=teams.length;
-  let numGroups = T<=4?1 : T<=8?2 : 3;
+
+  // Smart group calculation based on total teams
+  // Each group ideally 4-6 teams, top 4 advance
+  let numGroups;
+  if(T<=6)       numGroups=1;
+  else if(T<=12) numGroups=2;
+  else if(T<=18) numGroups=3;
+  else if(T<=24) numGroups=4;
+  else if(T<=30) numGroups=5;
+  else            numGroups=Math.ceil(T/6);
+
   const groups=Array.from({length:numGroups},()=>[]);
   teams.forEach((t,i)=>groups[i%numGroups].push(t));
   const topPer=4;
-  const groupColors=['#4FC3F7','#69F0AE','#CE93D8'];
-  const groupLabels=['A','B','C'];
+  const groupColors=['#4FC3F7','#69F0AE','#CE93D8','#FFAB40','#F48FB1','#80DEEA'];
+  const groupLabels=['A','B','C','D','E','F','G','H'];
 
   let html=`
   <div style="background:linear-gradient(135deg,rgba(5,10,30,.98),rgba(8,18,45,.95));border:2px solid rgba(79,195,247,.2);border-radius:16px;overflow:hidden;font-family:'Exo 2',sans-serif;">
     <!-- Header -->
     <div style="background:linear-gradient(135deg,rgba(8,20,55,.98),rgba(5,12,35,.98));padding:16px 18px;border-bottom:1px solid rgba(79,195,247,.15);display:flex;align-items:center;justify-content:space-between;">
       <div>
-        <div style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:#fff;letter-spacing:3px;">🦑 SQUID TOURNAMENT</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:#fff;letter-spacing:3px;">🏆 SQUAD TOURNAMENT</div>
         <div style="font-size:10px;color:rgba(144,202,249,.6);letter-spacing:2px;margin-top:3px;">DREAM2MOON · FULL MAP · FREE FIRE</div>
       </div>
       <div style="text-align:right;">
@@ -775,18 +785,17 @@ window.generateBracket=function(){
     <div style="padding:10px 18px;background:rgba(79,195,247,.04);border-bottom:1px solid rgba(79,195,247,.1);display:flex;align-items:center;gap:8px;">
       <span style="font-size:10px;color:rgba(144,202,249,.7);">📋 FORMAT:</span>
       <span style="font-size:10px;color:#fff;font-weight:700;">${numGroups} Group${numGroups>1?'s':''} → Top ${topPer} per group → FINALS</span>
-      <span style="margin-left:auto;font-size:9px;color:rgba(255,107,107,.7);">💚 Prizes via eSewa</span>
+      <span style="margin-left:auto;font-size:9px;color:rgba(105,240,174,.7);">💚 Prizes via eSewa</span>
     </div>
 
     <!-- Groups -->
     <div style="padding:14px;display:flex;flex-direction:column;gap:12px;">`;
 
   groups.forEach((grp,gi)=>{
-    const col=groupColors[gi];
-    const lbl=groupLabels[gi];
+    const col=groupColors[gi%groupColors.length];
+    const lbl=groupLabels[gi]||String(gi+1);
     html+=`
       <div style="border:1px solid ${col}30;border-radius:12px;overflow:hidden;">
-        <!-- Group header -->
         <div style="background:${col}18;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid ${col}20;">
           <div style="display:flex;align-items:center;gap:8px;">
             <div style="width:28px;height:28px;border-radius:50%;background:${col}30;border:2px solid ${col};display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:${col};">G${lbl}</div>
@@ -797,7 +806,6 @@ window.generateBracket=function(){
           </div>
           <div style="font-size:9px;color:${col};background:${col}18;padding:3px 10px;border-radius:20px;border:1px solid ${col}40;font-weight:700;">GAME ${gi+1}</div>
         </div>
-        <!-- Teams in group -->
         ${grp.map((t,ti)=>`
         <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04);${ti<topPer?'background:'+col+'08;':''}">
           <div style="width:22px;height:22px;border-radius:50%;background:${ti<topPer?col+'25':'rgba(255,255,255,.06)'};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;color:${ti<topPer?col:'rgba(144,202,249,.4)'};flex-shrink:0;">${ti+1}</div>
@@ -813,7 +821,6 @@ window.generateBracket=function(){
   if(numGroups>1){
     const finalists=numGroups*topPer;
     html+=`
-      <!-- Final -->
       <div style="border:2px solid rgba(255,212,56,.35);border-radius:12px;overflow:hidden;">
         <div style="background:rgba(255,212,56,.1);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,212,56,.2);">
           <div style="display:flex;align-items:center;gap:8px;">
@@ -826,13 +833,13 @@ window.generateBracket=function(){
           <div style="font-size:9px;color:#FFD438;background:rgba(255,212,56,.12);padding:3px 10px;border-radius:20px;border:1px solid rgba(255,212,56,.3);font-weight:700;">GAME ${numGroups+1}</div>
         </div>
         <div style="padding:12px 14px;display:flex;flex-direction:column;gap:6px;">
-          ${groups.map((grp,gi)=>`
+          ${groups.map((grp,gi)=>{const col=groupColors[gi%groupColors.length];return`
           <div style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,212,56,.04);border:1px solid rgba(255,212,56,.1);border-radius:8px;">
-            <div style="width:8px;height:8px;border-radius:50%;background:${groupColors[gi]};flex-shrink:0;"></div>
-            <div style="font-size:12px;color:rgba(232,244,253,.8);font-weight:600;">Top ${Math.min(topPer,grp.length)} from <span style="color:${groupColors[gi]};font-weight:700;">Group ${groupLabels[gi]}</span></div>
+            <div style="width:8px;height:8px;border-radius:50%;background:${col};flex-shrink:0;"></div>
+            <div style="font-size:12px;color:rgba(232,244,253,.8);font-weight:600;">Top ${Math.min(topPer,grp.length)} from <span style="color:${col};font-weight:700;">Group ${groupLabels[gi]||gi+1}</span></div>
             <div style="margin-left:auto;font-size:10px;color:rgba(255,212,56,.6);">${Math.min(topPer,grp.length)} teams</div>
-          </div>`).join('')}
-          <div style="text-align:center;padding:10px;font-size:11px;color:rgba(255,212,56,.7);font-weight:600;margin-top:4px;">🏆 Winner takes Rs.1,200 · 🥈 Rs.800 · 🥉 Rs.400 via eSewa 💚</div>
+          </div>`;}).join('')}
+          <div style="text-align:center;padding:10px;font-size:11px;color:rgba(255,212,56,.7);font-weight:600;margin-top:4px;">🏆 Rs.1,200 · 🥈 Rs.800 · 🥉 Rs.400 via eSewa 💚</div>
         </div>
       </div>`;
   }
