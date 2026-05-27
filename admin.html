@@ -397,7 +397,7 @@ const app=initializeApp(cfg);const db=getFirestore(app);
 const sf=document.getElementById('stars');
 for(let i=0;i<120;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*2+.3;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*5}s;--dl:${Math.random()*6}s;--op:${.12+Math.random()*.55};`;sf.appendChild(s);}
 let allEntries=[],winnerHistory=[],rolling=false;
-window.doLogin=function(){const u=document.getElementById('loginUser').value,p=document.getElementById('loginPass').value;if(u==='Dream2moon'&&p==='dream2moon@123'){document.getElementById('loginScreen').style.display='none';document.getElementById('adminPanel').style.display='flex';loadEntries();}else{document.getElementById('loginError').style.display='block';}};
+window.doLogin=function(){const u=document.getElementById('loginUser').value,p=document.getElementById('loginPass').value;if(u==='Dream2moon'&&p==='dream2moon@123'){document.getElementById('loginScreen').style.display='none';document.getElementById('adminPanel').style.display='flex';loadEntries();loadTournTeams();}else{document.getElementById('loginError').style.display='block';}};
 window.doLogout=function(){document.getElementById('adminPanel').style.display='none';document.getElementById('loginScreen').style.display='flex';document.getElementById('loginUser').value='';document.getElementById('loginPass').value='';};
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('loginScreen').style.display!=='none')window.doLogin();});
 window.loadEntries=async function(){const list=document.getElementById('entriesList');list.innerHTML='<div class="no-entries">⏳ Loading...</div>';try{const q=query(collection(db,'entries'),orderBy('timestamp','desc'));const snap=await getDocs(q);allEntries=[];snap.forEach(d=>allEntries.push({id:d.id,...d.data()}));document.getElementById('totalCount').textContent=allEntries.length;if(allEntries.length===0){list.innerHTML='<div class="no-entries">No entries yet 😊</div>';return;}list.innerHTML=allEntries.map((e,i)=>`<div class="entry-item"><span class="entry-num">#${allEntries.length-i}</span><div class="entry-info"><div class="entry-username">${e.username}</div><div class="entry-uid">UID: ${e.uid}</div></div><div class="entry-time">${e.timestamp?new Date(e.timestamp.seconds*1000).toLocaleString():'Just now'}</div></div>`).join('');}catch(err){list.innerHTML='<div class="no-entries">❌ Error loading. Check Firestore rules.</div>';console.error(err);}};
@@ -1015,37 +1015,6 @@ window.generateBracket=function(){
     </div>`;
   });
 
-  // Grand Final (only if more than 1 group)
-  if(n>1){
-    html+=`
-    <div style="border:2px solid rgba(255,212,56,.4);border-radius:14px;overflow:hidden;box-shadow:0 0 30px rgba(255,212,56,.06);">
-      <div style="background:linear-gradient(135deg,rgba(255,212,56,.14),rgba(255,171,64,.06));padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,212,56,.2);">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,212,56,.22);border:2px solid #FFD438;display:flex;align-items:center;justify-content:center;font-size:16px;">🏆</div>
-          <div>
-            <div style="font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:#FFD438;letter-spacing:2px;">GRAND FINAL</div>
-            <div style="font-size:9px;color:rgba(144,202,249,.5);margin-top:2px;">Top ${actualTopPer} per group · <strong style="color:#FFD438;">${finalTeams} teams</strong></div>
-          </div>
-        </div>
-        <div style="font-size:9px;color:#FFD438;background:rgba(255,212,56,.14);padding:3px 10px;border-radius:20px;border:1px solid rgba(255,212,56,.35);font-weight:700;letter-spacing:1px;">GAME ${n+1}</div>
-      </div>
-      <div style="padding:14px;display:flex;flex-direction:column;gap:8px;">
-        ${groups.map((grp,gi)=>{
-          const col=groupColors[gi%groupColors.length];
-          const adv=Math.min(actualTopPer,grp.length);
-          return`<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(255,212,56,.04);border:1px solid rgba(255,212,56,.1);border-radius:10px;">
-            <div style="width:10px;height:10px;border-radius:50%;background:${col};flex-shrink:0;box-shadow:0 0 8px ${col};"></div>
-            <div style="font-size:12px;color:rgba(232,244,253,.85);font-weight:600;">Top <strong style="color:${col};">${adv}</strong> from <span style="color:${col};font-weight:700;">Group ${groupLabels[gi]||gi+1}</span></div>
-            <div style="margin-left:auto;font-size:10px;background:${col}18;color:${col};padding:2px 8px;border-radius:8px;font-weight:700;">${adv} squads</div>
-          </div>`;
-        }).join('')}
-        <div style="text-align:center;padding:12px 8px 4px;border-top:1px solid rgba(255,212,56,.1);margin-top:4px;">
-          <span style="font-size:12px;color:rgba(255,212,56,.8);font-weight:700;">🏆 Rs.1,200 &nbsp;·&nbsp; 🥈 Rs.800 &nbsp;·&nbsp; 🥉 Rs.400 &nbsp;·&nbsp; 💚 via eSewa</span>
-        </div>
-      </div>
-    </div>`;
-  }
-
   html+=`</div></div>`;
   display.innerHTML=html;
 };
@@ -1160,35 +1129,10 @@ function updateHistory(){
   const list=document.getElementById('historyList');
   if(winnerHistory.length===0){list.innerHTML='<div class="no-entries">No winners yet</div>';return;}
   list.innerHTML=winnerHistory.map((w,i)=>`
-    <div class="history-item"><span class="h-num">#${i+1}</span><span class="h-badge mo">Monthly</span><span class="h-name">${w.monthly.username}</span><span class="h-uid">UID: ${w.monthly.uid}</span></div>
-    <div class="history-item"><span class="h-num"></span><span class="h-badge wk">Weekly</span><span class="h-name">${w.weekly.username}</span><span class="h-uid">UID: ${w.weekly.uid}</span></div>
+    <div class="history-item"><span class="h-num">#${i+1}</span><span class="h-badge mo">1st Draw</span><span class="h-name">${w.monthly.username}</span><span class="h-uid">UID: ${w.monthly.uid}</span></div>
+    <div class="history-item"><span class="h-num"></span><span class="h-badge wk">2nd Draw</span><span class="h-name">${w.weekly.username}</span><span class="h-uid">UID: ${w.weekly.uid}</span></div>
   `).join('');
 }
-
-window.doLogin=function(){
-  const u=document.getElementById('loginUser').value;
-  const p=document.getElementById('loginPass').value;
-  if(u==='Dream2moon'&&p==='dream2moon@123'){
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('adminPanel').style.display='flex';
-    loadEntries();
-    loadTournTeams();
-  }else{
-    document.getElementById('loginError').style.display='block';
-  }
-};
-
-window.doLogout=function(){
-  document.getElementById('adminPanel').style.display='none';
-  document.getElementById('loginScreen').style.display='flex';
-  document.getElementById('loginUser').value='';
-  document.getElementById('loginPass').value='';
-};
-
-document.addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&document.getElementById('loginScreen').style.display!=='none')
-    window.doLogin();
-});
 
 function launchConfetti(){const wrap=document.getElementById('confetti');wrap.innerHTML='';const cols=['#FFD438','#4FC3F7','#00E5FF','#CE93D8','#69F0AE','#F48FB1','#FFAB40','#fff'];for(let i=0;i<120;i++){const c=document.createElement('div');c.className='cp';const drift=(Math.random()-.5)*400;c.style.cssText=`left:${Math.random()*100}%;background:${cols[Math.floor(Math.random()*cols.length)]};--fd:${1.5+Math.random()*2.5}s;--dx:${drift}px;--br:${Math.random()>.5?'50%':'2px'};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*.5}s;`;wrap.appendChild(c);}setTimeout(()=>wrap.innerHTML='',5000);}
 </script>
