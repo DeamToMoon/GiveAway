@@ -374,6 +374,13 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <div class="hof-note">Could be YOUR name here next 😏</div>
   </div>
 
+  <!-- Tournament Winner -->
+  <div class="sec-label">🦑 Tournament Champion</div>
+  <div class="card" id="tournWinnerCard" style="border-color:rgba(105,240,174,.2);">
+    <div class="hof-title" style="color:var(--green);">🦑 SQUID TOURNAMENT RESULTS 🦑</div>
+    <div id="tournWinnerContent"><div class="win-placeholder"><div style="font-size:36px;margin-bottom:10px;">🏆</div>Tournament results will appear here after the match!<br>Good luck to all teams! ⚔️</div></div>
+  </div>
+
   <!-- ═══════════════════════════════════
        SQUID TOURNAMENT SECTION
   ═══════════════════════════════════ -->
@@ -480,8 +487,8 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <div class="rule-item"><div class="rule-dot"></div>Must follow @Dream2Moon on TikTok</div>
     <div class="rule-item"><div class="rule-dot"></div>Must like the giveaway video</div>
     <div class="rule-item"><div class="rule-dot"></div>Comment under the video to enter</div>
-    <div class="rule-item"><div class="rule-dot"></div>Monthly Pass 💎💎 winner picked every draw</div>
-    <div class="rule-item"><div class="rule-dot"></div>Weekly Pass 💎 winner picked every draw</div>
+    <div class="rule-item"><div class="rule-dot"></div>1st Lucky Draw — Weekly Membership Pass 💎</div>
+    <div class="rule-item"><div class="rule-dot"></div>2nd Lucky Draw — Weekly Membership Pass 💎</div>
     <div class="rule-item"><div class="rule-dot"></div>Both winners announced Saturday at 10AM NPT!</div>
   </div>
 
@@ -511,7 +518,7 @@ tick();setInterval(tick,1000);
 // Real-time entry count
 onSnapshot(collection(db,'entries'),snap=>{const el=document.getElementById('publicEntryCount');if(el)el.textContent=snap.size;});
 
-// Real-time winners
+// Real-time winners — both shown as Weekly Membership Pass 💎
 onSnapshot(doc(db,'winners','latest'),snap=>{
   const dEl=document.getElementById('winnersDrawnDate'),duoEl=document.getElementById('winnersDuo');
   if(snap.exists()){
@@ -519,8 +526,40 @@ onSnapshot(doc(db,'winners','latest'),snap=>{
     const date=w.drawnAt?new Date(w.drawnAt.seconds*1000).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'Recently';
     if(dEl)dEl.textContent='🎉 Drawn on '+date;
     const mn=w.monthlyUsername||'???',mu=w.monthlyUID||'???',wn=w.weeklyUsername||'—',wu=w.weeklyUID||'—';
-    if(duoEl)duoEl.innerHTML=`<div class="wdc mo"><div class="wdc-b">Monthly 💎💎</div><div class="wdc-icon">👑</div><div class="wdc-name">${mn}</div><div class="wdc-uid">UID: ${mu}</div><div class="wdc-drew">🏆 Winner!</div></div><div class="wdc wk"><div class="wdc-b">Weekly 💎</div><div class="wdc-icon">🏆</div><div class="wdc-name">${wn}</div><div class="wdc-uid">UID: ${wu}</div><div class="wdc-drew">🏆 Winner!</div></div>`;
+    if(duoEl)duoEl.innerHTML=`
+      <div class="wdc mo"><div class="wdc-b">1st Lucky Draw 💎</div><div class="wdc-icon">🎰</div><div class="wdc-name">${mn}</div><div class="wdc-uid">UID: ${mu}</div><div class="wdc-drew">🏆 Winner!</div></div>
+      <div class="wdc wk"><div class="wdc-b">2nd Lucky Draw 💎</div><div class="wdc-icon">🎰</div><div class="wdc-name">${wn}</div><div class="wdc-uid">UID: ${wu}</div><div class="wdc-drew">🏆 Winner!</div></div>`;
   }else{if(dEl)dEl.textContent='No draw yet — stay tuned!';}
+});
+
+// Real-time tournament winner
+onSnapshot(doc(db,'tournament_result','latest'),snap=>{
+  const el=document.getElementById('tournWinnerContent');
+  if(!el)return;
+  if(snap.exists()){
+    const r=snap.data();
+    el.innerHTML=`
+      <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
+        ${r.champion?`<div style="background:linear-gradient(135deg,rgba(255,212,56,.12),rgba(255,171,64,.06));border:2px solid rgba(255,212,56,.4);border-radius:16px;padding:18px;text-align:center;">
+          <div style="font-size:36px;margin-bottom:6px;">🥇</div>
+          <div style="font-size:9px;font-weight:800;letter-spacing:2px;color:var(--gold);margin-bottom:8px;">CHAMPION — Rs.1,200 eSewa</div>
+          <div style="font-family:'Orbitron',sans-serif;font-size:15px;font-weight:900;color:var(--gold);">${r.champion}</div>
+        </div>`:''}
+        ${r.second?`<div style="background:linear-gradient(135deg,rgba(79,195,247,.08),rgba(0,229,255,.04));border:2px solid rgba(79,195,247,.3);border-radius:16px;padding:16px;text-align:center;">
+          <div style="font-size:30px;margin-bottom:6px;">🥈</div>
+          <div style="font-size:9px;font-weight:800;letter-spacing:2px;color:var(--blue);margin-bottom:8px;">2ND PLACE — Rs.800 eSewa</div>
+          <div style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:var(--blue);">${r.second}</div>
+        </div>`:''}
+        ${r.third?`<div style="background:linear-gradient(135deg,rgba(206,147,216,.08),rgba(167,139,250,.04));border:2px solid rgba(206,147,216,.3);border-radius:16px;padding:16px;text-align:center;">
+          <div style="font-size:28px;margin-bottom:6px;">🥉</div>
+          <div style="font-size:9px;font-weight:800;letter-spacing:2px;color:var(--purple);margin-bottom:8px;">3RD PLACE — Rs.400 eSewa</div>
+          <div style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:var(--purple);">${r.third}</div>
+        </div>`:''}
+        ${r.note?`<div style="font-size:12px;color:var(--faint);text-align:center;margin-top:4px;">${r.note}</div>`:''}
+      </div>`;
+  }else{
+    el.innerHTML='<div class="win-placeholder"><div style="font-size:36px;margin-bottom:10px;">🏆</div>Tournament results will appear here after the match!<br>Good luck to all teams! ⚔️</div>';
+  }
 });
 
 // Real-time teams list
