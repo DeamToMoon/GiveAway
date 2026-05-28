@@ -727,7 +727,7 @@ window.submitTournament=async function(){
   const utcMs=now.getTime()+now.getTimezoneOffset()*60000;
   const npt=new Date(utcMs+(5*60+45)*60000);
   if(npt.getHours()>=22){alert('🔒 Registration is closed! Entries locked at 10PM NPT.');return;}
-
+  
   const leader=document.getElementById('t-leader').value.trim();
   const uid=document.getElementById('t-uid').value.trim();
   const m1=document.getElementById('t-m1').value.trim();
