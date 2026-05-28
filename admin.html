@@ -789,142 +789,144 @@ window.setGroups=function(n){
 
 window.generateBracket=function(){
   const display=document.getElementById('bracketDisplay');
-  if(tournTeams.length===0){display.innerHTML='<div style="color:var(--red);font-size:12px;">No teams yet!</div>';return;}
-  if(selectedGroups===0){display.innerHTML='<div style="color:var(--gold);font-size:12px;">Please select number of groups first! 👆</div>';return;}
+  if(tournTeams.length===0){display.innerHTML='<div style="color:#FF6B6B;padding:16px;text-align:center;">No teams registered yet!</div>';return;}
+  if(selectedGroups===0){display.innerHTML='<div style="color:#FFD438;padding:16px;text-align:center;">Select number of groups above first!</div>';return;}
 
   const teams=[...tournTeams];
   const T=teams.length;
   const n=selectedGroups;
   const topPer=3;
-  const finalTeams=n===1?T:Math.min(n*topPer,13);
-  const actualTopPer=n===1?T:topPer;
+  const MAX_FINAL=12;
+  const finalTeams=n===1?T:Math.min(n*topPer,MAX_FINAL);
+  const actualTopPer=n===1?T:Math.floor(finalTeams/n);
 
   const groups=Array.from({length:n},()=>[]);
-  teams.forEach((t,i)=>groups[i%n].push(t));
+  teams.forEach(function(t,i){groups[i%n].push(t);});
 
-  const groupColors=['#4FC3F7','#69F0AE','#CE93D8','#FFAB40','#F48FB1'];
-  const groupLabels=['A','B','C','D','E'];
+  const gCols=['#F44336','#2196F3','#4CAF50','#9C27B0','#FF9800'];
+  const gBgs=['rgba(127,0,0,.35)','rgba(13,33,55,.6)','rgba(27,74,27,.4)','rgba(60,16,80,.4)','rgba(127,62,0,.4)'];
+  const gLabels=['A','B','C','D','E'];
 
-  let html='<div style="background:linear-gradient(160deg,#060d22 0%,#080f28 50%,#060d1e 100%);border:1px solid rgba(79,195,247,.15);border-radius:20px;overflow:hidden;font-family:Exo 2,sans-serif;box-shadow:0 20px 60px rgba(0,0,30,.7);">'
-  // Header
-  +'<div style="background:linear-gradient(135deg,#0a1836,#06101f);padding:20px;border-bottom:1px solid rgba(79,195,247,.12);display:flex;align-items:center;justify-content:space-between;">'
-  +'<div><div style="font-family:Orbitron,sans-serif;font-size:16px;font-weight:900;color:#fff;letter-spacing:4px;">🏆 SQUAD TOURNAMENT</div>'
-  +'<div style="font-size:10px;color:rgba(144,202,249,.5);letter-spacing:3px;margin-top:4px;">Dream2Moon · Full Map · Free Fire</div></div>'
-  +'<div style="text-align:right;"><div style="font-family:Orbitron,sans-serif;font-size:28px;font-weight:900;color:#FFD438;">'+T+'</div>'
-  +'<div style="font-size:9px;color:rgba(144,202,249,.4);letter-spacing:3px;margin-top:2px;">squads</div></div></div>'
-  // Prize pool
-  +'<div style="display:flex;background:linear-gradient(135deg,rgba(10,18,40,.9),rgba(6,10,25,.9));border-bottom:1px solid rgba(255,255,255,.05);">'
-  +'<div style="flex:1;padding:14px 8px;text-align:center;border-right:1px solid rgba(255,255,255,.04);">'
-  +'<div style="font-size:22px;margin-bottom:4px;">🥇</div><div style="font-family:Orbitron,sans-serif;font-size:14px;font-weight:900;color:#FFD438;">Rs.1,200</div>'
-  +'<div style="font-size:8px;color:rgba(255,212,56,.5);letter-spacing:2px;margin-top:3px;">CHAMPION</div></div>'
-  +'<div style="flex:1;padding:14px 8px;text-align:center;border-right:1px solid rgba(255,255,255,.04);">'
-  +'<div style="font-size:22px;margin-bottom:4px;">🥈</div><div style="font-family:Orbitron,sans-serif;font-size:14px;font-weight:900;color:#90CAF9;">Rs.800</div>'
-  +'<div style="font-size:8px;color:rgba(144,202,249,.45);letter-spacing:2px;margin-top:3px;">2ND PLACE</div></div>'
-  +'<div style="flex:1;padding:14px 8px;text-align:center;">'
-  +'<div style="font-size:22px;margin-bottom:4px;">🥉</div><div style="font-family:Orbitron,sans-serif;font-size:14px;font-weight:900;color:#CE93D8;">Rs.400</div>'
-  +'<div style="font-size:8px;color:rgba(206,147,216,.45);letter-spacing:2px;margin-top:3px;">3RD PLACE</div></div></div>'
-  // Format bar
-  +'<div style="padding:10px 20px;background:rgba(79,195,247,.04);border-bottom:1px solid rgba(79,195,247,.08);display:flex;align-items:center;gap:8px;flex-wrap:wrap;">'
-  +'<div style="display:flex;align-items:center;gap:6px;"><div style="width:6px;height:6px;border-radius:50%;background:#4FC3F7;box-shadow:0 0 6px #4FC3F7;"></div>'
-  +'<span style="font-size:10px;color:rgba(144,202,249,.8);font-weight:700;">'+n+' Group'+(n>1?'s':'')+'</span></div>'
-  +'<span style="color:rgba(79,195,247,.3);font-size:10px;">&#8594;</span>'
-  +'<div style="display:flex;align-items:center;gap:6px;"><div style="width:6px;height:6px;border-radius:50%;background:#69F0AE;box-shadow:0 0 6px #69F0AE;"></div>'
-  +'<span style="font-size:10px;color:rgba(105,240,174,.8);font-weight:700;">Top '+actualTopPer+' advance</span></div>'
-  +(n>1?'<span style="color:rgba(79,195,247,.3);font-size:10px;">&#8594;</span><div style="display:flex;align-items:center;gap:6px;"><div style="width:6px;height:6px;border-radius:50%;background:#FFD438;box-shadow:0 0 6px #FFD438;"></div><span style="font-size:10px;color:rgba(255,212,56,.8);font-weight:700;">Final &middot; '+finalTeams+' teams</span></div>':'')
-  +'<div style="margin-left:auto;"><span style="font-size:9px;color:rgba(105,240,174,.6);">💚 via eSewa</span></div></div>'
-  // Groups container
-  +'<div style="padding:16px;display:flex;flex-direction:column;gap:16px;">';
+  let h='<div style="background:linear-gradient(160deg,#111008,#0d0d12);border-radius:14px;overflow:hidden;border:1px solid rgba(255,180,0,.2);box-shadow:0 8px 40px rgba(0,0,0,.8);font-family:sans-serif;">';
 
-  groups.forEach((grp,gi)=>{
-    const col=groupColors[gi%groupColors.length];
-    const lbl=groupLabels[gi]||String(gi+1);
-    const advanceCount=Math.min(actualTopPer,grp.length);
+  // Title
+  h+='<div style="background:linear-gradient(135deg,#0a0a00,#1a1200);padding:16px 18px;border-bottom:2px solid rgba(255,180,0,.3);text-align:center;">';
+  h+='<div style="font-size:9px;font-weight:700;color:rgba(255,200,50,.6);letter-spacing:4px;margin-bottom:3px;">RAPID KNOCKOUT</div>';
+  h+='<div style="font-size:20px;font-weight:900;color:#FFD438;letter-spacing:3px;">SQUAD TOURNAMENT</div>';
+  h+='<div style="font-size:10px;color:rgba(255,255,255,.4);letter-spacing:2px;margin-top:3px;">Dream2Moon &nbsp;&middot;&nbsp; Full Map &nbsp;&middot;&nbsp; Free Fire</div>';
+  h+='</div>';
 
-    html+=`
-    <div style="border-radius:16px;overflow:hidden;border:1px solid ${col}20;box-shadow:0 4px 24px rgba(0,0,20,.4);">
+  // Stats row
+  h+='<div style="display:flex;align-items:stretch;background:#0a0a0a;border-bottom:1px solid rgba(255,255,255,.06);">';
+  h+='<div style="padding:12px 14px;min-width:72px;background:rgba(255,212,56,.06);border-right:1px solid rgba(255,255,255,.05);display:flex;flex-direction:column;align-items:center;justify-content:center;">';
+  h+='<div style="font-size:24px;font-weight:900;color:#FFD438;line-height:1;">'+T+'</div>';
+  h+='<div style="font-size:8px;color:rgba(255,255,255,.4);letter-spacing:2px;margin-top:2px;">SQUADS</div>';
+  h+='</div>';
+  h+='<div style="flex:1;padding:8px;text-align:center;border-right:1px solid rgba(255,255,255,.05);background:rgba(255,180,0,.04);">';
+  h+='<div style="font-size:16px;">&#129351;</div><div style="font-size:12px;font-weight:900;color:#FFD438;margin-top:1px;">Rs.1,200</div><div style="font-size:7px;color:rgba(255,212,56,.5);margin-top:1px;">CHAMPION</div>';
+  h+='</div>';
+  h+='<div style="flex:1;padding:8px;text-align:center;border-right:1px solid rgba(255,255,255,.05);">';
+  h+='<div style="font-size:16px;">&#129352;</div><div style="font-size:12px;font-weight:900;color:#90CAF9;margin-top:1px;">Rs.800</div><div style="font-size:7px;color:rgba(144,202,249,.5);margin-top:1px;">2ND PLACE</div>';
+  h+='</div>';
+  h+='<div style="flex:1;padding:8px;text-align:center;border-right:1px solid rgba(255,255,255,.05);">';
+  h+='<div style="font-size:16px;">&#129353;</div><div style="font-size:12px;font-weight:900;color:#CE93D8;margin-top:1px;">Rs.400</div><div style="font-size:7px;color:rgba(206,147,216,.5);margin-top:1px;">3RD PLACE</div>';
+  h+='</div>';
+  h+='<div style="padding:8px 10px;min-width:90px;background:rgba(79,195,247,.04);display:flex;flex-direction:column;justify-content:center;gap:2px;">';
+  h+='<div style="font-size:8px;color:rgba(255,255,255,.6);font-weight:700;">'+n+' GROUPS</div>';
+  h+='<div style="font-size:7px;color:rgba(144,202,249,.5);">&#8594; TOP '+actualTopPer+' ADVANCE</div>';
+  h+='<div style="font-size:7px;color:rgba(255,212,56,.6);">&#8594; FINAL &middot; '+finalTeams+' TEAMS</div>';
+  h+='<div style="font-size:7px;color:rgba(105,240,174,.5);margin-top:2px;">via eSewa</div>';
+  h+='</div>';
+  h+='</div>';
 
-      <!-- Group header -->
-      <div style="background:linear-gradient(135deg,${col}14,${col}06);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid ${col}18;">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div style="width:36px;height:36px;border-radius:10px;background:${col}18;border:1.5px solid ${col}50;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-            <span style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:${col};">G${lbl}</span>
-          </div>
-          <div>
-            <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:#fff;letter-spacing:2px;">GROUP ${lbl}</div>
-            <div style="font-size:10px;color:rgba(144,202,249,.45);margin-top:2px;">${grp.length} squads &nbsp;·&nbsp; top <strong style="color:${col};">${advanceCount}</strong> advance to final</div>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
-          <div style="background:${col}18;border:1px solid ${col}40;border-radius:8px;padding:4px 12px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:${col};letter-spacing:1px;">GAME ${gi+1}</div>
-        </div>
-      </div>
-
-      <!-- Column headers -->
-      <div style="display:flex;align-items:center;gap:10px;padding:8px 18px;background:rgba(0,0,0,.25);border-bottom:1px solid rgba(255,255,255,.04);">
-        <div style="width:26px;text-align:center;font-size:9px;color:rgba(144,202,249,.3);font-weight:700;letter-spacing:1px;">#</div>
-        <div style="flex:1;font-size:9px;color:rgba(144,202,249,.3);font-weight:700;letter-spacing:1px;text-transform:uppercase;">Team Leader</div>
-        <div style="font-size:9px;color:rgba(144,202,249,.3);font-weight:700;letter-spacing:1px;text-transform:uppercase;">Members</div>
-        <div style="width:60px;text-align:right;font-size:9px;color:rgba(144,202,249,.3);font-weight:700;letter-spacing:1px;">Status</div>
-      </div>
-
-      <!-- Teams -->
-      ${grp.map((t,ti)=>{
-        const advances=ti<advanceCount;
-        const rowBg=advances?`${col}06`:'transparent';
-        const numBg=advances?`${col}22`:'rgba(255,255,255,.04)';
-        const numCol=advances?col:'rgba(144,202,249,.25)';
-        return`<div style="display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid rgba(255,255,255,.03);background:${rowBg};transition:background .2s;">
-          <div style="width:26px;height:26px;border-radius:8px;background:${numBg};display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:${numCol};flex-shrink:0;">${ti+1}</div>
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:13px;font-weight:700;color:${advances?'#fff':'rgba(232,244,253,.7)'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.leaderName}</div>
-          </div>
-          <div style="font-size:10px;color:rgba(144,202,249,.4);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px;">${t.member1} · ${t.member2} · ${t.member3}</div>
-          <div style="width:60px;text-align:right;flex-shrink:0;">
-            ${advances
-              ?`<span style="font-size:9px;color:${col};background:${col}18;border:1px solid ${col}35;padding:3px 8px;border-radius:6px;font-weight:800;letter-spacing:.5px;white-space:nowrap;">✓ FINAL</span>`
-              :`<span style="font-size:9px;color:rgba(144,202,249,.25);white-space:nowrap;">TBD</span>`
-            }
-          </div>
-        </div>`;
-      }).join('')}
-    </div>`;
+  // Groups grid - 2 columns
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">';
+  groups.forEach(function(grp,gi){
+    const col=gCols[gi%gCols.length];
+    const bg=gBgs[gi%gBgs.length];
+    const lbl=gLabels[gi]||String(gi+1);
+    const adv=Math.min(actualTopPer,grp.length);
+    const isRight=gi%2===1;
+    const isLast=gi===groups.length-1&&groups.length%2===1;
+    h+='<div style="'+(isRight?'border-left:1px solid rgba(255,255,255,.06);':'')+(isLast?'grid-column:1/-1;':'')+'border-bottom:1px solid rgba(255,255,255,.04);">';
+    // Group header
+    h+='<div style="background:'+bg+';padding:9px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid '+col+'25;">';
+    h+='<div style="display:flex;align-items:center;gap:7px;">';
+    h+='<div style="width:28px;height:28px;background:'+col+';border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#000;">'+lbl+'</div>';
+    h+='<div>';
+    h+='<div style="font-size:11px;font-weight:900;color:#fff;letter-spacing:1px;">GROUP '+lbl+'</div>';
+    h+='<div style="font-size:8px;color:rgba(255,255,255,.4);margin-top:1px;">&minus; '+grp.length+' SQUADS &middot; TOP '+adv+' TO FINAL</div>';
+    h+='</div></div>';
+    h+='<div style="background:'+col+';border-radius:5px;padding:3px 9px;font-size:8px;font-weight:900;color:#000;">GAME '+(gi+1)+'</div>';
+    h+='</div>';
+    // Column headers
+    h+='<div style="display:grid;grid-template-columns:20px 1fr 1fr 48px;padding:4px 10px;background:rgba(0,0,0,.5);border-bottom:1px solid rgba(255,255,255,.04);">';
+    h+='<div style="font-size:7px;color:rgba(255,255,255,.3);font-weight:700;">#</div>';
+    h+='<div style="font-size:7px;color:rgba(255,255,255,.3);font-weight:700;">TEAM LEADER</div>';
+    h+='<div style="font-size:7px;color:rgba(255,255,255,.3);font-weight:700;">MEMBERS</div>';
+    h+='<div style="font-size:7px;color:rgba(255,255,255,.3);font-weight:700;text-align:right;">STATUS</div>';
+    h+='</div>';
+    // Teams
+    grp.forEach(function(t,ti){
+      const a=ti<adv;
+      h+='<div style="display:grid;grid-template-columns:20px 1fr 1fr 48px;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.03);background:'+(a?col+'0d':'transparent')+';">';
+      h+='<div style="font-size:9px;font-weight:900;color:'+(a?col:'rgba(255,255,255,.3)')+';">'+(ti+1)+'</div>';
+      h+='<div style="font-size:10px;font-weight:700;color:'+(a?'#fff':'rgba(255,255,255,.55)')+';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:4px;">'+t.leaderName+'</div>';
+      h+='<div style="font-size:9px;color:rgba(255,255,255,.38);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+t.member1+' &middot; '+t.member2+' &middot; '+t.member3+'</div>';
+      h+='<div style="text-align:right;">'+(a?'<span style="font-size:8px;color:'+col+';font-weight:900;">&#10003; FINAL</span>':'<span style="font-size:8px;color:rgba(255,255,255,.22);">TBD</span>')+'</div>';
+      h+='</div>';
+    });
+    h+='</div>';
   });
+  h+='</div>';
 
   // Grand Final
   if(n>1){
-    html+=`
-    <div style="border-radius:16px;overflow:hidden;border:1.5px solid rgba(255,212,56,.3);box-shadow:0 4px 30px rgba(255,212,56,.06);">
-      <div style="background:linear-gradient(135deg,rgba(255,212,56,.12),rgba(255,171,64,.06));padding:14px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,212,56,.15);">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div style="width:36px;height:36px;border-radius:10px;background:rgba(255,212,56,.14);border:1.5px solid rgba(255,212,56,.5);display:flex;align-items:center;justify-content:center;font-size:18px;">🏆</div>
-          <div>
-            <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:#FFD438;letter-spacing:2px;text-shadow:0 0 14px rgba(255,212,56,.4);">GRAND FINAL</div>
-            <div style="font-size:10px;color:rgba(144,202,249,.45);margin-top:2px;">Top ${actualTopPer} from each group &nbsp;·&nbsp; <strong style="color:#FFD438;">${finalTeams} teams</strong></div>
-          </div>
-        </div>
-        <div style="background:rgba(255,212,56,.14);border:1px solid rgba(255,212,56,.35);border-radius:8px;padding:4px 12px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:#FFD438;letter-spacing:1px;">GAME ${n+1}</div>
-      </div>
-
-      <div style="padding:14px 18px;display:flex;flex-direction:column;gap:8px;">
-        ${groups.map((grp,gi)=>{
-          const col=groupColors[gi%groupColors.length];
-          const adv=Math.min(actualTopPer,grp.length);
-          return`<div style="display:flex;align-items:center;gap:12px;padding:11px 14px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.05);border-radius:10px;">
-            <div style="width:10px;height:10px;border-radius:3px;background:${col};flex-shrink:0;box-shadow:0 0 8px ${col}80;"></div>
-            <div style="flex:1;font-size:12px;color:rgba(232,244,253,.8);font-weight:600;">Top <strong style="color:${col};">${adv}</strong> from <span style="color:${col};font-weight:800;">Group ${groupLabels[gi]||gi+1}</span></div>
-            <div style="font-size:10px;background:${col}14;color:${col};padding:3px 10px;border-radius:6px;font-weight:700;">${adv} squads</div>
-          </div>`;
-        }).join('')}
-        <div style="margin-top:8px;padding:12px;background:rgba(255,212,56,.05);border:1px solid rgba(255,212,56,.12);border-radius:10px;text-align:center;">
-          <span style="font-size:12px;color:rgba(255,212,56,.85);font-weight:700;letter-spacing:.5px;">🥇 Rs.1,200 &nbsp;·&nbsp; 🥈 Rs.800 &nbsp;·&nbsp; 🥉 Rs.400 &nbsp;&nbsp; 💚 via eSewa</span>
-        </div>
-      </div>
-    </div>`;
+    h+='<div style="background:linear-gradient(135deg,#1a1200,#0d0d0d);padding:14px 16px;border-top:2px solid rgba(255,212,56,.3);">';
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">';
+    h+='<div style="display:flex;align-items:center;gap:8px;">';
+    h+='<div style="font-size:22px;">&#127942;</div>';
+    h+='<div>';
+    h+='<div style="font-size:15px;font-weight:900;color:#FFD438;letter-spacing:2px;">GRAND FINAL</div>';
+    h+='<div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:1px;">TOP '+actualTopPer+' FROM EACH GROUP &middot; '+finalTeams+' TEAMS</div>';
+    h+='</div></div>';
+    h+='<div style="background:rgba(255,212,56,.15);border:1px solid rgba(255,212,56,.4);border-radius:5px;padding:4px 12px;font-size:9px;font-weight:900;color:#FFD438;">GAME '+(n+1)+'</div>';
+    h+='</div>';
+    // Groups advancing
+    h+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">';
+    groups.forEach(function(grp,gi){
+      const col=gCols[gi%gCols.length];
+      const adv=Math.min(actualTopPer,grp.length);
+      h+='<div style="flex:1;min-width:60px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px 6px;text-align:center;">';
+      h+='<div style="font-size:8px;color:rgba(255,255,255,.35);letter-spacing:1px;margin-bottom:3px;">TOP '+adv+' FROM</div>';
+      h+='<div style="font-size:12px;font-weight:900;color:'+col+';">GROUP '+gLabels[gi]+'</div>';
+      h+='<div style="font-size:8px;color:rgba(255,255,255,.3);margin-top:3px;">'+adv+' SQUADS</div>';
+      h+='</div>';
+      if(gi<groups.length-1)h+='<div style="display:flex;align-items:center;font-size:14px;font-weight:900;color:rgba(255,212,56,.5);">+</div>';
+    });
+    h+='</div>';
+    // Prizes
+    h+='<div style="display:flex;gap:6px;">';
+    h+='<div style="flex:1;background:rgba(255,212,56,.08);border:1px solid rgba(255,212,56,.25);border-radius:7px;padding:8px;text-align:center;">';
+    h+='<div style="font-size:14px;">&#129351;</div><div style="font-size:11px;font-weight:900;color:#FFD438;margin-top:2px;">Rs.1,200</div><div style="font-size:7px;color:rgba(255,212,56,.5);margin-top:1px;">CHAMPION</div>';
+    h+='</div>';
+    h+='<div style="flex:1;background:rgba(144,202,249,.06);border:1px solid rgba(144,202,249,.2);border-radius:7px;padding:8px;text-align:center;">';
+    h+='<div style="font-size:14px;">&#129352;</div><div style="font-size:11px;font-weight:900;color:#90CAF9;margin-top:2px;">Rs.800</div><div style="font-size:7px;color:rgba(144,202,249,.5);margin-top:1px;">2ND PLACE</div>';
+    h+='</div>';
+    h+='<div style="flex:1;background:rgba(206,147,216,.06);border:1px solid rgba(206,147,216,.2);border-radius:7px;padding:8px;text-align:center;">';
+    h+='<div style="font-size:14px;">&#129353;</div><div style="font-size:11px;font-weight:900;color:#CE93D8;margin-top:2px;">Rs.400</div><div style="font-size:7px;color:rgba(206,147,216,.5);margin-top:1px;">3RD PLACE</div>';
+    h+='</div>';
+    h+='<div style="flex:1;background:rgba(105,240,174,.05);border:1px solid rgba(105,240,174,.18);border-radius:7px;padding:8px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;">';
+    h+='<div style="font-size:14px;">&#128154;</div><div style="font-size:9px;color:rgba(105,240,174,.7);font-weight:700;margin-top:2px;">via eSewa</div>';
+    h+='</div>';
+    h+='</div>';
+    h+='</div>';
   }
 
-  html+=`</div></div>`;
-  display.innerHTML=html;
-}
+  h+='</div>';
+  display.innerHTML=h;
+};
+
 
 window.startTournDraw=function(place){
   if(tournWheelRunning){alert('⏳ A draw is already running!');return;}
