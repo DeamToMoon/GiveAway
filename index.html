@@ -375,21 +375,21 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
   </div>
 
   <!-- Tournament Winner -->
-  <div class="sec-label">🦑 Tournament Champion</div>
+  <div class="sec-label">🏆 Tournament Champion</div>
   <div class="card" id="tournWinnerCard" style="border-color:rgba(105,240,174,.2);">
-    <div class="hof-title" style="color:var(--green);">🦑 SQUAD TOURNAMENT RESULTS 🦑</div>
+    <div class="hof-title" style="color:var(--green);">🏆 SQUAD TOURNAMENT RESULTS 🏆</div>
     <div id="tournWinnerContent"><div class="win-placeholder"><div style="font-size:36px;margin-bottom:10px;">🏆</div>Tournament results will appear here after the match!<br>Good luck to all teams! ⚔️</div></div>
   </div>
 
   <!-- ═══════════════════════════════════
        SQUAD TOURNAMENT SECTION
   ═══════════════════════════════════ -->
-  <div class="sec-label">🦑 Squad Tournament</div>
+  <div class="sec-label">⚔️ Squad Tournament</div>
 
   <div class="tourn-banner">
-    <div class="tourn-live-badge"><div class="tourn-live-dot"></div>Registration Open</div>
+    <div class="tourn-live-badge" id="regStatusBadge"><div class="tourn-live-dot"></div><span id="regStatusText">Checking...</span></div>
     <div class="tourn-title">🏆 SQUAD GAME<br><span>FULL MAP TOURNAMENT</span></div>
-    <div class="tourn-sub">This Saturday • Free Fire • <strong>Full Map Squid Mode</strong><br>Register your squad and compete for real cash prizes via eSewa!</div>
+    <div class="tourn-sub">This Saturday • Free Fire • <strong>Full Map Squad Mode</strong><br>Register your squad and compete for real cash prizes via eSewa!</div>
 
     <!-- Prize Podium -->
     <div class="podium">
@@ -421,7 +421,13 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     </div>
 
     <!-- Register button -->
-    <button class="register-btn" id="registerBtn" onclick="showTournForm()">⚔️ REGISTER YOUR TEAM NOW</button>
+    <button class="register-btn" id="registerBtn" onclick="showTournForm()" style="display:none;">⚔️ REGISTER YOUR TEAM NOW</button>
+    <!-- Lock message -->
+    <div id="regLockedMsg" style="display:none;margin-top:16px;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.25);border-radius:14px;padding:16px;text-align:center;">
+      <div style="font-size:28px;margin-bottom:8px;">🔒</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--red);letter-spacing:2px;margin-bottom:6px;">REGISTRATION CLOSED</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;">Registration locked at 10PM NPT.<br>Tournament is underway! 🔥<br>Results will be posted after the match.</div>
+    </div>
 
     <!-- Registration Form -->
     <div class="tourn-form-wrap" id="tournForm" style="margin-top:20px;">
@@ -608,7 +614,105 @@ window.submitEntry=async function(){
   }
 };
 
-// Tournament
+// ── TOURNAMENT REGISTRATION LOCK ──
+// Lock at 10:00 PM NPT (UTC+5:45 = 16:15 UTC)
+// Re-opens after admin publishes tournament results
+function checkRegistrationStatus(resultsPublished){
+  const now=new Date();
+  // Convert to NPT (UTC+5:45)
+  const nptOffset=5*60+45; // minutes
+  const utcMs=now.getTime()+now.getTimezoneOffset()*60000;
+  const npt=new Date(utcMs+nptOffset*60000);
+  const hour=npt.getHours(); const min=npt.getMinutes();
+  // Lock from 22:00 NPT onwards
+  const isLocked=(hour>=22)||(hour===21&&min>=59);
+
+  const badge=document.getElementById('regStatusBadge');
+  const badgeText=document.getElementById('regStatusText');
+  const badgeDot=badge?badge.querySelector('.tourn-live-dot'):null;
+  const regBtn=document.getElementById('registerBtn');
+  const lockMsg=document.getElementById('regLockedMsg');
+
+  if(resultsPublished){
+    // Results are published — show results, re-open registration for next tournament
+    if(badgeText)badgeText.textContent='Registration Open';
+    if(badgeDot)badgeDot.style.background='#69F0AE';
+    if(regBtn)regBtn.style.display='block';
+    if(lockMsg)lockMsg.style.display='none';
+  } else if(isLocked){
+    // 10PM+ NPT — locked
+    if(badgeText)badgeText.textContent='Registration Closed — 10PM NPT';
+    if(badge)badge.style.background='rgba(255,107,107,.15)';
+    if(badge)badge.style.borderColor='rgba(255,107,107,.3)';
+    if(badgeDot)badgeDot.style.background='#FF6B6B';
+    if(regBtn)regBtn.style.display='none';
+    if(lockMsg)lockMsg.style.display='block';
+  } else {
+    // Open
+    if(badgeText)badgeText.textContent='Registration Open';
+    if(badgeDot)badgeDot.style.background='#69F0AE';
+    if(regBtn)regBtn.style.display='block';
+    if(lockMsg)lockMsg.style.display='none';
+  }
+}
+
+// Listen for tournament results — re-opens registration when results are published
+// and clears teams when admin publishes (controlled by a 'registrationOpen' field)
+onSnapshot(doc(db,'tournament_result','latest'),snap=>{
+  const resultsPublished=snap.exists()&&snap.data()&&snap.data().registrationReset===true;
+  checkRegistrationStatus(resultsPublished);
+});
+
+// Check lock on page load and every minute
+checkRegistrationStatus(false);
+setInterval(()=>checkRegistrationStatus(false),60000);
+
+// Real-time teams list
+onSnapshot(query(collection(db,'tournament_teams'),orderBy('registeredAt','asc')),snap=>{
+  const list=document.getElementById('teamsList');
+  const count=snap.size;
+  const countEl=document.getElementById('teamsCount');
+  const badgeEl=document.getElementById('teamsCountBadge');
+  if(countEl)countEl.textContent=count;
+  if(badgeEl)badgeEl.textContent=count+' team'+(count!==1?'s':'');
+  if(count===0){list.innerHTML='<div class="no-teams">🏕️ No teams yet — be the first to register!</div>';return;}
+  list.innerHTML=snap.docs.map((d,i)=>{
+    const t=d.data();
+    return '<div class="team-item">'
+      +'<div class="team-num">TEAM #'+(i+1)+'</div>'
+      +'<div class="team-leader">👑 '+t.leaderName+'</div>'
+      +'<div class="team-uid">UID: '+t.leaderUID+'</div>'
+      +'<div class="team-members">'
+      +[t.member1,t.member2,t.member3].filter(Boolean).map(m=>'<span class="team-member-chip">⚔️ '+m+'</span>').join('')
+      +'</div></div>';
+  }).join('');
+});
+
+// Giveaway entry
+window.showTab=function(tab){document.querySelectorAll('.ff-list').forEach(e=>e.classList.remove('active'));document.querySelectorAll('.ff-tab').forEach(e=>e.classList.remove('active'));document.getElementById('tab-'+tab).classList.add('active');document.querySelector('.ff-tab.'+tab).classList.add('active');};
+window.submitEntry=async function(){
+  const username=document.getElementById('username').value.trim(),uid=document.getElementById('uid').value.trim();
+  if(!username||!uid){alert('Fill in BOTH fields! 😤');return;}
+  const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='⏳ Checking...';
+  try{
+    const dU=await getDocs(query(collection(db,'entries'),where('uid','==',uid)));
+    if(!dU.empty){alert('🚫 This UID already entered!');btn.disabled=false;btn.textContent="🎰 ENTER NOW — IT'S FREE!";return;}
+    const dN=await getDocs(query(collection(db,'entries'),where('username','==',username)));
+    if(!dN.empty){alert('🚫 This username already entered!');btn.disabled=false;btn.textContent="🎰 ENTER NOW — IT'S FREE!";return;}
+    await addDoc(collection(db,'entries'),{username,uid,timestamp:serverTimestamp()});
+    document.getElementById('formCard').style.display='none';
+    const ty=document.getElementById('thankyou');ty.style.display='flex';
+    document.getElementById('enteredName').textContent=username;
+    launchConfetti();
+  }catch(err){
+    let msg='Something went wrong 😢\n\n';
+    if(err.code==='permission-denied')msg+='🔒 Firestore rules blocking writes.';
+    else msg+='Error: '+(err.message||err.code||'Unknown');
+    alert(msg);btn.disabled=false;btn.textContent="🎰 ENTER NOW — IT'S FREE!";
+  }
+};
+
+// Tournament form
 window.showTournForm=function(){
   document.getElementById('registerBtn').style.display='none';
   document.getElementById('tournForm').classList.add('active');
@@ -618,6 +722,12 @@ window.cancelTournForm=function(){
   document.getElementById('registerBtn').style.display='block';
 };
 window.submitTournament=async function(){
+  // Double-check lock before submitting
+  const now=new Date();
+  const utcMs=now.getTime()+now.getTimezoneOffset()*60000;
+  const npt=new Date(utcMs+(5*60+45)*60000);
+  if(npt.getHours()>=22){alert('🔒 Registration is closed! Entries locked at 10PM NPT.');return;}
+
   const leader=document.getElementById('t-leader').value.trim();
   const uid=document.getElementById('t-uid').value.trim();
   const m1=document.getElementById('t-m1').value.trim();
@@ -626,10 +736,8 @@ window.submitTournament=async function(){
   if(!leader||!uid||!m1||!m2||!m3){alert('Please fill in ALL fields — team leader + 3 members! ⚔️');return;}
   const btn=document.getElementById('tournSubmitBtn');btn.disabled=true;btn.textContent='⏳ Registering...';
   try{
-    // Check duplicate UID
     const dU=await getDocs(query(collection(db,'tournament_teams'),where('leaderUID','==',uid)));
     if(!dU.empty){alert('🚫 This UID has already registered a team!');btn.disabled=false;btn.textContent='⚔️ REGISTER TEAM';return;}
-    // Check duplicate leader name
     const dN=await getDocs(query(collection(db,'tournament_teams'),where('leaderName','==',leader)));
     if(!dN.empty){alert('🚫 This team leader name is already registered!');btn.disabled=false;btn.textContent='⚔️ REGISTER TEAM';return;}
     await addDoc(collection(db,'tournament_teams'),{leaderName:leader,leaderUID:uid,member1:m1,member2:m2,member3:m3,registeredAt:serverTimestamp()});
