@@ -736,16 +736,35 @@ window.saveTournResult=async function(){
   const third=document.getElementById('res-3rd').value.trim();
   const note=document.getElementById('res-note').value.trim();
   if(!champion){alert('Please enter at least the champion team name!');return;}
+  const ok=confirm('🏆 Publish results?\n\n1st: '+champion+'\n2nd: '+(second||'—')+'\n3rd: '+(third||'—')+'\n\nThis will:\n✅ Show results on main page\n🗑️ Clear all registered teams\n🔓 Re-open team registration');
+  if(!ok)return;
   try{
-    await setDoc(doc(db,'tournament_result','latest'),{champion,second,third,note,updatedAt:serverTimestamp()});
-    alert('✅ Tournament results published!\nNow visible on the main page 🎉');
+    // Save results with registrationReset flag
+    await setDoc(doc(db,'tournament_result','latest'),{
+      champion,second,third,note,
+      updatedAt:serverTimestamp(),
+      registrationReset:true
+    });
+    // Clear all tournament teams
+    const snap=await getDocs(collection(db,'tournament_teams'));
+    const batch=writeBatch(db);
+    snap.forEach(d=>batch.delete(doc(db,'tournament_teams',d.id)));
+    await batch.commit();
+    // Clear inputs
+    document.getElementById('res-1st').value='';
+    document.getElementById('res-2nd').value='';
+    document.getElementById('res-3rd').value='';
+    document.getElementById('res-note').value='';
+    // Refresh teams list
+    tournTeams=[];
+    loadTournTeams();
+    alert('✅ Results published!\n🗑️ All teams cleared!\n🔓 Registration re-opened!\n\nEverything is LIVE on the main page 🎉');
   }catch(e){alert('❌ Error: '+e.message);}
 };
 
 let selectedGroups=0;
 window.setGroups=function(n){
   selectedGroups=n;
-  // Highlight selected button
   document.querySelectorAll('.gbtn').forEach(b=>{
     const active=parseInt(b.dataset.g)===n;
     b.style.background=active?'rgba(79,195,247,.35)':'rgba(79,195,247,.08)';
@@ -754,20 +773,17 @@ window.setGroups=function(n){
   });
   const T=tournTeams.length;
   const perGroup=Math.ceil(T/n);
-  // top 4 per group advance but final capped at 13
-  const topPer=4;
-  const rawFinalists=n*topPer;
-  // If only 1 group   final IS the group (no separate final)
-  const finalTeams=n===1?T:Math.min(rawFinalists,13);
-  const actualTopPer=n===1?T:Math.floor(finalTeams/n);
+  const MAX_PER=12;
+  const topPer=3;
+  const finalTeams=n===1?T:Math.min(n*topPer,13);
   const infoEl=document.getElementById('bracketInfo');
   const btnEl=document.getElementById('genBracketBtn');
   if(T===0){infoEl.textContent='No teams registered yet!';btnEl.style.display='none';return;}
-  if(perGroup>13){
-    infoEl.innerHTML=`<span style="color:var(--red);">⚠️ Too few groups! ${n} groups = ~${perGroup} teams per group (max 13).<br>Use at least ${Math.ceil(T/13)} groups.</span>`;
+  if(perGroup>MAX_PER){
+    infoEl.innerHTML='<span style="color:var(--red);">⚠️ Too many per group! '+n+' groups = ~'+perGroup+' per group (max '+MAX_PER+').<br>Use at least '+Math.ceil(T/MAX_PER)+' groups.</span>';
     btnEl.style.display='none';return;
   }
-  infoEl.innerHTML=`<strong style="color:var(--cyan);">${T} teams</strong> → <strong style="color:var(--gold);">${n} group${n>1?'s':''}</strong> (~${perGroup} per group) → Top ${actualTopPer} per group → <strong style="color:var(--green);">Final: ${n===1?T:finalTeams} teams</strong>`;
+  infoEl.innerHTML='<strong style="color:var(--cyan);">'+T+' teams</strong> → <strong style="color:var(--gold);">'+n+' group'+(n>1?'s':'')+'</strong> (~'+perGroup+' per group, max '+MAX_PER+') → Top '+topPer+' advance → <strong style="color:var(--green);">Final: '+finalTeams+' teams</strong>';
   btnEl.style.display='block';
 };
 
@@ -779,10 +795,9 @@ window.generateBracket=function(){
   const teams=[...tournTeams];
   const T=teams.length;
   const n=selectedGroups;
-  const topPer=4;
-  const rawFinalists=n*topPer;
-  const finalTeams=n===1?T:Math.min(rawFinalists,13);
-  const actualTopPer=n===1?T:Math.floor(finalTeams/n);
+  const topPer=3;
+  const finalTeams=n===1?T:Math.min(n*topPer,13);
+  const actualTopPer=n===1?T:topPer;
 
   const groups=Array.from({length:n},()=>[]);
   teams.forEach((t,i)=>groups[i%n].push(t));
