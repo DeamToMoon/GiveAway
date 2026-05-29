@@ -821,7 +821,7 @@ window.generateBracket=function(){
     grp.forEach(function(t,ti){
       var q=ti<qCount;
       rows+='<tr style="background:'+(q?col+'18':'transparent')+';border-bottom:1px solid rgba(255,255,255,.05);">'
-        +'<td style="padding:7px 10px;font-size:11px;font-weight:900;color:'+(q?col:'rgba(255,255,255,.35)');+"font-family:monospace;text-align:center;width:28px;">'+(ti+1)+'</td>'
+        +'<td style="padding:7px 10px;font-size:11px;font-weight:900;color:'+(q?col:'rgba(255,255,255,.35)')+';font-family:monospace;text-align:center;width:28px;">'+(ti+1)+'</td>'
         +'<td style="padding:7px 10px;font-size:12px;font-weight:700;color:'+(q?'#fff':'rgba(255,255,255,.55)')+';">'+t.leaderName+'</td>'
         +'<td style="padding:7px 10px;font-size:10px;color:rgba(255,255,255,.4);">'+t.member1+' &middot; '+t.member2+' &middot; '+t.member3+'</td>'
         +'<td style="padding:7px 12px;text-align:right;white-space:nowrap;">'
