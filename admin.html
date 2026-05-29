@@ -726,10 +726,9 @@ window.generateBracket=function(){
   var T=teams.length;
   var n=selectedGroups;
   var perGroup=Math.ceil(T/n);
-  // Dynamic qualify per group size
+  var MAX=12;
   var qualPer=perGroup<=8?2:3;
   if(n===1)qualPer=T;
-  // Cap final at 12 — recalculate qualPer if needed
   if(n>1&&n*qualPer>12)qualPer=Math.floor(12/n);
   var finalT=n===1?T:Math.min(n*qualPer,12);
   var groups=[];
@@ -740,77 +739,88 @@ window.generateBracket=function(){
   var DATE=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
   var slides=[];
 
-  groups.forEach(function(grp,gi){
-    var col=COLS[gi%COLS.length];
-    var lbl=LABELS[gi]||String(gi+1);
-    // Per-group qualify count based on actual group size
-    var qCount=grp.length<=8?2:3;
-    if(n===1)qCount=grp.length;
-    qCount=Math.min(qCount,grp.length);
-    var rows='';
-    grp.forEach(function(t,ti){
-      var q=ti<qCount;
-      rows+='<tr style="background:'+(q?col+'18':'transparent')+';border-bottom:1px solid rgba(255,255,255,.05);">'
-        +'<td style="padding:7px 10px;font-size:11px;font-weight:900;color:'+(q?col:'rgba(255,255,255,.35)')+';font-family:monospace;text-align:center;width:28px;">'+(ti+1)+'</td>'
-        +'<td style="padding:7px 10px;font-size:12px;font-weight:700;color:'+(q?'#fff':'rgba(255,255,255,.55)')+';">'+esc(t.leaderName)+'</td>'
-        +'<td style="padding:7px 10px;font-size:10px;color:rgba(255,255,255,.4);">'+esc(t.member1)+' &middot; '+esc(t.member2)+' &middot; '+esc(t.member3)+'</td>'
-        +'<td style="padding:7px 12px;text-align:right;white-space:nowrap;">'
-        +(q?'<span style="font-size:9px;background:'+col+';color:#000;font-weight:900;padding:2px 7px;border-radius:4px;">QUALIFY '+qCount+'</span>'
-           :'<span style="font-size:9px;color:rgba(255,255,255,.2);">–</span>')
-        +'</td></tr>';
-    });
-    var slide='<div style="background:#0d0d0d;border-radius:12px;overflow:hidden;margin-bottom:14px;border:1px solid '+col+'30;box-shadow:0 4px 20px rgba(0,0,0,.6);">'
-      +'<div style="background:'+col+';padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">'
-      +'<div style="display:flex;align-items:center;gap:10px;">'
-      +'<div style="width:32px;height:32px;background:rgba(0,0,0,.3);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fff;">'+lbl+'</div>'
-      +'<div><div style="font-size:13px;font-weight:900;color:#fff;letter-spacing:2px;">GROUP '+lbl+'</div>'
-      +'<div style="font-size:9px;color:rgba(255,255,255,.75);letter-spacing:1px;">'+grp.length+' SQUADS &nbsp;&middot;&nbsp; TOP '+qCount+' QUALIFY</div>'
-      +'</div></div>'
-      +'<div style="background:rgba(0,0,0,.35);border-radius:6px;padding:4px 12px;">'
-      +'<div style="font-size:10px;font-weight:900;color:#fff;letter-spacing:2px;">GAME '+(gi+1)+'</div>'
-      +'</div></div>'
-      +'<div style="background:#111;padding:5px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;">'
-      +'<span style="font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;">DREAM2MOON &middot; FULL MAP &middot; FREE FIRE</span>'
-      +'<span style="font-size:9px;color:rgba(255,255,255,.2);">'+DATE+'</span>'
-      +'</div>'
-      +'<div style="display:grid;grid-template-columns:28px 1fr 1fr 90px;padding:5px 10px;background:rgba(255,255,255,.04);">'
-      +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;text-align:center;">#</div>'
-      +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;">LEADER</div>'
-      +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;">MEMBERS</div>'
-      +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;text-align:right;">STATUS</div>'
-      +'</div>'
-      +'<table style="width:100%;border-collapse:collapse;">'+rows+'</table>'
-      +'</div>';
-    slides.push(slide);
-  });
+  // ── GROUP SLIDES (2 groups per slide) ──
+  for(var si=0;si<groups.length;si+=2){
+    var slideContent='<div style="background:#0d0d0d;border-radius:12px;overflow:hidden;margin-bottom:14px;box-shadow:0 4px 20px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.07);">';
 
-  // Grand Final slide
+    for(var gi=si;gi<Math.min(si+2,groups.length);gi++){
+      var grp=groups[gi];
+      var col=COLS[gi%COLS.length];
+      var lbl=LABELS[gi]||String(gi+1);
+      var qCount=grp.length<=8?2:3;
+      if(n===1)qCount=grp.length;
+      qCount=Math.min(qCount,grp.length);
+      if(n>1&&n*qCount>12)qCount=Math.floor(12/n);
+
+      var rows='';
+      grp.forEach(function(t,ti){
+        rows+='<tr style="border-bottom:1px solid rgba(255,255,255,.04);">'
+          +'<td style="padding:6px 10px;font-size:11px;font-weight:900;color:rgba(255,255,255,.35);font-family:monospace;text-align:center;width:28px;">'+(ti+1)+'</td>'
+          +'<td style="padding:6px 10px;font-size:12px;font-weight:700;color:#fff;">'+esc(t.leaderName)+'</td>'
+          +'<td style="padding:6px 10px;font-size:10px;color:rgba(255,255,255,.4);">'+esc(t.member1)+' &middot; '+esc(t.member2)+' &middot; '+esc(t.member3)+'</td>'
+          +'</tr>';
+      });
+
+      slideContent+=
+        // Group header bar
+        '<div style="background:'+col+';padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">'
+        +'<div style="display:flex;align-items:center;gap:10px;">'
+        +'<div style="width:32px;height:32px;background:rgba(0,0,0,.3);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fff;">'+lbl+'</div>'
+        +'<div><div style="font-size:13px;font-weight:900;color:#fff;letter-spacing:2px;">GROUP '+lbl+'</div>'
+        +'<div style="font-size:9px;color:rgba(255,255,255,.8);letter-spacing:1px;">'+grp.length+' SQUADS &nbsp;&middot;&nbsp; TOP '+qCount+' WILL QUALIFY</div>'
+        +'</div></div>'
+        +'<div style="background:rgba(0,0,0,.35);border-radius:6px;padding:4px 12px;">'
+        +'<div style="font-size:10px;font-weight:900;color:#fff;letter-spacing:2px;">GAME '+(gi+1)+'</div>'
+        +'</div></div>'
+        // Subbar
+        +'<div style="background:#111;padding:5px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;">'
+        +'<span style="font-size:9px;color:rgba(255,255,255,.3);">DREAM2MOON &middot; FULL MAP &middot; FREE FIRE</span>'
+        +'<span style="font-size:9px;color:rgba(255,255,255,.2);">'+DATE+'</span>'
+        +'</div>'
+        // Table header
+        +'<div style="display:grid;grid-template-columns:28px 1fr 1fr;padding:5px 10px;background:rgba(255,255,255,.04);">'
+        +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;text-align:center;">#</div>'
+        +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;">LEADER</div>'
+        +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;">MEMBERS</div>'
+        +'</div>'
+        +'<table style="width:100%;border-collapse:collapse;">'+rows+'</table>';
+
+      // Divider between groups on same slide
+      if(gi+1<Math.min(si+2,groups.length)){
+        slideContent+='<div style="height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);margin:0 0;"></div>';
+      }
+    }
+    slideContent+='</div>';
+    slides.push(slideContent);
+  }
+
+  // ── GRAND FINAL SLIDE — placeholder teams only, no real names ──
   if(n>1){
     var finalRows='';
-    var teamNum=1; // Sequential TEAM 1, TEAM 2, TEAM 3...
-    groups.forEach(function(grp,gi){
-      var col=COLS[gi%COLS.length];var lbl=LABELS[gi]||String(gi+1);
-      var qc=grp.length<=8?2:3;qc=Math.min(qc,grp.length);
-      // Recalc if cap applies
+    var teamNum=1;
+    for(var gi=0;gi<groups.length;gi++){
+      var grp=groups[gi];
+      var col=COLS[gi%COLS.length];
+      var lbl=LABELS[gi]||String(gi+1);
+      var qc=grp.length<=8?2:3;
+      qc=Math.min(qc,grp.length);
       if(n*qc>12)qc=Math.floor(12/n);
       for(var ti=0;ti<qc;ti++){
-        var t=grp[ti];
-        var teamLabel='TEAM '+teamNum;
         finalRows+='<tr style="border-bottom:1px solid rgba(255,255,255,.05);">'
-          +'<td style="padding:7px 10px;text-align:center;width:60px;">'
-          +'<span style="background:'+col+';color:#000;font-size:8px;font-weight:900;padding:2px 6px;border-radius:4px;white-space:nowrap;">'+teamLabel+'</span></td>'
-          +'<td style="padding:7px 10px;font-size:12px;font-weight:700;color:#fff;">'+esc(t.leaderName)+'</td>'
-          +'<td style="padding:7px 10px;font-size:10px;color:rgba(255,255,255,.4);">'+esc(t.member1)+' &middot; '+esc(t.member2)+' &middot; '+esc(t.member3)+'</td>'
-          +'<td style="padding:7px 12px;text-align:right;"><span style="font-size:9px;color:'+col+';font-weight:700;">Group '+lbl+'</span></td></tr>';
+          +'<td style="padding:8px 12px;text-align:center;width:70px;">'
+          +'<span style="background:'+col+';color:#000;font-size:9px;font-weight:900;padding:3px 8px;border-radius:4px;white-space:nowrap;">TEAM '+teamNum+'</span></td>'
+          +'<td style="padding:8px 12px;font-size:11px;color:rgba(255,255,255,.3);font-style:italic;">Qualifier from Group '+lbl+'</td>'
+          +'<td style="padding:8px 12px;text-align:right;">'
+          +'<span style="font-size:9px;color:'+col+';font-weight:700;background:'+col+'18;padding:2px 8px;border-radius:4px;">Group '+lbl+'</span></td></tr>';
         teamNum++;
       }
-    });
+    }
     var finalSlide='<div style="background:#0d0d0d;border-radius:12px;overflow:hidden;margin-bottom:14px;border:2px solid rgba(255,212,56,.35);box-shadow:0 4px 30px rgba(255,212,56,.08);">'
       +'<div style="background:linear-gradient(90deg,#7c5200,#c07c00,#7c5200);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">'
       +'<div style="display:flex;align-items:center;gap:10px;">'
       +'<div style="font-size:24px;">🏆</div>'
       +'<div><div style="font-size:14px;font-weight:900;color:#FFD438;letter-spacing:2px;">GRAND FINAL</div>'
-      +'<div style="font-size:9px;color:rgba(255,220,100,.7);letter-spacing:1px;">TOP '+qualPer+' FROM EACH GROUP &middot; '+finalT+' TEAMS</div>'
+      +'<div style="font-size:9px;color:rgba(255,220,100,.75);letter-spacing:1px;">TOP '+qualPer+' FROM EACH GROUP &middot; '+finalT+' TEAMS</div>'
       +'</div></div>'
       +'<div style="background:rgba(0,0,0,.4);border-radius:6px;padding:4px 12px;">'
       +'<div style="font-size:10px;font-weight:900;color:#FFD438;letter-spacing:2px;">GAME '+(n+1)+'</div>'
@@ -819,10 +829,13 @@ window.generateBracket=function(){
       +'<span style="font-size:9px;color:rgba(255,255,255,.3);">DREAM2MOON &middot; FULL MAP &middot; FREE FIRE</span>'
       +'<span style="font-size:9px;color:rgba(255,255,255,.2);">'+DATE+'</span>'
       +'</div>'
-      +'<div style="display:grid;grid-template-columns:60px 1fr 1fr 70px;padding:5px 10px;background:rgba(255,255,255,.04);">'
-      +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;">TEAM</div>'
-      +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;">LEADER</div>'
-      +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;">MEMBERS</div>'
+      // Notice banner
+      +'<div style="background:rgba(255,212,56,.06);border-bottom:1px solid rgba(255,212,56,.15);padding:8px 16px;text-align:center;">'
+      +'<span style="font-size:10px;color:rgba(255,212,56,.7);letter-spacing:1px;font-weight:700;">⚔️ TEAMS WILL BE CONFIRMED AFTER GROUP STAGE MATCHES</span>'
+      +'</div>'
+      +'<div style="display:grid;grid-template-columns:70px 1fr 80px;padding:5px 10px;background:rgba(255,255,255,.04);">'
+      +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;">SLOT</div>'
+      +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;">QUALIFIER</div>'
       +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;text-align:right;">FROM</div>'
       +'</div>'
       +'<table style="width:100%;border-collapse:collapse;">'+finalRows+'</table>'
