@@ -711,8 +711,12 @@ window.setGroups=function(n){
   var btnEl=document.getElementById('genBracketBtn');
   if(T===0){infoEl.textContent='No teams registered yet!';btnEl.style.display='none';return;}
   if(perGroup>MAX){
-    infoEl.innerHTML='<span style="color:var(--red);">⚠ Too many per group! '+n+' groups = ~'+perGroup+' per group (max 12).<br>Need at least '+Math.ceil(T/MAX)+' groups for '+T+' teams.</span>';
-    btnEl.style.display='none';return;
+    var minGroups=Math.ceil(T/MAX);
+    infoEl.innerHTML='<span style="color:var(--orange);">⚠ '+n+' groups = ~'+perGroup+' per group (max 12). Auto-adjusting to <strong>'+minGroups+' groups</strong>...</span>';
+    btnEl.style.display='none';
+    // Auto-set to correct group count after short delay
+    setTimeout(function(){window.setGroups(minGroups);},600);
+    return;
   }
   infoEl.innerHTML='<strong style="color:var(--cyan);">'+T+' teams</strong> → <strong style="color:var(--gold);">'+n+' group'+(n>1?'s':'')+'</strong> (~'+perGroup+' per group) → Top '+qualPer+' qualify → <strong style="color:var(--green);">Final: '+finalT+' teams</strong>';
   btnEl.style.display='block';
