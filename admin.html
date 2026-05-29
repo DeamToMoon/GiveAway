@@ -2,662 +2,1045 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>DREAM2MOON · Tournament Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dream2Moon — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;600;700;800;900&display=swap');
-
-  *{box-sizing:border-box;margin:0;padding:0}
-  :root{
-    --bg:#090b10;--panel:#0f1219;--border:#1e2535;
-    --gold:#f5c542;--gold2:#e0a020;
-    --green:#00e676;--red:#ff4444;--blue:#4fc3f7;
-    --text:#e8eaf0;--muted:#5a6270;
-    --a-col:#4fc3f7;--b-col:#ff6b6b;--c-col:#a8ff78;--d-col:#f5c542;
-  }
-  body{background:var(--bg);color:var(--text);font-family:'Barlow Condensed',sans-serif;min-height:100vh;}
-
-  /* ── LOGIN ── */
-  #loginWrap{
-    display:flex;align-items:center;justify-content:center;min-height:100vh;
-    background:radial-gradient(ellipse at 50% 30%,#0d1a2e 0%,#090b10 70%);
-  }
-  .loginBox{
-    background:var(--panel);border:1px solid var(--border);border-radius:16px;
-    padding:40px 36px;width:360px;text-align:center;
-    box-shadow:0 20px 60px rgba(0,0,0,.6);
-  }
-  .loginBox .logo{font-size:28px;font-weight:900;letter-spacing:3px;color:var(--gold);margin-bottom:4px;}
-  .loginBox .sub{font-size:11px;color:var(--muted);letter-spacing:2px;margin-bottom:30px;}
-  .loginBox input{
-    width:100%;background:#111827;border:1px solid var(--border);border-radius:8px;
-    padding:12px 14px;color:var(--text);font-family:'Barlow Condensed',sans-serif;font-size:15px;
-    margin-bottom:12px;outline:none;transition:border .2s;
-  }
-  .loginBox input:focus{border-color:var(--gold);}
-  .loginBox button{
-    width:100%;background:var(--gold);color:#000;border:none;border-radius:8px;
-    padding:13px;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;
-    letter-spacing:2px;cursor:pointer;transition:opacity .2s;
-  }
-  .loginBox button:hover{opacity:.85;}
-  #loginErr{color:var(--red);font-size:12px;margin-top:10px;display:none;}
-
-  /* ── APP ── */
-  #app{display:none;}
-  header{
-    background:var(--panel);border-bottom:1px solid var(--border);
-    padding:14px 24px;display:flex;align-items:center;justify-content:space-between;
-    position:sticky;top:0;z-index:100;
-  }
-  header .brand{font-size:20px;font-weight:900;letter-spacing:3px;color:var(--gold);}
-  header .brand span{color:var(--muted);font-size:12px;font-weight:400;margin-left:8px;letter-spacing:1px;}
-  .topBtns{display:flex;gap:8px;}
-  .topBtns button{
-    background:transparent;border:1px solid var(--border);color:var(--muted);
-    border-radius:6px;padding:6px 14px;font-family:'Barlow Condensed',sans-serif;
-    font-size:13px;cursor:pointer;transition:all .2s;
-  }
-  .topBtns button:hover,.topBtns button.active{border-color:var(--gold);color:var(--gold);}
-  #logoutBtn{border-color:#ff444430!important;color:var(--red)!important;}
-  #logoutBtn:hover{background:#ff444415!important;}
-
-  main{padding:24px;max-width:1100px;margin:0 auto;}
-
-  /* ── TABS ── */
-  .tabBar{display:flex;gap:4px;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:0;}
-  .tab{
-    padding:10px 20px;cursor:pointer;font-size:14px;font-weight:700;letter-spacing:1px;
-    color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;
-  }
-  .tab.active{color:var(--gold);border-bottom-color:var(--gold);}
-  .tabPane{display:none;} .tabPane.active{display:block;}
-
-  /* ── CARDS ── */
-  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
-  .cardTitle{font-size:13px;font-weight:700;letter-spacing:2px;color:var(--muted);margin-bottom:16px;text-transform:uppercase;}
-
-  /* ── FORM ── */
-  .formRow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
-  .formRow.full{grid-template-columns:1fr;}
-  label{font-size:11px;color:var(--muted);letter-spacing:1px;display:block;margin-bottom:4px;}
-  input[type=text],input[type=password],select,textarea{
-    width:100%;background:#111827;border:1px solid var(--border);border-radius:8px;
-    padding:10px 12px;color:var(--text);font-family:'Barlow Condensed',sans-serif;font-size:14px;
-    outline:none;transition:border .2s;
-  }
-  input[type=text]:focus,select:focus,textarea:focus{border-color:var(--gold);}
-  textarea{resize:vertical;min-height:80px;}
-  .btn{
-    background:var(--gold);color:#000;border:none;border-radius:8px;
-    padding:10px 20px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;
-    letter-spacing:1px;cursor:pointer;transition:opacity .2s;
-  }
-  .btn:hover{opacity:.85;}
-  .btn.outline{background:transparent;color:var(--gold);border:1px solid var(--gold);}
-  .btn.danger{background:transparent;color:var(--red);border:1px solid #ff444440;}
-  .btn.danger:hover{background:#ff444415;}
-  .btn.sm{padding:6px 12px;font-size:12px;}
-
-  /* ── TEAMS LIST ── */
-  .teamRow{
-    display:grid;grid-template-columns:24px 1fr 1fr 1fr auto;
-    align-items:center;gap:10px;
-    padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px;
-  }
-  .teamRow:last-child{border-bottom:none;}
-  .teamRow .num{color:var(--muted);font-size:11px;}
-  .teamRow .leader{font-weight:700;color:var(--text);}
-  .teamRow .members{color:var(--muted);font-size:11px;}
-  .teamRow .grpBadge{
-    font-size:10px;font-weight:900;padding:2px 8px;border-radius:4px;
-    text-align:center;
-  }
-
-  /* ── SLIDES PREVIEW ── */
-  #slidesOut{margin-top:16px;}
-  .slideWrap{margin-bottom:24px;}
-  .slideWrap h3{font-size:11px;color:var(--muted);letter-spacing:2px;margin-bottom:8px;}
-
-  /* ── SLIDE CARD ── */
-  .slide{
-    font-family:'Barlow Condensed',sans-serif;
-    border-radius:14px;overflow:hidden;
-    box-shadow:0 8px 32px rgba(0,0,0,.7);
-    max-width:680px;
-  }
-  .slide-header{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;}
-  .slide-header .group-badge{
-    width:38px;height:38px;border-radius:8px;background:rgba(0,0,0,.35);
-    display:flex;align-items:center;justify-content:center;
-    font-size:20px;font-weight:900;color:#fff;
-  }
-  .slide-header .group-info{margin-left:12px;flex:1;}
-  .slide-header .group-name{font-size:15px;font-weight:900;letter-spacing:3px;color:#fff;}
-  .slide-header .group-meta{font-size:10px;color:rgba(255,255,255,.7);letter-spacing:1px;margin-top:1px;}
-  .slide-header .game-badge{
-    background:rgba(0,0,0,.35);border-radius:6px;padding:5px 14px;
-    font-size:11px;font-weight:900;letter-spacing:2px;color:#fff;
-  }
-  .slide-subbar{
-    background:#111;padding:6px 18px;border-bottom:1px solid rgba(255,255,255,.05);
-    display:flex;justify-content:space-between;align-items:center;
-  }
-  .slide-subbar span{font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;}
-  .slide-thead{
-    display:grid;padding:6px 12px;
-    font-size:9px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.3);
-  }
-  .slide-row{
-    display:grid;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.04);
-    align-items:center;
-  }
-  .slide-row:last-child{border-bottom:none;}
-  .slide-row .rank{font-size:11px;color:rgba(255,255,255,.3);}
-  .slide-row .lname{font-size:13px;font-weight:700;color:#fff;}
-  .slide-row .mems{font-size:10px;color:rgba(255,255,255,.4);}
-  .qualify-badge{
-    font-size:9px;font-weight:900;padding:3px 8px;border-radius:4px;color:#000;
-    white-space:nowrap;
-  }
-  .dash-badge{font-size:11px;color:rgba(255,255,255,.2);}
-
-  /* GRAND FINAL SLIDE */
-  .gf-row{
-    display:grid;grid-template-columns:32px 1fr 1fr 60px;
-    padding:7px 14px;border-bottom:1px solid rgba(255,255,255,.04);
-    align-items:center;font-size:12px;
-  }
-  .gf-row:last-child{border-bottom:none;}
-  .gf-slot{font-size:10px;font-weight:900;padding:2px 6px;border-radius:4px;color:#000;text-align:center;}
-  .prize-bar{
-    display:grid;grid-template-columns:1fr 1fr 1fr;
-    border-top:1px solid rgba(255,255,255,.08);
-  }
-  .prize-cell{padding:14px;text-align:center;border-right:1px solid rgba(255,255,255,.06);}
-  .prize-cell:last-child{border-right:none;}
-  .prize-icon{font-size:22px;margin-bottom:4px;}
-  .prize-amt{font-size:18px;font-weight:900;color:var(--gold);}
-  .prize-lbl{font-size:9px;color:rgba(255,255,255,.4);letter-spacing:1px;margin-top:2px;}
-  .esewa-bar{
-    background:#1a1f15;padding:8px 14px;display:flex;align-items:center;justify-content:center;
-    gap:6px;font-size:10px;color:#4caf50;letter-spacing:1px;font-weight:700;
-  }
-
-  .snap-btn{
-    margin-top:8px;
-    background:transparent;border:1px solid var(--border);color:var(--muted);
-    border-radius:6px;padding:5px 12px;font-size:11px;cursor:pointer;
-    font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;
-    transition:all .2s;
-  }
-  .snap-btn:hover{border-color:var(--gold);color:var(--gold);}
-
-  .toast{
-    position:fixed;bottom:24px;right:24px;z-index:9999;
-    background:#1e2535;border:1px solid var(--border);color:var(--text);
-    padding:10px 18px;border-radius:8px;font-size:13px;font-weight:700;
-    opacity:0;transition:opacity .3s;pointer-events:none;
-    box-shadow:0 8px 24px rgba(0,0,0,.5);
-  }
-  .toast.show{opacity:1;}
-
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
-  .stat{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px 18px;}
-  .stat .val{font-size:28px;font-weight:900;color:var(--gold);}
-  .stat .lbl{font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:2px;}
+:root{
+  --gold:#FFD438;--blue:#4FC3F7;--cyan:#00E5FF;
+  --purple:#CE93D8;--green:#69F0AE;--orange:#FFAB40;
+  --red:#FF6B6B;--white:#FFFFFF;
+  --text:#E8F4FD;--muted:#90CAF9;--faint:#5B8DB8;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
+  background:
+    radial-gradient(ellipse 120% 55% at 50% 0%,#0D2B5E 0%,transparent 55%),
+    radial-gradient(ellipse 80% 50% at 0% 40%,#061D4A 0%,transparent 60%),
+    radial-gradient(ellipse 70% 50% at 100% 60%,#071532 0%,transparent 60%),
+    linear-gradient(160deg,#091B3E 0%,#060E2A 35%,#0B1B42 65%,#060C1F 100%);}
+.layer{position:fixed;inset:0;pointer-events:none;}
+#nebula{z-index:0;background:
+  radial-gradient(ellipse 900px 500px at 15% 20%,rgba(79,195,247,.07),transparent),
+  radial-gradient(ellipse 700px 600px at 85% 60%,rgba(206,147,216,.06),transparent);}
+#stars{z-index:1;}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d) ease-in-out infinite;animation-delay:var(--dl);}
+@keyframes twinkle{0%,100%{opacity:0}50%{opacity:var(--op)}}
+/* LOGIN */
+#loginScreen{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:20px;}
+.login-moon-wrap{position:relative;}
+.login-moon{width:80px;height:80px;border-radius:50%;
+  background:radial-gradient(circle at 38% 35%,#FFF0A0 0%,#FFD438 15%,#D4A000 40%,#8B5E00 70%,#3A2800 100%);
+  box-shadow:0 0 40px rgba(255,212,56,.4),0 0 80px rgba(255,212,56,.15);
+  position:relative;animation:moonFloat 3s ease-in-out infinite;}
+.login-moon::after{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 65% 40%,rgba(30,10,0,.7),transparent 60%);}
+@keyframes moonFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.login-glow{position:absolute;inset:-20px;border-radius:50%;background:radial-gradient(circle,rgba(255,212,56,.15),transparent 70%);animation:glowP 2.5s ease-in-out infinite;}
+@keyframes glowP{0%,100%{opacity:.5}50%{opacity:1}}
+.login-title{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:var(--gold);letter-spacing:4px;text-align:center;text-shadow:0 0 30px rgba(255,212,56,.3);}
+.login-sub{font-size:10px;letter-spacing:4px;color:var(--faint);text-transform:uppercase;text-align:center;margin-top:-12px;}
+.login-card{width:100%;max-width:360px;
+  background:linear-gradient(135deg,rgba(13,35,75,.95),rgba(10,25,60,.9));
+  border:1px solid rgba(79,195,247,.18);border-radius:22px;padding:30px 24px;
+  display:flex;flex-direction:column;gap:16px;position:relative;overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,30,.6),inset 0 1px 0 rgba(79,195,247,.1);}
+.login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--gold),var(--blue),var(--cyan),var(--gold));
+  background-size:200%;animation:shimmer 3s linear infinite;}
+@keyframes shimmer{to{background-position:200% center}}
+.login-input{width:100%;background:rgba(79,195,247,.05);border:1px solid rgba(79,195,247,.18);
+  border-radius:12px;padding:14px 18px;font-family:'Exo 2',sans-serif;font-size:15px;color:#fff;outline:none;transition:all .3s;}
+.login-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(255,212,56,.1);background:rgba(255,212,56,.03);}
+.login-input::placeholder{color:rgba(255,255,255,.2);}
+.login-btn{padding:16px;
+  background:linear-gradient(135deg,#1565C0,#FFD438,#1565C0);background-size:300%;
+  border:none;border-radius:12px;font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;
+  color:#fff;letter-spacing:2px;cursor:pointer;transition:all .3s;
+  box-shadow:0 4px 25px rgba(79,195,247,.2);animation:btnShimmer 4s linear infinite;}
+@keyframes btnShimmer{to{background-position:200% center}}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 40px rgba(79,195,247,.35);}
+.login-error{color:var(--red);font-size:13px;text-align:center;display:none;font-weight:700;}
+/* ADMIN PANEL */
+#adminPanel{display:none;position:relative;z-index:10;max-width:700px;margin:0 auto;padding:30px 20px 60px;flex-direction:column;gap:22px;}
+.admin-hdr{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:20px 22px;
+  background:linear-gradient(135deg,rgba(13,35,75,.95),rgba(10,25,60,.9));
+  border:1px solid rgba(79,195,247,.18);border-radius:18px;position:relative;overflow:hidden;
+  box-shadow:0 8px 30px rgba(0,0,30,.4);}
+.admin-hdr::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--blue),var(--cyan),var(--gold),var(--purple),var(--blue));
+  background-size:200%;animation:shimmer 4s linear infinite;}
+.admin-brand{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:var(--gold);letter-spacing:3px;text-shadow:0 0 20px rgba(255,212,56,.3);}
+.admin-sub{font-size:10px;color:var(--faint);letter-spacing:3px;text-transform:uppercase;margin-top:3px;}
+.logout-btn{background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.25);border-radius:10px;padding:9px 18px;font-size:12px;font-weight:700;color:var(--red);cursor:pointer;letter-spacing:1px;transition:all .3s;}
+.logout-btn:hover{background:rgba(255,107,107,.18);transform:translateY(-1px);}
+/* STATS */
+.stats-row{display:flex;gap:12px;flex-wrap:wrap;}
+.stat-card{flex:1;min-width:100px;
+  background:linear-gradient(135deg,rgba(13,35,75,.95),rgba(9,20,55,.9));
+  border-radius:16px;padding:18px;text-align:center;
+  border:1px solid rgba(79,195,247,.15);
+  box-shadow:0 4px 20px rgba(0,0,30,.3),inset 0 1px 0 rgba(79,195,247,.08);position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--cyan));}
+.stat-num{font-family:'Orbitron',sans-serif;font-size:32px;font-weight:900;color:var(--gold);text-shadow:0 0 20px rgba(255,212,56,.4);}
+.stat-lbl{font-size:10px;color:var(--faint);letter-spacing:2px;text-transform:uppercase;margin-top:5px;font-weight:600;}
+/* CARDS */
+.card{width:100%;background:linear-gradient(135deg,rgba(13,35,75,.93),rgba(8,22,55,.89));
+  border:1px solid rgba(79,195,247,.16);border-radius:20px;padding:22px;position:relative;overflow:hidden;
+  box-shadow:0 8px 32px rgba(0,0,30,.4),inset 0 1px 0 rgba(79,195,247,.07);}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--blue),var(--cyan),var(--purple));background-size:200%;animation:shimmer 4s linear infinite;}
+.card-hdr{font-size:11px;font-weight:800;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;}
+/* entries */
+.entries-list{display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;}
+.entry-item{display:flex;align-items:center;gap:12px;background:rgba(79,195,247,.04);border:1px solid rgba(79,195,247,.1);border-radius:12px;padding:12px 16px;animation:slideIn .3s ease;transition:border-color .2s;}
+.entry-item:hover{border-color:rgba(79,195,247,.22);}
+@keyframes slideIn{from{transform:translateX(-10px);opacity:0}to{transform:translateX(0);opacity:1}}
+.entry-num{font-family:'Orbitron',sans-serif;font-size:10px;color:var(--gold);min-width:28px;}
+.entry-info{flex:1;}
+.entry-username{font-size:14px;font-weight:700;color:#fff;}
+.entry-uid{font-size:11px;color:var(--faint);margin-top:2px;}
+.entry-time{font-size:10px;color:rgba(232,244,253,.25);text-align:right;}
+.no-entries{text-align:center;color:var(--muted);font-size:14px;padding:24px;}
+/* copy */
+.copy-section{display:flex;flex-direction:column;gap:10px;}
+.copy-textarea{width:100%;min-height:100px;background:rgba(0,0,0,.2);border:1px solid rgba(79,195,247,.12);border-radius:12px;padding:14px;font-family:'Exo 2',sans-serif;font-size:13px;color:var(--muted);resize:vertical;outline:none;}
+.copy-btn{padding:12px 20px;border-radius:10px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .3s;border:none;}
+.copy-btn-blue{background:rgba(79,195,247,.08);border:1px solid rgba(79,195,247,.25);color:var(--blue);}
+.copy-btn-blue:hover{background:rgba(79,195,247,.16);transform:translateY(-1px);}
+.copy-btn-green{background:rgba(105,240,174,.08);border:1px solid rgba(105,240,174,.22);color:var(--green);}
+.copy-btn-green:hover{background:rgba(105,240,174,.16);transform:translateY(-1px);}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;}
+.manual-input{width:100%;min-height:80px;background:rgba(255,212,56,.03);border:1px solid rgba(255,212,56,.14);border-radius:12px;padding:14px;font-family:'Exo 2',sans-serif;font-size:13px;color:var(--muted);resize:vertical;outline:none;transition:all .3s;}
+.manual-input:focus{border-color:rgba(255,212,56,.35);box-shadow:0 0 0 3px rgba(255,212,56,.07);}
+.manual-input::placeholder{color:rgba(255,255,255,.18);}
+.add-manual-btn{padding:13px 22px;background:rgba(255,212,56,.08);border:1px solid rgba(255,212,56,.25);border-radius:12px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:2px;cursor:pointer;transition:all .3s;}
+.add-manual-btn:hover{background:rgba(255,212,56,.16);transform:translateY(-1px);}
+/* PICK BTN */
+.pick-btn{width:100%;padding:22px;
+  background:linear-gradient(135deg,#0E4FA0,#FFD438,#0E4FA0);background-size:300%;
+  border:none;border-radius:16px;font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;
+  color:#fff;letter-spacing:3px;cursor:pointer;transition:all .3s;
+  box-shadow:0 4px 30px rgba(79,195,247,.2);animation:btnShimmer 4s linear infinite;position:relative;overflow:hidden;}
+.pick-btn:hover{transform:translateY(-3px);box-shadow:0 10px 50px rgba(79,195,247,.35);}
+.pick-btn:disabled{background:rgba(255,255,255,.06);color:rgba(255,255,255,.2);box-shadow:none;transform:none;animation:none;cursor:not-allowed;}
+/* ROLLING */
+.rolling-box{background:rgba(0,0,0,.3);border:1px solid rgba(79,195,247,.2);border-radius:16px;padding:22px;text-align:center;display:none;flex-direction:column;gap:14px;margin-top:18px;box-shadow:0 0 30px rgba(79,195,247,.07);}
+.rolling-slot{display:flex;flex-direction:column;gap:5px;}
+.rolling-lbl{font-size:10px;letter-spacing:3px;text-transform:uppercase;font-weight:700;}
+.rolling-lbl.mo{color:var(--gold);}
+.rolling-lbl.wk{color:var(--blue);}
+.rolling-name{font-family:'Orbitron',sans-serif;font-size:clamp(16px,4vw,24px);font-weight:700;animation:flicker .1s infinite;}
+.rolling-name.mo{color:var(--gold);text-shadow:0 0 20px rgba(255,212,56,.5);}
+.rolling-name.wk{color:var(--blue);text-shadow:0 0 20px rgba(79,195,247,.5);}
+@keyframes flicker{0%,100%{opacity:1}50%{opacity:.4}}
+/* WINNER BOX */
+.winner-box{display:none;flex-direction:column;align-items:center;gap:18px;margin-top:18px;animation:popIn .6s cubic-bezier(.34,1.56,.64,1);}
+@keyframes popIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.winner-duo{display:flex;gap:14px;width:100%;}
+.wdc{flex:1;border-radius:18px;padding:20px 14px;text-align:center;position:relative;overflow:hidden;}
+.wdc.mo{background:linear-gradient(160deg,rgba(255,212,56,.1),rgba(255,171,64,.05));border:2px solid rgba(255,212,56,.4);box-shadow:0 0 30px rgba(255,212,56,.1);}
+.wdc.wk{background:linear-gradient(160deg,rgba(79,195,247,.08),rgba(206,147,216,.04));border:2px solid rgba(79,195,247,.35);box-shadow:0 0 30px rgba(79,195,247,.1);}
+.wdc.mo::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.wdc.wk::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--blue),transparent);}
+.wdc-trophy{font-size:40px;margin-bottom:8px;}
+.wdc-badge{display:inline-block;font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:10px;}
+.mo .wdc-badge{background:rgba(255,212,56,.15);color:var(--gold);}
+.wk .wdc-badge{background:rgba(79,195,247,.12);color:var(--blue);}
+.wdc-name{font-family:'Orbitron',sans-serif;font-size:clamp(13px,3.5vw,18px);font-weight:900;margin-bottom:5px;word-break:break-all;}
+.mo .wdc-name{color:var(--gold);text-shadow:0 0 25px rgba(255,212,56,.6);}
+.wk .wdc-name{color:var(--blue);text-shadow:0 0 25px rgba(79,195,247,.5);}
+.wdc-uid{font-size:11px;color:var(--faint);}
+.end-btn{padding:15px 36px;background:linear-gradient(135deg,#991b1b,#dc2626);border:none;border-radius:12px;font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:#fff;letter-spacing:2px;cursor:pointer;transition:all .3s;box-shadow:0 4px 24px rgba(220,38,38,.35);}
+.end-btn:hover{transform:translateY(-2px);box-shadow:0 8px 40px rgba(220,38,38,.5);}
+.end-btn:disabled{background:rgba(255,255,255,.08);color:rgba(255,255,255,.25);box-shadow:none;transform:none;cursor:not-allowed;}
+/* HISTORY */
+.history-list{display:flex;flex-direction:column;gap:8px;max-height:260px;overflow-y:auto;}
+.history-item{display:flex;align-items:center;gap:10px;background:rgba(79,195,247,.03);border:1px solid rgba(79,195,247,.08);border-radius:12px;padding:11px 16px;font-size:13px;flex-wrap:wrap;transition:border-color .2s;}
+.history-item:hover{border-color:rgba(79,195,247,.18);}
+.h-num{font-family:'Orbitron',sans-serif;font-size:10px;color:var(--gold);min-width:24px;}
+.h-badge{font-size:9px;font-weight:800;letter-spacing:1px;padding:3px 9px;border-radius:8px;}
+.h-badge.mo{background:rgba(255,212,56,.12);color:var(--gold);}
+.h-badge.wk{background:rgba(79,195,247,.1);color:var(--blue);}
+.h-name{font-weight:700;color:var(--text);}
+.h-uid{font-size:11px;color:var(--faint);}
+.divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(79,195,247,.2),transparent);}
+.refresh-btn{background:rgba(105,240,174,.07);border:1px solid rgba(105,240,174,.18);border-radius:8px;padding:7px 16px;font-size:11px;font-weight:700;color:var(--green);cursor:pointer;letter-spacing:1px;transition:all .3s;}
+.refresh-btn:hover{background:rgba(105,240,174,.15);}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(79,195,247,.25);border-radius:2px;}
+.confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden;}
+.cp{position:absolute;top:-10px;animation:fall var(--fd) ease-in forwards;border-radius:var(--br);}
+@keyframes fall{0%{transform:translateY(0) rotate(0) translateX(0);opacity:1}100%{transform:translateY(110vh) rotate(720deg) translateX(var(--dx));opacity:0}}
+@keyframes bigBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes popIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes spinGlow{to{transform:rotate(360deg)}}
+@keyframes cdPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.12);opacity:.75}}
 </style>
 </head>
 <body>
+<div class="layer" id="nebula"></div>
+<div class="layer" id="stars"></div>
+<div class="confetti-wrap" id="confetti"></div>
 
-<!-- LOGIN -->
-<div id="loginWrap">
-  <div class="loginBox">
-    <div class="logo">DREAM2MOON</div>
-    <div class="sub">TOURNAMENT ADMIN PANEL</div>
-    <input type="text" id="uInput" placeholder="Username" autocomplete="off">
-    <input type="password" id="pInput" placeholder="Password">
-    <button id="loginBtn">LOGIN →</button>
-    <div id="loginErr">❌ Invalid credentials</div>
+<div id="loginScreen">
+  <div class="login-moon-wrap"><div class="login-moon"><div class="login-glow"></div></div></div>
+  <div class="login-title">DREAM2MOON ADMIN</div>
+  <div class="login-sub">🔐 Secure Access Portal</div>
+  <div class="login-card">
+    <input class="login-input" type="text" id="loginUser" placeholder="Username" autocomplete="off">
+    <input class="login-input" type="password" id="loginPass" placeholder="Password">
+    <div class="login-error" id="loginError">❌ Wrong username or password</div>
+    <button class="login-btn" onclick="doLogin()">🚀 ENTER THE PANEL</button>
   </div>
 </div>
 
-<!-- APP -->
-<div id="app">
-  <header>
-    <div class="brand">DREAM2MOON <span>TOURNAMENT PANEL</span></div>
-    <div class="topBtns">
-      <button class="tab-nav active" data-tab="dashboard">DASHBOARD</button>
-      <button class="tab-nav" data-tab="teams">TEAMS</button>
-      <button class="tab-nav" data-tab="slides">SLIDES</button>
-      <button id="logoutBtn">LOGOUT</button>
+<div id="adminPanel">
+  <div class="admin-hdr">
+    <div><div class="admin-brand">⚙️ ADMIN PANEL</div><div class="admin-sub">Dream2Moon Giveaway Manager</div></div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <a href="index.html" style="background:rgba(79,195,247,.08);border:1px solid rgba(79,195,247,.25);border-radius:10px;padding:9px 18px;font-size:12px;font-weight:700;color:var(--blue);text-decoration:none;letter-spacing:1px;font-family:'Exo 2',sans-serif;">🏠 Main Page</a>
+      <button class="logout-btn" onclick="doLogout()">🚪 Logout</button>
     </div>
-  </header>
-  <main>
+  </div>
 
-    <!-- DASHBOARD -->
-    <div id="tab-dashboard" class="tabPane active">
-      <div class="stats" id="statsRow"></div>
-      <div class="card">
-        <div class="cardTitle">Quick Add Team</div>
-        <div class="formRow">
-          <div><label>LEADER NAME</label><input type="text" id="ql" placeholder="e.g. ROGX-SABIN"></div>
-          <div><label>GROUP</label>
-            <select id="qg">
-              <option value="A">Group A</option>
-              <option value="B">Group B</option>
-              <option value="C">Group C</option>
-              <option value="D">Group D</option>
-            </select>
-          </div>
-        </div>
-        <div class="formRow">
-          <div><label>MEMBER 1</label><input type="text" id="qm1" placeholder="Member 1"></div>
-          <div><label>MEMBER 2</label><input type="text" id="qm2" placeholder="Member 2"></div>
-        </div>
-        <div class="formRow">
-          <div><label>MEMBER 3</label><input type="text" id="qm3" placeholder="Member 3"></div>
-          <div><label>MEMBER 4 (optional)</label><input type="text" id="qm4" placeholder="Member 4"></div>
-        </div>
-        <button class="btn" onclick="quickAdd()">+ ADD TEAM</button>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num" id="totalCount">0</div><div class="stat-lbl">Total Entries</div></div>
+    <div class="stat-card" style="border-color:rgba(105,240,174,.15);"><div class="stat-num" style="color:var(--green);text-shadow:0 0 20px rgba(105,240,174,.4);" id="totalWins">0</div><div class="stat-lbl">Draws Done</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="card">
+    <div class="card-hdr">📋 Submitted Entries
+      <div style="display:flex;gap:8px;">
+        <button class="refresh-btn" onclick="loadEntries()">🔄 Refresh</button>
+        <button class="refresh-btn" style="background:rgba(255,107,107,.07);border-color:rgba(255,107,107,.18);color:var(--red);" onclick="manualClear()">🗑️ Clear All</button>
       </div>
     </div>
+    <div class="entries-list" id="entriesList"><div class="no-entries">Loading entries...</div></div>
+  </div>
 
-    <!-- TEAMS -->
-    <div id="tab-teams" class="tabPane">
-      <div class="card">
-        <div class="cardTitle" style="display:flex;justify-content:space-between;align-items:center;">
-          <span>ALL TEAMS</span>
-          <button class="btn sm outline" onclick="clearAll()">CLEAR ALL</button>
-        </div>
-        <div id="teamsList"></div>
+  <div class="card">
+    <div class="card-hdr">📤 Copy Usernames &amp; UIDs</div>
+    <div class="copy-section">
+      <textarea class="copy-textarea" id="copyArea" readonly placeholder="Click a button below to load entries here..."></textarea>
+      <div class="btn-row">
+        <button class="copy-btn copy-btn-blue" onclick="loadUsernames()">👤 Load Usernames</button>
+        <button class="copy-btn copy-btn-blue" onclick="loadUIDs()">🔢 Load UIDs</button>
+        <button class="copy-btn copy-btn-green" onclick="copyToClipboard()">📋 Copy All</button>
       </div>
     </div>
+  </div>
 
-    <!-- SLIDES -->
-    <div id="tab-slides" class="tabPane">
-      <div class="card">
-        <div class="cardTitle">SLIDE SETTINGS</div>
-        <div class="formRow">
-          <div><label>EVENT DATE</label><input type="text" id="evDate" value="29 May 2026"></div>
-          <div><label>QUALIFY COUNT RULE</label>
-            <select id="qualifyRule">
-              <option value="auto">AUTO (≤8 squads = TOP 2, else TOP 3)</option>
-              <option value="3">Always TOP 3</option>
-              <option value="2">Always TOP 2</option>
-            </select>
-          </div>
+  <div class="card">
+    <div class="card-hdr">✏️ Add Entries Manually</div>
+    <div class="copy-section">
+      <textarea class="manual-input" id="manualInput" placeholder="Paste usernames here, one per line:&#10;@username1&#10;@username2"></textarea>
+      <textarea class="manual-input" id="manualUIDs" placeholder="Paste UIDs here, one per line (match order above):&#10;123456&#10;789012" style="margin-top:8px"></textarea>
+      <button class="add-manual-btn" onclick="addManualEntries()">➕ Add These Entries</button>
+    </div>
+  </div>
+
+  <!-- 1ST LUCKY DRAW -->
+  <div class="card" id="monthlyDrawCard" style="border-color:rgba(255,212,56,.2);">
+    <div class="card-hdr" style="color:var(--gold);">🎰 1st Lucky Draw — Weekly Membership Pass 💎</div>
+    <button class="pick-btn" id="monthlyDrawBtn" onclick="startDraw('monthly')" style="background:linear-gradient(135deg,#7c3300,#FFD438,#7c3300);background-size:300%;box-shadow:0 4px 30px rgba(255,212,56,.25);">
+      🎰 SPIN — 1ST LUCKY DRAW WINNER
+    </button>
+    <div id="monthlyWheelSection" style="display:none;flex-direction:column;align-items:center;gap:18px;margin-top:24px;">
+      <div style="position:relative;width:320px;height:320px;">
+        <div style="position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(#FFD438,#FFA500,#FFD438,#FFF0A0,#FFD438);animation:spinGlow 2s linear infinite;opacity:.4;z-index:0;"></div>
+        <canvas id="monthlyWheel" width="320" height="320" style="position:relative;z-index:1;border-radius:50%;"></canvas>
+        <div style="position:absolute;top:-22px;left:50%;transform:translateX(-50%);z-index:10;filter:drop-shadow(0 0 10px rgba(255,212,56,1));">
+          <svg width="28" height="26" viewBox="0 0 28 26"><polygon points="14,26 0,0 28,0" fill="#FFD438"/></svg>
         </div>
-        <div class="formRow">
-          <div><label>PRIZE 1ST</label><input type="text" id="p1" value="Rs.1,200"></div>
-          <div><label>PRIZE 2ND</label><input type="text" id="p2" value="Rs.800"></div>
+        <div id="monthlyCentreWrap" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#060e2a,#0d1f3c);border:3px solid #FFD438;box-shadow:0 0 24px rgba(255,212,56,.6);display:flex;align-items:center;justify-content:center;overflow:hidden;">
+          <div id="monthlyCentreName" style="font-family:'Orbitron',sans-serif;font-size:7px;font-weight:900;color:#FFD438;text-align:center;padding:4px;word-break:break-all;line-height:1.2;">🎰</div>
         </div>
-        <div class="formRow">
-          <div><label>PRIZE 3RD</label><input type="text" id="p3" value="Rs.400"></div>
-          <div><label>PAYMENT METHOD</label><input type="text" id="payMethod" value="via eSewa"></div>
-        </div>
-        <button class="btn" onclick="generateSlides()">⚡ GENERATE SLIDES</button>
       </div>
-      <div id="slidesOut"></div>
+      <div id="monthlyTimerWrap" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:8px;">
+        <div style="font-size:11px;letter-spacing:3px;color:var(--faint);text-transform:uppercase;font-weight:700;">Spinning...</div>
+        <div style="width:100%;height:8px;background:rgba(255,212,56,.1);border-radius:4px;overflow:hidden;">
+          <div id="monthlyTimerBar" style="height:100%;background:linear-gradient(90deg,#FFD438,#FFA500);border-radius:4px;width:100%;transition:width .1s linear;"></div>
+        </div>
+      </div>
+      <div id="monthlyCountdown" style="display:none;font-family:'Orbitron',sans-serif;font-size:80px;font-weight:900;color:#FFD438;text-shadow:0 0 40px rgba(255,212,56,.9),0 0 80px rgba(255,212,56,.4);animation:cdPulse .8s ease-in-out infinite;"></div>
+    </div>
+    <div id="monthlyWinnerReveal" style="display:none;flex-direction:column;align-items:center;gap:18px;margin-top:24px;">
+      <div style="font-size:64px;animation:bigBounce 1s ease infinite;">🎉</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;letter-spacing:3px;color:#FFD438;text-align:center;text-shadow:0 0 20px rgba(255,212,56,.6);">🎊 CONGRATULATIONS! 🎊<br>1ST LUCKY DRAW WINNER!</div>
+      <div class="wdc mo" style="width:100%;">
+        <div class="wdc-trophy">🎰</div>
+        <div class="wdc-badge">Weekly Membership Pass 💎</div>
+        <div class="wdc-name" id="winnerNameMonthly"></div>
+        <div class="wdc-uid" id="winnerUIDMonthly"></div>
+      </div>
+      <div style="display:flex;gap:12px;width:100%;margin-top:4px;">
+        <button onclick="undoDraw('monthly')" style="flex:1;padding:14px;background:rgba(255,107,107,.08);border:2px solid rgba(255,107,107,.35);border-radius:14px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--red);letter-spacing:2px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='rgba(255,107,107,.2)'" onmouseout="this.style.background='rgba(255,107,107,.08)'">↩️ UNDO<br><span style="font-size:9px;opacity:.7;letter-spacing:1px;">RE-SPIN</span></button>
+        <button onclick="confirmDraw('monthly')" style="flex:2;padding:14px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:2px solid rgba(105,240,174,.4);border-radius:14px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--green);letter-spacing:2px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(105,240,174,.25),rgba(52,211,153,.18))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1))'">✅ CONFIRM WINNER<br><span style="font-size:9px;opacity:.7;letter-spacing:1px;">LOCK THIS RESULT</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2ND LUCKY DRAW -->
+  <div class="card" id="weeklyDrawCard" style="border-color:rgba(79,195,247,.2);">
+    <div class="card-hdr" style="color:var(--blue);">🎰 2nd Lucky Draw — Weekly Membership Pass 💎</div>
+    <button class="pick-btn" id="weeklyDrawBtn" onclick="startDraw('weekly')" style="background:linear-gradient(135deg,#0a3060,#00E5FF,#0a3060);background-size:300%;box-shadow:0 4px 30px rgba(79,195,247,.25);">
+      🎰 SPIN — 2ND LUCKY DRAW WINNER
+    </button>
+    <div id="weeklyWheelSection" style="display:none;flex-direction:column;align-items:center;gap:18px;margin-top:24px;">
+      <div style="position:relative;width:320px;height:320px;">
+        <div style="position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(#4FC3F7,#00E5FF,#4FC3F7,#B3E5FC,#4FC3F7);animation:spinGlow 2s linear infinite;opacity:.4;z-index:0;"></div>
+        <canvas id="weeklyWheel" width="320" height="320" style="position:relative;z-index:1;border-radius:50%;"></canvas>
+        <div style="position:absolute;top:-22px;left:50%;transform:translateX(-50%);z-index:10;filter:drop-shadow(0 0 10px rgba(0,229,255,1));">
+          <svg width="28" height="26" viewBox="0 0 28 26"><polygon points="14,26 0,0 28,0" fill="#00E5FF"/></svg>
+        </div>
+        <div id="weeklyCentreWrap" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#060e2a,#0d1f3c);border:3px solid #4FC3F7;box-shadow:0 0 24px rgba(79,195,247,.6);display:flex;align-items:center;justify-content:center;overflow:hidden;">
+          <div id="weeklyCentreName" style="font-family:'Orbitron',sans-serif;font-size:7px;font-weight:900;color:#4FC3F7;text-align:center;padding:4px;word-break:break-all;line-height:1.2;">🎰</div>
+        </div>
+      </div>
+      <div id="weeklyTimerWrap" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:8px;">
+        <div style="font-size:11px;letter-spacing:3px;color:var(--faint);text-transform:uppercase;font-weight:700;">Spinning...</div>
+        <div style="width:100%;height:8px;background:rgba(79,195,247,.1);border-radius:4px;overflow:hidden;">
+          <div id="weeklyTimerBar" style="height:100%;background:linear-gradient(90deg,#4FC3F7,#00E5FF);border-radius:4px;width:100%;transition:width .1s linear;"></div>
+        </div>
+      </div>
+      <div id="weeklyCountdown" style="display:none;font-family:'Orbitron',sans-serif;font-size:80px;font-weight:900;color:#4FC3F7;text-shadow:0 0 40px rgba(79,195,247,.9),0 0 80px rgba(79,195,247,.4);animation:cdPulse .8s ease-in-out infinite;"></div>
+    </div>
+    <div id="weeklyWinnerReveal" style="display:none;flex-direction:column;align-items:center;gap:18px;margin-top:24px;">
+      <div style="font-size:64px;animation:bigBounce 1s ease infinite;">🎉</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;letter-spacing:3px;color:#4FC3F7;text-align:center;text-shadow:0 0 20px rgba(79,195,247,.6);">🎊 CONGRATULATIONS! 🎊<br>2ND LUCKY DRAW WINNER!</div>
+      <div class="wdc wk" style="width:100%;">
+        <div class="wdc-trophy">🎰</div>
+        <div class="wdc-badge">Weekly Membership Pass 💎</div>
+        <div class="wdc-name" id="winnerNameWeekly"></div>
+        <div class="wdc-uid" id="winnerUIDWeekly"></div>
+      </div>
+      <div style="display:flex;gap:12px;width:100%;margin-top:4px;">
+        <button onclick="undoDraw('weekly')" style="flex:1;padding:14px;background:rgba(255,107,107,.08);border:2px solid rgba(255,107,107,.35);border-radius:14px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--red);letter-spacing:2px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='rgba(255,107,107,.2)'" onmouseout="this.style.background='rgba(255,107,107,.08)'">↩️ UNDO<br><span style="font-size:9px;opacity:.7;letter-spacing:1px;">RE-SPIN</span></button>
+        <button onclick="confirmDraw('weekly')" style="flex:2;padding:14px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:2px solid rgba(105,240,174,.4);border-radius:14px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--green);letter-spacing:2px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(105,240,174,.25),rgba(52,211,153,.18))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1))'">✅ CONFIRM WINNER<br><span style="font-size:9px;opacity:.7;letter-spacing:1px;">LOCK THIS RESULT</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="endDrawCard" style="display:none;border-color:rgba(105,240,174,.2);">
+    <div class="card-hdr" style="color:var(--green);">✅ Both Lucky Draw Winners Confirmed!</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.7;">Both winners are confirmed, entries cleared, and results are <strong style="color:var(--green);">live on the main page</strong>. Click below to reset the wheels and start a fresh new round.</p>
+    <button class="end-btn" id="endDrawBtn" onclick="endDraw()" style="width:100%;padding:20px;font-size:14px;background:linear-gradient(135deg,#065f46,#10b981);box-shadow:0 4px 24px rgba(16,185,129,.3);">🔄 START NEW ROUND</button>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr">📜 Winner History</div>
+    <div class="history-list" id="historyList"><div class="no-entries">No winners picked yet</div></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ══════════════════════════════════════════════
+       🦑 SQUAD TOURNAMENT MANAGEMENT
+  ══════════════════════════════════════════════ -->
+  <div class="card" style="border-color:rgba(105,240,174,.25);box-shadow:0 8px 32px rgba(0,0,30,.4),0 0 30px rgba(105,240,174,.05);">
+    <div class="card-hdr" style="color:var(--green);font-size:13px;">
+      🦑 SQUAD TOURNAMENT MANAGEMENT
+      <button class="refresh-btn" onclick="loadTournTeams()">🔄 Refresh</button>
     </div>
 
-  </main>
+    <!-- ── Registered Teams with edit/delete ── -->
+    <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--faint);text-transform:uppercase;margin-bottom:10px;">Registered Teams</div>
+    <div id="tournTeamsList" style="max-height:380px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:18px;">
+      <div class="no-entries">Loading teams...</div>
+    </div>
+
+    <div class="divider" style="margin-bottom:18px;"></div>
+
+    <!-- ── Match Stat Generator ── -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--blue);text-transform:uppercase;">📊 Match Stat Card</div>
+    </div>
+    <div style="background:rgba(79,195,247,.04);border:1px solid rgba(79,195,247,.12);border-radius:12px;padding:14px;margin-bottom:12px;">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">How many groups? <span style="color:var(--gold);">(max 12 teams per group)</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;" id="groupBtns">
+        <button onclick="setGroups(1)" data-g="1" class="gbtn" style="flex:1;min-width:44px;padding:10px;background:rgba(79,195,247,.08);border:2px solid rgba(79,195,247,.25);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--blue);cursor:pointer;">1</button>
+        <button onclick="setGroups(2)" data-g="2" class="gbtn" style="flex:1;min-width:44px;padding:10px;background:rgba(79,195,247,.08);border:2px solid rgba(79,195,247,.25);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--blue);cursor:pointer;">2</button>
+        <button onclick="setGroups(3)" data-g="3" class="gbtn" style="flex:1;min-width:44px;padding:10px;background:rgba(79,195,247,.08);border:2px solid rgba(79,195,247,.25);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--blue);cursor:pointer;">3</button>
+        <button onclick="setGroups(4)" data-g="4" class="gbtn" style="flex:1;min-width:44px;padding:10px;background:rgba(79,195,247,.08);border:2px solid rgba(79,195,247,.25);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--blue);cursor:pointer;">4</button>
+        <button onclick="setGroups(5)" data-g="5" class="gbtn" style="flex:1;min-width:44px;padding:10px;background:rgba(79,195,247,.08);border:2px solid rgba(79,195,247,.25);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--blue);cursor:pointer;">5</button>
+      </div>
+      <div id="bracketInfo" style="font-size:11px;color:var(--faint);text-align:center;">👆 Pick number of groups to see the format</div>
+      <button id="genBracketBtn" onclick="generateBracket()" style="display:none;width:100%;margin-top:12px;padding:13px;background:linear-gradient(135deg,rgba(79,195,247,.18),rgba(0,229,255,.12));border:2px solid rgba(79,195,247,.45);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--cyan);letter-spacing:2px;cursor:pointer;">📊 GENERATE MATCH STAT CARD</button>
+    </div>
+    <!-- Slides output -->
+    <div id="bracketDisplay" style="font-size:12px;color:var(--muted);text-align:center;padding:8px;"></div>
+
+    <div class="divider" style="margin-bottom:18px;"></div>
+
+    <!-- ── Publish Results ── -->
+    <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;">🏆 Publish Tournament Results</div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥇 Champion (Rs.1,200)</label>
+        <input id="res-1st" type="text" placeholder="1st place team name" style="width:100%;background:rgba(255,212,56,.05);border:1px solid rgba(255,212,56,.2);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
+      <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥈 2nd Place (Rs.800)</label>
+        <input id="res-2nd" type="text" placeholder="2nd place team name" style="width:100%;background:rgba(79,195,247,.04);border:1px solid rgba(79,195,247,.15);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
+      <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥉 3rd Place (Rs.400)</label>
+        <input id="res-3rd" type="text" placeholder="3rd place team name" style="width:100%;background:rgba(206,147,216,.04);border:1px solid rgba(206,147,216,.15);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
+      <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">📝 Note (optional)</label>
+        <input id="res-note" type="text" placeholder="e.g. GG to all teams! 🙏" style="width:100%;background:rgba(79,195,247,.03);border:1px solid rgba(79,195,247,.1);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
+      <button onclick="saveTournResult()" style="padding:16px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:2px solid rgba(105,240,174,.45);border-radius:12px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--green);letter-spacing:2px;cursor:pointer;transition:all .3s;box-shadow:0 0 20px rgba(105,240,174,.08);">🚀 SAVE &amp; PUBLISH RESULTS LIVE</button>
+    </div>
+  </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import{getFirestore,collection,getDocs,addDoc,setDoc,deleteDoc,writeBatch,doc,serverTimestamp,orderBy,query}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+const cfg={apiKey:"AIzaSyDPp-JsePgIM4Y3MrFrXEMLiv1GW3sJGKU",authDomain:"dream2moon.firebaseapp.com",projectId:"dream2moon",storageBucket:"dream2moon.firebasestorage.app",messagingSenderId:"172765828532",appId:"1:172765828532:web:d31a0b1dae8cc5752bcee1"};
+const app=initializeApp(cfg);const db=getFirestore(app);
+const sf=document.getElementById('stars');
+for(let i=0;i<120;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*2+.3;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*5}s;--dl:${Math.random()*6}s;--op:${.12+Math.random()*.55};`;sf.appendChild(s);}
+let allEntries=[],winnerHistory=[],rolling=false;
+window.doLogin=function(){const u=document.getElementById('loginUser').value,p=document.getElementById('loginPass').value;if(u==='Dream2moon'&&p==='dream2moon@123'){document.getElementById('loginScreen').style.display='none';document.getElementById('adminPanel').style.display='flex';loadEntries();loadTournTeams();}else{document.getElementById('loginError').style.display='block';}};
+window.doLogout=function(){document.getElementById('adminPanel').style.display='none';document.getElementById('loginScreen').style.display='flex';document.getElementById('loginUser').value='';document.getElementById('loginPass').value='';};
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('loginScreen').style.display!=='none')window.doLogin();});
+window.loadEntries=async function(){const list=document.getElementById('entriesList');list.innerHTML='<div class="no-entries">⏳ Loading...</div>';try{const q=query(collection(db,'entries'),orderBy('timestamp','desc'));const snap=await getDocs(q);allEntries=[];snap.forEach(d=>allEntries.push({id:d.id,...d.data()}));document.getElementById('totalCount').textContent=allEntries.length;if(allEntries.length===0){list.innerHTML='<div class="no-entries">No entries yet 😊</div>';return;}list.innerHTML=allEntries.map((e,i)=>`<div class="entry-item"><span class="entry-num">#${allEntries.length-i}</span><div class="entry-info"><div class="entry-username">${e.username}</div><div class="entry-uid">UID: ${e.uid}</div></div><div class="entry-time">${e.timestamp?new Date(e.timestamp.seconds*1000).toLocaleString():'Just now'}</div></div>`).join('');}catch(err){list.innerHTML='<div class="no-entries">❌ Error loading. Check Firestore rules.</div>';console.error(err);}};
+window.loadUsernames=function(){document.getElementById('copyArea').value=allEntries.map(e=>e.username).join('\n');};
+window.loadUIDs=function(){document.getElementById('copyArea').value=allEntries.map(e=>e.uid).join('\n');};
+window.copyToClipboard=function(){const area=document.getElementById('copyArea');if(!area.value){alert('Load usernames or UIDs first!');return;}navigator.clipboard.writeText(area.value).then(()=>alert('✅ Copied to clipboard!'));};
+window.addManualEntries=async function(){
+  const usersRaw=document.getElementById('manualInput').value.trim();
+  const uidsRaw=document.getElementById('manualUIDs').value.trim();
+  if(!usersRaw){alert('Please enter at least usernames!');return;}
+  const usernames=usersRaw.split('\n').map(u=>u.trim()).filter(Boolean);
+  const uids=uidsRaw.split('\n').map(u=>u.trim()).filter(Boolean);
+  if(uids.length>0&&uids.length!==usernames.length){alert('⚠️ Mismatch: '+usernames.length+' usernames but '+uids.length+' UIDs.');return;}
+  const btn=document.querySelector('.add-manual-btn');
+  btn.textContent='⏳ Adding...';btn.disabled=true;
+  try{
+    const exSnap=await getDocs(collection(db,'entries'));
+    const exUIDs=new Set(),exNames=new Set();
+    exSnap.forEach(d=>{const e=d.data();if(e.uid)exUIDs.add(e.uid.trim().toLowerCase());if(e.username)exNames.add(e.username.trim().toLowerCase());});
+    let added=0;
+    for(let i=0;i<usernames.length;i++){
+      const uKey=(uids[i]||'').trim().toLowerCase();
+      const nKey=usernames[i].trim().toLowerCase();
+      if((uKey&&uKey!=='n/a'&&exUIDs.has(uKey))||exNames.has(nKey))continue;
+      await addDoc(collection(db,'entries'),{username:usernames[i],uid:uids[i]||'N/A',timestamp:serverTimestamp(),manual:true});
+      if(uKey&&uKey!=='n/a')exUIDs.add(uKey);
+      exNames.add(nKey);
+      added++;
+    }
+    document.getElementById('manualInput').value='';
+    document.getElementById('manualUIDs').value='';
+    alert('✅ Added '+added+' entries!');
+    loadEntries();
+  }catch(err){alert('❌ Error adding entries.');console.error(err);}
+  btn.textContent="Add These Entries";btn.disabled=false;
+};
+// ---------------------------------
+// WHEEL ENGINE - fully random
+// ---------------------------------
+let drawnMonthly=null,drawnWeekly=null,wheelRunning=false;
 
-<script>
-// ═══════════════════════════════════════
-// AUTH
-// ═══════════════════════════════════════
-const CREDS = { user: 'Dream2moon', pass: 'dream2moon@123' };
+function getRandomWinner(type,pool){
+  // Truly random - pick any entry from the pool
+  if(!pool||pool.length===0) return null;
+  return pool[Math.floor(Math.random()*pool.length)];
+}
 
-document.getElementById('loginBtn').addEventListener('click', doLogin);
-document.getElementById('pInput').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
-document.getElementById('uInput').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('pInput').focus(); });
+function renderWheel(ctx,names,angle,accent,hlIdx){
+  const cx=160,cy=160,R=150,S=names.length,sa=(2*Math.PI)/S;
+  const cols=['#0d1f3c','#162244','#0a1830','#0e2b50','#0a2040','#12253a','#0d2038','#071628','#102040','#0b1c38'];
+  ctx.clearRect(0,0,320,320);
+  for(let i=0;i<S;i++){
+    const a=angle+i*sa;
+    const hl=i===hlIdx;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,R,a,a+sa);ctx.closePath();
+    if(hl){const g=ctx.createRadialGradient(cx,cy,0,cx,cy,R);g.addColorStop(0,'rgba(255,255,255,.2)');g.addColorStop(1,accent);ctx.fillStyle=g;}
+    else ctx.fillStyle=cols[i%cols.length];
+    ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=1.5;ctx.stroke();
+    ctx.save();ctx.translate(cx,cy);ctx.rotate(a+sa/2);
+    ctx.textAlign='right';
+    ctx.font=`bold ${hl?'10':'9'}px "Exo 2",sans-serif`;
+    ctx.fillStyle=hl?'rgba(0,0,0,.9)':'rgba(255,255,255,.6)';
+    const lbl=names[i].length>9?names[i].slice(0,8)+'…':names[i];
+    ctx.fillText(lbl,R-6,4);ctx.restore();
+  }
+  ctx.beginPath();ctx.arc(cx,cy,R,0,2*Math.PI);ctx.strokeStyle=accent;ctx.lineWidth=4;ctx.stroke();
+  ctx.beginPath();ctx.arc(cx,cy,54,0,2*Math.PI);ctx.fillStyle='#060e2a';ctx.fill();ctx.strokeStyle=accent;ctx.lineWidth=3;ctx.stroke();
+}
 
-function doLogin() {
-  const u = document.getElementById('uInput').value.trim();
-  const p = document.getElementById('pInput').value;
-  const err = document.getElementById('loginErr');
-  if (u === CREDS.user && p === CREDS.pass) {
-    document.getElementById('loginWrap').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    err.style.display = 'none';
-    initApp();
+window.startDraw=function(type){
+  if(wheelRunning){alert('⏳ A draw is already running!');return;}
+  if(allEntries.length<2){alert('Need at least 2 entries! 😊');return;}
+  wheelRunning=true;
+  // Truly random   exclude already drawn winner from pool
+  const pool=allEntries.filter(e=>!(drawnMonthly&&e.id===drawnMonthly.id)&&!(drawnWeekly&&e.id===drawnWeekly.id));
+  const winner=getRandomWinner(type,pool);
+  if(!winner){alert('Not enough entries!');wheelRunning=false;return;}
+  const isM=type==='monthly';
+  const I={
+    btn:isM?'monthlyDrawBtn':'weeklyDrawBtn',
+    sec:isM?'monthlyWheelSection':'weeklyWheelSection',
+    cvs:isM?'monthlyWheel':'weeklyWheel',
+    ctr:isM?'monthlyCentreName':'weeklyCentreName',
+    bar:isM?'monthlyTimerBar':'weeklyTimerBar',
+    twp:isM?'monthlyTimerWrap':'weeklyTimerWrap',
+    cd: isM?'monthlyCountdown':'weeklyCountdown',
+    rev:isM?'monthlyWinnerReveal':'weeklyWinnerReveal',
+    nm: isM?'winnerNameMonthly':'winnerNameWeekly',
+    uid:isM?'winnerUIDMonthly':'winnerUIDWeekly',
+  };
+  const accent=isM?'#FFD438':'#4FC3F7';
+  document.getElementById(I.btn).disabled=true;
+  document.getElementById(I.sec).style.display='flex';
+  document.getElementById(I.rev).style.display='none';
+  // Build 20 random names   winner NOT shown during spin
+  const names=pool.filter(e=>e.id!==winner.id).map(e=>e.username);
+  for(let i=names.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[names[i],names[j]]=[names[j],names[i]];}
+  const displayNames=names.slice(0,20);
+  const S=displayNames.length,sa=(2*Math.PI)/S;
+  const canvas=document.getElementById(I.cvs);
+  const ctx=canvas.getContext('2d');
+  const TOTAL=15,SPINS=10;
+  const stopAngle=SPINS*2*Math.PI+(-Math.PI/2-sa/2);
+  function ease(t){return t===1?1:1-Math.pow(2,-10*t);}
+  let t0=null,lastFlash=0,cdDone=false,cdN=5,cdTimer=null;
+  const cdEl=document.getElementById(I.cd);
+  function frame(ts){
+    if(!t0)t0=ts;
+    const el=(ts-t0)/1000,t=Math.min(el/TOTAL,1),angle=ease(t)*stopAngle;
+    const norm=(((-angle%(2*Math.PI))+2*Math.PI)%(2*Math.PI));
+    const atSlice=Math.floor(norm/sa)%S;
+    renderWheel(ctx,displayNames,angle,accent,atSlice);
+    if(ts-lastFlash>80){
+      const ctrEl=document.getElementById(I.ctr);
+      if(cdN<=1&&cdDone===false&&cdTimer!==null){
+        ctrEl.textContent=winner.username;
+        ctrEl.style.color=accent;ctrEl.style.fontSize='6px';
+      } else {
+        ctrEl.textContent=displayNames[atSlice]||'?';
+        ctrEl.style.color=accent;ctrEl.style.fontSize='7px';
+      }
+      lastFlash=ts;
+    }
+    document.getElementById(I.bar).style.width=Math.max(0,(1-el/TOTAL)*100)+'%';
+    if(el>=10&&!cdTimer){
+      cdTimer=true;
+      document.getElementById(I.twp).style.opacity='0.3';
+      cdEl.style.display='block';cdEl.textContent=cdN;
+      const iv=setInterval(()=>{
+        cdN--;
+        if(cdN>0){cdEl.textContent=cdN;}
+        else{clearInterval(iv);cdDone=true;}
+      },1000);
+    }
+    if(t<1){requestAnimationFrame(frame);}
+    else{
+      renderWheel(ctx,displayNames,stopAngle,accent,0);
+      cdEl.style.display='none';
+      document.getElementById(I.ctr).textContent=winner.username;
+      document.getElementById(I.ctr).style.fontSize='6px';
+      setTimeout(()=>{
+        document.getElementById(I.sec).style.display='none';
+        document.getElementById(I.nm).textContent=winner.username;
+        document.getElementById(I.uid).textContent='UID: '+winner.uid;
+        document.getElementById(I.rev).style.display='flex';
+        launchConfetti();wheelRunning=false;
+      },500);
+    }
+  }
+  renderWheel(ctx,displayNames,0,accent,-1);
+  requestAnimationFrame(frame);
+};
+
+window.confirmDraw=async function(type){
+  const isM=type==='monthly';
+  const w={
+    username:document.getElementById(isM?'winnerNameMonthly':'winnerNameWeekly').textContent,
+    uid:document.getElementById(isM?'winnerUIDMonthly':'winnerUIDWeekly').textContent.replace('UID: ','')
+  };
+  if(isM){drawnMonthly=w;}else{drawnWeekly=w;}
+  if(drawnMonthly&&drawnWeekly){
+    // 1. Save winners
+    try{
+      await setDoc(doc(db,'winners','latest'),{
+        monthlyUsername:drawnMonthly.username,monthlyUID:drawnMonthly.uid,
+        weeklyUsername:drawnWeekly.username,weeklyUID:drawnWeekly.uid,
+        drawnAt:serverTimestamp()
+      });
+    }catch(e){alert('⚠️ Could not save winners:\n'+e.message);console.error(e);return;}
+    winnerHistory.unshift({monthly:drawnMonthly,weekly:drawnWeekly});
+    document.getElementById('totalWins').textContent=winnerHistory.length;
+    updateHistory();
+    // 2. Clear all entries
+    await clearAllEntries();
+    // 3. Show end card
+    document.getElementById('endDrawCard').style.display='block';
+    document.getElementById('endDrawCard').scrollIntoView({behavior:'smooth'});
+    alert('🎉 Both winners confirmed!\nWinners are LIVE!\n\n🎰 1st Lucky Draw: '+drawnMonthly.username+'\n🎰 2nd Lucky Draw: '+drawnWeekly.username+'\n\n✅ All entries cleared!');
   } else {
-    err.style.display = 'block';
-    document.getElementById('pInput').value = '';
-    document.getElementById('pInput').focus();
+    alert(`✅ ${isM?'Monthly':'Weekly'} winner confirmed!\nNow spin the ${isM?'Weekly':'Monthly'} wheel. 🎡`);
+  }
+};
+
+//    CLEAR ALL ENTRIES   used after draw and by manual button   
+async function clearAllEntries(){
+  try{
+    let snap=await getDocs(collection(db,'entries'));
+    while(!snap.empty){
+      // Delete in batches of 400
+      const batch=writeBatch(db);
+      snap.docs.forEach(d=>batch.delete(doc(db,'entries',d.id)));
+      await batch.commit();
+      // Check if more remain
+      snap=await getDocs(collection(db,'entries'));
+    }
+    allEntries=[];
+    document.getElementById('totalCount').textContent='0';
+    document.getElementById('entriesList').innerHTML='<div class="no-entries">✅ All entries cleared!</div>';
+    document.getElementById('copyArea').value='';
+    return true;
+  }catch(e){
+    alert('❌ Error clearing entries!\n\n'+e.message+'\n\nFix your Firestore rules:\nentries → allow delete: if true;');
+    console.error(e);
+    return false;
   }
 }
+window.clearAllEntries=clearAllEntries;
+window.manualClear=async function(){
+  if(!confirm('🗑️ Clear ALL entries?\n\nThis cannot be undone!\nUse this if entries are stuck after a draw.'))return;
+  const ok=await clearAllEntries();
+  if(ok)alert('✅ All entries cleared! Ready for next round 🚀');
+};
 
-document.getElementById('logoutBtn').addEventListener('click', () => {
-  document.getElementById('app').style.display = 'none';
-  document.getElementById('loginWrap').style.display = 'flex';
-  document.getElementById('uInput').value = '';
-  document.getElementById('pInput').value = '';
-});
+window.undoDraw=function(type){
+  if(wheelRunning){alert('⏳ Wait for the draw to finish!');return;}
+  if(!confirm(`↩️ Undo ${type} draw and re-spin?`))return;
+  const isM=type==='monthly';
+  if(isM){drawnMonthly=null;}else{drawnWeekly=null;}
+  const I={
+    btn:isM?'monthlyDrawBtn':'weeklyDrawBtn',
+    rev:isM?'monthlyWinnerReveal':'weeklyWinnerReveal',
+    sec:isM?'monthlyWheelSection':'weeklyWheelSection',
+    cd: isM?'monthlyCountdown':'weeklyCountdown',
+    ctr:isM?'monthlyCentreName':'weeklyCentreName',
+    twp:isM?'monthlyTimerWrap':'weeklyTimerWrap',
+    bar:isM?'monthlyTimerBar':'weeklyTimerBar',
+  };
+  document.getElementById(I.rev).style.display='none';
+  document.getElementById(I.sec).style.display='none';
+  document.getElementById(I.cd).style.display='none';
+  document.getElementById(I.ctr).textContent='🎰';
+  document.getElementById(I.ctr).style.fontSize='16px';
+  document.getElementById(I.bar).style.width='100%';
+  document.getElementById(I.twp).style.opacity='1';
+  document.getElementById(I.btn).disabled=false;
+  document.getElementById('endDrawCard').style.display='none';
+};
 
-// ═══════════════════════════════════════
-// TABS
-// ═══════════════════════════════════════
-document.querySelectorAll('.tab-nav').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-nav').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.tabPane').forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-    if (btn.dataset.tab === 'dashboard') renderStats();
-    if (btn.dataset.tab === 'teams') renderTeams();
+window.endDraw=async function(){
+  const ok=confirm('🔄 Start a new round?\n\nThis will reset both wheels so you can draw again.');
+  if(!ok)return;
+  // Reset both wheel UIs
+  ['monthly','weekly'].forEach(type=>{
+    const isM=type==='monthly';
+    const I={
+      btn:isM?'monthlyDrawBtn':'weeklyDrawBtn',
+      rev:isM?'monthlyWinnerReveal':'weeklyWinnerReveal',
+      sec:isM?'monthlyWheelSection':'weeklyWheelSection',
+      cd: isM?'monthlyCountdown':'weeklyCountdown',
+      ctr:isM?'monthlyCentreName':'weeklyCentreName',
+      twp:isM?'monthlyTimerWrap':'weeklyTimerWrap',
+      bar:isM?'monthlyTimerBar':'weeklyTimerBar',
+    };
+    document.getElementById(I.rev).style.display='none';
+    document.getElementById(I.sec).style.display='none';
+    document.getElementById(I.cd).style.display='none';
+    document.getElementById(I.ctr).textContent='🎰';
+    document.getElementById(I.ctr).style.fontSize='16px';
+    document.getElementById(I.bar).style.width='100%';
+    document.getElementById(I.twp).style.opacity='1';
+    document.getElementById(I.btn).disabled=false;
   });
-});
+  document.getElementById('endDrawCard').style.display='none';
+  drawnMonthly=null; drawnWeekly=null;
+  alert('✅ Ready for next round! 🚀\nEntries are cleared. Players can enter again.');
+};
+// ---------------------------------
+// TOURNAMENT WHEEL ENGINE  
+// ---------------------------------
+let tournTeams=[],tournWinner1=null,tournWinner2=null,tournWheelRunning=false;
 
-// ═══════════════════════════════════════
-// DATA
-// ═══════════════════════════════════════
-let teams = [
-  {g:'A',l:'ROGX-SABIN',   m:['ROGX DRAGO','ROGX AALEY','ROGX RIKU']},
-  {g:'A',l:'КрылоФафнир༗', m:['BALEN','Delulu','RB KAKA']},
-  {g:'A',l:'GB ABISHEK',   m:['6970797401','1217713127','4322796673']},
-  {g:'A',l:'MatrixXx',     m:['HC.NIRX','tunturii','NME.LEOcena']},
-  {g:'A',l:'ᴛɴ ʀɪꜱʜᴀʙꔪ',  m:['Seeking','Maane','Anish']},
-  {g:'A',l:'Piglet didi',  m:['Velixa Didi','Battu.11','Rajeevchettrii']},
-  {g:'A',l:'7X LAKPAY30',  m:['Tg mickey','Zx zinex','7X AARNESH']},
-  {g:'A',l:'Saaaaru7',     m:['Hobin','Nxt boruto','Snapper or bahun']},
-  {g:'A',l:'Asbinxhoraa',  m:['I am pritam','No why 444','I\'m sasuke']},
-  {g:'A',l:'DG—ERROR特ꔪ',  m:['DG—AADIT特ꔪ','TM_(MAGAR)','DG—NARUTO特ꔪ']},
-  {g:'A',l:'A_1-king',     m:['10623177281','7748392747','754014208']},
-
-  {g:'B',l:'Fluxo',        m:['Lexus','Iconic','Sakxas']},
-  {g:'B',l:'เซากัต',       m:['Xgodnvrdie?','Haudey 05','Zero userz']},
-  {g:'B',l:'LO-OBITO!!',   m:['THEㅤSAMIR!','EG AXTON!','ntj.gaara']},
-  {g:'B',l:'☯Dᴇɴɪsʜꔪ',   m:['8848 Milan','Yüsåñ','MLM@SAJANDON']},
-  {g:'B',l:'X_FURY',       m:['Sanjay chaudhary','Bipin bhusal','Binay karki']},
-  {g:'B',l:'ＬＭㅤSᴀɴᴇʏꔪ', m:['@ᴍɪ4xﾠzᏃz!࿗','ᎢᴇʀɪʀɪSᎢᴳᴹᴿꔪ','SNE4Y AYA']},
-  {g:'B',l:'fathiKILLER',  m:['King scar','Leo n4x','Speed']},
-  {g:'B',l:'MTG.GOD09',    m:['MADANɴHERO','Aashish hero','Reman. Hero']},
-  {g:'B',l:'Prime sandy',  m:['Prime Yogesh','Nxt ammy','Wanling']},
-  {g:'B',l:'KPL NOBITA',   m:['MUMMY HOLIC','FNC WATRX','ƬʜᴇㅤNʀᴘsꔪ']},
-  {g:'B',l:'GM PRINCE',    m:['4RL-AIDEN','4RL-PRINCE','4RL-BIBHU']},
-
-  {g:'C',l:'VE.HAUDEY',    m:['VE.ELITE','VE.JERRY','VE.ZENITSU']},
-  {g:'C',l:'BKT SABNA',    m:['BKT_SABNA','BKT legend','Bktojash']},
-  {g:'C',l:'TOwXZ sQ',     m:['I\'m. KAHATRI','ANGRY DON','BRU RICH']},
-  {g:'C',l:'NP.WRECKER!',  m:['ˢᵏʸ〆Aɴɪsʜꔪ','Nicholas ➕','Rolex xXx']},
-  {g:'C',l:'ICONIC.45',    m:['PLAYBOY','SWARUP','IMMEDI']},
-  {g:'C',l:'WE RYO',       m:['WE RATLER','WE POISON','WE TRIGGER']},
-  {g:'C',l:'NP pheonix',   m:['Abhishek','Badal rich','Manoj!!!']},
-  {g:'C',l:'Lord Buddha',  m:['Joyal','ridam','rahul']},
-  {g:'C',l:'ᴅɴɢ_ᴀᴀʀʏᴀɴꔪ', m:['DNG_HARAMiꔪ','Only Suman','DG-KAANA']},
-  {g:'C',l:'FNC WATRX',    m:['OnlyFIXA','RONALDO 7','Bichara bau']},
-  {g:'C',l:'JE.REDH3RO',   m:['DB MALIK','DB VILLAIN','RESHANT ICE']},
-
-  {g:'D',l:'UK.WANGG07',   m:['Zyl kaka','UK.LAXUUz11','Woody.void']},
-  {g:'D',l:'『Pb』メＳａｉｌｅｓꔪ', m:['RPG ANKIT','SâmRatlama','RE.KABINn']},
-  {g:'D',l:'HT_ Shoter',   m:['HT SAJJAD','HT_SHOTER','SCARY']},
-  {g:'D',l:'HANZO!',       m:['WIZZGOD','XEN REOO','HANZO!!']},
-  {g:'D',l:'DG—MADARA特ꔪ', m:['DG—AARYAN特ꔪ','DG—SUGAM特ꔪ','DG—ANMOL特ꔪ']},
-  {g:'D',l:'Ug sujal',     m:['Ug Blaze','Ug aayu','Manish']},
-  {g:'D',l:'E֟፝X☸F!EXA',   m:['H_1 Pagal M10','H_1 HAUDE','H_1 LAMA 2']},
-  {g:'D',l:'AG KRISHNA',   m:['Ashish gaming','BG user','BG Aayushii']},
-  {g:'D',l:'ᴷᴺメＧＨＯＳＴꔪ', m:['ᴷᴺメRISHAVꔪ','VØŁŤ♤REHANꔪ','HINΛTA\'〆ᴰᴵᴰᴵ']},
-  {g:'D',l:'1nOnlyRoccoo', m:['ELTROSS LIVE','GoWDXㅤxpxZ!','@syaron123']},
-];
-
-const GROUP_COLORS = { A:'#4fc3f7', B:'#ff6b6b', C:'#a8ff78', D:'#f5c542' };
-const GRP_LABELS = ['A','B','C','D'];
-
-function getQualifyCount(groupSize) {
-  const rule = (document.getElementById('qualifyRule') || {}).value || 'auto';
-  if (rule === '3') return 3;
-  if (rule === '2') return 2;
-  // auto: ≤8 squads = top 2, else top 3
-  return groupSize <= 8 ? 2 : 3;
+async function loadTournTeams(){
+  const list=document.getElementById('tournTeamsList');
+  if(list)list.innerHTML='<div class="no-entries">⏳ Loading...</div>';
+  try{
+    const snap=await getDocs(query(collection(db,'tournament_teams'),orderBy('registeredAt','asc')));
+    tournTeams=[];snap.forEach(d=>tournTeams.push({id:d.id,...d.data()}));
+    if(!list)return;
+    if(tournTeams.length===0){list.innerHTML='<div class="no-entries">No teams registered yet.</div>';return;}
+    list.innerHTML=tournTeams.map(function(t,i){
+      return '<div class="entry-item" style="flex-direction:column;align-items:stretch;gap:8px;" id="team-row-'+t.id+'">'
+        +'<div style="display:flex;align-items:center;gap:10px;">'
+        +'<span class="entry-num">#'+(i+1)+'</span>'
+        +'<div class="entry-info">'
+        +'<div class="entry-username">👑 '+t.leaderName+'</div>'
+        +'<div class="entry-uid">UID: '+t.leaderUID+' · '+t.member1+', '+t.member2+', '+t.member3+'</div>'
+        +'</div>'
+        +'<div style="display:flex;gap:6px;flex-shrink:0;">'
+        +'<button data-id="'+t.id+'" onclick="editTeam(this.dataset.id)" style="padding:7px 12px;background:rgba(79,195,247,.1);border:1px solid rgba(79,195,247,.3);border-radius:8px;font-size:12px;color:var(--blue);cursor:pointer;">✏️</button>'
+        +'<button data-id="'+t.id+'" onclick="deleteTeam(this.dataset.id)" style="padding:7px 12px;background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.3);border-radius:8px;font-size:12px;color:var(--red);cursor:pointer;">🗑️</button>'
+        +'</div></div>'
+        +'<div id="team-edit-'+t.id+'" style="display:none;flex-direction:column;gap:6px;padding:10px;background:rgba(79,195,247,.04);border:1px solid rgba(79,195,247,.12);border-radius:10px;">'
+        +'<input id="edit-leader-'+t.id+'" value="'+t.leaderName.replace(/"/g,'&quot;')+'" placeholder="Leader name" style="background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;">'
+        +'<input id="edit-uid-'+t.id+'" value="'+t.leaderUID+'" placeholder="Leader UID" style="background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;">'
+        +'<input id="edit-m1-'+t.id+'" value="'+t.member1.replace(/"/g,'&quot;')+'" placeholder="Member 1" style="background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;">'
+        +'<input id="edit-m2-'+t.id+'" value="'+t.member2.replace(/"/g,'&quot;')+'" placeholder="Member 2" style="background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;">'
+        +'<input id="edit-m3-'+t.id+'" value="'+t.member3.replace(/"/g,'&quot;')+'" placeholder="Member 3" style="background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;">'
+        +'<div style="display:flex;gap:8px;">'
+        +'<button data-id="'+t.id+'" onclick="saveTeamEdit(this.dataset.id)" style="flex:1;padding:9px;background:rgba(105,240,174,.12);border:1px solid rgba(105,240,174,.35);border-radius:8px;font-size:12px;font-weight:700;color:var(--green);cursor:pointer;">💾 Save</button>'
+        +'<button data-id="'+t.id+'" onclick="cancelTeamEdit(this.dataset.id)" style="flex:1;padding:9px;background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.2);border-radius:8px;font-size:12px;font-weight:700;color:var(--gold);cursor:pointer;">✕ Cancel</button>'
+        +'</div></div></div>';
+    }).join('');
+  }catch(e){console.error(e);if(list)list.innerHTML='<div class="no-entries">❌ Error loading teams.</div>';}
 }
+loadTournTeams();
 
-// ═══════════════════════════════════════
-// INIT / STATS
-// ═══════════════════════════════════════
-function initApp() {
-  renderStats();
-  renderTeams();
-}
+window.editTeam=function(id){document.getElementById('team-edit-'+id).style.display='flex';};
+window.cancelTeamEdit=function(id){document.getElementById('team-edit-'+id).style.display='none';};
+window.saveTeamEdit=async function(id){
+  const data={
+    leaderName:document.getElementById('edit-leader-'+id).value.trim(),
+    leaderUID:document.getElementById('edit-uid-'+id).value.trim(),
+    member1:document.getElementById('edit-m1-'+id).value.trim(),
+    member2:document.getElementById('edit-m2-'+id).value.trim(),
+    member3:document.getElementById('edit-m3-'+id).value.trim(),
+  };
+  if(!data.leaderName){alert('Leader name cannot be empty!');return;}
+  try{await setDoc(doc(db,'tournament_teams',id),data,{merge:true});alert('✅ Team updated!');loadTournTeams();}
+  catch(e){alert('❌ Error: '+e.message);}
+};
+window.deleteTeam=async function(id){
+  const team=tournTeams.find(t=>t.id===id);
+  const name=team?team.leaderName:'this team';
+  if(!confirm('🗑️ Delete team "'+name+'"?\nThis cannot be undone!'))return;
+  try{
+    await deleteDoc(doc(db,'tournament_teams',id));
+    alert('✅ Team "'+name+'" deleted!');
+    loadTournTeams();
+  }catch(e){alert('❌ Delete failed: '+e.message);console.error(e);}
+};
 
-function renderStats() {
-  const grps = GRP_LABELS.map(g => teams.filter(t => t.g === g));
-  document.getElementById('statsRow').innerHTML = `
-    <div class="stat"><div class="val">${teams.length}</div><div class="lbl">TOTAL SQUADS</div></div>
-    <div class="stat"><div class="val">${grps.filter(g=>g.length>0).length}</div><div class="lbl">ACTIVE GROUPS</div></div>
-    <div class="stat"><div class="val">${grps.reduce((s,g)=>{ const q=getQualifyCount(g.length); return s+Math.min(q,g.length); },0)}</div><div class="lbl">QUALIFYING SPOTS</div></div>
-    <div class="stat"><div class="val">5</div><div class="lbl">TOTAL GAMES</div></div>
-  `;
-}
-
-// ═══════════════════════════════════════
-// TEAMS
-// ═══════════════════════════════════════
-function renderTeams() {
-  const el = document.getElementById('teamsList');
-  if (!teams.length) { el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);">No teams yet.</div>'; return; }
-  el.innerHTML = teams.map((t,i) => {
-    const col = GROUP_COLORS[t.g] || '#888';
-    return `<div class="teamRow">
-      <span class="num">${i+1}</span>
-      <span class="leader">${esc(t.l)}</span>
-      <span class="members">${t.m.map(esc).join(' · ')}</span>
-      <span class="grpBadge" style="background:${col}20;color:${col};">GRP ${t.g}</span>
-      <button class="btn sm danger" onclick="removeTeam(${i})">✕</button>
-    </div>`;
-  }).join('');
-}
-
-function quickAdd() {
-  const l = document.getElementById('ql').value.trim();
-  const g = document.getElementById('qg').value;
-  const m1 = document.getElementById('qm1').value.trim();
-  const m2 = document.getElementById('qm2').value.trim();
-  const m3 = document.getElementById('qm3').value.trim();
-  const m4 = document.getElementById('qm4').value.trim();
-  if (!l || !m1 || !m2 || !m3) { showToast('❌ Leader + 3 members required','err'); return; }
-  const members = [m1,m2,m3];
-  if (m4) members.push(m4);
-  teams.push({g,l,m:members});
-  ['ql','qm1','qm2','qm3','qm4'].forEach(id => document.getElementById(id).value='');
-  showToast('✅ Team added to Group ' + g);
-  renderStats();
-}
-
-function removeTeam(i) {
-  if (!confirm('Remove "' + teams[i].l + '"?')) return;
-  teams.splice(i,1);
-  renderTeams();
-  renderStats();
-}
-
-function clearAll() {
-  if (!confirm('Clear ALL teams? This cannot be undone!')) return;
-  teams = [];
-  renderTeams();
-  renderStats();
-}
-
-// ═══════════════════════════════════════
-// SLIDES GENERATOR
-// ═══════════════════════════════════════
-function generateSlides() {
-  const date = document.getElementById('evDate').value || '29 May 2026';
-  const out = document.getElementById('slidesOut');
-  out.innerHTML = '';
-
-  const groups = GRP_LABELS.map(g => ({ label:g, teams:teams.filter(t=>t.g===g), color:GROUP_COLORS[g] }))
-                            .filter(g => g.teams.length > 0);
-
-  if (!groups.length) { out.innerHTML='<div style="color:var(--muted);padding:16px;">No teams to show.</div>'; return; }
-
-  let allQualifiers = [];
-  let gameNum = 1;
-
-  groups.forEach((grp, gi) => {
-    const qCount = getQualifyCount(grp.teams.length);
-    const slideHtml = buildGroupSlide(grp, qCount, gameNum++, date);
-    const wrap = document.createElement('div');
-    wrap.className = 'slideWrap';
-    wrap.innerHTML = `<h3>SLIDE ${gi+1} — GROUP ${grp.label} (${grp.teams.length} SQUADS · TOP ${qCount} QUALIFY)</h3>`;
-    const slideEl = document.createElement('div');
-    slideEl.innerHTML = slideHtml;
-    wrap.appendChild(slideEl);
-    const snapBtn = document.createElement('button');
-    snapBtn.className = 'snap-btn';
-    snapBtn.textContent = '📸 SCREENSHOT THIS SLIDE';
-    snapBtn.onclick = () => snapSlide(slideEl.firstChild, 'GROUP_' + grp.label);
-    wrap.appendChild(snapBtn);
-    out.appendChild(wrap);
-
-    // collect qualifiers
-    grp.teams.slice(0, qCount).forEach((t, qi) => {
-      allQualifiers.push({ slot: grp.label+(qi+1), leader:t.l, members:t.m, from:'Group '+grp.label, color:grp.color });
+window.saveTournResult=async function(){
+  const champion=document.getElementById('res-1st').value.trim();
+  const second=document.getElementById('res-2nd').value.trim();
+  const third=document.getElementById('res-3rd').value.trim();
+  const note=document.getElementById('res-note').value.trim();
+  if(!champion){alert('Please enter at least the champion team name!');return;}
+  const ok=confirm('🏆 Publish results?\n\n1st: '+champion+'\n2nd: '+(second||'—')+'\n3rd: '+(third||'—')+'\n\nThis will:\n✅ Show results on main page\n🗑️ Clear all registered teams\n🔓 Re-open team registration');
+  if(!ok)return;
+  try{
+    // Save results with registrationReset flag
+    await setDoc(doc(db,'tournament_result','latest'),{
+      champion,second,third,note,
+      updatedAt:serverTimestamp(),
+      registrationReset:true
     });
+    // Clear all tournament teams
+    const snap=await getDocs(collection(db,'tournament_teams'));
+    const batch=writeBatch(db);
+    snap.forEach(d=>batch.delete(doc(db,'tournament_teams',d.id)));
+    await batch.commit();
+    // Clear inputs
+    document.getElementById('res-1st').value='';
+    document.getElementById('res-2nd').value='';
+    document.getElementById('res-3rd').value='';
+    document.getElementById('res-note').value='';
+    // Refresh teams list
+    tournTeams=[];
+    loadTournTeams();
+    alert('✅ Results published!\n🗑️ All teams cleared!\n🔓 Registration re-opened!\n\nEverything is LIVE on the main page 🎉');
+  }catch(e){alert('❌ Error: '+e.message);}
+};
+
+let selectedGroups=0;
+window.setGroups=function(n){
+  selectedGroups=n;
+  document.querySelectorAll('.gbtn').forEach(function(b){
+    var active=parseInt(b.dataset.g)===n;
+    b.style.background=active?'rgba(79,195,247,.35)':'rgba(79,195,247,.08)';
+    b.style.borderColor=active?'#00E5FF':'rgba(79,195,247,.25)';
+    b.style.color=active?'#fff':'var(--blue)';
+  });
+  var T=tournTeams.length;
+  var perGroup=Math.ceil(T/n);
+  var MAX=12;
+  // smart qualify count: top 3 if groups>1, else all
+  var qualPer=n===1?T:3;
+  var finalT=n===1?T:Math.min(n*qualPer,12);
+  var infoEl=document.getElementById('bracketInfo');
+  var btnEl=document.getElementById('genBracketBtn');
+  if(T===0){infoEl.textContent='No teams registered yet!';btnEl.style.display='none';return;}
+  if(perGroup>MAX){
+    infoEl.innerHTML='<span style="color:var(--red);">&#9888; Too many per group! '+n+' groups = ~'+perGroup+' per group (max 12).<br>Need at least '+Math.ceil(T/MAX)+' groups for '+T+' teams.</span>';
+    btnEl.style.display='none';return;
+  }
+  infoEl.innerHTML='<strong style="color:var(--cyan);">'+T+' teams</strong> &rarr; <strong style="color:var(--gold);">'+n+' group'+(n>1?'s':'')+'</strong> (~'+perGroup+' per group) &rarr; Top '+qualPer+' qualify &rarr; <strong style="color:var(--green);">Final: '+finalT+' teams</strong>';
+  btnEl.style.display='block';
+};
+
+window.generateBracket=function(){
+  var display=document.getElementById('bracketDisplay');
+  if(tournTeams.length===0){display.innerHTML='<p style="color:var(--red);padding:12px;">No teams yet!</p>';return;}
+  if(selectedGroups===0){display.innerHTML='<p style="color:var(--gold);padding:12px;">Pick number of groups first.</p>';return;}
+
+  var teams=tournTeams.slice();
+  var T=teams.length;
+  var n=selectedGroups;
+  var qualPer=n===1?T:3;
+  var finalT=n===1?T:Math.min(n*qualPer,12);
+
+  // Distribute evenly
+  var groups=[];
+  for(var g=0;g<n;g++)groups.push([]);
+  teams.forEach(function(t,i){groups[i%n].push(t);});
+
+  var COLS=['#E53935','#1E88E5','#43A047','#8E24AA','#F4511E'];
+  var LABELS=['A','B','C','D','E'];
+  var DATE=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+
+  // Build one slide per group + one final slide
+  var slides=[];
+
+  // ── GROUP SLIDES ──
+  groups.forEach(function(grp,gi){
+    var col=COLS[gi%COLS.length];
+    var lbl=LABELS[gi]||String(gi+1);
+    var qCount=Math.min(qualPer,grp.length);
+
+    var rows='';
+    grp.forEach(function(t,ti){
+      var q=ti<qCount;
+      rows+='<tr style="background:'+(q?col+'18':'transparent')+';border-bottom:1px solid rgba(255,255,255,.05);">'
+        +'<td style="padding:7px 10px;font-size:11px;font-weight:900;color:'+(q?col:'rgba(255,255,255,.35)')+';font-family:monospace;text-align:center;width:28px;">'+(ti+1)+'</td>'
+        +'<td style="padding:7px 10px;font-size:12px;font-weight:700;color:'+(q?'#fff':'rgba(255,255,255,.55)')+';">'+t.leaderName+'</td>'
+        +'<td style="padding:7px 10px;font-size:10px;color:rgba(255,255,255,.4);">'+t.member1+' &middot; '+t.member2+' &middot; '+t.member3+'</td>'
+        +'<td style="padding:7px 12px;text-align:right;white-space:nowrap;">'
+        +(q?'<span style="font-size:9px;background:'+col+';color:#000;font-weight:900;padding:2px 7px;border-radius:4px;">QUALIFY '+qCount+'</span>'
+           :'<span style="font-size:9px;color:rgba(255,255,255,.2);">–</span>')
+        +'</td>'
+        +'</tr>';
+    });
+
+    var slide='<div style="background:#0d0d0d;border-radius:12px;overflow:hidden;margin-bottom:14px;border:1px solid '+col+'30;box-shadow:0 4px 20px rgba(0,0,0,.6);">'
+      // Top bar
+      +'<div style="background:'+col+';padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">'
+      +'<div style="display:flex;align-items:center;gap:10px;">'
+      +'<div style="width:32px;height:32px;background:rgba(0,0,0,.3);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fff;">'+lbl+'</div>'
+      +'<div>'
+      +'<div style="font-size:13px;font-weight:900;color:#fff;letter-spacing:2px;">GROUP '+lbl+'</div>'
+      +'<div style="font-size:9px;color:rgba(255,255,255,.75);letter-spacing:1px;">'+grp.length+' SQUADS &nbsp;&middot;&nbsp; TOP '+qCount+' QUALIFY</div>'
+      +'</div></div>'
+      +'<div style="background:rgba(0,0,0,.35);border-radius:6px;padding:4px 12px;">'
+      +'<div style="font-size:10px;font-weight:900;color:#fff;letter-spacing:2px;">GAME '+(gi+1)+'</div>'
+      +'</div></div>'
+      // Subtitle bar
+      +'<div style="background:#111;padding:5px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;">'
+      +'<span style="font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;">DREAM2MOON &middot; FULL MAP &middot; FREE FIRE</span>'
+      +'<span style="font-size:9px;color:rgba(255,255,255,.2);">'+DATE+'</span>'
+      +'</div>'
+      // Table header
+      +'<div style="display:grid;grid-template-columns:28px 1fr 1fr 90px;padding:5px 10px;background:rgba(255,255,255,.04);">'
+      +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;text-align:center;">#</div>'
+      +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;">LEADER</div>'
+      +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;">MEMBERS</div>'
+      +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;text-align:right;">STATUS</div>'
+      +'</div>'
+      // Rows
+      +'<table style="width:100%;border-collapse:collapse;">'+rows+'</table>'
+      +'</div>';
+    slides.push(slide);
   });
 
-  // Grand Final Slide
-  const gfWrap = document.createElement('div');
-  gfWrap.className = 'slideWrap';
-  gfWrap.innerHTML = `<h3>SLIDE ${groups.length+1} — GRAND FINAL (${allQualifiers.length} TEAMS)</h3>`;
-  const gfEl = document.createElement('div');
-  gfEl.innerHTML = buildGrandFinalSlide(allQualifiers, gameNum, date);
-  gfWrap.appendChild(gfEl);
-  const gfSnap = document.createElement('button');
-  gfSnap.className = 'snap-btn';
-  gfSnap.textContent = '📸 SCREENSHOT THIS SLIDE';
-  gfSnap.onclick = () => snapSlide(gfEl.firstChild, 'GRAND_FINAL');
-  gfWrap.appendChild(gfSnap);
-  out.appendChild(gfWrap);
+  // ── FINAL SLIDE ──
+  if(n>1){
+    var finalRows='';
+    groups.forEach(function(grp,gi){
+      var col=COLS[gi%COLS.length];
+      var lbl=LABELS[gi]||String(gi+1);
+      var qc=Math.min(qualPer,grp.length);
+      for(var ti=0;ti<qc;ti++){
+        var t=grp[ti];
+        finalRows+='<tr style="border-bottom:1px solid rgba(255,255,255,.05);">'
+          +'<td style="padding:7px 10px;text-align:center;width:28px;">'
+          +'<span style="background:'+col+';color:#000;font-size:9px;font-weight:900;padding:2px 6px;border-radius:4px;">'+lbl+(ti+1)+'</span>'
+          +'</td>'
+          +'<td style="padding:7px 10px;font-size:12px;font-weight:700;color:#fff;">'+t.leaderName+'</td>'
+          +'<td style="padding:7px 10px;font-size:10px;color:rgba(255,255,255,.4);">'+t.member1+' &middot; '+t.member2+' &middot; '+t.member3+'</td>'
+          +'<td style="padding:7px 12px;text-align:right;">'
+          +'<span style="font-size:9px;color:'+col+';font-weight:700;">Group '+lbl+'</span>'
+          +'</td></tr>';
+      }
+    });
 
-  showToast('✅ ' + (groups.length+1) + ' slides generated!');
-}
-
-function buildGroupSlide(grp, qCount, gameNum, date) {
-  const col = grp.color;
-  const rows = grp.teams.map((t,i) => {
-    const qualified = i < qCount;
-    return `
-      <div class="slide-row" style="grid-template-columns:28px 1fr 1fr 90px;background:${qualified?'rgba(255,255,255,.03)':'transparent'};">
-        <span class="rank">${i+1}</span>
-        <span class="lname">${esc(t.l)}</span>
-        <span class="mems">${t.m.map(esc).join(' · ')}</span>
-        <span style="text-align:right;">
-          ${qualified
-            ? `<span class="qualify-badge" style="background:${col};">QUALIFY ${qCount}</span>`
-            : `<span class="dash-badge">–</span>`}
-        </span>
-      </div>`;
-  }).join('');
-
-  return `<div class="slide" style="background:#0d0d0d;border:1px solid ${col}30;">
-    <div class="slide-header" style="background:${col};">
-      <div class="slide-header group-badge">${grp.label}</div>
-      <div class="slide-header group-info">
-        <div class="group-name">GROUP ${grp.label}</div>
-        <div class="group-meta">${grp.teams.length} SQUADS &nbsp;·&nbsp; TOP ${qCount} QUALIFY</div>
-      </div>
-      <div class="slide-header game-badge">GAME ${gameNum}</div>
-    </div>
-    <div class="slide-subbar">
-      <span>DREAM2MOON · FULL MAP · FREE FIRE</span>
-      <span>${esc(date)}</span>
-    </div>
-    <div class="slide-thead" style="grid-template-columns:28px 1fr 1fr 90px;background:rgba(255,255,255,.03);">
-      <span>#</span><span>LEADER</span><span>MEMBERS</span><span style="text-align:right;">STATUS</span>
-    </div>
-    ${rows}
-  </div>`;
-}
-
-function buildGrandFinalSlide(qualifiers, gameNum, date) {
-  const p1 = document.getElementById('p1').value || 'Rs.1,200';
-  const p2 = document.getElementById('p2').value || 'Rs.800';
-  const p3 = document.getElementById('p3').value || 'Rs.400';
-  const pay = document.getElementById('payMethod').value || 'via eSewa';
-
-  const rows = qualifiers.map(q => `
-    <div class="gf-row">
-      <span class="gf-slot" style="background:${q.color};">${esc(q.slot)}</span>
-      <span style="font-size:12px;font-weight:700;color:#fff;">${esc(q.leader)}</span>
-      <span style="font-size:10px;color:rgba(255,255,255,.4);">${q.members.map(esc).join(' · ')}</span>
-      <span style="font-size:9px;color:rgba(255,255,255,.3);">${esc(q.from)}</span>
-    </div>`).join('');
-
-  return `<div class="slide" style="background:#0d0d0d;border:1px solid #f5c54230;">
-    <div class="slide-header" style="background:linear-gradient(135deg,#b8960c,#f5c542);">
-      <div class="slide-header group-badge">🏆</div>
-      <div class="slide-header group-info">
-        <div class="group-name">GRAND FINAL</div>
-        <div class="group-meta">TOP ${Math.floor(qualifiers.length/4)} FROM EACH GROUP · ${qualifiers.length} TEAMS</div>
-      </div>
-      <div class="slide-header game-badge">GAME ${gameNum}</div>
-    </div>
-    <div class="slide-subbar">
-      <span>DREAM2MOON · FULL MAP · FREE FIRE</span>
-      <span>${esc(date)}</span>
-    </div>
-    <div class="gf-row" style="background:rgba(255,255,255,.03);font-size:9px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:1px;">
-      <span>GRP</span><span>LEADER</span><span>MEMBERS</span><span>FROM</span>
-    </div>
-    ${rows}
-    <div class="prize-bar">
-      <div class="prize-cell">
-        <div class="prize-icon">🥇</div>
-        <div class="prize-amt">${esc(p1)}</div>
-        <div class="prize-lbl">CHAMPION</div>
-      </div>
-      <div class="prize-cell">
-        <div class="prize-icon">🥈</div>
-        <div class="prize-amt">${esc(p2)}</div>
-        <div class="prize-lbl">2ND PLACE</div>
-      </div>
-      <div class="prize-cell">
-        <div class="prize-icon">🥉</div>
-        <div class="prize-amt">${esc(p3)}</div>
-        <div class="prize-lbl">3RD PLACE</div>
-      </div>
-    </div>
-    <div class="esewa-bar">💚 ${esc(pay)}</div>
-  </div>`;
-}
-
-// ═══════════════════════════════════════
-// SCREENSHOT
-// ═══════════════════════════════════════
-async function snapSlide(el, name) {
-  try {
-    const { default: html2canvas } = await import('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.esm.min.js');
-    const canvas = await html2canvas(el, { backgroundColor: null, scale: 2, useCORS: true });
-    const a = document.createElement('a');
-    a.href = canvas.toDataURL('image/png');
-    a.download = 'D2M_' + name + '.png';
-    a.click();
-    showToast('📸 Screenshot saved!');
-  } catch(e) {
-    showToast('⚠️ Use browser screenshot (Print Screen / Snipping Tool)', 'err');
+    var finalSlide='<div style="background:#0d0d0d;border-radius:12px;overflow:hidden;margin-bottom:14px;border:2px solid rgba(255,212,56,.35);box-shadow:0 4px 30px rgba(255,212,56,.08);">'
+      +'<div style="background:linear-gradient(90deg,#7c5200,#c07c00,#7c5200);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">'
+      +'<div style="display:flex;align-items:center;gap:10px;">'
+      +'<div style="font-size:24px;">&#127942;</div>'
+      +'<div>'
+      +'<div style="font-size:14px;font-weight:900;color:#FFD438;letter-spacing:2px;">GRAND FINAL</div>'
+      +'<div style="font-size:9px;color:rgba(255,220,100,.7);letter-spacing:1px;">TOP '+qualPer+' FROM EACH GROUP &middot; '+finalT+' TEAMS</div>'
+      +'</div></div>'
+      +'<div style="background:rgba(0,0,0,.4);border-radius:6px;padding:4px 12px;">'
+      +'<div style="font-size:10px;font-weight:900;color:#FFD438;letter-spacing:2px;">GAME '+(n+1)+'</div>'
+      +'</div></div>'
+      +'<div style="background:#111;padding:5px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;">'
+      +'<span style="font-size:9px;color:rgba(255,255,255,.3);">DREAM2MOON &middot; FULL MAP &middot; FREE FIRE</span>'
+      +'<span style="font-size:9px;color:rgba(255,255,255,.2);">'+DATE+'</span>'
+      +'</div>'
+      +'<div style="display:grid;grid-template-columns:28px 1fr 1fr 90px;padding:5px 10px;background:rgba(255,255,255,.04);">'
+      +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;">GRP</div>'
+      +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;">LEADER</div>'
+      +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;">MEMBERS</div>'
+      +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;text-align:right;">FROM</div>'
+      +'</div>'
+      +'<table style="width:100%;border-collapse:collapse;">'+finalRows+'</table>'
+      // Prize row
+      +'<div style="display:flex;gap:0;border-top:1px solid rgba(255,212,56,.2);">'
+      +'<div style="flex:1;padding:10px;text-align:center;border-right:1px solid rgba(255,255,255,.05);background:rgba(255,212,56,.06);">'
+      +'<div style="font-size:16px;">&#129351;</div><div style="font-size:11px;font-weight:900;color:#FFD438;">Rs.1,200</div><div style="font-size:8px;color:rgba(255,212,56,.5);">CHAMPION</div></div>'
+      +'<div style="flex:1;padding:10px;text-align:center;border-right:1px solid rgba(255,255,255,.05);">'
+      +'<div style="font-size:16px;">&#129352;</div><div style="font-size:11px;font-weight:900;color:#90CAF9;">Rs.800</div><div style="font-size:8px;color:rgba(144,202,249,.5);">2ND PLACE</div></div>'
+      +'<div style="flex:1;padding:10px;text-align:center;border-right:1px solid rgba(255,255,255,.05);">'
+      +'<div style="font-size:16px;">&#129353;</div><div style="font-size:11px;font-weight:900;color:#CE93D8;">Rs.400</div><div style="font-size:8px;color:rgba(206,147,216,.5);">3RD PLACE</div></div>'
+      +'<div style="flex:1;padding:10px;text-align:center;background:rgba(105,240,174,.04);">'
+      +'<div style="font-size:16px;">&#128154;</div><div style="font-size:10px;color:rgba(105,240,174,.7);font-weight:700;margin-top:2px;">via eSewa</div></div>'
+      +'</div>'
+      +'</div>';
+    slides.push(finalSlide);
   }
+
+  display.innerHTML='<div style="font-size:10px;color:var(--muted);margin-bottom:10px;text-align:center;letter-spacing:1px;">'+slides.length+' SLIDES GENERATED &mdash; SCREENSHOT EACH ONE</div>'
+    +slides.join('');
+};
+
+
+window.startTournDraw=function(place){
+  if(tournWheelRunning){alert('⏳ A draw is already running!');return;}
+  if(tournTeams.length<2){alert('Need at least 2 teams registered! 😊');return;}
+  tournWheelRunning=true;
+
+  // Exclude already drawn winner
+  const pool=tournTeams.filter(t=>
+    !(tournWinner1&&t.id===tournWinner1.id)&&
+    !(tournWinner2&&t.id===tournWinner2.id)
+  );
+  if(pool.length===0){alert('No more teams to draw!');tournWheelRunning=false;return;}
+
+  // Truly random pick
+  const winner=pool[Math.floor(Math.random()*pool.length)];
+  const accent='#69F0AE';
+  const titleEl=document.getElementById('tournWheelTitle');
+  if(titleEl)titleEl.textContent=place===1?'🥇 Drawing 1st Place Winner...':'🥈 Drawing 2nd Place Winner...';
+
+  document.getElementById(place===1?'tourn1Btn':'tourn2Btn').disabled=true;
+  document.getElementById('tournWheelSection').style.display='flex';
+  document.getElementById('tourn'+(place===1?'1':'2')+'Reveal').style.display='none';
+
+  // Build names list   winner NOT shown yet
+  const names=pool.filter(t=>t.id!==winner.id).map(t=>t.leaderName);
+  for(let i=names.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[names[i],names[j]]=[names[j],names[i]];}
+  const displayNames=names.slice(0,19);
+  // Pad if less than 5
+  while(displayNames.length<5)displayNames.push('???');
+
+  const canvas=document.getElementById('tournWheel');
+  const ctx=canvas.getContext('2d');
+  const S=displayNames.length,sa=(2*Math.PI)/S;
+  const TOTAL=15,SPINS=10;
+  const stopAngle=SPINS*2*Math.PI+(-Math.PI/2-sa/2);
+  function ease(t){return t===1?1:1-Math.pow(2,-10*t);}
+  let t0=null,lastFlash=0,cdDone=false,cdN=5,cdTimer=null;
+  const cdEl=document.getElementById('tournCountdown');
+
+  function frame(ts){
+    if(!t0)t0=ts;
+    const el=(ts-t0)/1000,t=Math.min(el/TOTAL,1),angle=ease(t)*stopAngle;
+    const norm=(((-angle%(2*Math.PI))+2*Math.PI)%(2*Math.PI));
+    const atSlice=Math.floor(norm/sa)%S;
+    renderWheel(ctx,displayNames,angle,accent,atSlice);
+    if(ts-lastFlash>80){
+      const ctr=document.getElementById('tournCentreName');
+      if(cdN<=1&&cdTimer!==null){
+        ctr.textContent=winner.leaderName;ctr.style.color=accent;ctr.style.fontSize='6px';
+      } else {
+        ctr.textContent=displayNames[atSlice]||'?';ctr.style.color=accent;ctr.style.fontSize='7px';
+      }
+      lastFlash=ts;
+    }
+    document.getElementById('tournTimerBar').style.width=Math.max(0,(1-el/TOTAL)*100)+'%';
+    if(el>=10&&!cdTimer){
+      cdTimer=true;document.getElementById('tournTimerWrap').style.opacity='0.3';
+      cdEl.style.display='block';cdEl.textContent=cdN;
+      const iv=setInterval(()=>{cdN--;if(cdN>0){cdEl.textContent=cdN;}else{clearInterval(iv);cdDone=true;}},1000);
+    }
+    if(t<1){requestAnimationFrame(frame);}
+    else{
+      renderWheel(ctx,displayNames,stopAngle,accent,0);
+      cdEl.style.display='none';
+      document.getElementById('tournCentreName').textContent=winner.leaderName;
+      document.getElementById('tournCentreName').style.fontSize='6px';
+      setTimeout(()=>{
+        document.getElementById('tournWheelSection').style.display='none';
+        document.getElementById('tournTimerWrap').style.opacity='1';
+        document.getElementById('tournTimerBar').style.width='100%';
+        document.getElementById('tournCentreName').textContent='🦑';
+        document.getElementById('tournCentreName').style.fontSize='16px';
+        // Show reveal
+        const revId='tourn'+place+'Reveal';
+        document.getElementById('tourn'+place+'Name').textContent=winner.leaderName;
+        document.getElementById('tourn'+place+'UID').textContent='UID: '+winner.leaderUID+' · Members: '+winner.member1+', '+winner.member2+', '+winner.member3;
+        document.getElementById(revId).style.display='flex';
+        if(place===1)tournWinner1=winner; else tournWinner2=winner;
+        launchConfetti();tournWheelRunning=false;
+      },500);
+    }
+  }
+  renderWheel(ctx,displayNames,0,accent,-1);requestAnimationFrame(frame);
+};
+
+window.confirmTournDraw=async function(place){
+  const winner=place===1?tournWinner1:tournWinner2;
+  if(!winner)return;
+  try{
+    await setDoc(doc(db,'tournament_winners','place'+place),{
+      leaderName:winner.leaderName,leaderUID:winner.leaderUID,
+      member1:winner.member1,member2:winner.member2,member3:winner.member3,
+      place:place,prize:place===1?'Weekly Membership Pass 💎 (1st)':'Weekly Membership Pass 💎 (2nd)',
+      drawnAt:serverTimestamp()
+    });
+    alert(`✅ ${place===1?'1st':'2nd'} place winner confirmed!\n\n👑 Team: ${winner.leaderName}\nPrize: Weekly Membership Pass 💎`);
+  }catch(e){alert('❌ Could not save: '+e.message);console.error(e);}
+};
+
+window.undoTournDraw=function(place){
+  if(tournWheelRunning){alert('⏳ Wait for draw to finish!');return;}
+  if(!confirm(`↩️ Undo ${place===1?'1st':'2nd'} place draw?`))return;
+  if(place===1){tournWinner1=null;}else{tournWinner2=null;}
+  document.getElementById('tourn'+place+'Reveal').style.display='none';
+  document.getElementById(place===1?'tourn1Btn':'tourn2Btn').disabled=false;
+};
+
+function updateHistory(){
+  const list=document.getElementById('historyList');
+  if(winnerHistory.length===0){list.innerHTML='<div class="no-entries">No winners yet</div>';return;}
+  list.innerHTML=winnerHistory.map((w,i)=>`
+    <div class="history-item"><span class="h-num">#${i+1}</span><span class="h-badge mo">1st Draw</span><span class="h-name">${w.monthly.username}</span><span class="h-uid">UID: ${w.monthly.uid}</span></div>
+    <div class="history-item"><span class="h-num"></span><span class="h-badge wk">2nd Draw</span><span class="h-name">${w.weekly.username}</span><span class="h-uid">UID: ${w.weekly.uid}</span></div>
+  `).join('');
 }
 
-// ═══════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════
-function esc(s) {
-  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-function showToast(msg, type='ok') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.borderColor = type==='err' ? 'var(--red)' : 'var(--gold)';
-  t.classList.add('show');
-  clearTimeout(t._tid);
-  t._tid = setTimeout(() => t.classList.remove('show'), 3000);
-}
+function launchConfetti(){const wrap=document.getElementById('confetti');wrap.innerHTML='';const cols=['#FFD438','#4FC3F7','#00E5FF','#CE93D8','#69F0AE','#F48FB1','#FFAB40','#fff'];for(let i=0;i<120;i++){const c=document.createElement('div');c.className='cp';const drift=(Math.random()-.5)*400;c.style.cssText=`left:${Math.random()*100}%;background:${cols[Math.floor(Math.random()*cols.length)]};--fd:${1.5+Math.random()*2.5}s;--dx:${drift}px;--br:${Math.random()>.5?'50%':'2px'};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*.5}s;`;wrap.appendChild(c);}setTimeout(()=>wrap.innerHTML='',5000);}
 </script>
+
 </body>
 </html>
