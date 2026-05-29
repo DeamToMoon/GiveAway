@@ -328,7 +328,11 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       <button class="refresh-btn" onclick="loadTournTeams()">🔄 Refresh</button>
     </div>
 
-    <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--faint);text-transform:uppercase;margin-bottom:10px;">Registered Teams</div>
+    <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--faint);text-transform:uppercase;margin-bottom:6px;">Registered Teams</div>
+    <div style="background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.18);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:rgba(255,212,56,.8);line-height:1.6;">
+      ⏰ <strong>Registration closes: Friday 10:00 PM NPT</strong><br>
+      🔒 New registration reopens only after winner is announced via <em>Publish Results</em> below
+    </div>
     <div id="tournTeamsList" style="max-height:380px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:18px;">
       <div class="no-entries">Loading teams...</div>
     </div>
@@ -673,9 +677,13 @@ window.saveTournResult=async function(){
   const third=document.getElementById('res-3rd').value.trim();
   const note=document.getElementById('res-note').value.trim();
   if(!champion){alert('Please enter at least the champion team name!');return;}
-  if(!confirm('🏆 Publish results?\n\n1st: '+champion+'\n2nd: '+(second||'—')+'\n3rd: '+(third||'—')+'\n\nThis will show results on main page and clear all registered teams.'))return;
+  if(!confirm('🏆 Publish results?\n\n1st: '+champion+'\n2nd: '+(second||'—')+'\n3rd: '+(third||'—')+'\n\nThis will:\n✅ Show results on main page\n🗑️ Clear all registered teams\n🔓 Re-open team registration'))return;
   try{
-    await setDoc(doc(db,'tournament_result','latest'),{champion,second,third,note,updatedAt:serverTimestamp(),registrationReset:true});
+    await setDoc(doc(db,'tournament_result','latest'),{
+      champion,second,third,note,
+      updatedAt:serverTimestamp(),
+      registrationOpen:true   // ← reopens registration on index.html
+    });
     const snap=await getDocs(collection(db,'tournament_teams'));
     const batch=writeBatch(db);snap.forEach(d=>batch.delete(doc(db,'tournament_teams',d.id)));
     await batch.commit();
@@ -688,19 +696,17 @@ window.saveTournResult=async function(){
 
 window.setGroups=function(n){
   selectedGroups=n;
-  document.querySelectorAll('.gbtn').forEach(function(b){
-    var active=parseInt(b.dataset.g)===n;
-    b.style.background=active?'rgba(79,195,247,.35)':'rgba(79,195,247,.08)';
-    b.style.borderColor=active?'#00E5FF':'rgba(79,195,247,.25)';
-    b.style.color=active?'#fff':'var(--blue)';
-  });
+  // No visual highlight on buttons — just update the info text
   var T=tournTeams.length;
   var perGroup=Math.ceil(T/n);
   var MAX=12;
-  // Dynamic qualify: ≤8 per group = top 2, else top 3
+  // Dynamic qualify per group: ≤8 teams → TOP 2, 9-12 → TOP 3
   var qualPer=perGroup<=8?2:3;
   if(n===1)qualPer=T;
+  // Final teams capped at 12
   var finalT=n===1?T:Math.min(n*qualPer,12);
+  // If capped, recalculate actual qualPer
+  if(n>1&&n*qualPer>12)qualPer=Math.floor(12/n);
   var infoEl=document.getElementById('bracketInfo');
   var btnEl=document.getElementById('genBracketBtn');
   if(T===0){infoEl.textContent='No teams registered yet!';btnEl.style.display='none';return;}
@@ -723,6 +729,8 @@ window.generateBracket=function(){
   // Dynamic qualify per group size
   var qualPer=perGroup<=8?2:3;
   if(n===1)qualPer=T;
+  // Cap final at 12 — recalculate qualPer if needed
+  if(n>1&&n*qualPer>12)qualPer=Math.floor(12/n);
   var finalT=n===1?T:Math.min(n*qualPer,12);
   var groups=[];
   for(var g=0;g<n;g++)groups.push([]);
@@ -779,17 +787,22 @@ window.generateBracket=function(){
   // Grand Final slide
   if(n>1){
     var finalRows='';
+    var teamNum=1; // Sequential TEAM 1, TEAM 2, TEAM 3...
     groups.forEach(function(grp,gi){
       var col=COLS[gi%COLS.length];var lbl=LABELS[gi]||String(gi+1);
       var qc=grp.length<=8?2:3;qc=Math.min(qc,grp.length);
+      // Recalc if cap applies
+      if(n*qc>12)qc=Math.floor(12/n);
       for(var ti=0;ti<qc;ti++){
         var t=grp[ti];
+        var teamLabel='TEAM '+teamNum;
         finalRows+='<tr style="border-bottom:1px solid rgba(255,255,255,.05);">'
-          +'<td style="padding:7px 10px;text-align:center;width:28px;">'
-          +'<span style="background:'+col+';color:#000;font-size:9px;font-weight:900;padding:2px 6px;border-radius:4px;">'+lbl+(ti+1)+'</span></td>'
+          +'<td style="padding:7px 10px;text-align:center;width:60px;">'
+          +'<span style="background:'+col+';color:#000;font-size:8px;font-weight:900;padding:2px 6px;border-radius:4px;white-space:nowrap;">'+teamLabel+'</span></td>'
           +'<td style="padding:7px 10px;font-size:12px;font-weight:700;color:#fff;">'+esc(t.leaderName)+'</td>'
           +'<td style="padding:7px 10px;font-size:10px;color:rgba(255,255,255,.4);">'+esc(t.member1)+' &middot; '+esc(t.member2)+' &middot; '+esc(t.member3)+'</td>'
           +'<td style="padding:7px 12px;text-align:right;"><span style="font-size:9px;color:'+col+';font-weight:700;">Group '+lbl+'</span></td></tr>';
+        teamNum++;
       }
     });
     var finalSlide='<div style="background:#0d0d0d;border-radius:12px;overflow:hidden;margin-bottom:14px;border:2px solid rgba(255,212,56,.35);box-shadow:0 4px 30px rgba(255,212,56,.08);">'
@@ -806,8 +819,8 @@ window.generateBracket=function(){
       +'<span style="font-size:9px;color:rgba(255,255,255,.3);">DREAM2MOON &middot; FULL MAP &middot; FREE FIRE</span>'
       +'<span style="font-size:9px;color:rgba(255,255,255,.2);">'+DATE+'</span>'
       +'</div>'
-      +'<div style="display:grid;grid-template-columns:28px 1fr 1fr 90px;padding:5px 10px;background:rgba(255,255,255,.04);">'
-      +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;">GRP</div>'
+      +'<div style="display:grid;grid-template-columns:60px 1fr 1fr 70px;padding:5px 10px;background:rgba(255,255,255,.04);">'
+      +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;">TEAM</div>'
       +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;">LEADER</div>'
       +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;">MEMBERS</div>'
       +'<div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;text-align:right;">FROM</div>'
