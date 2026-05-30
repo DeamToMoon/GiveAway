@@ -417,7 +417,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
         <div class="teams-count-num" id="teamsCount">—</div>
         <div class="teams-count-lbl">Teams Registered</div>
       </div>
-      <div style="text-align:right;font-size:11px;color:var(--faint);">4 players<br>per team</div>
+      <div style="text-align:right;"><div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:var(--cyan);" id="slotsLeft">—</div><div style="font-size:10px;color:var(--faint);margin-top:2px;">slots left</div></div>
     </div>
 
     <!-- Register button -->
@@ -426,14 +426,18 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <div id="regLockedMsg" style="display:none;margin-top:16px;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.25);border-radius:14px;padding:16px;text-align:center;">
       <div style="font-size:28px;margin-bottom:8px;">🔒</div>
       <div style="font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--red);letter-spacing:2px;margin-bottom:6px;">REGISTRATION CLOSED</div>
-      <div style="font-size:12px;color:var(--muted);line-height:1.6;">Registration locked at 10PM NPT.<br>Tournament is underway! 🔥<br>Results will be posted after the match.</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;">Registration closed after Thursday 11:59PM NPT.<br>Group division is underway! ⚔️<br>Results will be posted after the match.</div>
     </div>
 
     <!-- Registration Form -->
     <div class="tourn-form-wrap" id="tournForm" style="margin-top:20px;">
       <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:var(--green);letter-spacing:2px;margin-bottom:18px;text-align:center;">⚔️ TEAM REGISTRATION</div>
+      <div style="background:rgba(255,212,56,.05);border:1px solid rgba(255,212,56,.15);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:11px;color:rgba(255,212,56,.8);line-height:1.6;">
+        ⚠️ <strong>Note:</strong> Name cannot be changed once registered. Make sure all details are correct before submitting.
+      </div>
       <div class="field"><label>👑 Team Leader Name</label><input type="text" id="t-leader" placeholder="Leader's in-game name"></div>
-      <div class="field"><label>🔢 Team Leader UID</label><input type="text" id="t-uid" placeholder="Leader's Free Fire UID"></div>
+      <div class="field"><label>🔢 Team Leader UID</label><input type="text" id="t-uid" placeholder="Leader's Free Fire UID" inputmode="numeric"></div>
+      <div class="field"><label>📱 Leader WhatsApp Number</label><input type="tel" id="t-wa" placeholder="e.g. 98XXXXXXXX" inputmode="numeric"></div>
       <div style="background:rgba(79,195,247,.05);border:1px solid rgba(79,195,247,.12);border-radius:14px;padding:14px 16px;margin-bottom:18px;">
         <div style="font-size:10px;font-weight:800;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:14px;">👥 3 Team Members</div>
         <div class="field" style="margin-bottom:12px;"><label>Member 1</label><input type="text" id="t-m1" placeholder="Member 1 name"></div>
@@ -619,13 +623,11 @@ window.submitEntry=async function(){
 // Re-opens after admin publishes tournament results
 function checkRegistrationStatus(resultsPublished){
   const now=new Date();
-  // Convert to NPT (UTC+5:45)
-  const nptOffset=5*60+45; // minutes
   const utcMs=now.getTime()+now.getTimezoneOffset()*60000;
-  const npt=new Date(utcMs+nptOffset*60000);
-  const hour=npt.getHours(); const min=npt.getMinutes();
-  // Lock from 22:00 NPT onwards
-  const isLocked=(hour>=22)||(hour===21&&min>=59);
+  const npt=new Date(utcMs+(5*60+45)*60000);
+  const day=npt.getDay();const hour=npt.getHours();const min=npt.getMinutes();
+  // Lock: Thursday 11:59PM NPT onwards (until admin re-opens after results)
+  const isLocked=(day===4&&(hour===23&&min>=59))||(day===5)||(day===6)||(day===0&&hour<10);
 
   const badge=document.getElementById('regStatusBadge');
   const badgeText=document.getElementById('regStatusText');
@@ -641,7 +643,7 @@ function checkRegistrationStatus(resultsPublished){
     if(lockMsg)lockMsg.style.display='none';
   } else if(isLocked){
     // 10PM+ NPT — locked
-    if(badgeText)badgeText.textContent='Registration Closed — 10PM NPT';
+    if(badgeText)badgeText.textContent='Registration Closed — Thu 11:59PM NPT';
     if(badge)badge.style.background='rgba(255,107,107,.15)';
     if(badge)badge.style.borderColor='rgba(255,107,107,.3)';
     if(badgeDot)badgeDot.style.background='#FF6B6B';
@@ -675,6 +677,9 @@ onSnapshot(query(collection(db,'tournament_teams'),orderBy('registeredAt','asc')
   const badgeEl=document.getElementById('teamsCountBadge');
   if(countEl)countEl.textContent=count;
   if(badgeEl)badgeEl.textContent=count+' team'+(count!==1?'s':'');
+  const slots=Math.max(0,60-count);
+  const slEl=document.getElementById('slotsLeft');
+  if(slEl)slEl.textContent=slots;
   if(count===0){list.innerHTML='<div class="no-teams">🏕️ No teams yet — be the first to register!</div>';return;}
   list.innerHTML=snap.docs.map((d,i)=>{
     const t=d.data();
@@ -722,25 +727,55 @@ window.cancelTournForm=function(){
   document.getElementById('registerBtn').style.display='block';
 };
 window.submitTournament=async function(){
-  // Double-check lock before submitting
+  // Check lock: Thursday 11:59PM NPT
   const now=new Date();
   const utcMs=now.getTime()+now.getTimezoneOffset()*60000;
   const npt=new Date(utcMs+(5*60+45)*60000);
-  if(npt.getHours()>=22){alert('🔒 Registration is closed! Entries locked at 10PM NPT.');return;}
-  
+  const day=npt.getDay(); // 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
+  const hour=npt.getHours();const min=npt.getMinutes();
+  // Locked: Thursday after 23:59 NPT, or Friday/Saturday
+  const isLocked=(day===4&&(hour===23&&min>=59))||(day===5)||(day===6)||(day===0&&hour<10);
+  if(isLocked){alert('🔒 Registration is closed!\nEntries locked after Thursday 11:59PM NPT.\nStay tuned for match results! 🏆');return;}
+
   const leader=document.getElementById('t-leader').value.trim();
   const uid=document.getElementById('t-uid').value.trim();
+  const wa=document.getElementById('t-wa').value.trim();
   const m1=document.getElementById('t-m1').value.trim();
   const m2=document.getElementById('t-m2').value.trim();
   const m3=document.getElementById('t-m3').value.trim();
-  if(!leader||!uid||!m1||!m2||!m3){alert('Please fill in ALL fields — team leader + 3 members! ⚔️');return;}
+  if(!leader||!uid||!wa||!m1||!m2||!m3){alert('Please fill in ALL fields including WhatsApp number! ⚔️');return;}
+  if(!/^[0-9]{7,15}$/.test(wa.replace(/\s/g,''))){alert('Please enter a valid WhatsApp number (digits only)! 📱');return;}
+
   const btn=document.getElementById('tournSubmitBtn');btn.disabled=true;btn.textContent='⏳ Registering...';
   try{
+    // Check 60 team cap
+    const allTeams=await getDocs(collection(db,'tournament_teams'));
+    if(allTeams.size>=60){
+      alert('🚫 Max Registration Hit!\n\n60 teams have already registered.\nTry again next week! 🙏');
+      btn.disabled=false;btn.textContent='⚔️ REGISTER TEAM';return;
+    }
+    // Duplicate checks — leader
     const dU=await getDocs(query(collection(db,'tournament_teams'),where('leaderUID','==',uid)));
     if(!dU.empty){alert('🚫 This UID has already registered a team!');btn.disabled=false;btn.textContent='⚔️ REGISTER TEAM';return;}
     const dN=await getDocs(query(collection(db,'tournament_teams'),where('leaderName','==',leader)));
     if(!dN.empty){alert('🚫 This team leader name is already registered!');btn.disabled=false;btn.textContent='⚔️ REGISTER TEAM';return;}
-    await addDoc(collection(db,'tournament_teams'),{leaderName:leader,leaderUID:uid,member1:m1,member2:m2,member3:m3,registeredAt:serverTimestamp()});
+    // Check member names not same as each other
+    const memberNames=[m1,m2,m3].map(x=>x.toLowerCase().trim());
+    if(new Set(memberNames).size!==3){alert('🚫 Member names must all be different!');btn.disabled=false;btn.textContent='⚔️ REGISTER TEAM';return;}
+    // Check member names not same as leader
+    if(memberNames.includes(leader.toLowerCase().trim())){alert('🚫 Member name cannot be the same as the team leader!');btn.disabled=false;btn.textContent='⚔️ REGISTER TEAM';return;}
+    // Check no member name/uid already exists in any team
+    const allSnap=await getDocs(collection(db,'tournament_teams'));
+    for(const d of allSnap.docs){
+      const t=d.data();
+      const existingMembers=[t.member1,t.member2,t.member3,t.leaderName].map(x=>(x||'').toLowerCase().trim());
+      const existingUIDs=[t.leaderUID].map(x=>(x||'').toLowerCase().trim());
+      for(const mn of memberNames){
+        if(existingMembers.includes(mn)){alert('🚫 "'+mn+'" is already registered in another team!');btn.disabled=false;btn.textContent='⚔️ REGISTER TEAM';return;}
+      }
+      if(existingUIDs.includes(uid.toLowerCase().trim())){alert('🚫 This UID is already registered in another team!');btn.disabled=false;btn.textContent='⚔️ REGISTER TEAM';return;}
+    }
+    await addDoc(collection(db,'tournament_teams'),{leaderName:leader,leaderUID:uid,whatsapp:wa,member1:m1,member2:m2,member3:m3,registeredAt:serverTimestamp()});
     document.getElementById('tournForm').classList.remove('active');
     document.getElementById('tournSuccess').classList.add('active');
     launchConfetti();
