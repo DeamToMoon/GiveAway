@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Dream2Moon</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@400;700;800&display=swap" rel="stylesheet" onerror="console.log('fonts offline - using fallback')">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --gold:#FFD438;--cyan:#00E5FF;--green:#69F0AE;--red:#FF6B6B;--purple:#CE93D8;
+  --bg:#060C1A;--card:#0D1F3C;
+}
+body{
+  background:linear-gradient(135deg,#0a0a0a,#111,#0a0a0a);
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;font-family:'Exo 2',Arial,sans-serif;overflow:hidden;
+}
+.phone{
+  width:390px;height:844px;background:var(--bg);
+  border-radius:44px;border:3px solid #1a2a4a;
+  overflow:hidden;position:relative;
+  box-shadow:0 0 0 8px #080808,0 0 80px rgba(0,229,255,.12),0 0 160px rgba(255,212,56,.06);
+}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:34px;background:#050a14;border-radius:0 0 20px 20px;z-index:100;}
+
+/* Stars */
+#stars{position:absolute;inset:0;z-index:0;overflow:hidden;}
+.s{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d) ease-in-out infinite;animation-delay:var(--dl);}
+@keyframes tw{0%,100%{opacity:0}50%{opacity:var(--op)}}
+
+/* Ticker */
+.ticker{position:absolute;top:34px;left:0;right:0;z-index:20;background:rgba(0,229,255,.06);border-bottom:1px solid rgba(0,229,255,.12);padding:6px 0;overflow:hidden;}
+.ticker-inner{display:flex;white-space:nowrap;animation:tickerScroll 20s linear infinite;font-size:9px;font-weight:700;color:rgba(0,229,255,.5);letter-spacing:2px;}
+@keyframes tickerScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.tsep{margin:0 18px;color:rgba(255,212,56,.35);}
+
+/* Scenes */
+.scene{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s;padding:54px 22px 70px;}
+.scene.active{opacity:1;pointer-events:all;}
+
+/* ── SCENE 0: MOON INTRO ── */
+#s0{background:radial-gradient(ellipse at 50% 30%,#0D2B5E 0%,#060C1A 65%);}
+.moon{
+  width:130px;height:130px;border-radius:50%;
+  background:radial-gradient(circle at 38% 35%,#FFF0A0,#FFD438 18%,#D4A000 48%,#7B5000 75%,#2A1800);
+  box-shadow:0 0 60px rgba(255,212,56,.5),0 0 120px rgba(255,212,56,.18);
+  position:relative;
+  animation:moonrise 1.2s cubic-bezier(.34,1.56,.64,1) forwards;
+  transform:translateY(160px) scale(.6);opacity:0;
+}
+.moon::after{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 65% 38%,rgba(8,4,0,.6),transparent 55%);}
+@keyframes moonrise{to{transform:translateY(0) scale(1);opacity:1;}}
+.moon-glow{
+  width:180px;height:180px;border-radius:50%;position:absolute;
+  background:radial-gradient(circle,rgba(255,212,56,.18),transparent 70%);
+  animation:glowPulse 2.5s ease-in-out 1.2s infinite;opacity:0;
+  animation-fill-mode:forwards;
+}
+@keyframes glowPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.2);opacity:1}}
+.s0-brand{font-family:'Orbitron',sans-serif;font-size:26px;font-weight:900;color:var(--gold);letter-spacing:5px;text-align:center;margin-top:20px;opacity:0;animation:fadeUp .8s ease 1.3s forwards;text-shadow:0 0 30px rgba(255,212,56,.5);}
+.s0-sub{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:3px;margin-top:6px;opacity:0;animation:fadeUp .8s ease 1.7s forwards;}
+.s0-tap{margin-top:44px;font-size:10px;color:rgba(255,255,255,.25);letter-spacing:2px;animation:blink 1.5s ease 2.4s infinite;opacity:0;}
+@keyframes fadeUp{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes blink{0%,100%{opacity:0}50%{opacity:.5}}
+
+/* ── SCENE 1: WEEKLY PASS ── */
+#s1{background:radial-gradient(ellipse at 50% 0%,#0d2040,#060C1A 60%);gap:12px;}
+.badge{background:linear-gradient(135deg,rgba(255,212,56,.12),rgba(255,171,64,.06));border:1px solid rgba(255,212,56,.3);border-radius:20px;padding:6px 16px;font-size:9px;font-weight:800;color:var(--gold);letter-spacing:2px;}
+.scene-title{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;text-align:center;line-height:1.25;}
+.pass-card{
+  width:100%;border-radius:18px;padding:20px;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,rgba(13,31,60,.95),rgba(8,18,45,.9));
+  border:2px solid rgba(255,212,56,.35);
+  box-shadow:0 0 30px rgba(255,212,56,.1);
+}
+.pass-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),var(--cyan),var(--gold),transparent);}
+.pass-top{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+.pass-icon{font-size:44px;line-height:1;}
+.pass-info .pass-name{font-family:'Orbitron',sans-serif;font-size:15px;font-weight:900;color:var(--gold);letter-spacing:1px;}
+.pass-info .pass-desc{font-size:11px;color:rgba(255,255,255,.4);margin-top:3px;line-height:1.5;}
+.pass-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,212,56,.2),transparent);margin:12px 0;}
+.pass-details{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.pd{text-align:center;background:rgba(255,212,56,.05);border-radius:10px;padding:10px;}
+.pd-num{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:var(--gold);}
+.pd-lbl{font-size:8px;color:rgba(255,255,255,.3);letter-spacing:1px;margin-top:2px;}
+.pass-note{font-size:10px;color:rgba(255,255,255,.3);text-align:center;line-height:1.7;}
+.pass-note span{color:var(--cyan);}
+
+/* ── SCENE 2: TOURNAMENT ── */
+#s2{background:radial-gradient(ellipse at 50% 100%,#0d1f40,#060C1A 60%);gap:10px;}
+.tourn-header{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:var(--cyan);letter-spacing:3px;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;}
+.info-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:13px;padding:14px;text-align:center;position:relative;overflow:hidden;}
+.info-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--gold));}
+.info-num{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;color:var(--gold);}
+.info-lbl{font-size:8px;color:rgba(255,255,255,.3);letter-spacing:2px;margin-top:3px;}
+.rules-list{width:100%;display:flex;flex-direction:column;gap:7px;}
+.rule-item{display:flex;align-items:center;gap:10px;font-size:11px;color:rgba(255,255,255,.65);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:9px 13px;line-height:1.4;}
+.rule-item .ri{font-size:15px;flex-shrink:0;}
+.reg-deadline{
+  width:100%;background:linear-gradient(135deg,rgba(255,107,107,.08),rgba(255,171,64,.05));
+  border:1px solid rgba(255,107,107,.22);border-radius:13px;padding:12px 16px;text-align:center;
+}
+.dl-label{font-size:9px;color:rgba(255,107,107,.7);letter-spacing:2px;font-weight:700;margin-bottom:4px;}
+.dl-val{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:var(--red);}
+
+/* ── SCENE 3: FOLLOW ── */
+#s3{background:radial-gradient(ellipse at 50% 40%,#091830,#060C1A);gap:10px;}
+.avatar-wrap{position:relative;margin-bottom:4px;}
+.avatar-ring{
+  width:90px;height:90px;border-radius:50%;
+  background:linear-gradient(135deg,#FFD438,#FF6B00,#FFD438);
+  background-size:200%;animation:ringRot 3s linear infinite;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 30px rgba(255,212,56,.3);
+}
+@keyframes ringRot{to{background-position:200% center}}
+.avatar-inner{width:80px;height:80px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:36px;position:absolute;}
+.follow-name{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:var(--gold);letter-spacing:2px;text-align:center;}
+.follow-handle{font-size:12px;color:rgba(255,255,255,.35);text-align:center;}
+.follow-btn{
+  background:linear-gradient(135deg,#FFD438,#FFA500,#FFD438);background-size:200%;
+  border:none;border-radius:30px;padding:13px 38px;
+  font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:#000;letter-spacing:2px;
+  cursor:pointer;box-shadow:0 4px 25px rgba(255,212,56,.35);
+  animation:btnShimmer 3s linear infinite;
+}
+@keyframes btnShimmer{to{background-position:200% center}}
+.follow-btn:active{transform:scale(.95);}
+.social-row{display:flex;gap:12px;justify-content:center;}
+.soc-btn{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:13px;padding:10px 16px;font-size:11px;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:1px;cursor:pointer;transition:all .2s;text-align:center;}
+.soc-btn:active{background:rgba(255,255,255,.12);}
+.perks-box{
+  width:100%;background:rgba(13,31,60,.6);border:1px solid rgba(79,195,247,.15);
+  border-radius:14px;padding:14px 16px;
+}
+.perks-title{font-size:9px;font-weight:800;letter-spacing:2px;color:rgba(255,255,255,.3);margin-bottom:10px;text-transform:uppercase;}
+.perk{display:flex;align-items:center;gap:8px;font-size:11px;color:rgba(255,255,255,.6);margin-bottom:7px;}
+.perk:last-child{margin-bottom:0;}
+.perk-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0;}
+
+/* ── SCENE 4: REGISTER CTA ── */
+#s4{background:radial-gradient(ellipse at 50% 20%,#0D2B5E,#060C1A 65%);gap:14px;}
+.cta-tag{background:rgba(105,240,174,.08);border:1px solid rgba(105,240,174,.22);border-radius:20px;padding:6px 16px;font-size:9px;font-weight:800;color:var(--green);letter-spacing:2px;}
+.cta-title{font-family:'Orbitron',sans-serif;font-size:24px;font-weight:900;color:#fff;text-align:center;line-height:1.25;text-shadow:0 0 40px rgba(255,255,255,.1);}
+.cta-title span{color:var(--gold);}
+.cta-sub{font-size:12px;color:rgba(255,255,255,.38);text-align:center;line-height:1.8;}
+.cta-sub em{color:rgba(0,229,255,.5);font-style:normal;}
+.reg-form-preview{
+  width:100%;background:rgba(13,31,60,.8);border:1px solid rgba(79,195,247,.15);
+  border-radius:16px;padding:16px;position:relative;overflow:hidden;
+}
+.reg-form-preview::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--gold),var(--purple));background-size:200%;animation:shimmer 3s linear infinite;}
+@keyframes shimmer{to{background-position:200% center}}
+.form-field{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:10px 13px;font-size:11px;color:rgba(255,255,255,.25);margin-bottom:7px;display:flex;align-items:center;gap:8px;}
+.form-field:last-child{margin-bottom:0;}
+.form-label{font-size:8px;font-weight:800;letter-spacing:2px;color:rgba(255,255,255,.3);margin-bottom:4px;}
+.reg-btn{
+  width:100%;padding:16px;
+  background:linear-gradient(135deg,#1565C0,#FFD438,#1565C0);background-size:300%;
+  border:none;border-radius:14px;font-family:'Orbitron',sans-serif;
+  font-size:14px;font-weight:900;color:#fff;letter-spacing:2px;cursor:pointer;
+  animation:btnShimmer 4s linear infinite;box-shadow:0 4px 25px rgba(79,195,247,.2);
+}
+.reg-btn:active{transform:scale(.97);}
+.link-note{font-size:9px;color:rgba(255,255,255,.25);letter-spacing:1px;}
+.tos-note{font-size:9px;color:rgba(255,255,255,.18);text-align:center;line-height:1.8;padding:0 10px;}
+
+/* Dots + nav */
+.dots{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:50;}
+.dot{width:5px;height:5px;border-radius:3px;background:rgba(255,255,255,.18);transition:all .3s;}
+.dot.active{width:18px;background:var(--gold);}
+@keyframes moonpulse{0%,100%{box-shadow:0 0 40px rgba(255,212,56,.4);}50%{box-shadow:0 0 70px rgba(255,212,56,.8),0 0 120px rgba(255,212,56,.3);}}
+@keyframes countPop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="notch"></div>
+  <div id="stars"></div>
+  <div class="dots" id="dots"></div>
+  <div class="ticker"><div class="ticker-inner" id="ti"></div></div>
+
+  <!-- S0: Moon Intro -->
+  <div class="scene active" id="s0">
+    <div style="position:relative;display:flex;align-items:center;justify-content:center;width:160px;height:160px;">
+      <div class="moon-glow"></div>
+      <div class="moon"></div>
+    </div>
+    <div class="s0-brand">DREAM2MOON</div>
+    <div class="s0-sub">FREE FIRE COMMUNITY</div>
+    <div style="margin-top:22px;display:flex;flex-direction:column;gap:8px;width:100%;max-width:280px;">
+      <div style="background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.18);border-radius:10px;padding:9px 14px;font-size:10px;color:rgba(255,212,56,.7);text-align:center;letter-spacing:1px;opacity:0;animation:fadeUp .7s ease 2s forwards;">🏆 EVERY SATURDAY · SQUAD TOURNAMENT</div>
+      <div style="background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.14);border-radius:10px;padding:9px 14px;font-size:10px;color:rgba(0,229,255,.6);text-align:center;letter-spacing:1px;opacity:0;animation:fadeUp .7s ease 2.3s forwards;">💎 WEEKLY PASS FOR 2 LUCKY MEMBERS</div>
+      <div style="background:rgba(105,240,174,.05);border:1px solid rgba(105,240,174,.14);border-radius:10px;padding:9px 14px;font-size:10px;color:rgba(105,240,174,.6);text-align:center;letter-spacing:1px;opacity:0;animation:fadeUp .7s ease 2.6s forwards;">🎮 FULL MAP · FREE FIRE · SQUAD MODE</div>
+    </div>
+    <div class="s0-tap">TAP ANYWHERE TO CONTINUE ▼</div>
+  </div>
+
+  <!-- S1: Weekly Pass -->
+  <div class="scene" id="s1">
+    <div class="badge">💎 EVERY SATURDAY</div>
+    <div class="scene-title" style="background:linear-gradient(135deg,#fff,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;">WEEKLY MEMBERSHIP<br>PASS</div>
+    <div class="pass-card">
+      <div class="pass-top">
+        <div class="pass-icon">💎</div>
+        <div class="pass-info">
+          <div class="pass-name">WEEKLY PASS</div>
+          <div class="pass-desc">Exclusive membership for<br>Dream2Moon community members</div>
+        </div>
+      </div>
+      <div class="pass-divider"></div>
+      <div class="pass-details">
+        <div class="pd"><div class="pd-num">2</div><div class="pd-lbl">LUCKY MEMBERS</div></div>
+        <div class="pd"><div class="pd-num" style="color:var(--cyan);">Every<br><span style="font-size:13px;">SAT</span></div><div class="pd-lbl">SELECTED</div></div>
+      </div>
+      <div class="pass-divider"></div>
+      <div class="pass-note">
+        2 community members receive a <span>Weekly Membership Pass 💎</span> every Saturday.<br>
+        Stay active, stay engaged — you could be next! 🌙
+      </div>
+    </div>
+    <div style="font-size:10px;color:rgba(255,255,255,.28);text-align:center;line-height:1.8;">
+      Winners announced every Saturday on our page 📢<br>
+      <span style="color:rgba(255,212,56,.4);">Follow to never miss a selection!</span>
+    </div>
+  </div>
+
+  <!-- S2: Tournament Info -->
+  <div class="scene" id="s2">
+    <div class="tourn-header">⚔️ SQUAD TOURNAMENT</div>
+    <div class="info-grid">
+      <div class="info-box">
+        <div class="info-num">60</div>
+        <div class="info-lbl">MAX SLOTS</div>
+      </div>
+      <div class="info-box">
+        <div class="info-num" style="color:var(--cyan);">4</div>
+        <div class="info-lbl">PLAYERS / SQUAD</div>
+      </div>
+    </div>
+    <div class="rules-list">
+      <div class="rule-item"><span class="ri">📅</span>Every Saturday — Full Map · Free Fire · Squad Mode</div>
+      <div class="rule-item"><span class="ri">👑</span>Leader name cannot be changed after registration</div>
+      <div class="rule-item"><span class="ri">📋</span>Leader name, UID &amp; WhatsApp number required</div>
+      <div class="rule-item"><span class="ri">🏟️</span>Group stage → Grand Final · Top squads advance</div>
+      <div class="rule-item"><span class="ri">💚</span>NPR 2,400 total distributed via eSewa after the final tournament</div>
+    </div>
+    <div class="reg-deadline">
+      <div class="dl-label">⏰ REGISTRATION CLOSES</div>
+      <div class="dl-val">THURSDAY · 10:00 PM NPT</div>
+    </div>
+  </div>
+
+  <!-- S3: Follow -->
+  <div class="scene" id="s3">
+    <div class="avatar-wrap">
+      <div class="avatar-ring">
+        <div class="avatar-inner">🌙</div>
+      </div>
+    </div>
+    <div class="follow-name">DREAM2MOON</div>
+    <div class="follow-handle">Free Fire Community · Est. Nepal 🇳🇵</div>
+    <button class="follow-btn" id="followBtn" onclick="followClicked()">➕ FOLLOW NOW</button>
+    <div class="social-row">
+      <div class="soc-btn">📺 YouTube</div>
+      <div class="soc-btn">🎵 TikTok</div>
+    </div>
+    <div class="perks-box">
+      <div class="perks-title">🌙 WHY FOLLOW DREAM2MOON?</div>
+      <div class="perk"><div class="perk-dot"></div>Weekly tournament updates &amp; results 🏆</div>
+      <div class="perk"><div class="perk-dot" style="background:var(--cyan);"></div>💎 Weekly Pass selection announcements</div>
+      <div class="perk"><div class="perk-dot" style="background:var(--green);"></div>Squad registration notifications 📣</div>
+      <div class="perk"><div class="perk-dot" style="background:var(--purple);"></div>💚 NPR 2,400 prize — distributed via eSewa</div>
+    </div>
+  </div>
+
+  <!-- S4: Register CTA -->
+  <div class="scene" id="s4">
+    <div class="cta-tag">🎯 REGISTRATION OPEN</div>
+    <div class="cta-title">BUILD YOUR<br><span>SQUAD.</span><br>DOMINATE.</div>
+    <div class="cta-sub">Join the Dream2Moon community.<br><em>Register before Thursday 10 PM NPT.</em></div>
+
+    <!-- LIVE COUNTER -->
+    <div style="width:100%;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="background:linear-gradient(135deg,rgba(105,240,174,.08),rgba(0,229,255,.04));border:1px solid rgba(105,240,174,.2);border-radius:14px;padding:16px;text-align:center;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--cyan),var(--green));"></div>
+        <div id="teamsCount" style="font-family:'Orbitron',sans-serif;font-size:32px;font-weight:900;color:var(--green);text-shadow:0 0 20px rgba(105,240,174,.4);animation:countPop .6s cubic-bezier(.34,1.56,.64,1);">—</div>
+        <div style="font-size:8px;color:rgba(255,255,255,.3);letter-spacing:2px;margin-top:4px;">TEAMS REGISTERED</div>
+      </div>
+      <div style="background:linear-gradient(135deg,rgba(255,107,107,.08),rgba(255,171,64,.04));border:1px solid rgba(255,107,107,.2);border-radius:14px;padding:16px;text-align:center;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),var(--gold));"></div>
+        <div id="slotsLeft" style="font-family:'Orbitron',sans-serif;font-size:32px;font-weight:900;color:var(--gold);text-shadow:0 0 20px rgba(255,212,56,.4);animation:countPop .6s cubic-bezier(.34,1.56,.64,1);">—</div>
+        <div style="font-size:8px;color:rgba(255,255,255,.3);letter-spacing:2px;margin-top:4px;">SLOTS LEFT</div>
+      </div>
+    </div>
+    <div id="hurryMsg" style="font-size:10px;color:rgba(255,107,107,.7);text-align:center;letter-spacing:1px;font-weight:700;display:none;">🔥 HURRY UP — FILLING FAST!</div>
+
+    <!-- 12 VIEWER CUSTOM SLOTS -->
+    <div style="width:100%;background:linear-gradient(135deg,rgba(206,147,216,.08),rgba(79,195,247,.05));border:1px solid rgba(206,147,216,.25);border-radius:14px;padding:14px 16px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--cyan),var(--purple));background-size:200%;animation:shimmer 3s linear infinite;"></div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="font-size:28px;flex-shrink:0;">📺</div>
+        <div>
+          <div style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--purple);letter-spacing:1px;margin-bottom:4px;">12 CUSTOM SLOTS · LIVE STREAM</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.5);line-height:1.6;">12 teams will be picked from <strong style="color:rgba(206,147,216,.8);">live stream viewers</strong> for the last qualifying match — watch live &amp; get your chance! 🎯</div>
+        </div>
+      </div>
+    </div>
+    <div class="reg-form-preview">
+      <div class="form-label">👑 TEAM LEADER NAME</div>
+      <div class="form-field">Leader's in-game name</div>
+      <div class="form-label">🆔 TEAM LEADER UID</div>
+      <div class="form-field">Leader's Free Fire UID</div>
+      <div class="form-label">📱 WHATSAPP NUMBER</div>
+      <div class="form-field">e.g. 98XXXXXXXX</div>
+      <div class="form-label">👥 3 TEAM MEMBERS</div>
+      <div class="form-field">Member 1 · Member 2 · Member 3</div>
+    </div>
+    <button class="reg-btn" onclick="alert('Open your registration page link here! 🎮')">⚔️ REGISTER YOUR SQUAD</button>
+    <div class="link-note">🔗 Link in bio · dream2moon</div>
+    <div class="tos-note">⚠️ Name cannot be changed once registered.<br>Make sure all details are correct before submitting.</div>
+  </div>
+
+  <!-- S5: GRAND FINAL -->
+  <div class="scene" id="s5" style="background:radial-gradient(ellipse at 50% 20%,#1a0a00,#060C1A 65%);padding:44px 16px 70px;gap:0;overflow-y:auto;">
+
+    <!-- Header -->
+    <div style="width:100%;background:linear-gradient(90deg,#5a3600,#c07c00,#5a3600);border-radius:14px 14px 0 0;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#FFD438,var(--cyan),#FFD438,transparent);"></div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="font-size:26px;">🏆</div>
+        <div>
+          <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:#FFD438;letter-spacing:2px;">GRAND FINAL</div>
+          <div style="font-size:8px;color:rgba(255,220,100,.7);letter-spacing:1px;margin-top:2px;">TOP 2 FROM EACH GROUP · 12 TEAMS</div>
+        </div>
+      </div>
+      <div style="background:rgba(0,0,0,.4);border-radius:6px;padding:4px 10px;text-align:right;">
+        <div style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:#FFD438;letter-spacing:1px;">GAME 7</div>
+      </div>
+    </div>
+
+    <!-- Subbar -->
+    <div style="width:100%;background:#0a0e18;padding:5px 14px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:8px;color:rgba(255,255,255,.25);letter-spacing:1px;">DREAM2MOON · FULL MAP · FREE FIRE</span>
+      <span style="font-size:8px;color:rgba(255,255,255,.2);">Next Saturday</span>
+    </div>
+
+    <!-- Warning banner -->
+    <div style="width:100%;background:rgba(255,212,56,.06);border-bottom:1px solid rgba(255,212,56,.12);padding:7px 14px;text-align:center;">
+      <span style="font-size:9px;color:rgba(255,212,56,.65);letter-spacing:1px;font-weight:700;">⚔️ TEAMS CONFIRMED AFTER GROUP STAGE MATCHES</span>
+    </div>
+
+    <!-- Table header -->
+    <div style="width:100%;display:grid;grid-template-columns:58px 1fr 60px;background:rgba(255,255,255,.04);padding:5px 10px;border-bottom:1px solid rgba(255,255,255,.06);">
+      <div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:1px;">SLOT</div>
+      <div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:1px;">QUALIFIER</div>
+      <div style="font-size:8px;color:rgba(255,255,255,.3);font-weight:700;letter-spacing:1px;text-align:right;">FROM</div>
+    </div>
+
+    <!-- Teams -->
+    <div style="width:100%;background:#080e1e;border-radius:0 0 14px 14px;overflow:hidden;margin-bottom:8px;">
+      <!-- Groups A-E (normal) -->
+      <div style="display:grid;grid-template-columns:58px 1fr 60px;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.04);align-items:center;"><span style="background:#E53935;color:#000;font-size:8px;font-weight:900;padding:2px 5px;border-radius:4px;white-space:nowrap;">TEAM 1</span><span style="font-size:10px;color:rgba(255,255,255,.45);font-style:italic;">Qualifier from Group A</span><span style="font-size:8px;color:#E53935;font-weight:700;text-align:right;">Group A</span></div>
+      <div style="display:grid;grid-template-columns:58px 1fr 60px;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.04);align-items:center;"><span style="background:#E53935;color:#000;font-size:8px;font-weight:900;padding:2px 5px;border-radius:4px;white-space:nowrap;">TEAM 2</span><span style="font-size:10px;color:rgba(255,255,255,.45);font-style:italic;">Qualifier from Group A</span><span style="font-size:8px;color:#E53935;font-weight:700;text-align:right;">Group A</span></div>
+      <div style="display:grid;grid-template-columns:58px 1fr 60px;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.04);align-items:center;"><span style="background:#1E88E5;color:#000;font-size:8px;font-weight:900;padding:2px 5px;border-radius:4px;white-space:nowrap;">TEAM 3</span><span style="font-size:10px;color:rgba(255,255,255,.45);font-style:italic;">Qualifier from Group B</span><span style="font-size:8px;color:#1E88E5;font-weight:700;text-align:right;">Group B</span></div>
+      <div style="display:grid;grid-template-columns:58px 1fr 60px;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.04);align-items:center;"><span style="background:#1E88E5;color:#000;font-size:8px;font-weight:900;padding:2px 5px;border-radius:4px;white-space:nowrap;">TEAM 4</span><span style="font-size:10px;color:rgba(255,255,255,.45);font-style:italic;">Qualifier from Group B</span><span style="font-size:8px;color:#1E88E5;font-weight:700;text-align:right;">Group B</span></div>
+      <div style="display:grid;grid-template-columns:58px 1fr 60px;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.04);align-items:center;"><span style="background:#43A047;color:#000;font-size:8px;font-weight:900;padding:2px 5px;border-radius:4px;white-space:nowrap;">TEAM 5</span><span style="font-size:10px;color:rgba(255,255,255,.45);font-style:italic;">Qualifier from Group C</span><span style="font-size:8px;color:#43A047;font-weight:700;text-align:right;">Group C</span></div>
+      <div style="display:grid;grid-template-columns:58px 1fr 60px;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.04);align-items:center;"><span style="background:#43A047;color:#000;font-size:8px;font-weight:900;padding:2px 5px;border-radius:4px;white-space:nowrap;">TEAM 6</span><span style="font-size:10px;color:rgba(255,255,255,.45);font-style:italic;">Qualifier from Group C</span><span style="font-size:8px;color:#43A047;font-weight:700;text-align:right;">Group C</span></div>
+      <div style="display:grid;grid-template-columns:58px 1fr 60px;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.04);align-items:center;"><span style="background:#8E24AA;color:#fff;font-size:8px;font-weight:900;padding:2px 5px;border-radius:4px;white-space:nowrap;">TEAM 7</span><span style="font-size:10px;color:rgba(255,255,255,.45);font-style:italic;">Qualifier from Group D</span><span style="font-size:8px;color:#CE93D8;font-weight:700;text-align:right;">Group D</span></div>
+      <div style="display:grid;grid-template-columns:58px 1fr 60px;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.04);align-items:center;"><span style="background:#8E24AA;color:#fff;font-size:8px;font-weight:900;padding:2px 5px;border-radius:4px;white-space:nowrap;">TEAM 8</span><span style="font-size:10px;color:rgba(255,255,255,.45);font-style:italic;">Qualifier from Group D</span><span style="font-size:8px;color:#CE93D8;font-weight:700;text-align:right;">Group D</span></div>
+      <div style="display:grid;grid-template-columns:58px 1fr 60px;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.04);align-items:center;"><span style="background:#F4511E;color:#fff;font-size:8px;font-weight:900;padding:2px 5px;border-radius:4px;white-space:nowrap;">TEAM 9</span><span style="font-size:10px;color:rgba(255,255,255,.45);font-style:italic;">Qualifier from Group E</span><span style="font-size:8px;color:#FF7043;font-weight:700;text-align:right;">Group E</span></div>
+      <div style="display:grid;grid-template-columns:58px 1fr 60px;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.06);align-items:center;"><span style="background:#F4511E;color:#fff;font-size:8px;font-weight:900;padding:2px 5px;border-radius:4px;white-space:nowrap;">TEAM 10</span><span style="font-size:10px;color:rgba(255,255,255,.45);font-style:italic;">Qualifier from Group E</span><span style="font-size:8px;color:#FF7043;font-weight:700;text-align:right;">Group E</span></div>
+      <!-- Live stream special -->
+      <div style="display:grid;grid-template-columns:58px 1fr 60px;padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.04);align-items:center;background:rgba(206,147,216,.06);"><span style="background:linear-gradient(135deg,#CE93D8,#9C27B0);color:#fff;font-size:8px;font-weight:900;padding:2px 5px;border-radius:4px;white-space:nowrap;">TEAM 11</span><span style="font-size:9px;color:rgba(206,147,216,.7);font-style:italic;">📺 Live Stream Group 6</span><span style="font-size:8px;color:#CE93D8;font-weight:700;text-align:right;white-space:nowrap;">Live 6</span></div>
+      <div style="display:grid;grid-template-columns:58px 1fr 60px;padding:6px 10px;align-items:center;background:rgba(206,147,216,.06);"><span style="background:linear-gradient(135deg,#CE93D8,#9C27B0);color:#fff;font-size:8px;font-weight:900;padding:2px 5px;border-radius:4px;white-space:nowrap;">TEAM 12</span><span style="font-size:9px;color:rgba(206,147,216,.7);font-style:italic;">📺 Live Stream Group 6</span><span style="font-size:8px;color:#CE93D8;font-weight:700;text-align:right;white-space:nowrap;">Live 6</span></div>
+    </div>
+
+    <!-- Prize row -->
+    <div style="width:100%;display:grid;grid-template-columns:1fr 1fr 1fr 0.7fr;border-radius:12px;overflow:hidden;border:1px solid rgba(255,212,56,.15);">
+      <div style="padding:10px 6px;text-align:center;background:rgba(255,212,56,.08);border-right:1px solid rgba(255,255,255,.06);">
+        <div style="font-size:18px;">🥇</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:#FFD438;margin-top:3px;">Rs.1,200</div>
+        <div style="font-size:7px;color:rgba(255,212,56,.45);letter-spacing:1px;margin-top:2px;">CHAMPION</div>
+      </div>
+      <div style="padding:10px 6px;text-align:center;background:rgba(144,202,249,.05);border-right:1px solid rgba(255,255,255,.06);">
+        <div style="font-size:18px;">🥈</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:#90CAF9;margin-top:3px;">Rs.800</div>
+        <div style="font-size:7px;color:rgba(144,202,249,.4);letter-spacing:1px;margin-top:2px;">2ND PLACE</div>
+      </div>
+      <div style="padding:10px 6px;text-align:center;background:rgba(206,147,216,.05);border-right:1px solid rgba(255,255,255,.06);">
+        <div style="font-size:18px;">🥉</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:#CE93D8;margin-top:3px;">Rs.400</div>
+        <div style="font-size:7px;color:rgba(206,147,216,.4);letter-spacing:1px;margin-top:2px;">3RD PLACE</div>
+      </div>
+      <div style="padding:10px 6px;text-align:center;background:rgba(105,240,174,.04);">
+        <div style="font-size:18px;">💚</div>
+        <div style="font-size:8px;color:rgba(105,240,174,.6);font-weight:700;margin-top:3px;line-height:1.3;">via<br>eSewa</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Progress bar -->
+  <div id="progBar" style="position:absolute;top:54px;left:0;right:0;height:3px;background:rgba(255,255,255,.1);z-index:50;">
+    <div id="progFill" style="height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--cyan));border-radius:2px;"></div>
+  </div>
+
+  <!-- Pause icon -->
+  <div id="pauseIcon" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:60;opacity:0;transition:opacity .3s;pointer-events:none;">
+    <div style="width:56px;height:56px;background:rgba(0,0,0,.6);border-radius:50%;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,.15);">
+      <span style="font-size:22px;">⏸</span>
+    </div>
+  </div>
+
+  <!-- START OVERLAY -->
+  <div id="startOverlay" style="position:absolute;inset:0;z-index:80;background:rgba(4,8,20,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;backdrop-filter:blur(4px);">
+    <div style="width:100px;height:100px;border-radius:50%;background:radial-gradient(circle at 38% 35%,#FFF0A0,#FFD438 18%,#D4A000 48%,#7B5000 75%,#2A1800);box-shadow:0 0 50px rgba(255,212,56,.5);animation:moonpulse 2s ease-in-out infinite;"></div>
+    <div style="font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;color:var(--gold);letter-spacing:4px;text-shadow:0 0 20px rgba(255,212,56,.4);">DREAM2MOON</div>
+    <div style="font-size:11px;color:rgba(255,255,255,.3);letter-spacing:3px;">FREE FIRE COMMUNITY 🇳🇵</div>
+    <div style="width:1px;height:30px;background:linear-gradient(to bottom,transparent,rgba(255,212,56,.3),transparent);"></div>
+    <button onclick="startVideo()" style="background:linear-gradient(135deg,#FFD438,#FFA500,#FFD438);background-size:200%;border:none;border-radius:30px;padding:16px 48px;font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:#000;letter-spacing:3px;cursor:pointer;box-shadow:0 4px 30px rgba(255,212,56,.4);animation:btnShimmer 3s linear infinite;">
+      ▶ PLAY VIDEO
+    </button>
+    <div style="font-size:9px;color:rgba(255,255,255,.2);letter-spacing:2px;">~14 SECONDS · SCREEN RECORD NOW</div>
+  </div>
+
+  <!-- REPLAY OVERLAY -->
+  <div id="replayOverlay" style="position:absolute;inset:0;z-index:80;background:rgba(4,8,20,.88);display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;backdrop-filter:blur(4px);">
+    <div style="font-size:48px;">🏆</div>
+    <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:var(--gold);letter-spacing:3px;text-align:center;">JOIN DREAM2MOON</div>
+    <div style="font-size:11px;color:rgba(255,255,255,.35);letter-spacing:1px;text-align:center;line-height:1.8;">Every Saturday · Squad Tournament<br>💎 Weekly Pass · 🇳🇵 Nepal Community</div>
+    <button onclick="startVideo()" style="background:linear-gradient(135deg,#FFD438,#FFA500,#FFD438);background-size:200%;border:none;border-radius:30px;padding:14px 40px;font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:#000;letter-spacing:2px;cursor:pointer;box-shadow:0 4px 25px rgba(255,212,56,.35);animation:btnShimmer 3s linear infinite;">
+      🔄 REPLAY
+    </button>
+  </div>
+</div>
+
+<script>
+// Stars
+const sf=document.getElementById('stars');
+for(let i=0;i<90;i++){
+  const s=document.createElement('div');s.className='s';
+  const sz=Math.random()*2+.2;
+  s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*5}s;--dl:${Math.random()*7}s;--op:${.08+Math.random()*.45};`;
+  sf.appendChild(s);
+}
+
+// ── HARDCODED COUNTER ──
+const TEAMS=16;
+const SLOTS=44;
+document.getElementById('teamsCount').textContent=TEAMS;
+document.getElementById('slotsLeft').textContent=SLOTS;
+document.getElementById('hurryMsg').style.display=SLOTS<=20?'block':'none';
+
+// Ticker
+const msgs=['🌙 DREAM2MOON COMMUNITY','⚔️ EVERY SATURDAY · SQUAD TOURNAMENT','💎 WEEKLY PASS FOR 2 MEMBERS','🎮 FREE FIRE · FULL MAP · SQUAD MODE','⏰ REG CLOSES THURSDAY 10PM NPT','🏆 GROUP STAGE → GRAND FINAL','💚 NPR 2,400 VIA ESEWA AFTER FINAL','📣 FOLLOW FOR UPDATES','🇳🇵 NEPAL FREE FIRE COMMUNITY'];
+const ti=document.getElementById('ti');
+const row=[...msgs,...msgs].map(m=>`<span>${m}</span><span class="tsep">✦</span>`).join('');
+ti.innerHTML=row+row;
+
+// ── AUTO-PLAY VIDEO ENGINE ──
+const scenes=document.querySelectorAll('.scene');
+const dotsEl=document.getElementById('dots');
+let cur=0;
+let autoTimer=null;
+let progressTimer=null;
+let isPaused=false;
+
+// Scene durations in ms — total ~14s
+const DURATIONS=[2800,2800,2800,2800,2800,3500];
+
+// Build dots
+scenes.forEach((_,i)=>{
+  const d=document.createElement('div');
+  d.className='dot'+(i===0?' active':'');
+  dotsEl.appendChild(d);
+});
+
+// Progress bar per scene
+const progBar=document.getElementById('progBar');
+const progFill=document.getElementById('progFill');
+
+function goTo(n){
+  scenes[cur].classList.remove('active');
+  dotsEl.children[cur].classList.remove('active');
+  cur=n;
+  scenes[cur].classList.add('active');
+  dotsEl.children[cur].classList.add('active');
+}
+
+function startProgress(duration){
+  // Reset bar
+  progFill.style.transition='none';
+  progFill.style.width='0%';
+  // Force reflow
+  progFill.getBoundingClientRect();
+  progFill.style.transition=`width ${duration}ms linear`;
+  progFill.style.width='100%';
+}
+
+function playScene(idx){
+  if(idx>=scenes.length){
+    // Ended — show replay
+    showReplay();return;
+  }
+  goTo(idx);
+  startProgress(DURATIONS[idx]);
+  clearTimeout(autoTimer);
+  autoTimer=setTimeout(()=>playScene(idx+1),DURATIONS[idx]);
+}
+
+function showReplay(){
+  document.getElementById('replayOverlay').style.display='flex';
+  progFill.style.width='100%';
+}
+
+function startVideo(){
+  document.getElementById('startOverlay').style.display='none';
+  document.getElementById('replayOverlay').style.display='none';
+  isPaused=false;
+  cur=0;
+  playScene(0);
+}
+window.startVideo=startVideo;
+
+// Tap to pause/resume
+document.querySelector('.phone').addEventListener('click',function(e){
+  if(e.target.closest('#startOverlay')||e.target.closest('#replayOverlay')||e.target.closest('#followBtn')||e.target.closest('.soc-btn')||e.target.closest('.reg-btn'))return;
+  if(document.getElementById('startOverlay').style.display!=='none')return;
+  if(document.getElementById('replayOverlay').style.display!=='none')return;
+
+  isPaused=!isPaused;
+  const pauseIcon=document.getElementById('pauseIcon');
+  if(isPaused){
+    clearTimeout(autoTimer);
+    // Freeze progress bar
+    const computed=getComputedStyle(progFill).width;
+    const total=getComputedStyle(progBar).width;
+    const pct=(parseFloat(computed)/parseFloat(total)*100).toFixed(1);
+    progFill.style.transition='none';
+    progFill.style.width=pct+'%';
+    pauseIcon.style.opacity='1';
+  }else{
+    pauseIcon.style.opacity='0';
+    // Remaining time
+    const computed=getComputedStyle(progFill).width;
+    const total=getComputedStyle(progBar).width;
+    const pct=parseFloat(computed)/parseFloat(total);
+    const remaining=DURATIONS[cur]*(1-pct);
+    startProgressFrom(pct*100,remaining);
+    autoTimer=setTimeout(()=>playScene(cur+1),remaining);
+  }
+});
+
+function startProgressFrom(fromPct,duration){
+  progFill.style.transition='none';
+  progFill.style.width=fromPct+'%';
+  progFill.getBoundingClientRect();
+  progFill.style.transition=`width ${duration}ms linear`;
+  progFill.style.width='100%';
+}
+
+window.followClicked=function(){
+  const btn=document.getElementById('followBtn');
+  btn.textContent='✅ FOLLOWING!';
+  btn.style.background='linear-gradient(135deg,#69F0AE,#00C853)';
+  btn.style.boxShadow='0 4px 25px rgba(105,240,174,.35)';
+  btn.style.color='#000';
+};
+</script>
+</body>
+</html>
