@@ -622,12 +622,14 @@ window.submitEntry=async function(){
 // Lock at 10:00 PM NPT (UTC+5:45 = 16:15 UTC)
 // Re-opens after admin publishes tournament results
 function checkRegistrationStatus(resultsPublished){
+  // If admin published results → ALWAYS open (overrides any day/time lock)
+  window._tournResultReset=resultsPublished;
   const now=new Date();
   const utcMs=now.getTime()+now.getTimezoneOffset()*60000;
   const npt=new Date(utcMs+(5*60+45)*60000);
   const day=npt.getDay();const hour=npt.getHours();const min=npt.getMinutes();
-  // Lock: Thursday 11:59PM NPT onwards (until admin re-opens after results)
-  const isLocked=(day===4&&(hour===23&&min>=59))||(day===5)||(day===6)||(day===0&&hour<10);
+  // Lock: Thursday 11:59PM NPT onwards — until admin publishes results
+  const isLocked=!resultsPublished&&((day===4&&(hour===23&&min>=59))||(day===5)||(day===6)||(day===0&&hour<10));
 
   const badge=document.getElementById('regStatusBadge');
   const badgeText=document.getElementById('regStatusText');
@@ -635,31 +637,22 @@ function checkRegistrationStatus(resultsPublished){
   const regBtn=document.getElementById('registerBtn');
   const lockMsg=document.getElementById('regLockedMsg');
 
-  if(resultsPublished){
-    // Results are published — show results, re-open registration for next tournament
+  if(!isLocked){
     if(badgeText)badgeText.textContent='Registration Open';
+    if(badge)badge.style.background='';badge&&(badge.style.borderColor='');
     if(badgeDot)badgeDot.style.background='#69F0AE';
     if(regBtn)regBtn.style.display='block';
     if(lockMsg)lockMsg.style.display='none';
-  } else if(isLocked){
-    // 10PM+ NPT — locked
+  } else {
     if(badgeText)badgeText.textContent='Registration Closed — Thu 11:59PM NPT';
-    if(badge)badge.style.background='rgba(255,107,107,.15)';
-    if(badge)badge.style.borderColor='rgba(255,107,107,.3)';
+    if(badge){badge.style.background='rgba(255,107,107,.15)';badge.style.borderColor='rgba(255,107,107,.3)';}
     if(badgeDot)badgeDot.style.background='#FF6B6B';
     if(regBtn)regBtn.style.display='none';
     if(lockMsg)lockMsg.style.display='block';
-  } else {
-    // Open
-    if(badgeText)badgeText.textContent='Registration Open';
-    if(badgeDot)badgeDot.style.background='#69F0AE';
-    if(regBtn)regBtn.style.display='block';
-    if(lockMsg)lockMsg.style.display='none';
   }
 }
 
 // Listen for tournament results — re-opens registration when results are published
-// and clears teams when admin publishes (controlled by a 'registrationOpen' field)
 onSnapshot(doc(db,'tournament_result','latest'),snap=>{
   const resultsPublished=snap.exists()&&snap.data()&&snap.data().registrationReset===true;
   checkRegistrationStatus(resultsPublished);
@@ -667,7 +660,11 @@ onSnapshot(doc(db,'tournament_result','latest'),snap=>{
 
 // Check lock on page load and every minute
 checkRegistrationStatus(false);
-setInterval(()=>checkRegistrationStatus(false),60000);
+setInterval(()=>{
+  // Re-check but also listen to latest result state
+  const cachedReset=window._tournResultReset||false;
+  checkRegistrationStatus(cachedReset);
+},60000);
 
 // Real-time teams list
 onSnapshot(query(collection(db,'tournament_teams'),orderBy('registeredAt','asc')),snap=>{
@@ -731,10 +728,8 @@ window.submitTournament=async function(){
   const now=new Date();
   const utcMs=now.getTime()+now.getTimezoneOffset()*60000;
   const npt=new Date(utcMs+(5*60+45)*60000);
-  const day=npt.getDay(); // 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
-  const hour=npt.getHours();const min=npt.getMinutes();
-  // Locked: Thursday after 23:59 NPT, or Friday/Saturday
-  const isLocked=(day===4&&(hour===23&&min>=59))||(day===5)||(day===6)||(day===0&&hour<10);
+  const day=npt.getDay(); const hour=npt.getHours();const min=npt.getMinutes();
+  const isLocked=!(window._tournResultReset||false)&&((day===4&&(hour===23&&min>=59))||(day===5)||(day===6)||(day===0&&hour<10));
   if(isLocked){alert('🔒 Registration is closed!\nEntries locked after Thursday 11:59PM NPT.\nStay tuned for match results! 🏆');return;}
 
   const leader=document.getElementById('t-leader').value.trim();
