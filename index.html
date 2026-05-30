@@ -621,15 +621,16 @@ window.submitEntry=async function(){
 // ── TOURNAMENT REGISTRATION LOCK ──
 // Lock at 10:00 PM NPT (UTC+5:45 = 16:15 UTC)
 // Re-opens after admin publishes tournament results
-function checkRegistrationStatus(resultsPublished){
-  // If admin published results → ALWAYS open (overrides any day/time lock)
-  window._tournResultReset=resultsPublished;
+function checkRegistrationStatus(){
+  const resultsPublished=window._tournResultReset||false;
   const now=new Date();
   const utcMs=now.getTime()+now.getTimezoneOffset()*60000;
   const npt=new Date(utcMs+(5*60+45)*60000);
   const day=npt.getDay();const hour=npt.getHours();const min=npt.getMinutes();
-  // Lock: Thursday 11:59PM NPT onwards — until admin publishes results
-  const isLocked=!resultsPublished&&((day===4&&(hour===23&&min>=59))||(day===5)||(day===6)||(day===0&&hour<10));
+  // Lock ONLY on Thursday 11:59PM NPT or later — AND only if no results published yet
+  const isThursdayLock=(day===4&&(hour>23||(hour===23&&min>=59)))||(day===5)||(day===6)||(day===0&&hour<10);
+  // If results are published → OPEN regardless of day
+  const isLocked=isThursdayLock&&!resultsPublished;
 
   const badge=document.getElementById('regStatusBadge');
   const badgeText=document.getElementById('regStatusText');
@@ -639,11 +640,11 @@ function checkRegistrationStatus(resultsPublished){
 
   if(!isLocked){
     if(badgeText)badgeText.textContent='Registration Open';
-    if(badge)badge.style.background='';badge&&(badge.style.borderColor='');
+    if(badge){badge.style.background='';badge.style.borderColor='';}
     if(badgeDot)badgeDot.style.background='#69F0AE';
     if(regBtn)regBtn.style.display='block';
     if(lockMsg)lockMsg.style.display='none';
-  } else {
+  }else{
     if(badgeText)badgeText.textContent='Registration Closed — Thu 11:59PM NPT';
     if(badge){badge.style.background='rgba(255,107,107,.15)';badge.style.borderColor='rgba(255,107,107,.3)';}
     if(badgeDot)badgeDot.style.background='#FF6B6B';
@@ -654,17 +655,15 @@ function checkRegistrationStatus(resultsPublished){
 
 // Listen for tournament results — re-opens registration when results are published
 onSnapshot(doc(db,'tournament_result','latest'),snap=>{
-  const resultsPublished=snap.exists()&&snap.data()&&snap.data().registrationReset===true;
-  checkRegistrationStatus(resultsPublished);
+  // Open if results exist (any results = tournament done = next week open)
+  const resultsExist=snap.exists()&&!!snap.data()?.champion;
+  window._tournResultReset=resultsExist;
+  checkRegistrationStatus();
 });
 
 // Check lock on page load and every minute
-checkRegistrationStatus(false);
-setInterval(()=>{
-  // Re-check but also listen to latest result state
-  const cachedReset=window._tournResultReset||false;
-  checkRegistrationStatus(cachedReset);
-},60000);
+checkRegistrationStatus();
+setInterval(checkRegistrationStatus,60000);
 
 // Real-time teams list
 onSnapshot(query(collection(db,'tournament_teams'),orderBy('registeredAt','asc')),snap=>{
@@ -728,8 +727,9 @@ window.submitTournament=async function(){
   const now=new Date();
   const utcMs=now.getTime()+now.getTimezoneOffset()*60000;
   const npt=new Date(utcMs+(5*60+45)*60000);
-  const day=npt.getDay(); const hour=npt.getHours();const min=npt.getMinutes();
-  const isLocked=!(window._tournResultReset||false)&&((day===4&&(hour===23&&min>=59))||(day===5)||(day===6)||(day===0&&hour<10));
+  const day=npt.getDay();const hour=npt.getHours();const min=npt.getMinutes();
+  const isThursdayLock=(day===4&&(hour>23||(hour===23&&min>=59)))||(day===5)||(day===6)||(day===0&&hour<10);
+  const isLocked=isThursdayLock&&!(window._tournResultReset||false);
   if(isLocked){alert('🔒 Registration is closed!\nEntries locked after Thursday 11:59PM NPT.\nStay tuned for match results! 🏆');return;}
 
   const leader=document.getElementById('t-leader').value.trim();
