@@ -703,8 +703,17 @@ async function loadSavedBracket(){
         populateWASection(snap.data().groups);
         document.getElementById('waGroupSection').style.display='block';
       }
+    }else{
+      // No saved bracket — show the generator normally
+      document.getElementById('bracketGenSection').style.display='block';
+      document.getElementById('undoBracketBtn').style.display='none';
     }
-  }catch(e){console.log('No saved bracket');}
+  }catch(e){
+    // Error or no doc — show generator
+    document.getElementById('bracketGenSection').style.display='block';
+    document.getElementById('undoBracketBtn').style.display='none';
+    console.log('No saved bracket');
+  }
 }
 
 function populateWASection(groups){
@@ -841,26 +850,27 @@ window.saveTournResult=async function(){
 
 window.setGroups=function(n){
   selectedGroups=n;
-  // No visual highlight on buttons — just update the info text
+  // Highlight selected button
+  document.querySelectorAll('.gbtn').forEach(function(b){
+    var active=parseInt(b.dataset.g)===n;
+    b.style.background=active?'rgba(79,195,247,.35)':'rgba(79,195,247,.08)';
+    b.style.borderColor=active?'#00E5FF':'rgba(79,195,247,.25)';
+    b.style.color=active?'#fff':'var(--blue)';
+  });
   var T=tournTeams.length;
   var perGroup=Math.ceil(T/n);
   var MAX=12;
-  // Dynamic qualify per group: ≤8 teams → TOP 2, 9-12 → TOP 3
-  var qualPer=perGroup<=8?2:3;
-  if(n===1)qualPer=T;
-  // Final teams capped at 12
-  var finalT=n===1?T:Math.min(n*qualPer,12);
-  // If capped, recalculate actual qualPer
-  if(n>1&&n*qualPer>12)qualPer=Math.floor(12/n);
+  var qualPer=n===1?T:2;
+  var liveSlots=n>1?Math.max(0,12-n*qualPer):0;
+  var finalT=n===1?T:Math.min(n*qualPer+liveSlots,12);
   var infoEl=document.getElementById('bracketInfo');
   var btnEl=document.getElementById('genBracketBtn');
-  if(T===0){infoEl.textContent='No teams registered yet!';btnEl.style.display='none';return;}
+  if(T===0){infoEl.textContent='No teams registered yet! Refresh after teams register.';btnEl.style.display='none';return;}
   if(perGroup>MAX){
     var minGroups=Math.ceil(T/MAX);
-    infoEl.innerHTML='<span style="color:var(--orange);">⚠ '+n+' groups = ~'+perGroup+' per group (max 12). Auto-adjusting to <strong>'+minGroups+' groups</strong>...</span>';
+    infoEl.innerHTML='<span style="color:var(--orange);">⚠️ '+n+' groups = ~'+perGroup+' per group (max 12). Auto-adjusting to <strong style="color:var(--cyan);">'+minGroups+' groups</strong>...</span>';
     btnEl.style.display='none';
-    // Auto-set to correct group count after short delay
-    setTimeout(function(){window.setGroups(minGroups);},600);
+    setTimeout(function(){window.setGroups(minGroups);},700);
     return;
   }
   infoEl.innerHTML='<strong style="color:var(--cyan);">'+T+' teams</strong> → <strong style="color:var(--gold);">'+n+' group'+(n>1?'s':'')+'</strong> (~'+perGroup+'/group) → Top '+qualPer+' qualify'+(liveSlots>0?' + <strong style="color:#FF9800;">'+liveSlots+' Live Stream</strong>':'')+' → <strong style="color:var(--green);">Final: '+finalT+' teams</strong>';
