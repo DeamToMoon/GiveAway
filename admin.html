@@ -364,7 +364,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--green);text-transform:uppercase;margin-bottom:14px;">💬 WhatsApp Group Links — Send to Leaders</div>
 
       <!-- Group A -->
-      <div class="wa-group-card" data-group="A" style="background:rgba(244,67,54,.06);border:1px solid rgba(244,67,54,.25);border-radius:14px;padding:14px;margin-bottom:10px;">
+      <div class="wa-group-card" id="waCard-A" data-group="A" style="background:rgba(244,67,54,.06);border:1px solid rgba(244,67,54,.25);border-radius:14px;padding:14px;margin-bottom:10px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
           <div style="display:flex;align-items:center;gap:8px;">
             <div style="width:28px;height:28px;background:#F44336;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:13px;">A</div>
@@ -379,7 +379,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       </div>
 
       <!-- Group B -->
-      <div class="wa-group-card" data-group="B" style="background:rgba(33,150,243,.06);border:1px solid rgba(33,150,243,.25);border-radius:14px;padding:14px;margin-bottom:10px;">
+      <div class="wa-group-card" id="waCard-B" data-group="B" style="background:rgba(33,150,243,.06);border:1px solid rgba(33,150,243,.25);border-radius:14px;padding:14px;margin-bottom:10px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
           <div style="display:flex;align-items:center;gap:8px;">
             <div style="width:28px;height:28px;background:#1E88E5;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:13px;">B</div>
@@ -394,7 +394,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       </div>
 
       <!-- Group C -->
-      <div class="wa-group-card" data-group="C" style="background:rgba(67,160,71,.06);border:1px solid rgba(67,160,71,.25);border-radius:14px;padding:14px;margin-bottom:10px;">
+      <div class="wa-group-card" id="waCard-C" data-group="C" style="background:rgba(67,160,71,.06);border:1px solid rgba(67,160,71,.25);border-radius:14px;padding:14px;margin-bottom:10px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
           <div style="display:flex;align-items:center;gap:8px;">
             <div style="width:28px;height:28px;background:#43A047;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:13px;">C</div>
@@ -409,7 +409,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       </div>
 
       <!-- Group D -->
-      <div class="wa-group-card" data-group="D" style="background:rgba(142,36,170,.06);border:1px solid rgba(142,36,170,.25);border-radius:14px;padding:14px;margin-bottom:10px;">
+      <div class="wa-group-card" id="waCard-D" data-group="D" style="background:rgba(142,36,170,.06);border:1px solid rgba(142,36,170,.25);border-radius:14px;padding:14px;margin-bottom:10px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
           <div style="display:flex;align-items:center;gap:8px;">
             <div style="width:28px;height:28px;background:#8E24AA;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:13px;">D</div>
@@ -424,7 +424,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       </div>
 
       <!-- Group E -->
-      <div class="wa-group-card" data-group="E" style="background:rgba(244,81,30,.06);border:1px solid rgba(244,81,30,.25);border-radius:14px;padding:14px;margin-bottom:10px;">
+      <div class="wa-group-card" id="waCard-E" data-group="E" style="background:rgba(244,81,30,.06);border:1px solid rgba(244,81,30,.25);border-radius:14px;padding:14px;margin-bottom:10px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
           <div style="display:flex;align-items:center;gap:8px;">
             <div style="width:28px;height:28px;background:#F4511E;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;font-size:13px;">E</div>
@@ -438,6 +438,11 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
         <div id="waLeaders-E" style="display:flex;flex-direction:column;gap:6px;"></div>
       </div>
     </div>
+
+
+    <!-- WA Invites injected here by JS -->
+    <div id="waGroupSection" style="display:none;"></div>
+
 
     <div class="divider" style="margin-bottom:18px;"></div>
 
@@ -718,33 +723,43 @@ async function loadSavedBracket(){
 
 function populateWASection(groups){
   var gLabels=['A','B','C','D','E'];
-  // Hide all WA group cards first, show only the ones that exist
-  gLabels.forEach(function(lbl){
-    var card=document.querySelector('.wa-group-card[data-group="'+lbl+'"]');
-    if(card)card.style.display='none';
-  });
+  var gCols=['#F44336','#1E88E5','#43A047','#8E24AA','#F4511E'];
+  var gRgba=['244,67,54','33,150,243','67,160,71','142,36,170','244,81,30'];
+  var waSection=document.getElementById('waGroupSection');
+  if(!waSection)return;
+  var html='<div style="background:linear-gradient(135deg,rgba(13,35,75,.93),rgba(8,22,55,.89));border-radius:20px;padding:20px;margin-bottom:18px;border:1px solid rgba(37,211,102,.25);box-shadow:0 8px 32px rgba(0,0,30,.55);">'
+    +'<div style="font-size:10px;font-weight:800;letter-spacing:2px;color:#69F0AE;text-transform:uppercase;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(37,211,102,.15);">💬 WhatsApp Invites — Send to Each Group Leader</div>';
   groups.forEach(function(grp,gi){
     var lbl=gLabels[gi];
-    var card=document.querySelector('.wa-group-card[data-group="'+lbl+'"]');
-    if(card)card.style.display='block';
-    var container=document.getElementById('waLeaders-'+lbl);
-    if(!container)return;
-    if(!grp||grp.length===0){container.innerHTML='<div style="color:var(--faint);font-size:12px;padding:8px;">No teams in this group</div>';return;}
-    container.innerHTML=grp.map(function(t){
+    var col=gCols[gi];
+    var rgba=gRgba[gi];
+    var link=WA_LINKS[lbl]||'#';
+    html+='<div style="background:rgba('+rgba+',.06);border:1px solid rgba('+rgba+',.25);border-radius:12px;padding:14px;margin-bottom:10px;">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'
+      +'<div style="display:flex;align-items:center;gap:8px;">'
+      +'<div style="width:28px;height:28px;background:'+col+';border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:13px;">'+lbl+'</div>'
+      +'<span style="font-size:12px;font-weight:800;color:#fff;">GROUP '+lbl+'</span>'
+      +'</div>'
+      +'<div style="display:flex;gap:6px;">'
+      +'<a href="'+link+'" target="_blank" style="padding:6px 12px;background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.4);border-radius:8px;font-size:11px;font-weight:700;color:#25D366;text-decoration:none;">🔗 Open</a>'
+      +'</div></div>';
+    grp.forEach(function(t){
       var raw=(t.whatsapp||'').replace(/\D/g,'');
-      var num977=raw?( raw.startsWith('977')?raw:'977'+raw):'';
-      var waMsg=encodeURIComponent('Hi '+t.leaderName+'!\n\nYou are in Group '+lbl+' for Dream2Moon Squad Tournament.\n\nJoin your group WhatsApp here:\n'+WA_LINKS[lbl]+'\n\nGood luck! 🏆\n— Dream2Moon');
-      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;gap:8px;">'
+      var num=raw?(raw.startsWith('977')?raw:'977'+raw):'';
+      var msg=encodeURIComponent('Hi '+t.leaderName+'!\n\nYou are in Group '+lbl+' for Dream2Moon Squad Tournament.\n\nJoin your match group:\n'+link+'\n\nGood luck! — Dream2Moon');
+      html+='<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05);">'
         +'<div style="flex:1;min-width:0;">'
-        +'<div style="font-size:12px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">👑 '+t.leaderName+'</div>'
-        +(num977?'<div style="font-size:10px;color:rgba(105,240,174,.8);margin-top:1px;">📱 +'+num977+'</div>':'<div style="font-size:10px;color:rgba(255,107,107,.6);">⚠️ No WhatsApp number</div>')
+        +'<div style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">👑 '+t.leaderName+'</div>'
+        +(num?'<div style="font-size:10px;color:rgba(105,240,174,.8);margin-top:2px;">📱 +'+num+'</div>':'<div style="font-size:10px;color:rgba(255,107,107,.6);margin-top:2px;">⚠️ No WA</div>')
         +'</div>'
-        +(num977
-          ?'<a href="https://wa.me/'+num977+'?text='+waMsg+'" target="_blank" style="flex-shrink:0;padding:6px 14px;background:linear-gradient(135deg,#075e54,#25D366);border-radius:8px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;white-space:nowrap;">💬 Send Invite</a>'
-          :'<span style="flex-shrink:0;padding:6px 10px;background:rgba(255,107,107,.1);border-radius:8px;font-size:10px;color:rgba(255,107,107,.6);">No WA</span>')
+        +(num?'<a href="https://wa.me/'+num+'?text='+msg+'" target="_blank" style="flex-shrink:0;padding:7px 14px;background:linear-gradient(135deg,#075e54,#25D366);border-radius:8px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;white-space:nowrap;">💬 Send</a>':'<span style="font-size:10px;color:rgba(255,107,107,.5);">No WA</span>')
         +'</div>';
-    }).join('');
+    });
+    html+='</div>';
   });
+  html+='</div>';
+  waSection.innerHTML=html;
+  waSection.style.display='block';
 }
 
 window.copyGroupLink=function(lbl,link){
