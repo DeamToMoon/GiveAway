@@ -617,27 +617,7 @@ onSnapshot(doc(db,'tournament_result','latest'),snap=>{
   }
 });
 
-// Real-time teams list
-onSnapshot(query(collection(db,'tournament_teams'),orderBy('registeredAt','asc')),snap=>{
-  const list=document.getElementById('teamsList');
-  const count=snap.size;
-  const countEl=document.getElementById('teamsCount');
-  const badgeEl=document.getElementById('teamsCountBadge');
-  if(countEl)countEl.textContent=count;
-  if(badgeEl)badgeEl.textContent=count+' team'+(count!==1?'s':'');
-  if(count===0){list.innerHTML='<div class="no-teams">🏕️ No teams yet — be the first to register!</div>';return;}
-  list.innerHTML=snap.docs.map((d,i)=>{
-    const t=d.data();
-    return `<div class="team-item">
-      <div class="team-num">TEAM #${i+1}</div>
-      <div class="team-leader">👑 ${t.leaderName}</div>
-      <div class="team-uid">UID: ${t.leaderUID}</div>
-      <div class="team-members">
-        ${[t.member1,t.member2,t.member3].filter(Boolean).map(m=>`<span class="team-member-chip">⚔️ ${m}</span>`).join('')}
-      </div>
-    </div>`;
-  }).join('');
-});
+
 
 // Giveaway entry
 window.showTab=function(tab){document.querySelectorAll('.ff-list').forEach(e=>e.classList.remove('active'));document.querySelectorAll('.ff-tab').forEach(e=>e.classList.remove('active'));document.getElementById('tab-'+tab).classList.add('active');document.querySelector('.ff-tab.'+tab).classList.add('active');};
@@ -753,29 +733,6 @@ onSnapshot(query(collection(db,'tournament_teams'),orderBy('registeredAt','asc')
   }).join('');
 });
 
-// Giveaway entry
-window.showTab=function(tab){document.querySelectorAll('.ff-list').forEach(e=>e.classList.remove('active'));document.querySelectorAll('.ff-tab').forEach(e=>e.classList.remove('active'));document.getElementById('tab-'+tab).classList.add('active');document.querySelector('.ff-tab.'+tab).classList.add('active');};
-window.submitEntry=async function(){
-  const username=document.getElementById('username').value.trim(),uid=document.getElementById('uid').value.trim();
-  if(!username||!uid){alert('Fill in BOTH fields! 😤');return;}
-  const btn=document.getElementById('submitBtn');btn.disabled=true;btn.textContent='⏳ Checking...';
-  try{
-    const dU=await getDocs(query(collection(db,'entries'),where('uid','==',uid)));
-    if(!dU.empty){alert('🚫 This UID already entered!');btn.disabled=false;btn.textContent="🎰 ENTER NOW — IT'S FREE!";return;}
-    const dN=await getDocs(query(collection(db,'entries'),where('username','==',username)));
-    if(!dN.empty){alert('🚫 This username already entered!');btn.disabled=false;btn.textContent="🎰 ENTER NOW — IT'S FREE!";return;}
-    await addDoc(collection(db,'entries'),{username,uid,timestamp:serverTimestamp()});
-    document.getElementById('formCard').style.display='none';
-    const ty=document.getElementById('thankyou');ty.style.display='flex';
-    document.getElementById('enteredName').textContent=username;
-    launchConfetti();
-  }catch(err){
-    let msg='Something went wrong 😢\n\n';
-    if(err.code==='permission-denied')msg+='🔒 Firestore rules blocking writes.';
-    else msg+='Error: '+(err.message||err.code||'Unknown');
-    alert(msg);btn.disabled=false;btn.textContent="🎰 ENTER NOW — IT'S FREE!";
-  }
-};
 
 // Tournament form
 window.showTournForm=function(){
