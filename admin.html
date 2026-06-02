@@ -267,50 +267,20 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     </div>
   </div>
 
-  <!-- 2ND LUCKY DRAW -->
-  <div class="card" id="weeklyDrawCard" style="border-color:rgba(79,195,247,.2);">
-    <div class="card-hdr" style="color:var(--blue);">🎰 2nd Lucky Draw — Weekly Membership Pass 💎</div>
-    <button class="pick-btn" id="weeklyDrawBtn" onclick="startDraw('weekly')" style="background:linear-gradient(135deg,#0a3060,#00E5FF,#0a3060);background-size:300%;box-shadow:0 4px 30px rgba(79,195,247,.25);">
-      🎰 SPIN — 2ND LUCKY DRAW WINNER
-    </button>
-    <div id="weeklyWheelSection" style="display:none;flex-direction:column;align-items:center;gap:18px;margin-top:24px;">
-      <div style="position:relative;width:320px;height:320px;">
-        <div style="position:absolute;inset:-8px;border-radius:50%;background:conic-gradient(#4FC3F7,#00E5FF,#4FC3F7,#B3E5FC,#4FC3F7);animation:spinGlow 2s linear infinite;opacity:.4;z-index:0;"></div>
-        <canvas id="weeklyWheel" width="320" height="320" style="position:relative;z-index:1;border-radius:50%;"></canvas>
-        <div style="position:absolute;top:-22px;left:50%;transform:translateX(-50%);z-index:10;filter:drop-shadow(0 0 10px rgba(0,229,255,1));">
-          <svg width="28" height="26" viewBox="0 0 28 26"><polygon points="14,26 0,0 28,0" fill="#00E5FF"/></svg>
-        </div>
-        <div id="weeklyCentreWrap" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10;width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#060e2a,#0d1f3c);border:3px solid #4FC3F7;box-shadow:0 0 24px rgba(79,195,247,.6);display:flex;align-items:center;justify-content:center;overflow:hidden;">
-          <div id="weeklyCentreName" style="font-family:'Orbitron',sans-serif;font-size:7px;font-weight:900;color:#4FC3F7;text-align:center;padding:4px;word-break:break-all;line-height:1.2;">🎰</div>
-        </div>
-      </div>
-      <div id="weeklyTimerWrap" style="width:100%;display:flex;flex-direction:column;align-items:center;gap:8px;">
-        <div style="font-size:11px;letter-spacing:3px;color:var(--faint);text-transform:uppercase;font-weight:700;">Spinning...</div>
-        <div style="width:100%;height:8px;background:rgba(79,195,247,.1);border-radius:4px;overflow:hidden;">
-          <div id="weeklyTimerBar" style="height:100%;background:linear-gradient(90deg,#4FC3F7,#00E5FF);border-radius:4px;width:100%;transition:width .1s linear;"></div>
-        </div>
-      </div>
-      <div id="weeklyCountdown" style="display:none;font-family:'Orbitron',sans-serif;font-size:80px;font-weight:900;color:#4FC3F7;text-shadow:0 0 40px rgba(79,195,247,.9),0 0 80px rgba(79,195,247,.4);animation:cdPulse .8s ease-in-out infinite;"></div>
-    </div>
-    <div id="weeklyWinnerReveal" style="display:none;flex-direction:column;align-items:center;gap:18px;margin-top:24px;">
-      <div style="font-size:64px;animation:bigBounce 1s ease infinite;">🎉</div>
-      <div style="font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;letter-spacing:3px;color:#4FC3F7;text-align:center;text-shadow:0 0 20px rgba(79,195,247,.6);">🎊 CONGRATULATIONS! 🎊<br>2ND LUCKY DRAW WINNER!</div>
-      <div class="wdc wk" style="width:100%;">
-        <div class="wdc-trophy">🎰</div>
-        <div class="wdc-badge">Weekly Membership Pass 💎</div>
-        <div class="wdc-name" id="winnerNameWeekly"></div>
-        <div class="wdc-uid" id="winnerUIDWeekly"></div>
-      </div>
-      <div style="display:flex;gap:12px;width:100%;margin-top:4px;">
-        <button onclick="undoDraw('weekly')" style="flex:1;padding:14px;background:rgba(255,107,107,.08);border:2px solid rgba(255,107,107,.35);border-radius:14px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--red);letter-spacing:2px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='rgba(255,107,107,.2)'" onmouseout="this.style.background='rgba(255,107,107,.08)'">↩️ UNDO<br><span style="font-size:9px;opacity:.7;letter-spacing:1px;">RE-SPIN</span></button>
-        <button onclick="confirmDraw('weekly')" style="flex:2;padding:14px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:2px solid rgba(105,240,174,.4);border-radius:14px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--green);letter-spacing:2px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(105,240,174,.25),rgba(52,211,153,.18))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1))'">✅ CONFIRM WINNER<br><span style="font-size:9px;opacity:.7;letter-spacing:1px;">LOCK THIS RESULT</span></button>
-      </div>
+  <!-- 2ND LUCKY DRAW — COMING SOON -->
+  <div class="card" style="border-color:rgba(255,212,56,.15);">
+    <div class="card-hdr" style="color:var(--gold);">🎁 2nd Lucky Draw — Coming Soon 🔜</div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px 16px;text-align:center;">
+      <div style="font-size:56px;animation:bounce 2s ease infinite;">🔜</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:var(--gold);letter-spacing:2px;">SOMETHING NEW COMING</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.7;">We're cooking up something exciting for<br>the 2nd prize slot! 🔥<br><strong style="color:var(--gold);">Stay tuned — it's going to be BIG 👀</strong></div>
+      <div style="background:rgba(255,212,56,.06);border:1px dashed rgba(255,212,56,.25);border-radius:12px;padding:12px 20px;font-size:11px;color:rgba(255,212,56,.6);letter-spacing:1px;">🚧 &nbsp;UPGRADING THIS SLOT &nbsp;🚧</div>
     </div>
   </div>
 
   <div class="card" id="endDrawCard" style="display:none;border-color:rgba(105,240,174,.2);">
-    <div class="card-hdr" style="color:var(--green);">✅ Both Lucky Draw Winners Confirmed!</div>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.7;">Both winners are confirmed, entries cleared, and results are <strong style="color:var(--green);">live on the main page</strong>. Click below to reset the wheels and start a fresh new round.</p>
+    <div class="card-hdr" style="color:var(--green);">✅ Lucky Draw Winner Confirmed!</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.7;">Winner is confirmed, entries cleared, and result is <strong style="color:var(--green);">live on the main page</strong>. Click below to reset the wheel and start a fresh new round.</p>
     <button class="end-btn" id="endDrawBtn" onclick="endDraw()" style="width:100%;padding:20px;font-size:14px;background:linear-gradient(135deg,#065f46,#10b981);box-shadow:0 4px 24px rgba(16,185,129,.3);">🔄 START NEW ROUND</button>
   </div>
 
@@ -328,7 +298,19 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       <button class="refresh-btn" onclick="loadTournTeams()">🔄 Refresh</button>
     </div>
 
-    <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--faint);text-transform:uppercase;margin-bottom:6px;">Registered Teams</div>
+    <!-- Registration Toggle -->
+    <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,.2);border:1px solid rgba(105,240,174,.15);border-radius:12px;padding:14px 16px;margin-bottom:14px;">
+      <div>
+        <div style="font-size:12px;font-weight:800;color:#fff;margin-bottom:3px;">🔐 Registration Toggle</div>
+        <div style="font-size:10px;color:var(--muted);" id="regToggleStatus">Loading...</div>
+      </div>
+      <label style="position:relative;display:inline-block;width:54px;height:28px;cursor:pointer;">
+        <input type="checkbox" id="regToggle" onchange="toggleRegistration()" style="opacity:0;width:0;height:0;">
+        <span id="regToggleSlider" style="position:absolute;inset:0;background:rgba(255,107,107,.3);border-radius:28px;transition:.3s;border:1px solid rgba(255,107,107,.4);">
+          <span style="position:absolute;height:20px;width:20px;left:3px;bottom:3px;background:#FF6B6B;border-radius:50%;transition:.3s;" id="regToggleBall"></span>
+        </span>
+      </label>
+    </div>
     <div style="background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.18);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:rgba(255,212,56,.8);line-height:1.6;">
       ⏰ <strong>Registration closes: Friday 10:00 PM NPT</strong><br>
       🔒 New registration reopens only after winner is announced via <em>Publish Results</em> below
@@ -395,7 +377,7 @@ window.doLogin=function(){
   if(u==='Dream2moon'&&p==='dream2moon@123'){
     document.getElementById('loginScreen').style.display='none';
     document.getElementById('adminPanel').style.display='flex';
-    loadEntries();loadTournTeams();loadSavedBracket();
+    loadEntries();loadTournTeams();loadSavedBracket();loadRegToggle();
   }else{
     document.getElementById('loginError').style.display='block';
   }
@@ -484,9 +466,9 @@ window.startDraw=function(type){
   const pool=allEntries.filter(e=>!(drawnMonthly&&e.id===drawnMonthly.id)&&!(drawnWeekly&&e.id===drawnWeekly.id));
   const winner=pool[Math.floor(Math.random()*pool.length)];
   if(!winner){alert('Not enough entries!');wheelRunning=false;return;}
-  const isM=type==='monthly';
+
   const I={
-    btn:isM?'monthlyDrawBtn':'weeklyDrawBtn',sec:isM?'monthlyWheelSection':'weeklyWheelSection',
+
     cvs:isM?'monthlyWheel':'weeklyWheel',ctr:isM?'monthlyCentreName':'weeklyCentreName',
     bar:isM?'monthlyTimerBar':'weeklyTimerBar',twp:isM?'monthlyTimerWrap':'weeklyTimerWrap',
     cd:isM?'monthlyCountdown':'weeklyCountdown',rev:isM?'monthlyWinnerReveal':'weeklyWinnerReveal',
@@ -541,22 +523,17 @@ window.startDraw=function(type){
 };
 
 window.confirmDraw=async function(type){
-  const isM=type==='monthly';
-  const w={username:document.getElementById(isM?'winnerNameMonthly':'winnerNameWeekly').textContent,uid:document.getElementById(isM?'winnerUIDMonthly':'winnerUIDWeekly').textContent.replace('UID: ','')};
-  if(isM){drawnMonthly=w;}else{drawnWeekly=w;}
-  if(drawnMonthly&&drawnWeekly){
-    try{
-      await setDoc(doc(db,'winners','latest'),{monthlyUsername:drawnMonthly.username,monthlyUID:drawnMonthly.uid,weeklyUsername:drawnWeekly.username,weeklyUID:drawnWeekly.uid,drawnAt:serverTimestamp()});
-    }catch(e){alert('⚠️ Could not save winners:\n'+e.message);console.error(e);return;}
-    winnerHistory.unshift({monthly:drawnMonthly,weekly:drawnWeekly});
-    document.getElementById('totalWins').textContent=winnerHistory.length;
-    updateHistory();await clearAllEntries();
-    document.getElementById('endDrawCard').style.display='block';
-    document.getElementById('endDrawCard').scrollIntoView({behavior:'smooth'});
-    alert('🎉 Both winners confirmed!\nWinners are LIVE!\n\n🎰 1st Lucky Draw: '+drawnMonthly.username+'\n🎰 2nd Lucky Draw: '+drawnWeekly.username+'\n\n✅ All entries cleared!');
-  }else{
-    alert('✅ '+(isM?'1st':'2nd')+' winner confirmed!\nNow spin the '+(isM?'2nd':'1st')+' wheel. 🎡');
-  }
+  const w={username:document.getElementById('winnerNameMonthly').textContent,uid:document.getElementById('winnerUIDMonthly').textContent.replace('UID: ','')};
+  drawnMonthly=w;
+  try{
+    await setDoc(doc(db,'winners','latest'),{monthlyUsername:drawnMonthly.username,monthlyUID:drawnMonthly.uid,weeklyUsername:'',weeklyUID:'',drawnAt:serverTimestamp()});
+  }catch(e){alert('⚠️ Could not save winner:\n'+e.message);console.error(e);return;}
+  winnerHistory.unshift({monthly:drawnMonthly,weekly:{username:'—',uid:'—'}});
+  document.getElementById('totalWins').textContent=winnerHistory.length;
+  updateHistory();await clearAllEntries();
+  document.getElementById('endDrawCard').style.display='block';
+  document.getElementById('endDrawCard').scrollIntoView({behavior:'smooth'});
+  alert('🎉 Winner confirmed & LIVE!\n\n🎰 1st Lucky Draw: '+drawnMonthly.username+'\n\n✅ All entries cleared!');
 };
 
 async function clearAllEntries(){
@@ -580,9 +557,9 @@ window.manualClear=async function(){
 window.undoDraw=function(type){
   if(wheelRunning){alert('⏳ Wait for the draw to finish!');return;}
   if(!confirm('↩️ Undo '+type+' draw and re-spin?'))return;
-  const isM=type==='monthly';
+
   if(isM){drawnMonthly=null;}else{drawnWeekly=null;}
-  const I={btn:isM?'monthlyDrawBtn':'weeklyDrawBtn',rev:isM?'monthlyWinnerReveal':'weeklyWinnerReveal',sec:isM?'monthlyWheelSection':'weeklyWheelSection',cd:isM?'monthlyCountdown':'weeklyCountdown',ctr:isM?'monthlyCentreName':'weeklyCentreName',twp:isM?'monthlyTimerWrap':'weeklyTimerWrap',bar:isM?'monthlyTimerBar':'weeklyTimerBar'};
+
   document.getElementById(I.rev).style.display='none';document.getElementById(I.sec).style.display='none';
   document.getElementById(I.cd).style.display='none';document.getElementById(I.ctr).textContent='🎰';
   document.getElementById(I.ctr).style.fontSize='16px';document.getElementById(I.bar).style.width='100%';
@@ -591,16 +568,13 @@ window.undoDraw=function(type){
 };
 
 window.endDraw=async function(){
-  if(!confirm('🔄 Start a new round?\n\nThis will reset both wheels.'))return;
-  ['monthly','weekly'].forEach(type=>{
-    const isM=type==='monthly';
-    const I={btn:isM?'monthlyDrawBtn':'weeklyDrawBtn',rev:isM?'monthlyWinnerReveal':'weeklyWinnerReveal',sec:isM?'monthlyWheelSection':'weeklyWheelSection',cd:isM?'monthlyCountdown':'weeklyCountdown',ctr:isM?'monthlyCentreName':'weeklyCentreName',twp:isM?'monthlyTimerWrap':'weeklyTimerWrap',bar:isM?'monthlyTimerBar':'weeklyTimerBar'};
-    document.getElementById(I.rev).style.display='none';document.getElementById(I.sec).style.display='none';
-    document.getElementById(I.cd).style.display='none';document.getElementById(I.ctr).textContent='🎰';
-    document.getElementById(I.ctr).style.fontSize='16px';document.getElementById(I.bar).style.width='100%';
-    document.getElementById(I.twp).style.opacity='1';document.getElementById(I.btn).disabled=false;
-  });
-  document.getElementById('endDrawCard').style.display='none';drawnMonthly=null;drawnWeekly=null;
+  if(!confirm('🔄 Start a new round?\n\nThis will reset the wheel.'))return;
+  const I={btn:'monthlyDrawBtn',rev:'monthlyWinnerReveal',sec:'monthlyWheelSection',cd:'monthlyCountdown',ctr:'monthlyCentreName',twp:'monthlyTimerWrap',bar:'monthlyTimerBar'};
+  document.getElementById(I.rev).style.display='none';document.getElementById(I.sec).style.display='none';
+  document.getElementById(I.cd).style.display='none';document.getElementById(I.ctr).textContent='🎰';
+  document.getElementById(I.ctr).style.fontSize='16px';document.getElementById(I.bar).style.width='100%';
+  document.getElementById(I.twp).style.opacity='1';document.getElementById(I.btn).disabled=false;
+  document.getElementById('endDrawCard').style.display='none';drawnMonthly=null;drawnWeekly=null;wheelRunning=false;
   alert('✅ Ready for next round! 🚀\nEntries are cleared. Players can enter again.');
 };
 
@@ -613,6 +587,40 @@ const WA_LINKS={
   C:'https://chat.whatsapp.com/JYOw4EHnFa1CUjNxSW8Nu6?s=cl&p=i&ilr=1',
   D:'https://chat.whatsapp.com/KHToTuoxRBkJPqRK9cBcZk?s=cl&p=i&ilr=1',
   E:'https://chat.whatsapp.com/E4OUilEoJ55Czam8jCaGa4?s=cl&p=i&ilr=1'
+};
+
+// ── Registration toggle ──
+async function loadRegToggle(){
+  try{
+    const snap=await getDoc(doc(db,'tournament_meta','settings'));
+    const locked=snap.exists()&&snap.data().registrationLocked===true;
+    setToggleUI(locked);
+  }catch(e){setToggleUI(false);}
+}
+function setToggleUI(locked){
+  const cb=document.getElementById('regToggle');
+  const slider=document.getElementById('regToggleSlider');
+  const ball=document.getElementById('regToggleBall');
+  const status=document.getElementById('regToggleStatus');
+  if(!cb)return;
+  cb.checked=!locked;
+  if(!locked){
+    if(slider){slider.style.background='rgba(105,240,174,.25)';slider.style.borderColor='rgba(105,240,174,.4)';}
+    if(ball){ball.style.background='#69F0AE';ball.style.transform='translateX(26px)';}
+    if(status)status.textContent='🟢 Registration is OPEN on index';
+  }else{
+    if(slider){slider.style.background='rgba(255,107,107,.25)';slider.style.borderColor='rgba(255,107,107,.4)';}
+    if(ball){ball.style.background='#FF6B6B';ball.style.transform='translateX(0)';}
+    if(status)status.textContent='🔴 Registration is LOCKED on index';
+  }
+}
+window.toggleRegistration=async function(){
+  const cb=document.getElementById('regToggle');
+  const locked=!cb.checked;
+  try{
+    await setDoc(doc(db,'tournament_meta','settings'),{registrationLocked:locked,updatedAt:serverTimestamp()});
+    setToggleUI(locked);
+  }catch(e){alert('Failed: '+e.message);cb.checked=!locked;}
 };
 
 async function loadSavedBracket(){
