@@ -424,6 +424,17 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     </div>
     <div class="esewa-note">💚 Prizes paid via <span>eSewa</span> — Total Prize Pool: <span>Rs.2,400</span></div>
 
+    <!-- How It Works -->
+    <div style="background:rgba(0,0,0,.2);border:1px solid rgba(79,195,247,.12);border-radius:14px;padding:14px 16px;margin-bottom:18px;">
+      <div style="font-size:9px;font-weight:800;letter-spacing:3px;color:var(--faint);text-transform:uppercase;margin-bottom:12px;">⚡ How It Works</div>
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">📋</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Register your squad</strong> — Leader + 3 members before Thursday 11:59PM NPT</div></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">🎲</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Random group division</strong> — Teams shuffled &amp; split into groups after registration closes</div></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">⚔️</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">5 group matches</strong> — Top 2 from each group qualify for Grand Final</div></div>
+      <div style="height:1px;background:rgba(79,195,247,.08);margin:10px 0;"></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">🎬</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Live Stream Qualifier</strong> — 12 teams play last qualifier match live! Top 2 earn a Grand Final spot 🔥</div></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;"><div style="font-size:15px;flex-shrink:0;">🏆</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Grand Final</strong> — 12 teams battle it out. Best 3 squads share Rs.2,400 prize pool! 💰</div></div>
+    </div>
+
     <!-- Teams registered count -->
     <div class="teams-count-wrap">
       <div>
@@ -511,13 +522,24 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 
   <!-- Rules -->
   <div class="card">
-    <div class="rules-title">📋 Rules to Win</div>
+    <div class="rules-title">📋 Giveaway Rules</div>
     <div class="rule-item"><div class="rule-dot"></div>Must follow @Dream2Moon on TikTok</div>
     <div class="rule-item"><div class="rule-dot"></div>Must like the giveaway video</div>
     <div class="rule-item"><div class="rule-dot"></div>Comment under the video to enter</div>
     <div class="rule-item"><div class="rule-dot"></div>1st Lucky Draw — Weekly Membership Pass 💎</div>
-    <div class="rule-item"><div class="rule-dot"></div>2nd Lucky Draw — Weekly Membership Pass 💎</div>
-    <div class="rule-item"><div class="rule-dot"></div>Both winners announced Saturday at 10AM NPT!</div>
+    <div class="rule-item"><div class="rule-dot" style="background:var(--gold);box-shadow:0 0 6px rgba(255,212,56,.6);"></div>2nd Prize — Mystery reward coming soon 👀</div>
+    <div class="rule-item"><div class="rule-dot"></div>Winners announced every Saturday at 10AM NPT!</div>
+  </div>
+
+  <div class="card" style="border-color:rgba(105,240,174,.2);">
+    <div class="rules-title" style="color:var(--green);">⚔️ Squad Tournament Rules</div>
+    <div class="rule-item"><div class="rule-dot" style="background:var(--green);box-shadow:0 0 6px rgba(105,240,174,.6);"></div>Register before Thursday 11:59PM NPT (max 60 teams)</div>
+    <div class="rule-item"><div class="rule-dot" style="background:var(--green);box-shadow:0 0 6px rgba(105,240,174,.6);"></div>Team: 1 leader + 3 members — names cannot be changed</div>
+    <div class="rule-item"><div class="rule-dot" style="background:var(--green);box-shadow:0 0 6px rgba(105,240,174,.6);"></div>Groups randomly divided after registration closes</div>
+    <div class="rule-item"><div class="rule-dot" style="background:var(--green);box-shadow:0 0 6px rgba(105,240,174,.6);"></div>Top 2 from each group advance to Grand Final</div>
+    <div class="rule-item"><div class="rule-dot" style="background:#FF9800;box-shadow:0 0 6px rgba(255,152,0,.6);"></div>🎬 Live Stream: 12 teams play — top 2 earn a Grand Final spot</div>
+    <div class="rule-item"><div class="rule-dot" style="background:#25D366;box-shadow:0 0 6px rgba(37,211,102,.6);"></div>📱 Each team leader will be invited to their WhatsApp match group</div>
+    <div class="rule-item"><div class="rule-dot" style="background:var(--gold);box-shadow:0 0 6px rgba(255,212,56,.6);"></div>Prizes: 🥇 Rs.1,200 · 🥈 Rs.800 · 🥉 Rs.400 via eSewa 💚</div>
   </div>
 
   <div class="footer">🌙 <span>Powered by</span> <a href="#">Dream2Moon</a> &nbsp;|&nbsp; Play With Purpose</div>
@@ -646,20 +668,38 @@ window.submitEntry=async function(){
 // Re-opens after admin publishes tournament results
 function checkRegistrationStatus(){
   const resultsPublished=window._tournResultReset||false;
+  const adminLocked=window._adminLocked||false;
   const badge=document.getElementById('regStatusBadge');
   const badgeText=document.getElementById('regStatusText');
   const badgeDot=badge?badge.querySelector('.tourn-live-dot'):null;
   const regBtn=document.getElementById('registerBtn');
   const lockMsg=document.getElementById('regLockedMsg');
-  if(badgeText)badgeText.textContent='Registration Open';
-  if(badge){badge.style.background='';badge.style.borderColor='';}
-  if(badgeDot)badgeDot.style.background='#69F0AE';
-  if(regBtn)regBtn.style.display='block';
-  if(lockMsg)lockMsg.style.display='none';
+  // Locked if admin manually locked it
+  const isLocked=adminLocked&&!resultsPublished;
+  if(!isLocked){
+    if(badgeText)badgeText.textContent='Registration Open';
+    if(badge){badge.style.background='';badge.style.borderColor='';}
+    if(badgeDot)badgeDot.style.background='#69F0AE';
+    if(regBtn)regBtn.style.display='block';
+    if(lockMsg)lockMsg.style.display='none';
+  }else{
+    if(badgeText)badgeText.textContent='Registration Closed';
+    if(badge){badge.style.background='rgba(255,107,107,.15)';badge.style.borderColor='rgba(255,107,107,.3)';}
+    if(badgeDot)badgeDot.style.background='#FF6B6B';
+    if(regBtn)regBtn.style.display='none';
+    if(lockMsg)lockMsg.style.display='block';
+  }
 }
 
-// Listen for tournament results — re-opens registration when results are published
-onSnapshot(doc(db,'tournament_result','latest'),snap=>{
+// Listen for admin registration toggle
+onSnapshot(doc(db,'tournament_meta','settings'),snap=>{
+  if(snap.exists()&&snap.data().registrationLocked===true){
+    window._adminLocked=true;
+  }else{
+    window._adminLocked=false;
+  }
+  checkRegistrationStatus();
+});
   // Open if results exist (any results = tournament done = next week open)
   const resultsExist=snap.exists()&&!!snap.data()?.champion;
   window._tournResultReset=resultsExist;
@@ -756,7 +796,7 @@ window.submitTournament=async function(){
   const m1=document.getElementById('t-m1').value.trim();
   const m2=document.getElementById('t-m2').value.trim();
   const m3=document.getElementById('t-m3').value.trim();
-  if(!leader||!uid||!wa||!m1||!m2||!m3){alert('Please fill in ALL fields including WhatsApp number! ⚔️');return;}
+  if(window._adminLocked&&!window._tournResultReset){alert('🔒 Registration is currently closed by admin.\nStay tuned for updates! 🏆');return;}
   if(!/^[0-9]{7,15}$/.test(wa.replace(/\s/g,''))){alert('Please enter a valid WhatsApp number (digits only)! 📱');return;}
 
   const btn=document.getElementById('tournSubmitBtn');btn.disabled=true;btn.textContent='⏳ Registering...';
