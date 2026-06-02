@@ -680,7 +680,8 @@ onSnapshot(doc(db,'tournament_meta','settings'),snap=>{
   }
   checkRegistrationStatus();
 });
-  // Open if results exist (any results = tournament done = next week open)
+// Listen for tournament results — re-opens registration when results published
+onSnapshot(doc(db,'tournament_result','latest'),snap=>{
   const resultsExist=snap.exists()&&!!snap.data()?.champion;
   window._tournResultReset=resultsExist;
   checkRegistrationStatus();
