@@ -342,8 +342,21 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 
   <!-- Prizes -->
   <div class="prizes">
-    <div class="prize-card prize-wk"><div class="pz-icon">🏆</div><div class="pz-lbl">Lucky Draw</div><div class="pz-val">Weekly 💎</div></div>
-    <div class="prize-card prize-mo"><div class="pz-icon">👑</div><div class="pz-lbl">Lucky Draw</div><div class="pz-val">Monthly 💎💎</div></div>
+    <div class="prize-card prize-wk">
+      <div class="pz-icon">🏆</div>
+      <div class="pz-lbl">Lucky Draw</div>
+      <div class="pz-val">Weekly 💎</div>
+      <div style="font-size:9px;color:rgba(79,195,247,.6);margin-top:6px;line-height:1.5;">Weekly Membership Pass<br>Every Saturday 🎯</div>
+    </div>
+    <div class="prize-card prize-mo">
+      <div class="pz-icon">🎁</div>
+      <div class="pz-lbl">Coming Soon</div>
+      <div class="pz-val" style="font-size:11px;">Mystery Prize 👀</div>
+      <div style="font-size:9px;color:rgba(255,212,56,.7);margin-top:6px;line-height:1.6;font-weight:700;">Something BIG is<br>dropping soon... 🔥<br>Stay tuned! 🤫</div>
+    </div>
+  </div>
+  <div style="text-align:center;font-size:11px;color:var(--faint);letter-spacing:1px;margin-top:-8px;">
+    🌙 Follow <strong style="color:var(--gold);">@Dream2Moon</strong> on TikTok to stay updated!
   </div>
 
   <!-- Giveaway Form -->
@@ -542,8 +555,13 @@ onSnapshot(doc(db,'winners','latest'),snap=>{
     if(dEl)dEl.textContent='🎉 Drawn on '+date;
     const mn=w.monthlyUsername||'???',mu=w.monthlyUID||'???',wn=w.weeklyUsername||'—',wu=w.weeklyUID||'—';
     if(duoEl)duoEl.innerHTML=`
-      <div class="wdc mo"><div class="wdc-b">1st Lucky Draw 💎</div><div class="wdc-icon">🎰</div><div class="wdc-name">${mn}</div><div class="wdc-uid">UID: ${mu}</div><div class="wdc-drew">🏆 Winner!</div></div>
-      <div class="wdc wk"><div class="wdc-b">2nd Lucky Draw 💎</div><div class="wdc-icon">🎰</div><div class="wdc-name">${wn}</div><div class="wdc-uid">UID: ${wu}</div><div class="wdc-drew">🏆 Winner!</div></div>`;
+      <div class="wdc mo" style="flex:1.2;"><div class="wdc-b">1st Lucky Draw 💎</div><div class="wdc-icon">🎰</div><div class="wdc-name">${mn}</div><div class="wdc-uid">UID: ${mu}</div><div class="wdc-drew">🏆 Winner!</div></div>
+      <div class="wdc" style="flex:0.8;background:linear-gradient(160deg,rgba(255,212,56,.06),rgba(255,171,64,.03));border:1px dashed rgba(255,212,56,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
+        <div style="font-size:22px;">🎁</div>
+        <div style="font-size:8px;font-weight:800;letter-spacing:1px;color:rgba(255,212,56,.6);text-transform:uppercase;">Coming Soon</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;color:rgba(255,212,56,.5);">Mystery Prize</div>
+        <div style="font-size:9px;color:rgba(255,212,56,.4);">Stay tuned 👀</div>
+      </div>`;
   }else{if(dEl)dEl.textContent='No draw yet — stay tuned!';}
 });
 
@@ -628,34 +646,16 @@ window.submitEntry=async function(){
 // Re-opens after admin publishes tournament results
 function checkRegistrationStatus(){
   const resultsPublished=window._tournResultReset||false;
-  const now=new Date();
-  const utcMs=now.getTime()+now.getTimezoneOffset()*60000;
-  const npt=new Date(utcMs+(5*60+45)*60000);
-  const day=npt.getDay();const hour=npt.getHours();const min=npt.getMinutes();
-  // Lock ONLY on Thursday 11:59PM NPT or later — AND only if no results published yet
-  const isThursdayLock=(day===4&&(hour>23||(hour===23&&min>=59)))||(day===5)||(day===6)||(day===0&&hour<10);
-  // If results are published → OPEN regardless of day
-  const isLocked=isThursdayLock&&!resultsPublished;
-
   const badge=document.getElementById('regStatusBadge');
   const badgeText=document.getElementById('regStatusText');
   const badgeDot=badge?badge.querySelector('.tourn-live-dot'):null;
   const regBtn=document.getElementById('registerBtn');
   const lockMsg=document.getElementById('regLockedMsg');
-
-  if(!isLocked){
-    if(badgeText)badgeText.textContent='Registration Open';
-    if(badge){badge.style.background='';badge.style.borderColor='';}
-    if(badgeDot)badgeDot.style.background='#69F0AE';
-    if(regBtn)regBtn.style.display='block';
-    if(lockMsg)lockMsg.style.display='none';
-  }else{
-    if(badgeText)badgeText.textContent='Registration Closed — Thu 11:59PM NPT';
-    if(badge){badge.style.background='rgba(255,107,107,.15)';badge.style.borderColor='rgba(255,107,107,.3)';}
-    if(badgeDot)badgeDot.style.background='#FF6B6B';
-    if(regBtn)regBtn.style.display='none';
-    if(lockMsg)lockMsg.style.display='block';
-  }
+  if(badgeText)badgeText.textContent='Registration Open';
+  if(badge){badge.style.background='';badge.style.borderColor='';}
+  if(badgeDot)badgeDot.style.background='#69F0AE';
+  if(regBtn)regBtn.style.display='block';
+  if(lockMsg)lockMsg.style.display='none';
 }
 
 // Listen for tournament results — re-opens registration when results are published
@@ -681,6 +681,25 @@ onSnapshot(query(collection(db,'tournament_teams'),orderBy('registeredAt','asc')
   const slots=Math.max(0,60-count);
   const slEl=document.getElementById('slotsLeft');
   if(slEl)slEl.textContent=slots;
+  // Auto-lock registration UI when cap hit
+  const isFull=count>=60;
+  const regBtn=document.getElementById('registerBtn');
+  const lockMsg=document.getElementById('regLockedMsg');
+  const badge=document.getElementById('regStatusBadge');
+  const badgeText=document.getElementById('regStatusText');
+  const badgeDot=badge?badge.querySelector('.tourn-live-dot'):null;
+  if(isFull){
+    if(regBtn)regBtn.style.display='none';
+    if(lockMsg){
+      lockMsg.style.display='block';
+      lockMsg.innerHTML='<div style="font-size:28px;margin-bottom:8px;">🚫</div>'
+        +'<div style="font-family:\'Orbitron\',sans-serif;font-size:12px;font-weight:900;color:var(--red);letter-spacing:2px;margin-bottom:6px;">MAX REGISTRATION HIT!</div>'
+        +'<div style="font-size:12px;color:var(--muted);line-height:1.6;">60 teams have registered.<br>Registration is now closed!<br>Try again next week 🙏</div>';
+    }
+    if(badgeText)badgeText.textContent='Full — 60/60 Teams';
+    if(badge){badge.style.background='rgba(255,107,107,.15)';badge.style.borderColor='rgba(255,107,107,.3)';}
+    if(badgeDot)badgeDot.style.background='#FF6B6B';
+  }
   if(count===0){list.innerHTML='<div class="no-teams">🏕️ No teams yet — be the first to register!</div>';return;}
   list.innerHTML=snap.docs.map((d,i)=>{
     const t=d.data();
@@ -729,13 +748,7 @@ window.cancelTournForm=function(){
 };
 window.submitTournament=async function(){
   // Check lock: Thursday 11:59PM NPT
-  const now=new Date();
-  const utcMs=now.getTime()+now.getTimezoneOffset()*60000;
-  const npt=new Date(utcMs+(5*60+45)*60000);
-  const day=npt.getDay();const hour=npt.getHours();const min=npt.getMinutes();
-  const isThursdayLock=(day===4&&(hour>23||(hour===23&&min>=59)))||(day===5)||(day===6)||(day===0&&hour<10);
-  const isLocked=isThursdayLock&&!(window._tournResultReset||false);
-  if(isLocked){alert('🔒 Registration is closed!\nEntries locked after Thursday 11:59PM NPT.\nStay tuned for match results! 🏆');return;}
+
 
   const leader=document.getElementById('t-leader').value.trim();
   const uid=document.getElementById('t-uid').value.trim();
