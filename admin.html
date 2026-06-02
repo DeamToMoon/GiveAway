@@ -714,16 +714,60 @@ function rebuildBracketFromGroups(groups,n){
     +'<div style="flex:1;padding:10px;text-align:center;border-right:1px solid rgba(255,255,255,.05);"><div style="font-size:16px;">🥉</div><div style="font-size:11px;font-weight:900;color:#CE93D8;">Rs.400</div><div style="font-size:8px;color:rgba(206,147,216,.5);">3RD PLACE</div></div>'
     +'<div style="flex:1;padding:10px;text-align:center;background:rgba(105,240,174,.04);"><div style="font-size:16px;">💚</div><div style="font-size:10px;color:rgba(105,240,174,.7);font-weight:700;margin-top:2px;">via eSewa</div></div>'
     +'</div></div>');
-  display.innerHTML='<div style="font-size:10px;color:var(--muted);margin-bottom:10px;text-align:center;letter-spacing:1px;">'+slides.length+' SLIDES — SCREENSHOT EACH ONE</div>'+slides.join('');
+  display.innerHTML='<div style="font-size:10px;color:var(--muted);margin-bottom:10px;text-align:center;letter-spacing:1px;">'+slides.length+' SLIDES — SCREENSHOT EACH ONE</div>'+slides.join('')+buildWASection(groups);
 }
 
-function populateWASection(groups){
+function buildWASection(groups){
   var gLabels=['A','B','C','D','E'];
   var gCols=['#F44336','#1E88E5','#43A047','#8E24AA','#F4511E'];
   var gRgba=['244,67,54','33,150,243','67,160,71','142,36,170','244,81,30'];
-  var waSection=document.getElementById('waGroupSection');
-  if(!waSection){alert('ERROR: waGroupSection div not found!');return;}
-  if(!groups||groups.length===0){waSection.innerHTML='<p style="color:red;">No groups data!</p>';waSection.style.display='block';return;}
+  var html='<div style="margin-top:16px;background:linear-gradient(135deg,rgba(13,35,75,.95),rgba(8,22,55,.9));border-radius:16px;padding:18px;border:1px solid rgba(37,211,102,.3);">'
+    +'<div style="font-size:10px;font-weight:800;letter-spacing:2px;color:#69F0AE;text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(37,211,102,.15);">💬 WhatsApp Invites — Send to Each Group Leader</div>';
+  groups.forEach(function(grp,gi){
+    var lbl=gLabels[gi];if(!lbl)return;
+    var col=gCols[gi];
+    var rgba=gRgba[gi];
+    var link=WA_LINKS[lbl]||'#';
+    html+='<div style="background:rgba('+rgba+',.06);border:1px solid rgba('+rgba+',.3);border-radius:12px;padding:12px;margin-bottom:10px;">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'
+      +'<div style="display:flex;align-items:center;gap:8px;">'
+      +'<div style="width:26px;height:26px;background:'+col+';border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:12px;">'+lbl+'</div>'
+      +'<span style="font-size:12px;font-weight:800;color:#fff;">GROUP '+lbl+'</span></div>'
+      +'<a href="'+link+'" target="_blank" style="padding:5px 11px;background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.4);border-radius:7px;font-size:11px;font-weight:700;color:#25D366;text-decoration:none;">🔗 Open Group</a>'
+      +'</div>';
+    grp.forEach(function(t){
+      var raw=(t.whatsapp||'').replace(/\D/g,'');
+      var num=raw?(raw.startsWith('977')?raw:'977'+raw):'';
+      var msg='Hi+'+encodeURIComponent(t.leaderName)+'!%0A%0AYou+are+in+Group+'+lbl+'+for+Dream2Moon+Squad+Tournament.%0A%0AJoin+your+match+group:%0A'+encodeURIComponent(link)+'%0A%0AGood+luck!+%E2%80%94+Dream2Moon';
+      html+='<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);">'
+        +'<div style="flex:1;min-width:0;">'
+        +'<div style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">👑 '+t.leaderName+'</div>'
+        +(num?'<div style="font-size:10px;color:rgba(105,240,174,.8);margin-top:1px;">📱 +'+num+'</div>':'<div style="font-size:10px;color:rgba(255,107,107,.6);margin-top:1px;">⚠️ No WA number</div>')
+        +'</div>'
+        +(num
+          ?'<a href="https://wa.me/'+num+'?text='+msg+'" target="_blank" style="flex-shrink:0;padding:7px 14px;background:linear-gradient(135deg,#075e54,#25D366);border-radius:8px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;white-space:nowrap;">💬 Send</a>'
+          :'<a href="'+link+'" target="_blank" style="flex-shrink:0;padding:7px 12px;background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.3);border-radius:8px;font-size:11px;font-weight:700;color:#25D366;text-decoration:none;white-space:nowrap;">🔗 Link</a>')
+        +'</div>';
+    });
+    html+='</div>';
+  });
+  html+='</div>';
+  return html;
+}
+
+function populateWASection(groups){
+  // For loadSavedBracket - append WA to bracketDisplay
+  var display=document.getElementById('bracketDisplay');
+  if(display&&groups&&groups.length>0){
+    // Remove old WA section if exists
+    var old=display.querySelector('.wa-invite-section');
+    if(old)old.remove();
+    var waDiv=document.createElement('div');
+    waDiv.className='wa-invite-section';
+    waDiv.innerHTML=buildWASection(groups);
+    display.appendChild(waDiv);
+  }
+}
   var html='<div style="background:linear-gradient(135deg,rgba(13,35,75,.93),rgba(8,22,55,.89));border-radius:20px;padding:20px;margin-bottom:18px;border:1px solid rgba(37,211,102,.25);box-shadow:0 8px 32px rgba(0,0,30,.55);">'
     +'<div style="font-size:10px;font-weight:800;letter-spacing:2px;color:#69F0AE;text-transform:uppercase;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(37,211,102,.15);">💬 WhatsApp Invites — Send to Each Group Leader</div>';
   groups.forEach(function(grp,gi){
@@ -752,15 +796,6 @@ function populateWASection(groups){
         +(num
           ?'<a href="https://wa.me/'+num+'?text='+msg+'" target="_blank" style="flex-shrink:0;padding:7px 14px;background:linear-gradient(135deg,#075e54,#25D366);border-radius:8px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;white-space:nowrap;">💬 Send</a>'
           :'<a href="'+link+'" target="_blank" style="flex-shrink:0;padding:7px 14px;background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.3);border-radius:8px;font-size:11px;font-weight:700;color:#25D366;text-decoration:none;white-space:nowrap;">🔗 Group</a>')
-        +'</div>';
-    });
-    html+='</div>';
-  });
-  html+='</div>';
-  waSection.innerHTML=html;
-  waSection.style.display='block';
-}
-
 window.copyGroupLink=function(lbl,link){
   navigator.clipboard.writeText(link).then(function(){alert('Copied Group '+lbl+' link!');}).catch(function(){alert(link);});
 };
@@ -1047,8 +1082,6 @@ window.generateBracket=function(){
     slides.push(finalSlide);
   }
 
-  display.innerHTML='<div style="font-size:10px;color:var(--muted);margin-bottom:10px;text-align:center;letter-spacing:1px;">'+slides.length+' SLIDES — SCREENSHOT EACH ONE</div>'+slides.join('');
-
   // Build groups data
   var groupsData=groups.map(function(grp){
     return grp.map(function(t){
@@ -1056,23 +1089,19 @@ window.generateBracket=function(){
     });
   });
 
-  // Save ONLY groups data to Firebase (not full HTML - too large)
+  // Build WA section HTML directly
+  var waHTML=buildWASection(groupsData);
+
+  display.innerHTML='<div style="font-size:10px;color:var(--muted);margin-bottom:10px;text-align:center;letter-spacing:1px;">'+slides.length+' SLIDES — SCREENSHOT EACH ONE</div>'+slides.join('')+waHTML;
+
+  // Save ONLY groups data to Firebase
   setDoc(doc(db,'tournament_meta','bracket'),{
-    groups:groupsData,
-    n:n,
-    savedAt:serverTimestamp()
-  }).then(function(){
-    console.log('Bracket saved!');
-  }).catch(function(e){
-    console.error('Save failed:',e);
-  });
+    groups:groupsData,n:n,savedAt:serverTimestamp()
+  }).catch(function(e){console.error('Save failed:',e);});
 
   // Show undo, hide generator
   document.getElementById('bracketGenSection').style.display='none';
   document.getElementById('undoBracketBtn').style.display='block';
-
-  // Populate WA section
-  populateWASection(groupsData);
 };
 
 function updateHistory(){
