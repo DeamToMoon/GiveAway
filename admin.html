@@ -768,34 +768,6 @@ function populateWASection(groups){
     display.appendChild(waDiv);
   }
 }
-  var html='<div style="background:linear-gradient(135deg,rgba(13,35,75,.93),rgba(8,22,55,.89));border-radius:20px;padding:20px;margin-bottom:18px;border:1px solid rgba(37,211,102,.25);box-shadow:0 8px 32px rgba(0,0,30,.55);">'
-    +'<div style="font-size:10px;font-weight:800;letter-spacing:2px;color:#69F0AE;text-transform:uppercase;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(37,211,102,.15);">💬 WhatsApp Invites — Send to Each Group Leader</div>';
-  groups.forEach(function(grp,gi){
-    var lbl=gLabels[gi];
-    var col=gCols[gi];
-    var rgba=gRgba[gi];
-    var link=WA_LINKS[lbl]||'#';
-    html+='<div style="background:rgba('+rgba+',.06);border:1px solid rgba('+rgba+',.25);border-radius:12px;padding:14px;margin-bottom:10px;">'
-      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'
-      +'<div style="display:flex;align-items:center;gap:8px;">'
-      +'<div style="width:28px;height:28px;background:'+col+';border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#000;font-size:13px;">'+lbl+'</div>'
-      +'<span style="font-size:12px;font-weight:800;color:#fff;">GROUP '+lbl+'</span>'
-      +'</div>'
-      +'<div style="display:flex;gap:6px;">'
-      +'<a href="'+link+'" target="_blank" style="padding:6px 12px;background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.4);border-radius:8px;font-size:11px;font-weight:700;color:#25D366;text-decoration:none;">🔗 Open</a>'
-      +'</div></div>';
-    grp.forEach(function(t){
-      var raw=(t.whatsapp||'').replace(/\D/g,'');
-      var num=raw?(raw.startsWith('977')?raw:'977'+raw):'';
-      var msg='Hi '+t.leaderName+'!%0A%0AYou are in Group '+lbl+' for Dream2Moon Squad Tournament.%0A%0AJoin your match group:%0A'+encodeURIComponent(link)+'%0A%0AGood luck! — Dream2Moon';
-      html+='<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05);">'
-        +'<div style="flex:1;min-width:0;">'
-        +'<div style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">👑 '+t.leaderName+'</div>'
-        +(num?'<div style="font-size:10px;color:rgba(105,240,174,.8);margin-top:2px;">📱 +'+num+'</div>':'<div style="font-size:10px;color:rgba(255,107,107,.6);margin-top:2px;">⚠️ No WA number saved</div>')
-        +'</div>'
-        +(num
-          ?'<a href="https://wa.me/'+num+'?text='+msg+'" target="_blank" style="flex-shrink:0;padding:7px 14px;background:linear-gradient(135deg,#075e54,#25D366);border-radius:8px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;white-space:nowrap;">💬 Send</a>'
-          :'<a href="'+link+'" target="_blank" style="flex-shrink:0;padding:7px 14px;background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.3);border-radius:8px;font-size:11px;font-weight:700;color:#25D366;text-decoration:none;white-space:nowrap;">🔗 Group</a>')
 window.copyGroupLink=function(lbl,link){
   navigator.clipboard.writeText(link).then(function(){alert('Copied Group '+lbl+' link!');}).catch(function(){alert(link);});
 };
