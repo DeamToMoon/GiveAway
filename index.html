@@ -317,15 +317,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 
   <div class="week-badge">🎁 WEEKLY GIVEAWAY — EVERY SATURDAY 10AM NPT!</div>
 
-  <!-- Entry counter -->
-  <div class="card gold-top">
-    <div class="ec-wrap">
-      <div><div class="ec-lbl">🎟️ Entries for Next Draw</div><div class="ec-sub">Everyone in the pool so far</div></div>
-      <div style="text-align:right;"><div class="ec-num" id="publicEntryCount">—</div><div class="ec-unit">PLAYERS</div></div>
-    </div>
-  </div>
-
-  <!-- Countdown -->
+  <!-- Countdown — standalone -->
   <div class="card">
     <div class="cd-lbl">⏳ Next Draw Countdown · Saturday 10:00 AM Nepal Time</div>
     <div class="cd-timer">
@@ -337,7 +329,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       <div class="cd-sep">:</div>
       <div class="cd-unit"><div class="cd-num" id="cd-secs">--</div><div class="cd-ulbl">Secs</div></div>
     </div>
-    <div class="cd-sub">🏆 <strong>2 winners</strong> announced every Saturday at 10:00 AM Nepal Time</div>
+    <div class="cd-sub">🏆 <strong>1 winner</strong> announced every Saturday at 10:00 AM Nepal Time</div>
   </div>
 
   <!-- Prizes -->
@@ -359,8 +351,19 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     🌙 Follow <strong style="color:var(--gold);">@Dream2Moon</strong> on TikTok to stay updated!
   </div>
 
-  <!-- Giveaway Form -->
+  <!-- Giveaway Form — entry counter INSIDE -->
   <div class="card gold-top" id="formCard">
+    <!-- Entry counter inside form -->
+    <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.15);border-radius:12px;padding:12px 16px;margin-bottom:20px;">
+      <div>
+        <div class="ec-lbl">🎟️ Entries for Next Draw</div>
+        <div class="ec-sub">Everyone in the pool so far</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="ec-num" id="publicEntryCount">—</div>
+        <div class="ec-unit">PLAYERS</div>
+      </div>
+    </div>
     <div class="form-title">🚀 ENTER THE GIVEAWAY</div>
     <div class="field"><label>Username</label><input type="text" id="username" placeholder="@yourusername"></div>
     <div class="field"><label>Free Fire UID</label><input type="text" id="uid" placeholder="Enter your UID"></div>
@@ -401,6 +404,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 
   <div class="tourn-banner">
     <div class="tourn-live-badge" id="regStatusBadge"><div class="tourn-live-dot"></div><span id="regStatusText">Checking...</span></div>
+    <div style="font-size:10px;color:rgba(105,240,174,.55);margin-bottom:14px;padding-left:2px;">📋 Register before <strong style="color:rgba(105,240,174,.8);">Thursday 11:59PM NPT</strong> — Leader + 3 members</div>
     <div class="tourn-title">🏆 SQUAD GAME<br><span>FULL MAP TOURNAMENT</span></div>
     <div class="tourn-sub">This Saturday • Free Fire • <strong>Full Map Squad Mode</strong><br>Register your squad and compete for real cash prizes via eSewa!</div>
 
@@ -423,17 +427,6 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       </div>
     </div>
     <div class="esewa-note">💚 Prizes paid via <span>eSewa</span> — Total Prize Pool: <span>Rs.2,400</span></div>
-
-    <!-- How It Works -->
-    <div style="background:rgba(0,0,0,.2);border:1px solid rgba(79,195,247,.12);border-radius:14px;padding:14px 16px;margin-bottom:18px;">
-      <div style="font-size:9px;font-weight:800;letter-spacing:3px;color:var(--faint);text-transform:uppercase;margin-bottom:12px;">⚡ How It Works</div>
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">📋</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Register your squad</strong> — Leader + 3 members before Thursday 11:59PM NPT</div></div>
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">🎲</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Random group division</strong> — Teams shuffled &amp; split into groups after registration closes</div></div>
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">⚔️</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">5 group matches</strong> — Top 2 from each group qualify for Grand Final</div></div>
-      <div style="height:1px;background:rgba(79,195,247,.08);margin:10px 0;"></div>
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">🎬</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Live Stream Qualifier</strong> — 12 teams play last qualifier match live! Top 2 earn a Grand Final spot 🔥</div></div>
-      <div style="display:flex;align-items:flex-start;gap:10px;"><div style="font-size:15px;flex-shrink:0;">🏆</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Grand Final</strong> — 12 teams battle it out. Best 3 squads share Rs.2,400 prize pool! 💰</div></div>
-    </div>
 
     <!-- Teams registered count -->
     <div class="teams-count-wrap">
@@ -483,7 +476,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
         <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.092.536 4.06 1.475 5.777L0 24l6.404-1.452A11.955 11.955 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.796 9.796 0 01-5.031-1.388l-.361-.214-3.741.849.862-3.648-.235-.374A9.792 9.792 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
         JOIN WHATSAPP FOR UPDATES
       </a>
-      <div style="font-size:10px;color:var(--faint);margin-top:6px;text-align:center;">Join our group for match schedule, room ID &amp; updates 📢</div>
+      <div style="font-size:11px;color:rgba(37,211,102,.7);margin-top:6px;text-align:center;font-weight:600;">👆 Tap above to join — get room ID &amp; match updates! 📢</div>
     </div>
   </div>
 
@@ -533,6 +526,16 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 
   <div class="card" style="border-color:rgba(105,240,174,.2);">
     <div class="rules-title" style="color:var(--green);">⚔️ Squad Tournament Rules</div>
+    <!-- How It Works — moved here from tournament banner -->
+    <div style="background:rgba(105,240,174,.04);border:1px solid rgba(105,240,174,.1);border-radius:12px;padding:14px;margin-bottom:16px;">
+      <div style="font-size:9px;font-weight:800;letter-spacing:3px;color:rgba(105,240,174,.5);text-transform:uppercase;margin-bottom:12px;">⚡ How It Works</div>
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">📋</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Register your squad</strong> — Leader + 3 members before Thursday 11:59PM NPT</div></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">🎲</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Random group division</strong> — Teams shuffled &amp; split into groups after registration closes</div></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">⚔️</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">5 group matches</strong> — Top 2 from each group qualify for Grand Final</div></div>
+      <div style="height:1px;background:rgba(105,240,174,.08);margin:10px 0;"></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">🎬</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Live Stream Qualifier</strong> — 12 teams play last qualifier match live! Top 2 earn a Grand Final spot 🔥</div></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;"><div style="font-size:15px;flex-shrink:0;">🏆</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Grand Final</strong> — 12 teams battle it out. Best 3 squads share Rs.2,400 prize pool! 💰</div></div>
+    </div>
     <div class="rule-item"><div class="rule-dot" style="background:var(--green);box-shadow:0 0 6px rgba(105,240,174,.6);"></div>Register before Thursday 11:59PM NPT (max 60 teams)</div>
     <div class="rule-item"><div class="rule-dot" style="background:var(--green);box-shadow:0 0 6px rgba(105,240,174,.6);"></div>Team: 1 leader + 3 members — names cannot be changed</div>
     <div class="rule-item"><div class="rule-dot" style="background:var(--green);box-shadow:0 0 6px rgba(105,240,174,.6);"></div>Groups randomly divided after registration closes</div>
@@ -575,14 +578,14 @@ onSnapshot(doc(db,'winners','latest'),snap=>{
     const w=snap.data();
     const date=w.drawnAt?new Date(w.drawnAt.seconds*1000).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'Recently';
     if(dEl)dEl.textContent='🎉 Drawn on '+date;
-    const mn=w.monthlyUsername||'???',mu=w.monthlyUID||'???',wn=w.weeklyUsername||'—',wu=w.weeklyUID||'—';
+    const mn=w.monthlyUsername||'???',mu=w.monthlyUID||'???';
     if(duoEl)duoEl.innerHTML=`
-      <div class="wdc mo" style="flex:1.2;"><div class="wdc-b">1st Lucky Draw 💎</div><div class="wdc-icon">🎰</div><div class="wdc-name">${mn}</div><div class="wdc-uid">UID: ${mu}</div><div class="wdc-drew">🏆 Winner!</div></div>
-      <div class="wdc" style="flex:0.8;background:linear-gradient(160deg,rgba(255,212,56,.06),rgba(255,171,64,.03));border:1px dashed rgba(255,212,56,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
+      <div class="wdc mo" style="flex:1.3;"><div class="wdc-b">1st Lucky Draw 💎</div><div class="wdc-icon">🎰</div><div class="wdc-name">${mn}</div><div class="wdc-uid">UID: ${mu}</div><div class="wdc-drew">🏆 Winner!</div></div>
+      <div class="wdc" style="flex:0.9;background:linear-gradient(160deg,rgba(255,212,56,.06),rgba(255,171,64,.03));border:1px dashed rgba(255,212,56,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
         <div style="font-size:22px;">🎁</div>
-        <div style="font-size:8px;font-weight:800;letter-spacing:1px;color:rgba(255,212,56,.6);text-transform:uppercase;">Coming Soon</div>
-        <div style="font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;color:rgba(255,212,56,.5);">Mystery Prize</div>
-        <div style="font-size:9px;color:rgba(255,212,56,.4);">Stay tuned 👀</div>
+        <div style="font-size:8px;font-weight:800;letter-spacing:1px;color:rgba(255,212,56,.5);text-transform:uppercase;">Coming Soon</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;color:rgba(255,212,56,.4);">Mystery Prize</div>
+        <div style="font-size:9px;color:rgba(255,212,56,.35);">Stay tuned 👀</div>
       </div>`;
   }else{if(dEl)dEl.textContent='No draw yet — stay tuned!';}
 });
