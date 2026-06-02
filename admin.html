@@ -644,7 +644,8 @@ function populateWASection(groups){
   var gCols=['#F44336','#1E88E5','#43A047','#8E24AA','#F4511E'];
   var gRgba=['244,67,54','33,150,243','67,160,71','142,36,170','244,81,30'];
   var waSection=document.getElementById('waGroupSection');
-  if(!waSection)return;
+  if(!waSection){alert('ERROR: waGroupSection div not found!');return;}
+  if(!groups||groups.length===0){waSection.innerHTML='<p style="color:red;">No groups data!</p>';waSection.style.display='block';return;}
   var html='<div style="background:linear-gradient(135deg,rgba(13,35,75,.93),rgba(8,22,55,.89));border-radius:20px;padding:20px;margin-bottom:18px;border:1px solid rgba(37,211,102,.25);box-shadow:0 8px 32px rgba(0,0,30,.55);">'
     +'<div style="font-size:10px;font-weight:800;letter-spacing:2px;color:#69F0AE;text-transform:uppercase;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(37,211,102,.15);">💬 WhatsApp Invites — Send to Each Group Leader</div>';
   groups.forEach(function(grp,gi){
@@ -664,13 +665,15 @@ function populateWASection(groups){
     grp.forEach(function(t){
       var raw=(t.whatsapp||'').replace(/\D/g,'');
       var num=raw?(raw.startsWith('977')?raw:'977'+raw):'';
-      var msg=encodeURIComponent('Hi '+t.leaderName+'!\n\nYou are in Group '+lbl+' for Dream2Moon Squad Tournament.\n\nJoin your match group:\n'+link+'\n\nGood luck! — Dream2Moon');
+      var msg='Hi '+t.leaderName+'!%0A%0AYou are in Group '+lbl+' for Dream2Moon Squad Tournament.%0A%0AJoin your match group:%0A'+encodeURIComponent(link)+'%0A%0AGood luck! — Dream2Moon';
       html+='<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05);">'
         +'<div style="flex:1;min-width:0;">'
         +'<div style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">👑 '+t.leaderName+'</div>'
-        +(num?'<div style="font-size:10px;color:rgba(105,240,174,.8);margin-top:2px;">📱 +'+num+'</div>':'<div style="font-size:10px;color:rgba(255,107,107,.6);margin-top:2px;">⚠️ No WA</div>')
+        +(num?'<div style="font-size:10px;color:rgba(105,240,174,.8);margin-top:2px;">📱 +'+num+'</div>':'<div style="font-size:10px;color:rgba(255,107,107,.6);margin-top:2px;">⚠️ No WA number saved</div>')
         +'</div>'
-        +(num?'<a href="https://wa.me/'+num+'?text='+msg+'" target="_blank" style="flex-shrink:0;padding:7px 14px;background:linear-gradient(135deg,#075e54,#25D366);border-radius:8px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;white-space:nowrap;">💬 Send</a>':'<span style="font-size:10px;color:rgba(255,107,107,.5);">No WA</span>')
+        +(num
+          ?'<a href="https://wa.me/'+num+'?text='+msg+'" target="_blank" style="flex-shrink:0;padding:7px 14px;background:linear-gradient(135deg,#075e54,#25D366);border-radius:8px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;white-space:nowrap;">💬 Send</a>'
+          :'<a href="'+link+'" target="_blank" style="flex-shrink:0;padding:7px 14px;background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.3);border-radius:8px;font-size:11px;font-weight:700;color:#25D366;text-decoration:none;white-space:nowrap;">🔗 Group</a>')
         +'</div>';
     });
     html+='</div>';
@@ -997,7 +1000,9 @@ window.generateBracket=function(){
   if(waSection){
     waSection.style.display='block';
     populateWASection(groupsData);
-    setTimeout(function(){waSection.scrollIntoView({behavior:'smooth'});},400);
+    setTimeout(function(){waSection.scrollIntoView({behavior:'smooth'});},600);
+  }else{
+    alert('waGroupSection NOT FOUND in DOM!');
   }
 };
 
