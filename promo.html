@@ -3,669 +3,654 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Dream2Moon Promo</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@400;600;700;800&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<title>Dream2Moon · This Week</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Exo+2:wght@300;400;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-:root{
-  --gold:#FFD438;--cyan:#00E5FF;--green:#69F0AE;--red:#FF6B6B;
-  --purple:#CE93D8;--blue:#4FC3F7;--orange:#FFAB40;
-  --bg:#060C1A;--card:#0D1F3C;
-}
-body{
-  background:radial-gradient(ellipse at 50% 0%,#0a0a18,#050508);
-  display:flex;align-items:center;justify-content:center;
-  min-height:100vh;font-family:'Exo 2',sans-serif;overflow:hidden;
-}
+:root{--gold:#FFD438;--cyan:#00E5FF;--green:#69F0AE;--red:#FF6B6B;--purple:#CE93D8;--blue:#4FC3F7;--bg:#03060F;}
+body{background:#000;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Exo 2',sans-serif;overflow:hidden;}
 
-/* ── PHONE SHELL ── */
-.phone{
-  width:min(390px,100vw);height:min(844px,100dvh);
-  background:var(--bg);border-radius:min(44px,0px);
-  overflow:hidden;position:relative;
-  box-shadow:0 0 0 8px #080808,0 0 100px rgba(0,229,255,.1),0 0 200px rgba(255,212,56,.05);
-}
-.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:34px;background:#050a14;border-radius:0 0 20px 20px;z-index:100;}
+/* ── PHONE ── */
+.phone{width:min(390px,100vw);height:min(844px,100dvh);background:var(--bg);border-radius:min(44px,0);overflow:hidden;position:relative;box-shadow:0 0 0 8px #060606,0 0 80px rgba(0,229,255,.12);}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:34px;background:#020509;border-radius:0 0 20px 20px;z-index:100;}
 
-/* ── STARS ── */
-#stars{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
-.s{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d) ease-in-out infinite var(--dl);}
-@keyframes tw{0%,100%{opacity:0}50%{opacity:var(--op)}}
+/* ── CANVAS BG ── */
+#bgCanvas{position:absolute;inset:0;z-index:0;width:100%;height:100%;}
 
-/* ── PARTICLES (FF bullets/effects) ── */
-#particles{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;}
-.particle{position:absolute;border-radius:50%;animation:pfloat var(--pd) ease-in-out infinite var(--pdl);opacity:0;}
-@keyframes pfloat{0%{transform:translateY(120%) scale(0);opacity:0}20%{opacity:var(--pop)}80%{opacity:var(--pop)}100%{transform:translateY(-20%) scale(1.5);opacity:0}}
+/* ── PROGRESS ── */
+#progBar{position:absolute;top:34px;left:0;right:0;height:3px;background:rgba(255,255,255,.06);z-index:60;}
+#progFill{height:100%;width:0%;border-radius:2px;transition:none;}
 
 /* ── TICKER ── */
-.ticker{position:absolute;top:34px;left:0;right:0;z-index:20;
-  background:rgba(0,0,0,.4);border-bottom:1px solid rgba(0,229,255,.1);
-  padding:5px 0;overflow:hidden;backdrop-filter:blur(4px);}
-.ticker-inner{display:flex;white-space:nowrap;animation:tickerScroll 24s linear infinite;
-  font-size:9px;font-weight:700;color:rgba(0,229,255,.45);letter-spacing:2px;}
-@keyframes tickerScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.tsep{margin:0 16px;color:rgba(255,212,56,.3);}
-
-/* ── PROGRESS BAR ── */
-#progBar{position:absolute;top:54px;left:0;right:0;height:2px;background:rgba(255,255,255,.07);z-index:50;}
-#progFill{height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--cyan),var(--green));border-radius:2px;box-shadow:0 0 8px rgba(0,229,255,.4);}
+.ticker{position:absolute;top:37px;left:0;right:0;z-index:55;background:rgba(3,6,15,.85);border-bottom:1px solid rgba(0,229,255,.08);padding:5px 0;overflow:hidden;}
+.ticker-inner{display:flex;white-space:nowrap;animation:tick 26s linear infinite;font-size:9px;font-weight:700;color:rgba(0,229,255,.4);letter-spacing:2px;font-family:'Share Tech Mono',monospace;}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.tsep{margin:0 14px;color:rgba(255,212,56,.25);}
 
 /* ── DOTS ── */
-.dots{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:50;}
-.dot{width:5px;height:5px;border-radius:3px;background:rgba(255,255,255,.15);transition:all .35s;}
-.dot.active{width:22px;background:var(--gold);box-shadow:0 0 8px rgba(255,212,56,.5);}
+.dots{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:60;}
+.dot{width:5px;height:5px;border-radius:3px;background:rgba(255,255,255,.12);transition:all .35s cubic-bezier(.34,1.56,.64,1);}
+.dot.on{width:24px;background:var(--gold);box-shadow:0 0 10px rgba(255,212,56,.6);}
 
 /* ── SCENES ── */
-.scene{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  opacity:0;pointer-events:none;transform:scale(.97);
-  transition:opacity .5s,transform .5s;}
-.scene.active{opacity:1;pointer-events:all;transform:scale(1);}
-.scene.out{opacity:0;transform:scale(1.03);}
+.sc{position:absolute;inset:0;z-index:10;opacity:0;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:58px 20px 64px;}
+.sc.on{opacity:1;pointer-events:all;}
 
-/* ── PAUSE ICON ── */
-#pauseIcon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  z-index:60;opacity:0;transition:opacity .25s;pointer-events:none;}
-.pause-ring{width:60px;height:60px;background:rgba(0,0,0,.65);border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,.12);}
+/* ── PAUSE ── */
+#pauseIco{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:70;opacity:0;transition:opacity .2s;pointer-events:none;}
+.p-ring{width:64px;height:64px;background:rgba(0,0,0,.7);border-radius:50%;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(12px);border:2px solid rgba(255,255,255,.1);font-size:26px;}
 
-/* ══════════════════════════════
-   SCENE 0 — MOON INTRO
-══════════════════════════════ */
-#s0{background:radial-gradient(ellipse 120% 80% at 50% 20%,#0D2B5E,#060C1A 65%);}
-.moon-wrap{position:relative;width:170px;height:170px;display:flex;align-items:center;justify-content:center;}
-.moon{width:130px;height:130px;border-radius:50%;
-  background:radial-gradient(circle at 38% 35%,#FFF8D0,#FFD438 18%,#D4A000 48%,#7B5000 75%,#2A1800);
-  box-shadow:0 0 60px rgba(255,212,56,.6),0 0 120px rgba(255,212,56,.2);
-  position:relative;
-  animation:moonrise 1.2s cubic-bezier(.34,1.56,.64,1) forwards;
-  transform:translateY(140px) scale(.6);opacity:0;}
-.moon::after{content:'';position:absolute;inset:0;border-radius:50%;
-  background:radial-gradient(circle at 65% 38%,rgba(8,4,0,.55),transparent 55%);}
-@keyframes moonrise{to{transform:translateY(0);opacity:1;}}
-.moon-ring{position:absolute;border-radius:50%;border:1px solid rgba(255,212,56,.15);
-  animation:ringPulse 3s ease-in-out infinite;}
-@keyframes ringPulse{0%,100%{transform:scale(1);opacity:.3}50%{transform:scale(1.08);opacity:.7}}
-.moon-glow{position:absolute;inset:-30px;border-radius:50%;
-  background:radial-gradient(circle,rgba(255,212,56,.15),transparent 70%);
-  animation:glowP 2.5s ease-in-out 1.2s infinite;opacity:0;animation-fill-mode:forwards;}
-@keyframes glowP{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
-.s0-brand{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:900;
-  color:var(--gold);letter-spacing:5px;text-align:center;margin-top:18px;
-  opacity:0;animation:fadeUp .8s ease 1.2s forwards;
-  text-shadow:0 0 40px rgba(255,212,56,.5);}
-.s0-sub{font-size:11px;color:rgba(255,255,255,.3);letter-spacing:4px;margin-top:5px;
-  opacity:0;animation:fadeUp .7s ease 1.6s forwards;}
-.s0-pills{display:flex;flex-direction:column;gap:8px;width:100%;max-width:290px;margin-top:22px;}
-.s0-pill{border-radius:10px;padding:9px 14px;font-size:10px;letter-spacing:1px;text-align:center;
-  opacity:0;animation:fadeUp .6s ease forwards;}
-.s0-tap{margin-top:36px;font-size:10px;color:rgba(255,255,255,.2);letter-spacing:3px;
-  animation:blink 1.8s ease 2.6s infinite;opacity:0;}
-@keyframes fadeUp{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
-@keyframes blink{0%,100%{opacity:0}50%{opacity:.5}}
-
-/* ══════════════════════════════
-   SCENE 1 — TOURNAMENT BANNER
-══════════════════════════════ */
-#s1{background:radial-gradient(ellipse at 50% 0%,#051a0a,#060C1A 65%);
-  padding:54px 18px 65px;gap:0;overflow:hidden;}
-.s1-header{width:100%;background:linear-gradient(135deg,#051a08,#0a2d12,#051a08);
-  border-radius:18px 18px 0 0;padding:16px 18px 14px;position:relative;overflow:hidden;
-  border:1px solid rgba(105,240,174,.25);border-bottom:none;}
-.s1-header::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,#69F0AE,#00E5FF,#00c896,#69F0AE);background-size:300%;
-  animation:shimmer 3s linear infinite;}
+/* ══ SHARED COMPONENTS ══ */
+@keyframes fadeUp{from{transform:translateY(22px);opacity:0}to{transform:translateY(0);opacity:1}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes scaleUp{from{transform:scale(.5) rotate(-8deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+@keyframes slideRight{from{transform:translateX(-30px);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes slideLeft{from{transform:translateX(30px);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes glow{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes countUp{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes flash{0%,100%{opacity:1}50%{opacity:.3}}
 @keyframes shimmer{to{background-position:300% center}}
-.s1-badge{display:inline-flex;align-items:center;gap:6px;
-  background:rgba(105,240,174,.1);border:1px solid rgba(105,240,174,.25);
-  border-radius:20px;padding:4px 12px;font-size:9px;font-weight:800;
-  color:var(--green);letter-spacing:2px;margin-bottom:8px;}
-.s1-dot{width:6px;height:6px;border-radius:50%;background:var(--green);
-  box-shadow:0 0 8px var(--green);animation:dp 1s infinite;}
-@keyframes dp{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.4}}
-.s1-tip{font-size:10px;color:rgba(105,240,174,.5);margin-bottom:10px;}
-.s1-tip strong{color:rgba(105,240,174,.8);}
-.s1-title{font-family:'Orbitron',sans-serif;font-size:17px;font-weight:900;color:#fff;
-  letter-spacing:2px;line-height:1.25;margin-bottom:4px;}
-.s1-title span{color:var(--green);}
-.s1-sub{font-size:11px;color:rgba(144,202,249,.7);line-height:1.55;margin-bottom:0;}
-.s1-body{width:100%;background:rgba(5,25,10,.9);border:1px solid rgba(105,240,174,.15);
-  border-top:none;border-radius:0 0 18px 18px;padding:14px 18px 16px;}
-/* podium */
-.s1-podium{display:flex;gap:8px;margin-bottom:12px;}
-.s1-p{flex:1;border-radius:14px;padding:12px 6px;text-align:center;}
-.s1-p.g{background:linear-gradient(160deg,rgba(255,212,56,.1),rgba(255,171,64,.05));
-  border:2px solid rgba(255,212,56,.3);flex:1.15;}
-.s1-p.s{background:rgba(192,192,192,.07);border:1px solid rgba(192,192,192,.2);}
-.s1-p.b{background:rgba(205,127,50,.07);border:1px solid rgba(205,127,50,.2);}
-.s1-rank{font-size:22px;margin-bottom:4px;}
-.s1-prize{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;}
-.s1-plbl{font-size:8px;color:var(--faint,#5B8DB8);letter-spacing:1px;margin-top:2px;}
-.esewa-note{font-size:10px;color:rgba(105,240,174,.65);text-align:center;margin-bottom:14px;font-weight:600;}
-/* teams count */
-.s1-teams{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.s1-tnum{font-family:'Orbitron',sans-serif;font-size:38px;font-weight:900;color:var(--green);
-  text-shadow:0 0 20px rgba(105,240,174,.4);line-height:1;}
-.s1-tlbl{font-size:9px;color:rgba(255,255,255,.3);letter-spacing:2px;margin-top:3px;}
-.s1-slots{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:var(--cyan);}
-.s1-slbl{font-size:9px;color:rgba(255,255,255,.3);margin-top:2px;}
-.s1-btn{width:100%;padding:14px;background:linear-gradient(135deg,#065f46,#10b981,#065f46);
-  background-size:300%;border:none;border-radius:12px;
-  font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;
-  color:#fff;letter-spacing:2px;box-shadow:0 4px 20px rgba(16,185,129,.25);
-  animation:btnS 4s linear infinite;}
 @keyframes btnS{to{background-position:200% center}}
+@keyframes ripple{to{transform:scale(3);opacity:0}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes borderFlow{to{background-position:400% center}}
 
-/* ══════════════════════════════
+.ani-up{animation:fadeUp .6s cubic-bezier(.34,1.26,.64,1) both;}
+.ani-in{animation:fadeIn .5s ease both;}
+.ani-scale{animation:scaleUp .5s cubic-bezier(.34,1.56,.64,1) both;}
+.ani-right{animation:slideRight .5s cubic-bezier(.34,1.26,.64,1) both;}
+.ani-left{animation:slideLeft .5s cubic-bezier(.34,1.26,.64,1) both;}
+
+/* ══════════════════════════════════════════
+   SCENE 0 — CINEMATIC INTRO
+   Full screen dramatic reveal
+══════════════════════════════════════════ */
+#s0{background:radial-gradient(ellipse 150% 80% at 50% -10%,#0d1f4a,#03060f 70%);gap:0;justify-content:flex-start;padding-top:80px;}
+.s0-week{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:6px;color:rgba(0,229,255,.35);margin-bottom:16px;animation:fadeIn .8s ease .2s both;}
+.s0-this-week{display:flex;align-items:center;gap:8px;padding:5px 16px;background:rgba(255,212,56,.08);border:1px solid rgba(255,212,56,.2);border-radius:30px;font-size:9px;font-weight:800;color:rgba(255,212,56,.7);letter-spacing:3px;margin-bottom:24px;animation:fadeIn .8s ease .5s both;}
+.s0-live-dot{width:6px;height:6px;border-radius:50%;background:#ff4500;box-shadow:0 0 8px #ff4500;animation:flash 1s infinite;}
+
+/* Big moon */
+.s0-moon-wrap{position:relative;display:flex;align-items:center;justify-content:center;width:180px;height:180px;margin:0 auto 20px;}
+.s0-moon{width:140px;height:140px;border-radius:50%;background:radial-gradient(circle at 38% 35%,#fffbe0,#FFD438 20%,#c98f00 50%,#6b3f00 75%,#1e0d00);box-shadow:0 0 60px rgba(255,212,56,.5),0 0 120px rgba(255,212,56,.15);position:relative;animation:scaleUp .9s cubic-bezier(.34,1.56,.64,1) .4s both;}
+.s0-moon::after{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 65% 40%,rgba(0,0,0,.5),transparent 55%);}
+.s0-orbit{position:absolute;border-radius:50%;border:1px solid;animation:spin linear infinite;}
+.s0-satellite{position:absolute;font-size:14px;}
+.s0-glow{position:absolute;inset:-25px;border-radius:50%;background:radial-gradient(circle,rgba(255,212,56,.12),transparent 65%);animation:glow 2.5s ease-in-out 1.3s infinite;}
+
+.s0-brand{font-family:'Orbitron',sans-serif;font-size:30px;font-weight:900;color:#fff;letter-spacing:5px;text-align:center;text-shadow:0 0 40px rgba(255,212,56,.3);animation:fadeUp .8s ease .8s both;}
+.s0-brand span{color:var(--gold);}
+.s0-tagline{font-size:10px;color:rgba(255,255,255,.25);letter-spacing:5px;animation:fadeUp .7s ease 1.1s both;margin-top:4px;margin-bottom:22px;}
+
+/* Feature strips */
+.s0-features{display:flex;gap:6px;width:100%;animation:fadeUp .8s ease 1.4s both;}
+.s0-feat{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:10px 6px;text-align:center;}
+.s0-feat-icon{font-size:20px;margin-bottom:4px;}
+.s0-feat-lbl{font-size:9px;color:rgba(255,255,255,.35);letter-spacing:1px;line-height:1.4;}
+.s0-feat-val{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:#fff;margin-top:3px;}
+
+.s0-tap{font-size:9px;color:rgba(255,255,255,.18);letter-spacing:3px;margin-top:20px;animation:flash 1.8s ease 2.2s infinite;opacity:0;animation-fill-mode:forwards;}
+
+/* ══════════════════════════════════════════
+   SCENE 1 — TOURNAMENT CARD
+   Dark card-based layout, big impact
+══════════════════════════════════════════ */
+#s1{background:linear-gradient(160deg,#030f06,#030812,#030f06);gap:0;padding:56px 0 64px;align-items:stretch;overflow:hidden;}
+
+/* Diagonal glow strip */
+.s1-glow-strip{position:absolute;top:40%;left:-60%;width:220%;height:2px;background:linear-gradient(90deg,transparent,rgba(105,240,174,.2),transparent);transform:rotate(-8deg);pointer-events:none;}
+
+.s1-inner{padding:0 18px;display:flex;flex-direction:column;gap:0;flex:1;overflow-y:auto;scrollbar-width:none;}
+.s1-inner::-webkit-scrollbar{display:none;}
+
+/* Neon top section */
+.s1-neon{background:linear-gradient(135deg,#03140a,#051e0d);border:1px solid rgba(105,240,174,.2);border-radius:18px 18px 0 0;padding:16px 18px 14px;position:relative;overflow:hidden;}
+.s1-neon::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#69F0AE,#00E5FF,#69F0AE,#00c896);background-size:300%;animation:shimmer 3s linear infinite;}
+.s1-neon::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,rgba(105,240,174,.15),transparent);}
+
+.s1-status{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(105,240,174,.1);border:1px solid rgba(105,240,174,.25);border-radius:20px;font-size:9px;font-weight:800;color:var(--green);letter-spacing:2px;margin-bottom:6px;}
+.s1-sdot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:flash 1s infinite;}
+.s1-reg-tip{font-size:10px;color:rgba(105,240,174,.5);margin-bottom:10px;}
+.s1-reg-tip strong{color:rgba(105,240,174,.8);}
+.s1-title{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:#fff;letter-spacing:2px;line-height:1.25;margin-bottom:4px;}
+.s1-title span{color:var(--green);}
+.s1-desc{font-size:11px;color:rgba(144,202,249,.65);line-height:1.55;}
+
+/* Podium */
+.s1-podium-wrap{background:rgba(3,8,14,.9);border:1px solid rgba(105,240,174,.1);border-top:none;padding:14px 18px 12px;}
+.s1-podium{display:flex;gap:8px;margin-bottom:10px;}
+.s1-pod{flex:1;border-radius:12px;padding:12px 6px;text-align:center;}
+.s1-pod.g{background:linear-gradient(160deg,rgba(255,212,56,.1),rgba(255,140,0,.05));border:2px solid rgba(255,212,56,.3);flex:1.15;box-shadow:0 0 20px rgba(255,212,56,.07);}
+.s1-pod.s{background:rgba(192,192,192,.05);border:1px solid rgba(192,192,192,.18);}
+.s1-pod.b{background:rgba(205,127,50,.05);border:1px solid rgba(205,127,50,.18);}
+.s1-pod-rank{font-size:22px;margin-bottom:4px;}
+.s1-pod-amt{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;}
+.s1-pod-lbl{font-size:8px;color:rgba(255,255,255,.28);letter-spacing:1px;margin-top:2px;}
+.s1-esewa{font-size:10px;color:rgba(105,240,174,.6);text-align:center;margin-bottom:0;font-weight:600;}
+
+/* Counter row */
+.s1-counter{background:rgba(0,0,0,.3);border:1px solid rgba(105,240,174,.1);border-top:none;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;}
+.s1-tnum{font-family:'Orbitron',sans-serif;font-size:40px;font-weight:900;color:var(--green);text-shadow:0 0 20px rgba(105,240,174,.4);line-height:1;animation:countUp .6s cubic-bezier(.34,1.56,.64,1) both;}
+.s1-tlbl{font-size:9px;color:rgba(255,255,255,.28);letter-spacing:2px;margin-top:3px;}
+.s1-slots-wrap{text-align:right;}
+.s1-slots-n{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:var(--cyan);}
+.s1-slots-l{font-size:9px;color:rgba(255,255,255,.25);letter-spacing:1px;margin-top:2px;}
+
+/* CTA button */
+.s1-cta{background:linear-gradient(135deg,rgba(105,240,174,.08),rgba(0,200,120,.04));border:1px solid rgba(105,240,174,.2);border-top:none;border-radius:0 0 18px 18px;padding:12px 18px 14px;}
+.s1-btn{width:100%;padding:14px;background:linear-gradient(135deg,#065f46,#10b981,#065f46);background-size:300%;border:none;border-radius:12px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:#fff;letter-spacing:2px;box-shadow:0 4px 24px rgba(16,185,129,.25);animation:btnS 4s linear infinite;}
+
+/* ══════════════════════════════════════════
    SCENE 2 — REGISTERED TEAMS
-══════════════════════════════ */
-#s2{background:radial-gradient(ellipse at 50% 0%,#0a0518,#060C1A 60%);
-  padding:54px 18px 65px;gap:0;}
-.s2-hdr{width:100%;display:flex;align-items:center;justify-content:space-between;
-  padding:12px 16px;background:rgba(206,147,216,.06);border-radius:14px 14px 0 0;
-  border:1px solid rgba(206,147,216,.18);border-bottom:none;margin-bottom:0;}
-.s2-title{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;
-  color:var(--purple);letter-spacing:2px;}
-.s2-count{font-family:'Orbitron',sans-serif;font-size:11px;color:var(--purple);
-  background:rgba(206,147,216,.1);border:1px solid rgba(206,147,216,.2);
-  border-radius:20px;padding:3px 10px;}
-.s2-list{width:100%;background:rgba(10,5,22,.95);border:1px solid rgba(206,147,216,.12);
-  border-top:none;border-radius:0 0 14px 14px;
-  max-height:calc(min(844px,100dvh) - 170px);overflow-y:auto;scrollbar-width:none;}
-.s2-list::-webkit-scrollbar{display:none;}
-.s2-team{padding:10px 14px;border-bottom:1px solid rgba(206,147,216,.06);
-  display:flex;align-items:flex-start;gap:10px;
-  animation:teamSlide .4s ease forwards;opacity:0;}
-@keyframes teamSlide{from{transform:translateX(-14px);opacity:0}to{transform:translateX(0);opacity:1}}
-.s2-num{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;
-  color:rgba(206,147,216,.4);min-width:26px;padding-top:2px;}
+   Scrollable cards with rank badges
+══════════════════════════════════════════ */
+#s2{background:linear-gradient(160deg,#06030f,#030812,#06030f);gap:0;padding:56px 0 64px;align-items:stretch;overflow:hidden;}
+.s2-top{padding:10px 18px 0;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.s2-hdr-title{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:var(--purple);letter-spacing:2px;}
+.s2-hdr-sub{font-size:9px;color:rgba(206,147,216,.35);letter-spacing:2px;font-family:'Share Tech Mono',monospace;}
+.s2-grid{padding:0 18px;flex:1;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:6px;}
+.s2-grid::-webkit-scrollbar{display:none;}
+.s2-card{border-radius:12px;padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid rgba(206,147,216,.1);display:flex;gap:10px;align-items:flex-start;animation:slideRight .4s ease both;opacity:0;}
+.s2-rank{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;color:rgba(206,147,216,.4);min-width:26px;padding-top:2px;}
 .s2-leader{font-size:13px;font-weight:700;color:#fff;margin-bottom:3px;}
-.s2-uid{font-size:9px;color:rgba(255,255,255,.25);margin-bottom:4px;}
+.s2-uid{font-size:9px;color:rgba(255,255,255,.22);font-family:'Share Tech Mono',monospace;margin-bottom:5px;}
 .s2-members{display:flex;flex-wrap:wrap;gap:4px;}
-.s2-chip{font-size:9px;color:rgba(255,255,255,.45);background:rgba(206,147,216,.06);
-  border:1px solid rgba(206,147,216,.12);border-radius:6px;padding:2px 7px;}
+.s2-mem{font-size:9px;color:rgba(206,147,216,.55);background:rgba(206,147,216,.06);border:1px solid rgba(206,147,216,.1);border-radius:5px;padding:2px 6px;}
+.s2-more{text-align:center;padding:10px;font-size:10px;color:rgba(206,147,216,.22);letter-spacing:2px;font-family:'Orbitron',sans-serif;}
 
-/* ══════════════════════════════
-   SCENE 3 — GIVEAWAY / WINNER
-══════════════════════════════ */
-#s3{background:radial-gradient(ellipse at 50% 10%,#1a1000,#060C1A 65%);
-  padding:54px 18px 65px;gap:12px;}
-.s3-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;
-  background:rgba(255,212,56,.08);border:1px solid rgba(255,212,56,.22);
-  border-radius:20px;font-size:9px;font-weight:800;color:var(--gold);letter-spacing:2px;}
-.s3-title{font-family:'Orbitron',sans-serif;font-size:19px;font-weight:900;
-  text-align:center;line-height:1.25;
-  background:linear-gradient(135deg,#fff,var(--gold),#fff);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-/* winner card */
-.s3-winner{width:100%;border-radius:18px;padding:18px;position:relative;overflow:hidden;
-  background:linear-gradient(135deg,rgba(13,31,60,.95),rgba(8,18,45,.9));
-  border:2px solid rgba(255,212,56,.3);box-shadow:0 0 30px rgba(255,212,56,.08);}
-.s3-winner::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--gold),var(--cyan),var(--gold),transparent);}
-.s3-w-top{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
-.s3-trophy{font-size:48px;line-height:1;filter:drop-shadow(0 0 16px rgba(255,212,56,.6));}
-.s3-w-label{font-size:9px;font-weight:800;letter-spacing:2px;
-  color:rgba(255,212,56,.6);text-transform:uppercase;margin-bottom:4px;}
-.s3-w-name{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;
-  color:var(--gold);text-shadow:0 0 20px rgba(255,212,56,.4);}
-.s3-w-uid{font-size:10px;color:rgba(255,255,255,.3);margin-top:3px;}
-.s3-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,212,56,.2),transparent);margin:12px 0;}
-.s3-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.s3-stat{text-align:center;background:rgba(255,212,56,.05);border-radius:10px;padding:10px;}
-.s3-stat-n{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;color:var(--gold);}
+/* ══════════════════════════════════════════
+   SCENE 3 — GIVEAWAY DRAW RESULT
+   Dramatic winner reveal
+══════════════════════════════════════════ */
+#s3{background:radial-gradient(ellipse at 50% 0%,#1a0f00,#03060f 70%);gap:10px;}
+
+.s3-top-label{font-size:9px;letter-spacing:5px;color:rgba(255,212,56,.4);font-weight:800;animation:fadeIn .5s ease .2s both;}
+.s3-big-title{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;text-align:center;line-height:1.2;background:linear-gradient(135deg,#fff 20%,var(--gold) 60%,#fff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fadeUp .6s ease .3s both;}
+
+/* Winner spotlight */
+.s3-spotlight{width:100%;border-radius:20px;overflow:hidden;position:relative;}
+.s3-spot-glow{position:absolute;top:-30px;left:50%;transform:translateX(-50%);width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,212,56,.15),transparent 65%);pointer-events:none;}
+.s3-spot-top{background:linear-gradient(135deg,rgba(255,212,56,.1),rgba(255,140,0,.06));border:1px solid rgba(255,212,56,.25);border-bottom:none;border-radius:20px 20px 0 0;padding:18px;text-align:center;position:relative;}
+.s3-w-trophy{font-size:52px;margin-bottom:8px;display:block;animation:bounce 2s ease 1s infinite;}
+.s3-w-chip{display:inline-block;padding:4px 14px;background:rgba(255,212,56,.15);border:1px solid rgba(255,212,56,.3);border-radius:20px;font-size:9px;font-weight:800;color:var(--gold);letter-spacing:2px;margin-bottom:8px;}
+.s3-w-name{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:var(--gold);text-shadow:0 0 30px rgba(255,212,56,.5);margin-bottom:4px;}
+.s3-w-uid{font-size:11px;color:rgba(255,255,255,.3);}
+.s3-spot-bottom{background:rgba(2,5,12,.9);border:1px solid rgba(255,212,56,.15);border-top:none;border-radius:0 0 20px 20px;padding:14px 18px;display:flex;gap:12px;}
+.s3-stat-box{flex:1;text-align:center;padding:10px;background:rgba(255,212,56,.04);border-radius:10px;}
+.s3-stat-n{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:var(--gold);}
 .s3-stat-l{font-size:8px;color:rgba(255,255,255,.25);letter-spacing:1px;margin-top:2px;}
-.s3-next{width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(255,212,56,.12);
-  border-radius:12px;padding:12px 16px;text-align:center;}
-.s3-next-lbl{font-size:9px;letter-spacing:3px;color:rgba(255,212,56,.4);margin-bottom:4px;}
-.s3-next-time{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:var(--gold);}
-.s3-note{font-size:10px;color:rgba(255,255,255,.2);text-align:center;letter-spacing:1px;}
 
-/* ══════════════════════════════
-   SCENE 4 — HOW IT WORKS
-══════════════════════════════ */
-#s4{background:radial-gradient(ellipse at 50% 0%,#051018,#060C1A 60%);
-  padding:54px 18px 65px;gap:10px;}
-.s4-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;
-  background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.18);
-  border-radius:20px;font-size:9px;font-weight:800;color:var(--cyan);letter-spacing:2px;}
-.s4-title{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;
-  color:#fff;text-align:center;line-height:1.25;}
+/* Countdown */
+.s3-cd{width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,212,56,.12);border-radius:12px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;}
+.s3-cd-lbl{font-size:9px;letter-spacing:3px;color:rgba(255,212,56,.4);font-weight:700;}
+.s3-cd-time{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:var(--gold);}
+
+/* Mystery */
+.s3-mystery{width:100%;background:rgba(255,255,255,.03);border:1px dashed rgba(255,212,56,.18);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;}
+.s3-my-icon{font-size:24px;flex-shrink:0;}
+.s3-my-title{font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:rgba(255,212,56,.6);}
+.s3-my-sub{font-size:10px;color:rgba(255,255,255,.25);margin-top:2px;}
+
+/* ══════════════════════════════════════════
+   SCENE 4 — HOW IT WORKS (animated steps)
+══════════════════════════════════════════ */
+#s4{background:linear-gradient(160deg,#030812,#030f06,#030812);gap:8px;padding:56px 18px 64px;justify-content:flex-start;overflow-y:auto;}
+.s4-hdr{text-align:center;margin-bottom:4px;width:100%;}
+.s4-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.18);border-radius:20px;font-size:9px;font-weight:800;color:var(--cyan);letter-spacing:2px;margin-bottom:6px;}
+.s4-title{font-family:'Orbitron',sans-serif;font-size:17px;font-weight:900;color:#fff;line-height:1.25;}
 .s4-title span{color:var(--cyan);}
-.s4-steps{width:100%;display:flex;flex-direction:column;gap:8px;}
-.s4-step{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;
-  background:rgba(0,229,255,.04);border:1px solid rgba(0,229,255,.1);border-radius:12px;
-  opacity:0;animation:fadeUp .5s ease forwards;}
-.s4-step-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
-.s4-step-title{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px;}
-.s4-step-sub{font-size:10px;color:rgba(255,255,255,.4);line-height:1.5;}
-.s4-final{width:100%;background:linear-gradient(135deg,rgba(255,212,56,.07),rgba(255,171,64,.03));
-  border:1px solid rgba(255,212,56,.2);border-radius:14px;padding:14px 16px;
-  display:flex;align-items:center;gap:12px;}
-.s4-final-icon{font-size:28px;}
-.s4-final-text{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--gold);}
-.s4-final-sub{font-size:10px;color:rgba(255,212,56,.5);margin-top:2px;}
 
-/* ══════════════════════════════
-   SCENE 5 — FOLLOW CTA
-══════════════════════════════ */
-#s5{background:radial-gradient(ellipse at 50% 30%,#0D1830,#060C1A);
-  padding:54px 18px 65px;gap:12px;}
-.avatar-wrap{position:relative;width:90px;height:90px;}
-.avatar-ring{width:90px;height:90px;border-radius:50%;
-  background:linear-gradient(135deg,#FFD438,#FF6B00,#FFD438);
-  background-size:200%;animation:ringRot 3s linear infinite;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 30px rgba(255,212,56,.3);}
-@keyframes ringRot{to{background-position:200% center}}
-.avatar-inner{width:80px;height:80px;border-radius:50%;background:var(--bg);
-  display:flex;align-items:center;justify-content:center;font-size:36px;
-  position:absolute;top:5px;left:5px;}
-.s5-name{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;
-  color:var(--gold);letter-spacing:3px;}
-.s5-handle{font-size:11px;color:rgba(255,255,255,.3);letter-spacing:1px;}
-.s5-follow-btn{width:100%;padding:15px;
-  background:linear-gradient(135deg,#FFD438,#FFA500,#FFD438);background-size:200%;
-  border:none;border-radius:30px;font-family:'Orbitron',sans-serif;
-  font-size:14px;font-weight:900;color:#000;letter-spacing:2px;cursor:pointer;
-  box-shadow:0 4px 30px rgba(255,212,56,.35);animation:btnS 3s linear infinite;}
-.s5-perks{width:100%;background:rgba(13,31,60,.6);border:1px solid rgba(79,195,247,.12);
-  border-radius:14px;padding:14px 16px;}
-.s5-perks-title{font-size:9px;font-weight:800;letter-spacing:3px;
-  color:rgba(255,255,255,.25);margin-bottom:10px;text-transform:uppercase;}
-.s5-perk{display:flex;align-items:center;gap:8px;font-size:11px;
-  color:rgba(255,255,255,.55);margin-bottom:7px;line-height:1.4;}
-.s5-perk:last-child{margin-bottom:0;}
+/* Vertical timeline steps */
+.s4-timeline{width:100%;position:relative;display:flex;flex-direction:column;gap:0;}
+.s4-timeline::before{content:'';position:absolute;left:22px;top:8px;bottom:8px;width:1px;background:linear-gradient(to bottom,rgba(0,229,255,.3),rgba(105,240,174,.2),rgba(255,212,56,.2));z-index:0;}
+.s4-step{display:flex;gap:12px;align-items:flex-start;position:relative;z-index:1;padding:0 0 12px;}
+.s4-step:last-child{padding-bottom:0;}
+.s4-icon-wrap{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;position:relative;border:2px solid;}
+.s4-step-body{flex:1;padding-top:8px;}
+.s4-step-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:3px;}
+.s4-step-desc{font-size:10px;color:rgba(255,255,255,.4);line-height:1.55;}
+
+/* Grand Final card */
+.s4-final{width:100%;background:linear-gradient(135deg,rgba(255,212,56,.07),rgba(255,140,0,.03));border:1px solid rgba(255,212,56,.2);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:center;}
+.s4-final-icon{font-size:32px;flex-shrink:0;}
+.s4-final-t{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:var(--gold);}
+.s4-final-s{font-size:10px;color:rgba(255,212,56,.45);margin-top:3px;}
+
+/* ══════════════════════════════════════════
+   SCENE 5 — SQUAD TOURNAMENT RULES
+══════════════════════════════════════════ */
+#s5{background:linear-gradient(160deg,#030a06,#030812,#030a06);gap:0;padding:56px 18px 64px;justify-content:flex-start;overflow-y:auto;}
+.s5-hdr{font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;letter-spacing:3px;color:var(--green);display:flex;align-items:center;gap:8px;margin-bottom:12px;width:100%;}
+.s5-hdr::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(105,240,174,.3),transparent);}
+
+.s5-rule{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;background:rgba(105,240,174,.03);border:1px solid rgba(105,240,174,.08);border-radius:11px;margin-bottom:7px;}
+.s5-rule-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.s5-rule-text{font-size:12px;color:rgba(255,255,255,.6);line-height:1.45;}
+.s5-rule-text strong{color:#fff;}
+
+/* Special highlight rules */
+.s5-rule.live{background:rgba(255,152,0,.05);border-color:rgba(255,152,0,.15);}
+.s5-rule.wa{background:rgba(37,211,102,.04);border-color:rgba(37,211,102,.12);}
+.s5-rule.prize{background:rgba(255,212,56,.05);border-color:rgba(255,212,56,.15);}
+
+/* ══════════════════════════════════════════
+   SCENE 6 — FOLLOW + CTA
+══════════════════════════════════════════ */
+#s6{background:radial-gradient(ellipse at 50% 20%,#0D1830,#03060f);gap:12px;}
+.s6-ring-wrap{position:relative;width:92px;height:92px;display:flex;align-items:center;justify-content:center;}
+.s6-ring{position:absolute;inset:0;border-radius:50%;background:conic-gradient(var(--gold) 0deg,#ff8800 90deg,var(--gold) 180deg,#ffe080 270deg,var(--gold));animation:spin 3s linear infinite;opacity:.9;}
+.s6-inner{width:78px;height:78px;border-radius:50%;background:var(--bg);position:absolute;display:flex;align-items:center;justify-content:center;font-size:34px;}
+.s6-name{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:var(--gold);letter-spacing:3px;}
+.s6-handle{font-size:11px;color:rgba(255,255,255,.28);letter-spacing:1px;}
+.s6-follow-btn{width:100%;padding:15px;background:linear-gradient(135deg,#FFD438,#FFA500,#FFD438);background-size:200%;border:none;border-radius:30px;font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:#000;letter-spacing:2px;cursor:pointer;box-shadow:0 4px 30px rgba(255,212,56,.35);animation:btnS 3s linear infinite;}
+.s6-perks{width:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:14px 16px;}
+.s6-perks-title{font-size:8px;font-weight:800;letter-spacing:3px;color:rgba(255,255,255,.22);margin-bottom:10px;text-transform:uppercase;}
+.s6-perk{display:flex;align-items:center;gap:8px;font-size:11px;color:rgba(255,255,255,.5);margin-bottom:7px;}
+.s6-perk:last-child{margin:0;}
 .pdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-.s5-link{font-size:10px;color:rgba(255,255,255,.2);letter-spacing:2px;text-align:center;}
-.s5-link span{color:rgba(0,229,255,.4);}
+.s6-reg-btn{width:100%;padding:14px;background:linear-gradient(135deg,#1565C0,#FFD438,#1565C0);background-size:300%;border:none;border-radius:14px;font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:#fff;letter-spacing:2px;cursor:pointer;box-shadow:0 4px 20px rgba(79,195,247,.2);animation:btnS 4s linear infinite;}
+.s6-link{font-size:9px;color:rgba(255,255,255,.18);letter-spacing:2px;text-align:center;}
 
-/* ── START & REPLAY OVERLAYS ── */
-.overlay{position:absolute;inset:0;z-index:80;
-  background:rgba(4,8,20,.92);backdrop-filter:blur(6px);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;}
-.ov-moon{width:100px;height:100px;border-radius:50%;
-  background:radial-gradient(circle at 38% 35%,#FFF8D0,#FFD438 18%,#D4A000 48%,#7B5000 75%,#2A1800);
-  box-shadow:0 0 50px rgba(255,212,56,.5);animation:moonpulse 2s ease-in-out infinite;}
-@keyframes moonpulse{0%,100%{box-shadow:0 0 40px rgba(255,212,56,.4)}50%{box-shadow:0 0 80px rgba(255,212,56,.8),0 0 140px rgba(255,212,56,.2)}}
-.ov-brand{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;
-  color:var(--gold);letter-spacing:4px;text-shadow:0 0 20px rgba(255,212,56,.4);}
-.ov-sub{font-size:10px;color:rgba(255,255,255,.25);letter-spacing:3px;}
-.ov-line{width:1px;height:28px;background:linear-gradient(to bottom,transparent,rgba(255,212,56,.3),transparent);}
-.ov-play-btn{background:linear-gradient(135deg,#FFD438,#FFA500,#FFD438);background-size:200%;
-  border:none;border-radius:30px;padding:16px 52px;
-  font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;
-  color:#000;letter-spacing:3px;cursor:pointer;
-  box-shadow:0 4px 35px rgba(255,212,56,.4);animation:btnS 3s linear infinite;}
-.ov-hint{font-size:9px;color:rgba(255,255,255,.18);letter-spacing:2px;}
+/* ══ OVERLAYS ══ */
+.ov{position:absolute;inset:0;z-index:80;background:rgba(2,4,10,.93);backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+.ov-moon{width:100px;height:100px;border-radius:50%;background:radial-gradient(circle at 38% 35%,#fffbe0,#FFD438 18%,#c98f00 50%,#6b3f00 75%,#1e0d00);box-shadow:0 0 60px rgba(255,212,56,.55);animation:glow 2s ease-in-out infinite;}
+.ov-title{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;color:var(--gold);letter-spacing:4px;text-shadow:0 0 30px rgba(255,212,56,.4);}
+.ov-sub{font-size:10px;color:rgba(255,255,255,.22);letter-spacing:3px;}
+.ov-play{background:linear-gradient(135deg,#FFD438,#FFA500,#FFD438);background-size:200%;border:none;border-radius:30px;padding:16px 52px;font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:#000;letter-spacing:3px;cursor:pointer;box-shadow:0 4px 35px rgba(255,212,56,.4);animation:btnS 3s linear infinite;}
+.ov-hint{font-size:9px;color:rgba(255,255,255,.15);letter-spacing:2px;}
+.ov-line{width:1px;height:24px;background:linear-gradient(to bottom,transparent,rgba(255,212,56,.3),transparent);}
 </style>
 </head>
 <body>
 <div class="phone">
   <div class="notch"></div>
-  <div id="stars"></div>
-  <div id="particles"></div>
+  <canvas id="bgCanvas"></canvas>
   <div id="progBar"><div id="progFill"></div></div>
   <div class="ticker"><div class="ticker-inner" id="ti"></div></div>
   <div class="dots" id="dots"></div>
 
-  <!-- ══ S0: MOON INTRO ══ -->
-  <div class="scene active" id="s0">
-    <div class="moon-wrap">
-      <div class="moon-glow"></div>
-      <div class="moon-ring" style="width:155px;height:155px;position:absolute;"></div>
-      <div class="moon-ring" style="width:170px;height:170px;position:absolute;animation-delay:.8s;border-color:rgba(0,229,255,.08);"></div>
-      <div class="moon"></div>
+  <!-- ═══ S0: CINEMATIC INTRO ═══ -->
+  <div class="sc on" id="s0">
+    <div class="s0-week">THIS WEEK ON DREAM2MOON</div>
+    <div class="s0-this-week"><div class="s0-live-dot"></div>SATURDAY · FREE FIRE · NEPAL 🇳🇵</div>
+    <div class="s0-moon-wrap">
+      <div class="s0-glow"></div>
+      <div class="s0-orbit" style="width:164px;height:164px;border-color:rgba(255,212,56,.12);animation-duration:12s;"></div>
+      <div class="s0-orbit" style="width:182px;height:182px;border-color:rgba(0,229,255,.07);animation-duration:18s;animation-direction:reverse;"></div>
+      <div class="s0-moon">
+        <div class="s0-satellite" style="top:8%;left:72%;">⭐</div>
+        <div class="s0-satellite" style="bottom:12%;right:8%;">✨</div>
+      </div>
     </div>
-    <div class="s0-brand">DREAM2MOON</div>
-    <div class="s0-sub">FREE FIRE COMMUNITY 🇳🇵</div>
-    <div class="s0-pills">
-      <div class="s0-pill" style="background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.18);color:rgba(255,212,56,.7);animation-delay:1.9s;">🏆 EVERY SATURDAY · SQUAD TOURNAMENT</div>
-      <div class="s0-pill" style="background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.14);color:rgba(0,229,255,.65);animation-delay:2.2s;">💎 WEEKLY MEMBERSHIP PASS GIVEAWAY</div>
-      <div class="s0-pill" style="background:rgba(105,240,174,.05);border:1px solid rgba(105,240,174,.14);color:rgba(105,240,174,.65);animation-delay:2.5s;">💰 Rs.2,400 PRIZE POOL · via eSewa</div>
+    <div class="s0-brand">DREAM<span>2</span>MOON</div>
+    <div class="s0-tagline">PLAY WITH PURPOSE · WIN AMONG STARS</div>
+    <div class="s0-features">
+      <div class="s0-feat">
+        <div class="s0-feat-icon">⚔️</div>
+        <div class="s0-feat-lbl">SQUAD<br>TOURNAMENT</div>
+        <div class="s0-feat-val">SAT</div>
+      </div>
+      <div class="s0-feat">
+        <div class="s0-feat-icon">💰</div>
+        <div class="s0-feat-lbl">PRIZE<br>POOL</div>
+        <div class="s0-feat-val">2,400</div>
+      </div>
+      <div class="s0-feat">
+        <div class="s0-feat-icon">💎</div>
+        <div class="s0-feat-lbl">WEEKLY<br>GIVEAWAY</div>
+        <div class="s0-feat-val">FREE</div>
+      </div>
     </div>
-    <div class="s0-tap">TAP ANYWHERE TO CONTINUE ▼</div>
+    <div class="s0-tap">▼ TAP ANYWHERE TO CONTINUE ▼</div>
   </div>
 
-  <!-- ══ S1: TOURNAMENT BANNER ══ -->
-  <div class="scene" id="s1">
-    <div class="s1-header">
-      <div class="s1-badge"><div class="s1-dot"></div>Registration Open</div>
-      <div class="s1-tip">📋 Register before <strong>Thursday 11:59PM NPT</strong> — Leader + 3 members</div>
-      <div class="s1-title">🏆 SQUAD GAME<br><span>FULL MAP TOURNAMENT</span></div>
-      <div class="s1-sub">This Saturday • Free Fire • <strong style="color:#00E5FF;">Full Map Squad Mode</strong><br>Register your squad and compete for real cash prizes via eSewa!</div>
-    </div>
-    <div class="s1-body">
-      <div class="s1-podium">
-        <div class="s1-p s"><div class="s1-rank">🥈</div><div class="s1-prize" style="color:#C0C0C0;">Rs.800</div><div class="s1-plbl">2nd Place</div></div>
-        <div class="s1-p g"><div class="s1-rank">🥇</div><div class="s1-prize" style="color:var(--gold);">Rs.1,200</div><div class="s1-plbl">1st Place</div></div>
-        <div class="s1-p b"><div class="s1-rank">🥉</div><div class="s1-prize" style="color:#CD7F32;">Rs.400</div><div class="s1-plbl">3rd Place</div></div>
+  <!-- ═══ S1: TOURNAMENT BANNER ═══ -->
+  <div class="sc" id="s1">
+    <div class="s1-glow-strip"></div>
+    <div class="s1-inner">
+      <div class="s1-neon">
+        <div class="s1-status"><div class="s1-sdot"></div><span id="s1StatusText">Registration Open</span></div>
+        <div class="s1-reg-tip">📋 Register before <strong>Thursday 11:59PM NPT</strong> — Leader + 3 members</div>
+        <div class="s1-title">🏆 SQUAD GAME<br><span>FULL MAP TOURNAMENT</span></div>
+        <div class="s1-desc">This Saturday • Free Fire • <strong style="color:#00E5FF;">Full Map Squad Mode</strong><br>Register your squad and compete for real cash prizes!</div>
       </div>
-      <div class="esewa-note">💚 Prizes paid via <strong>eSewa</strong> — Total Pool: <strong>Rs.2,400</strong></div>
-      <div class="s1-teams">
-        <div>
-          <div class="s1-tnum" id="s1TeamsCount">—</div>
-          <div class="s1-tlbl">TEAMS REGISTERED</div>
+      <div class="s1-podium-wrap">
+        <div class="s1-podium">
+          <div class="s1-pod s"><div class="s1-pod-rank">🥈</div><div class="s1-pod-amt" style="color:#C0C0C0;">Rs.800</div><div class="s1-pod-lbl">2nd Place</div></div>
+          <div class="s1-pod g"><div class="s1-pod-rank">🥇</div><div class="s1-pod-amt" style="color:var(--gold);">Rs.1,200</div><div class="s1-pod-lbl">1st Place</div></div>
+          <div class="s1-pod b"><div class="s1-pod-rank">🥉</div><div class="s1-pod-amt" style="color:#CD7F32;">Rs.400</div><div class="s1-pod-lbl">3rd Place</div></div>
         </div>
-        <div style="text-align:right;">
-          <div class="s1-slots" id="s1SlotsLeft">—</div>
-          <div class="s1-slbl">slots left</div>
-        </div>
+        <div class="s1-esewa">💚 Prizes via <strong>eSewa</strong> — Total Pool: <strong>Rs.2,400</strong></div>
       </div>
-      <div class="s1-btn">⚔️ REGISTER YOUR TEAM NOW</div>
-    </div>
-  </div>
-
-  <!-- ══ S2: REGISTERED TEAMS ══ -->
-  <div class="scene" id="s2">
-    <div class="s2-hdr">
-      <div class="s2-title">👥 REGISTERED SQUADS</div>
-      <div class="s2-count" id="s2Count">— teams</div>
-    </div>
-    <div class="s2-list" id="s2List">
-      <div style="padding:20px;text-align:center;color:rgba(206,147,216,.3);font-size:12px;">⏳ Loading teams...</div>
-    </div>
-  </div>
-
-  <!-- ══ S3: GIVEAWAY / LAST WINNER ══ -->
-  <div class="scene" id="s3">
-    <div class="s3-badge">🎰 1ST LUCKY DRAW</div>
-    <div class="s3-title">LUCKY DRAW<br>WINNERS</div>
-    <div class="s3-winner">
-      <div class="s3-w-top">
-        <div class="s3-trophy">🥇</div>
-        <div>
-          <div class="s3-w-label">Last Winner · 1st Lucky Draw 💎</div>
-          <div class="s3-w-name" id="s3WinnerName">Loading...</div>
-          <div class="s3-w-uid" id="s3WinnerUID">UID: —</div>
-        </div>
+      <div class="s1-counter">
+        <div><div class="s1-tnum" id="s1TeamNum">—</div><div class="s1-tlbl">TEAMS REGISTERED</div></div>
+        <div class="s1-slots-wrap"><div class="s1-slots-n" id="s1SlotsNum">—</div><div class="s1-slots-l">SLOTS LEFT</div></div>
       </div>
-      <div class="s3-divider"></div>
-      <div class="s3-stats">
-        <div class="s3-stat">
-          <div class="s3-stat-n" id="s3EntryCount">—</div>
-          <div class="s3-stat-l">ENTRIES POOL</div>
-        </div>
-        <div class="s3-stat">
-          <div class="s3-stat-n" style="color:var(--cyan);">SAT</div>
-          <div class="s3-stat-l">EVERY WEEK</div>
-        </div>
-      </div>
-    </div>
-    <div class="s3-next">
-      <div class="s3-next-lbl">⏳ NEXT WINNER IN</div>
-      <div class="s3-next-time" id="s3Countdown">Calculating...</div>
-    </div>
-    <div class="s3-note">Could be YOUR name here next 😏</div>
-    <div style="width:100%;background:rgba(255,212,56,.05);border:1px dashed rgba(255,212,56,.2);border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px;">
-      <div style="font-size:22px;">🎁</div>
-      <div><div style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:rgba(255,212,56,.7);">2ND PRIZE — COMING SOON</div><div style="font-size:10px;color:rgba(255,212,56,.4);margin-top:2px;">Something BIG is dropping soon... 🔥 Stay tuned!</div></div>
+      <div class="s1-cta"><div class="s1-btn">⚔️ REGISTER YOUR TEAM NOW</div></div>
     </div>
   </div>
 
-  <!-- ══ S4: HOW IT WORKS ══ -->
-  <div class="scene" id="s4">
-    <div class="s4-badge">⚡ HOW IT WORKS</div>
-    <div class="s4-title">TOURNAMENT<br><span>FORMAT</span></div>
-    <div class="s4-steps">
-      <div class="s4-step" style="animation-delay:.1s;">
-        <div class="s4-step-icon">📋</div>
-        <div><div class="s4-step-title">Register Your Squad</div><div class="s4-step-sub">Leader + 3 members before Thursday 11:59PM NPT</div></div>
+  <!-- ═══ S2: TEAMS ═══ -->
+  <div class="sc" id="s2">
+    <div class="s2-top">
+      <div class="s2-hdr-title">👥 REGISTERED SQUADS</div>
+      <div class="s2-hdr-sub" id="s2CountLabel">— TEAMS</div>
+    </div>
+    <div class="s2-grid" id="s2Grid">
+      <div style="padding:20px;text-align:center;color:rgba(206,147,216,.25);font-size:11px;">⏳ Loading...</div>
+    </div>
+  </div>
+
+  <!-- ═══ S3: GIVEAWAY WINNER ═══ -->
+  <div class="sc" id="s3">
+    <div class="s3-top-label">🎰 1ST LUCKY DRAW · LAST WINNER</div>
+    <div class="s3-big-title">LUCKY DRAW<br>RESULTS</div>
+    <div class="s3-spotlight">
+      <div class="s3-spot-glow"></div>
+      <div class="s3-spot-top">
+        <span class="s3-w-trophy">🥇</span>
+        <div class="s3-w-chip">1ST LUCKY DRAW 💎</div>
+        <div class="s3-w-name" id="s3Name">Loading...</div>
+        <div class="s3-w-uid" id="s3UID">UID: —</div>
       </div>
-      <div class="s4-step" style="animation-delay:.2s;">
-        <div class="s4-step-icon">🎲</div>
-        <div><div class="s4-step-title">Random Group Division</div><div class="s4-step-sub">Teams shuffled &amp; split into groups after reg closes</div></div>
+      <div class="s3-spot-bottom">
+        <div class="s3-stat-box"><div class="s3-stat-n" id="s3Entries">—</div><div class="s3-stat-l">IN THE POOL</div></div>
+        <div class="s3-stat-box"><div class="s3-stat-n" style="color:var(--cyan);font-size:16px;">EVERY<br>SAT</div><div class="s3-stat-l">DRAW DAY</div></div>
       </div>
-      <div class="s4-step" style="animation-delay:.3s;">
-        <div class="s4-step-icon">⚔️</div>
-        <div><div class="s4-step-title">5 Group Matches</div><div class="s4-step-sub">Top 2 from each group qualify for Grand Final</div></div>
+    </div>
+    <div class="s3-cd"><div class="s3-cd-lbl">⏳ NEXT WINNER IN</div><div class="s3-cd-time" id="s3CD">Calculating...</div></div>
+    <div class="s3-mystery">
+      <div class="s3-my-icon">🎁</div>
+      <div><div class="s3-my-title">MYSTERY PRIZE — COMING SOON</div><div class="s3-my-sub">Something BIG is dropping soon... 🔥 Stay tuned!</div></div>
+    </div>
+  </div>
+
+  <!-- ═══ S4: HOW IT WORKS (timeline) ═══ -->
+  <div class="sc" id="s4">
+    <div class="s4-hdr">
+      <div class="s4-badge">⚡ HOW IT WORKS</div>
+      <div class="s4-title">TOURNAMENT<br><span>FORMAT</span></div>
+    </div>
+    <div class="s4-timeline">
+      <div class="s4-step ani-right" style="animation-delay:.1s;">
+        <div class="s4-icon-wrap" style="background:rgba(79,195,247,.1);border-color:rgba(79,195,247,.3);">📋</div>
+        <div class="s4-step-body"><div class="s4-step-title">Register Your Squad</div><div class="s4-step-desc">Leader + 3 members · before Thursday 11:59PM NPT · Max 60 teams</div></div>
       </div>
-      <div class="s4-step" style="animation-delay:.4s;">
-        <div class="s4-step-icon">🎬</div>
-        <div><div class="s4-step-title">Live Stream Qualifier</div><div class="s4-step-sub">12 teams play live — Top 2 earn Grand Final spot 🔥</div></div>
+      <div class="s4-step ani-right" style="animation-delay:.2s;">
+        <div class="s4-icon-wrap" style="background:rgba(105,240,174,.1);border-color:rgba(105,240,174,.3);">🎲</div>
+        <div class="s4-step-body"><div class="s4-step-title">Random Group Division</div><div class="s4-step-desc">Teams shuffled &amp; split into groups after registration closes</div></div>
+      </div>
+      <div class="s4-step ani-right" style="animation-delay:.3s;">
+        <div class="s4-icon-wrap" style="background:rgba(255,212,56,.08);border-color:rgba(255,212,56,.25);">⚔️</div>
+        <div class="s4-step-body"><div class="s4-step-title">5 Group Matches</div><div class="s4-step-desc">Top 2 from each group qualify for Grand Final</div></div>
+      </div>
+      <div class="s4-step ani-right" style="animation-delay:.4s;">
+        <div class="s4-icon-wrap" style="background:rgba(255,152,0,.08);border-color:rgba(255,152,0,.25);">🎬</div>
+        <div class="s4-step-body"><div class="s4-step-title">Live Stream Qualifier</div><div class="s4-step-desc">12 teams play live — Top 2 earn Grand Final spot 🔥</div></div>
       </div>
     </div>
     <div class="s4-final">
       <div class="s4-final-icon">🏆</div>
-      <div>
-        <div class="s4-final-text">GRAND FINAL — 12 TEAMS</div>
-        <div class="s4-final-sub">Best 3 squads share Rs.2,400 prize pool! 💰</div>
-      </div>
+      <div><div class="s4-final-t">GRAND FINAL — 12 TEAMS</div><div class="s4-final-s">Best 3 squads share Rs.2,400 prize pool! 💰</div></div>
     </div>
   </div>
 
-  <!-- ══ S5: FOLLOW CTA ══ -->
-  <div class="scene" id="s5">
-    <div class="avatar-wrap">
-      <div class="avatar-ring"></div>
-      <div class="avatar-inner">🌙</div>
+  <!-- ═══ S5: SQUAD TOURNAMENT RULES ═══ -->
+  <div class="sc" id="s5">
+    <div class="s5-hdr">⚔️ SQUAD TOURNAMENT RULES</div>
+
+    <div class="s5-rule ani-right" style="animation-delay:.05s;">
+      <div class="s5-rule-dot" style="background:#69F0AE;box-shadow:0 0 6px rgba(105,240,174,.5);"></div>
+      <div class="s5-rule-text"><strong>Register before Thursday 11:59PM NPT</strong> — Max 60 teams</div>
     </div>
-    <div class="s5-name">DREAM2MOON</div>
-    <div class="s5-handle">Free Fire Community · Nepal 🇳🇵</div>
-    <button class="s5-follow-btn" id="followBtn" onclick="followClicked()">➕ FOLLOW ON TIKTOK</button>
-    <div class="s5-perks">
-      <div class="s5-perks-title">🌙 Why Follow Dream2Moon?</div>
-      <div class="s5-perk"><div class="pdot" style="background:var(--gold);"></div>Weekly tournament updates &amp; results 🏆</div>
-      <div class="s5-perk"><div class="pdot" style="background:var(--cyan);"></div>💎 Lucky Draw winner announcements</div>
-      <div class="s5-perk"><div class="pdot" style="background:var(--green);"></div>Squad registration &amp; match notifications 📣</div>
-      <div class="s5-perk"><div class="pdot" style="background:var(--purple);"></div>💚 Rs.2,400 prize pool via eSewa</div>
+    <div class="s5-rule ani-right" style="animation-delay:.1s;">
+      <div class="s5-rule-dot" style="background:#69F0AE;"></div>
+      <div class="s5-rule-text">Team: <strong>1 leader + 3 members</strong> — Names cannot be changed after registration</div>
     </div>
-    <div class="s5-link">🔗 Link in bio · <span>dream2moon</span></div>
+    <div class="s5-rule ani-right" style="animation-delay:.15s;">
+      <div class="s5-rule-dot" style="background:#4FC3F7;"></div>
+      <div class="s5-rule-text"><strong>Leader name, UID &amp; WhatsApp number</strong> required for registration</div>
+    </div>
+    <div class="s5-rule ani-right" style="animation-delay:.2s;">
+      <div class="s5-rule-dot" style="background:#69F0AE;"></div>
+      <div class="s5-rule-text">Groups <strong>randomly divided</strong> after registration closes</div>
+    </div>
+    <div class="s5-rule ani-right" style="animation-delay:.25s;">
+      <div class="s5-rule-dot" style="background:#4FC3F7;"></div>
+      <div class="s5-rule-text"><strong>Top 2 from each group</strong> advance to Grand Final</div>
+    </div>
+    <div class="s5-rule live ani-right" style="animation-delay:.3s;">
+      <div class="s5-rule-dot" style="background:#FF9800;box-shadow:0 0 6px rgba(255,152,0,.5);"></div>
+      <div class="s5-rule-text">🎬 <strong>Live Stream Qualifier</strong> — 12 teams play, top 2 earn a Grand Final spot</div>
+    </div>
+    <div class="s5-rule wa ani-right" style="animation-delay:.35s;">
+      <div class="s5-rule-dot" style="background:#25D366;box-shadow:0 0 6px rgba(37,211,102,.4);"></div>
+      <div class="s5-rule-text">📱 Each <strong>team leader will be invited</strong> to their WhatsApp match group</div>
+    </div>
+    <div class="s5-rule prize ani-right" style="animation-delay:.4s;">
+      <div class="s5-rule-dot" style="background:var(--gold);box-shadow:0 0 6px rgba(255,212,56,.5);"></div>
+      <div class="s5-rule-text">🥇 Rs.1,200 · 🥈 Rs.800 · 🥉 Rs.400 — paid via <strong>eSewa 💚</strong></div>
+    </div>
   </div>
 
-  <!-- ══ PAUSE ICON ══ -->
-  <div id="pauseIcon">
-    <div class="pause-ring"><span style="font-size:24px;">⏸</span></div>
+  <!-- ═══ S6: FOLLOW + CTA ═══ -->
+  <div class="sc" id="s6">
+    <div class="s6-ring-wrap">
+      <div class="s6-ring"></div>
+      <div class="s6-inner">🌙</div>
+    </div>
+    <div class="s6-name">DREAM2MOON</div>
+    <div class="s6-handle">Free Fire Community · Nepal 🇳🇵</div>
+    <button class="s6-follow-btn" id="followBtn" onclick="followClicked()">➕ FOLLOW ON TIKTOK</button>
+    <div class="s6-perks">
+      <div class="s6-perks-title">🌙 Why Follow Dream2Moon?</div>
+      <div class="s6-perk"><div class="pdot" style="background:var(--gold);"></div>Weekly tournament updates &amp; results 🏆</div>
+      <div class="s6-perk"><div class="pdot" style="background:var(--cyan);"></div>💎 Lucky Draw winner announcements every Saturday</div>
+      <div class="s6-perk"><div class="pdot" style="background:var(--green);"></div>Room ID &amp; match schedule notifications 📣</div>
+      <div class="s6-perk"><div class="pdot" style="background:var(--purple);"></div>💚 Rs.2,400 prize pool — paid via eSewa</div>
+    </div>
+    <button class="s6-reg-btn">⚔️ REGISTER YOUR SQUAD NOW</button>
+    <div class="s6-link">🔗 deamtomoon.github.io/GiveAway</div>
   </div>
 
-  <!-- ══ START OVERLAY ══ -->
-  <div class="overlay" id="startOverlay">
+  <!-- ═══ PAUSE ICON ═══ -->
+  <div id="pauseIco"><div class="p-ring">⏸</div></div>
+
+  <!-- ═══ START OVERLAY ═══ -->
+  <div class="ov" id="startOv">
     <div class="ov-moon"></div>
-    <div class="ov-brand">DREAM2MOON</div>
-    <div class="ov-sub">FREE FIRE COMMUNITY 🇳🇵</div>
+    <div class="ov-title">DREAM2MOON</div>
+    <div class="ov-sub">FREE FIRE · NEPAL 🇳🇵</div>
     <div class="ov-line"></div>
-    <button class="ov-play-btn" onclick="startVideo()">▶ PLAY PROMO</button>
-    <div class="ov-hint">~18 SECONDS · SCREEN RECORD NOW 📱</div>
+    <button class="ov-play" onclick="startVideo()">▶ PLAY PROMO</button>
+    <div class="ov-hint">~21 SECONDS · SCREEN RECORD NOW 📱</div>
   </div>
 
-  <!-- ══ REPLAY OVERLAY ══ -->
-  <div class="overlay" id="replayOverlay" style="display:none;">
-    <div style="font-size:52px;">🏆</div>
-    <div class="ov-brand">JOIN DREAM2MOON</div>
-    <div style="font-size:11px;color:rgba(255,255,255,.3);letter-spacing:1px;text-align:center;line-height:1.8;">Every Saturday · Squad Tournament<br>💎 Weekly Pass · 🇳🇵 Nepal Community</div>
-    <button class="ov-play-btn" onclick="startVideo()">🔄 REPLAY</button>
+  <!-- ═══ REPLAY OVERLAY ═══ -->
+  <div class="ov" id="replayOv" style="display:none;">
+    <div style="font-size:56px;animation:bounce 1.5s ease infinite;">🏆</div>
+    <div class="ov-title">JOIN DREAM2MOON</div>
+    <div style="font-size:10px;color:rgba(255,255,255,.3);text-align:center;line-height:1.8;letter-spacing:1px;">Every Saturday · Squad Tournament<br>💎 Weekly Pass · 🇳🇵 Nepal Community</div>
+    <button class="ov-play" onclick="startVideo()">🔄 REPLAY</button>
   </div>
 </div>
 
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import{getFirestore,collection,getDocs,onSnapshot,query,orderBy,doc}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import{getFirestore,collection,onSnapshot,query,orderBy,doc}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 const cfg={apiKey:"AIzaSyDPp-JsePgIM4Y3MrFrXEMLiv1GW3sJGKU",authDomain:"dream2moon.firebaseapp.com",projectId:"dream2moon",storageBucket:"dream2moon.firebasestorage.app",messagingSenderId:"172765828572",appId:"1:172765828532:web:d31a0b1dae8cc5752bcee1"};
 const app=initializeApp(cfg);const db=getFirestore(app);
 
-// ── STARS ──
-const sf=document.getElementById('stars');
-for(let i=0;i<100;i++){
-  const s=document.createElement('div');s.className='s';
-  const sz=Math.random()*2+.2;
-  s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*5}s;--dl:-${Math.random()*7}s;--op:${.08+Math.random()*.5};`;
-  sf.appendChild(s);
+/* ── CANVAS PARTICLE BG ── */
+const canvas=document.getElementById('bgCanvas');
+const ctx=canvas.getContext('2d');
+canvas.width=390;canvas.height=844;
+const stars=[];const NSTARS=120;
+for(let i=0;i<NSTARS;i++){stars.push({x:Math.random()*390,y:Math.random()*844,r:Math.random()*1.2+.2,a:Math.random(),da:(Math.random()-.5)*.008,speed:Math.random()*.15+.05,vy:Math.random()>0.85?-(Math.random()*.4+.1):0});}
+const FF_EMOJIS=['🔥','⚡','✨','💥','⭐','🎯','💫'];
+const particles=[];
+for(let i=0;i<12;i++){particles.push({x:Math.random()*390,y:800+Math.random()*100,vy:-(Math.random()*1.2+0.4),vx:(Math.random()-.5)*.5,a:0,life:0,maxLife:300+Math.random()*400,emoji:FF_EMOJIS[Math.floor(Math.random()*FF_EMOJIS.length)],size:10+Math.random()*10});}
+function drawBG(){
+  ctx.clearRect(0,0,390,844);
+  // Stars
+  stars.forEach(s=>{
+    s.a+=s.da;if(s.a>1||s.a<0)s.da*=-1;s.y+=s.vy;if(s.y<-5)s.y=849;
+    ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,255,255,${Math.max(0,Math.min(1,s.a))})`;ctx.fill();
+  });
+  // Emoji particles
+  particles.forEach(p=>{
+    p.life++;if(p.life>p.maxLife){p.life=0;p.x=Math.random()*390;p.y=850;p.a=0;}
+    p.y+=p.vy;p.x+=p.vx;
+    const prog=p.life/p.maxLife;
+    p.a=prog<.2?prog/.2:prog>.8?1-(prog-.8)/.2:1;
+    ctx.save();ctx.globalAlpha=p.a*.25;ctx.font=`${p.size}px serif`;ctx.fillText(p.emoji,p.x,p.y);ctx.restore();
+  });
+  requestAnimationFrame(drawBG);
 }
+drawBG();
 
-// ── PARTICLES (floating gun emoji / fire sparks) ──
-const pf=document.getElementById('particles');
-const pemojis=['🔥','⚡','✨','💥','⭐','🎯'];
-for(let i=0;i<14;i++){
-  const p=document.createElement('div');p.className='particle';
-  const sz=10+Math.random()*10;
-  p.style.cssText=`left:${Math.random()*100}%;width:${sz}px;height:${sz}px;font-size:${sz}px;background:none;border-radius:0;--pd:${4+Math.random()*6}s;--pdl:-${Math.random()*6}s;--pop:${.15+Math.random()*.25};`;
-  p.textContent=pemojis[Math.floor(Math.random()*pemojis.length)];
-  pf.appendChild(p);
-}
-
-// ── TICKER ──
-const msgs=['🌙 DREAM2MOON COMMUNITY','⚔️ EVERY SATURDAY · SQUAD TOURNAMENT','💎 WEEKLY PASS GIVEAWAY','🎮 FREE FIRE · FULL MAP · SQUAD MODE','⏰ REG CLOSES THURSDAY 11:59PM NPT','🏆 GROUP STAGE → GRAND FINAL','💚 Rs.2,400 VIA ESEWA','📣 FOLLOW FOR UPDATES','🇳🇵 NEPAL FREE FIRE COMMUNITY'];
+/* ── TICKER ── */
+const msgs=['🌙 DREAM2MOON','⚔️ SQUAD TOURNAMENT · THIS SATURDAY','💎 WEEKLY PASS GIVEAWAY','🎮 FREE FIRE · FULL MAP · SQUAD MODE','⏰ REG CLOSES THURSDAY 11:59PM NPT','🏆 GROUP STAGE → GRAND FINAL','💚 Rs.2,400 VIA ESEWA','📣 FOLLOW FOR UPDATES','🇳🇵 NEPAL FREE FIRE COMMUNITY','🔥 REGISTER NOW · SLOTS FILLING FAST'];
 const ti=document.getElementById('ti');
 const row=[...msgs,...msgs].map(m=>`<span>${m}</span><span class="tsep">✦</span>`).join('');
 ti.innerHTML=row+row;
 
-// ── FIREBASE DATA ──
+/* ── FIREBASE LIVE DATA ── */
 let teamsData=[];
-let entryCount=0;
-let lastWinner={name:'',uid:''};
 
-// Teams
 onSnapshot(query(collection(db,'tournament_teams'),orderBy('registeredAt','asc')),snap=>{
   teamsData=snap.docs.map(d=>({id:d.id,...d.data()}));
-  const count=teamsData.length;
-  const slots=Math.max(0,60-count);
-  document.getElementById('s1TeamsCount').textContent=count||'—';
-  document.getElementById('s1SlotsLeft').textContent=slots||'—';
-  document.getElementById('s2Count').textContent=count+' teams';
-  renderTeams();
+  const n=teamsData.length,slots=Math.max(0,60-n);
+  set('s1TeamNum',n||'—');set('s1SlotsNum',slots);set('s2CountLabel',n+' TEAMS');
+  buildTeams();
 });
 
-// Entries count
-onSnapshot(collection(db,'entries'),snap=>{
-  entryCount=snap.size;
-  document.getElementById('s3EntryCount').textContent=entryCount||'—';
-});
+onSnapshot(collection(db,'entries'),snap=>{set('s3Entries',snap.size||'—');});
 
-// Winners
 onSnapshot(doc(db,'winners','latest'),snap=>{
   if(snap.exists()){
     const w=snap.data();
-    lastWinner.name=w.monthlyUsername||'—';
-    lastWinner.uid=w.monthlyUID||'—';
-    document.getElementById('s3WinnerName').textContent=lastWinner.name;
-    document.getElementById('s3WinnerUID').textContent='UID: '+lastWinner.uid;
-    if(w.drawnAt){
-      const d=new Date(w.drawnAt.seconds*1000);
-      // Find next Saturday
-      const now=new Date();
-      const sat=new Date(now);sat.setHours(10,0,0,0);
-      while(sat.getDay()!==6)sat.setDate(sat.getDate()+1);
-      updateS3Countdown(sat);
-    }
-  }else{
-    document.getElementById('s3WinnerName').textContent='No winner yet';
-    document.getElementById('s3WinnerUID').textContent='Stay tuned for Saturday! 👀';
-  }
+    set('s3Name',w.monthlyUsername||'—');
+    set('s3UID','UID: '+(w.monthlyUID||'—'));
+  }else{set('s3Name','No winner yet');set('s3UID','Draw every Saturday! 👀');}
 });
 
-function updateS3Countdown(sat){
-  function tick(){
-    const diff=sat-new Date();
-    if(diff<=0){document.getElementById('s3Countdown').textContent='DRAWING SOON! 🎰';return;}
-    const d=Math.floor(diff/86400000);
-    const h=Math.floor((diff%86400000)/3600000);
-    const m=Math.floor((diff%3600000)/60000);
-    const s=Math.floor((diff%60000)/1000);
-    document.getElementById('s3Countdown').textContent=`${d}d ${h}h ${m}m ${s}s`;
-  }
+// Countdown to next Saturday 10AM NPT
+(function(){
+  const tick=()=>{
+    const now=new Date();
+    const sat=new Date(now);
+    sat.setHours(10,0,0,0);
+    while(sat.getDay()!==6||sat<=now)sat.setDate(sat.getDate()+1);
+    const diff=sat-now;
+    const d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000),s=Math.floor(diff%60000/1000);
+    set('s3CD',`${d}d ${h}h ${m}m ${s}s`);
+  };
   tick();setInterval(tick,1000);
-}
+})();
 
-function renderTeams(){
-  const list=document.getElementById('s2List');
-  if(!teamsData.length){list.innerHTML='<div style="padding:20px;text-align:center;color:rgba(206,147,216,.3);font-size:12px;">No teams registered yet 😊</div>';return;}
-  list.innerHTML=teamsData.map((t,i)=>`
-    <div class="s2-team" style="animation-delay:${i*.04}s;">
-      <div class="s2-num">#${i+1}</div>
-      <div>
+function set(id,val){const el=document.getElementById(id);if(el)el.textContent=val;}
+function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function buildTeams(){
+  const grid=document.getElementById('s2Grid');
+  if(!grid)return;
+  if(!teamsData.length){grid.innerHTML='<div style="padding:20px;text-align:center;color:rgba(206,147,216,.25);font-size:11px;">No teams yet 😊</div>';return;}
+  grid.innerHTML=teamsData.map((t,i)=>`
+    <div class="s2-card" style="animation-delay:${i*.04}s;">
+      <div class="s2-rank">#${i+1}</div>
+      <div style="flex:1;min-width:0;">
         <div class="s2-leader">👑 ${esc(t.leaderName)}</div>
-        <div class="s2-uid">UID: ${esc(t.leaderUID)}</div>
+        <div class="s2-uid">${esc(t.leaderUID)}</div>
         <div class="s2-members">
-          <span class="s2-chip">⚔️ ${esc(t.member1)}</span>
-          <span class="s2-chip">⚔️ ${esc(t.member2)}</span>
-          <span class="s2-chip">⚔️ ${esc(t.member3)}</span>
+          <span class="s2-mem">⚔️ ${esc(t.member1)}</span>
+          <span class="s2-mem">⚔️ ${esc(t.member2)}</span>
+          <span class="s2-mem">⚔️ ${esc(t.member3)}</span>
         </div>
       </div>
     </div>`).join('');
 }
 
-function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
-// ── VIDEO ENGINE ──
-const scenes=document.querySelectorAll('.scene');
+/* ── VIDEO ENGINE ── */
+const scenes=document.querySelectorAll('.sc');
 const dotsEl=document.getElementById('dots');
 const progFill=document.getElementById('progFill');
 const progBar=document.getElementById('progBar');
-const pauseIcon=document.getElementById('pauseIcon');
-let cur=0,autoTimer=null,isPaused=false;
+const pauseIco=document.getElementById('pauseIco');
+let cur=0,timer=null,paused=false;
 
-// Scene durations
-const DURATIONS=[3000,4000,5000,3500,3500,3500];
+// Durations per scene (ms) — total ~22s
+const DUR=[3000,4000,5000,3500,3500,3500,3500];
+// Progress bar colors per scene
+const COLORS=[
+  'linear-gradient(90deg,#FFD438,#FFA500)',
+  'linear-gradient(90deg,#69F0AE,#00E5FF)',
+  'linear-gradient(90deg,#CE93D8,#4FC3F7)',
+  'linear-gradient(90deg,#FFD438,#FF6B6B)',
+  'linear-gradient(90deg,#00E5FF,#69F0AE)',
+  'linear-gradient(90deg,#69F0AE,#00E5FF)',
+  'linear-gradient(90deg,#FFD438,#CE93D8)',
+];
 
 scenes.forEach((_,i)=>{
-  const d=document.createElement('div');
-  d.className='dot'+(i===0?' active':'');
-  dotsEl.appendChild(d);
+  const d=document.createElement('div');d.className='dot'+(i===0?' on':'');dotsEl.appendChild(d);
 });
 
 function goTo(n){
-  scenes[cur].classList.remove('active');
-  dotsEl.children[cur].classList.remove('active');
+  scenes[cur].classList.remove('on');
+  dotsEl.children[cur].classList.remove('on');
   cur=n;
-  scenes[cur].classList.add('active');
-  dotsEl.children[cur].classList.add('active');
+  scenes[cur].classList.add('on');
+  dotsEl.children[cur].classList.add('on');
+  progFill.style.background=COLORS[cur]||COLORS[0];
 }
 
-function startProgress(duration){
-  progFill.style.transition='none';
-  progFill.style.width='0%';
+function startProg(dur){
+  progFill.style.transition='none';progFill.style.width='0%';
   progFill.getBoundingClientRect();
-  progFill.style.transition=`width ${duration}ms linear`;
-  progFill.style.width='100%';
+  progFill.style.transition=`width ${dur}ms linear`;progFill.style.width='100%';
 }
 
-function playScene(idx){
-  if(idx>=scenes.length){showReplay();return;}
-  goTo(idx);
-  startProgress(DURATIONS[idx]);
-  clearTimeout(autoTimer);
-  autoTimer=setTimeout(()=>playScene(idx+1),DURATIONS[idx]);
+function play(idx){
+  if(idx>=scenes.length){end();return;}
+  goTo(idx);startProg(DUR[idx]);
+  clearTimeout(timer);timer=setTimeout(()=>play(idx+1),DUR[idx]);
 }
 
-function showReplay(){
-  document.getElementById('replayOverlay').style.display='flex';
+function end(){
+  document.getElementById('replayOv').style.display='flex';
   progFill.style.width='100%';
 }
 
 window.startVideo=function(){
-  document.getElementById('startOverlay').style.display='none';
-  document.getElementById('replayOverlay').style.display='none';
-  isPaused=false;cur=0;
-  playScene(0);
+  document.getElementById('startOv').style.display='none';
+  document.getElementById('replayOv').style.display='none';
+  paused=false;cur=0;play(0);
 };
 
-// Tap to pause/resume
 document.querySelector('.phone').addEventListener('click',e=>{
-  if(e.target.closest('#startOverlay')||e.target.closest('#replayOverlay')||e.target.closest('#followBtn'))return;
-  if(document.getElementById('startOverlay').style.display!=='none')return;
-  if(document.getElementById('replayOverlay').style.display!=='none')return;
-  isPaused=!isPaused;
-  if(isPaused){
-    clearTimeout(autoTimer);
+  if(e.target.closest('#startOv')||e.target.closest('#replayOv')||e.target.closest('#followBtn')||e.target.closest('.s1-btn')||e.target.closest('.s6-reg-btn')||e.target.closest('.s6-follow-btn'))return;
+  if(document.getElementById('startOv').style.display!=='none')return;
+  if(document.getElementById('replayOv').style.display!=='none')return;
+  paused=!paused;
+  if(paused){
+    clearTimeout(timer);
     const cw=parseFloat(getComputedStyle(progFill).width);
     const tw=parseFloat(getComputedStyle(progBar).width);
-    const pct=(cw/tw*100).toFixed(1);
-    progFill.style.transition='none';
-    progFill.style.width=pct+'%';
-    pauseIcon.style.opacity='1';
+    const pct=(cw/tw*100).toFixed(2);
+    progFill.style.transition='none';progFill.style.width=pct+'%';
+    pauseIco.style.opacity='1';
+    setTimeout(()=>pauseIco.style.opacity='0',1400);
   }else{
-    pauseIcon.style.opacity='0';
     const cw=parseFloat(getComputedStyle(progFill).width);
     const tw=parseFloat(getComputedStyle(progBar).width);
     const pct=cw/tw;
-    const rem=DURATIONS[cur]*(1-pct);
-    progFill.style.transition='none';
-    progFill.style.width=(pct*100)+'%';
-    progFill.getBoundingClientRect();
-    progFill.style.transition=`width ${rem}ms linear`;
-    progFill.style.width='100%';
-    autoTimer=setTimeout(()=>playScene(cur+1),rem);
+    const rem=DUR[cur]*(1-pct);
+    progFill.style.transition='none';progFill.getBoundingClientRect();
+    progFill.style.transition=`width ${rem}ms linear`;progFill.style.width='100%';
+    timer=setTimeout(()=>play(cur+1),rem);
   }
 });
 
@@ -673,7 +658,7 @@ window.followClicked=function(){
   const btn=document.getElementById('followBtn');
   btn.textContent='✅ FOLLOWING!';
   btn.style.background='linear-gradient(135deg,#69F0AE,#00C853)';
-  btn.style.color='#000';
+  btn.style.color='#000';btn.style.boxShadow='0 4px 25px rgba(105,240,174,.4)';
 };
 </script>
 </body>
