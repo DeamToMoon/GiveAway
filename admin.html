@@ -466,13 +466,18 @@ window.startDraw=function(type){
   const pool=allEntries.filter(e=>!(drawnMonthly&&e.id===drawnMonthly.id)&&!(drawnWeekly&&e.id===drawnWeekly.id));
   const winner=pool[Math.floor(Math.random()*pool.length)];
   if(!winner){alert('Not enough entries!');wheelRunning=false;return;}
-
+  const isM=type==='monthly';
   const I={
-
-    cvs:isM?'monthlyWheel':'weeklyWheel',ctr:isM?'monthlyCentreName':'weeklyCentreName',
-    bar:isM?'monthlyTimerBar':'weeklyTimerBar',twp:isM?'monthlyTimerWrap':'weeklyTimerWrap',
-    cd:isM?'monthlyCountdown':'weeklyCountdown',rev:isM?'monthlyWinnerReveal':'weeklyWinnerReveal',
-    nm:isM?'winnerNameMonthly':'winnerNameWeekly',uid:isM?'winnerUIDMonthly':'winnerUIDWeekly',
+    btn:isM?'monthlyDrawBtn':'weeklyDrawBtn',
+    sec:isM?'monthlyWheelSection':'weeklyWheelSection',
+    cvs:isM?'monthlyWheel':'weeklyWheel',
+    ctr:isM?'monthlyCentreName':'weeklyCentreName',
+    bar:isM?'monthlyTimerBar':'weeklyTimerBar',
+    twp:isM?'monthlyTimerWrap':'weeklyTimerWrap',
+    cd:isM?'monthlyCountdown':'weeklyCountdown',
+    rev:isM?'monthlyWinnerReveal':'weeklyWinnerReveal',
+    nm:isM?'winnerNameMonthly':'winnerNameWeekly',
+    uid:isM?'winnerUIDMonthly':'winnerUIDWeekly',
   };
   const accent=isM?'#FFD438':'#4FC3F7';
   document.getElementById(I.btn).disabled=true;
@@ -557,9 +562,9 @@ window.manualClear=async function(){
 window.undoDraw=function(type){
   if(wheelRunning){alert('⏳ Wait for the draw to finish!');return;}
   if(!confirm('↩️ Undo '+type+' draw and re-spin?'))return;
-
+  const isM=type==='monthly';
   if(isM){drawnMonthly=null;}else{drawnWeekly=null;}
-
+  const I={btn:isM?'monthlyDrawBtn':'weeklyDrawBtn',rev:isM?'monthlyWinnerReveal':'weeklyWinnerReveal',sec:isM?'monthlyWheelSection':'weeklyWheelSection',cd:isM?'monthlyCountdown':'weeklyCountdown',ctr:isM?'monthlyCentreName':'weeklyCentreName',twp:isM?'monthlyTimerWrap':'weeklyTimerWrap',bar:isM?'monthlyTimerBar':'weeklyTimerBar'};
   document.getElementById(I.rev).style.display='none';document.getElementById(I.sec).style.display='none';
   document.getElementById(I.cd).style.display='none';document.getElementById(I.ctr).textContent='🎰';
   document.getElementById(I.ctr).style.fontSize='16px';document.getElementById(I.bar).style.width='100%';
