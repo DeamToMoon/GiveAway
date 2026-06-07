@@ -309,40 +309,43 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 </div>
 
 <script>
-// Firebase compat — initialized before anything else
-const cfg={apiKey:"AIzaSyDPp-JsePgIM4Y3MrFrXEMLiv1GW3sJGKU",authDomain:"dream2moon.firebaseapp.com",projectId:"dream2moon",storageBucket:"dream2moon.firebasestorage.app",messagingSenderId:"172765828532",appId:"1:172765828532:web:d31a0b1dae8cc5752bcee1"};
-firebase.initializeApp(cfg);
-var db = firebase.firestore();
+// Global vars — available before Firebase loads
+var db, allEntries=[], winnerHistory=[], tournTeams=[], selectedGroups=0;
+var drawnMonthly=null, wheelRunning=false, currentRole='admin';
 
-var allEntries=[], winnerHistory=[], tournTeams=[], selectedGroups=0;
-var drawnMonthly=null, wheelRunning=false;
-var currentRole='admin';
-
-// ── STARS ──
-window.onload=function(){
+// Stars — run immediately on DOM ready
+document.addEventListener('DOMContentLoaded',function(){
   var sf=document.getElementById('stars');
   if(sf){for(var i=0;i<100;i++){var s=document.createElement('div');s.className='star';var sz=Math.random()*2+.3;s.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+(Math.random()*100)+'%;top:'+(Math.random()*100)+'%;--d:'+(2+Math.random()*5)+'s;--dl:'+(Math.random()*6)+'s;--op:'+(0.12+Math.random()*.55)+';';sf.appendChild(s);}}
-};
+  // Init Firebase after DOM + scripts loaded
+  var cfg={apiKey:"AIzaSyDPp-JsePgIM4Y3MrFrXEMLiv1GW3sJGKU",authDomain:"dream2moon.firebaseapp.com",projectId:"dream2moon",storageBucket:"dream2moon.firebasestorage.app",messagingSenderId:"172765828532",appId:"1:172765828532:web:d31a0b1dae8cc5752bcee1"};
+  firebase.initializeApp(cfg);
+  db=firebase.firestore();
+});
 
 // ── LOGIN ──
 function doLogin(){
   var u=document.getElementById('loginUser').value.trim();
   var p=document.getElementById('loginPass').value;
+  var err=document.getElementById('loginError');
   if(u==='Dream2moon'&&p==='dream2moon@123'){
     currentRole='admin';
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('adminPanel').style.display='flex';
-    applyRoleUI();
-    loadEntries();loadTournTeams();loadSavedBracket();loadRegToggle();
   }else if(u==='miniadmin'&&p==='Bipin@90'){
     currentRole='mini';
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('adminPanel').style.display='flex';
-    applyRoleUI();
-    loadEntries();loadTournTeams();loadSavedBracket();loadRegToggle();
   }else{
-    document.getElementById('loginError').style.display='block';
+    err.style.display='block';return;
   }
+  err.style.display='none';
+  // Make sure Firebase is ready
+  if(!db){
+    var cfg={apiKey:"AIzaSyDPp-JsePgIM4Y3MrFrXEMLiv1GW3sJGKU",authDomain:"dream2moon.firebaseapp.com",projectId:"dream2moon",storageBucket:"dream2moon.firebasestorage.app",messagingSenderId:"172765828532",appId:"1:172765828532:web:d31a0b1dae8cc5752bcee1"};
+    if(!firebase.apps.length)firebase.initializeApp(cfg);
+    db=firebase.firestore();
+  }
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('adminPanel').style.display='flex';
+  applyRoleUI();
+  loadEntries();loadTournTeams();loadSavedBracket();loadRegToggle();
 }
 
 function doLogout(){
