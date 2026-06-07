@@ -160,8 +160,9 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 @keyframes popIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
 @keyframes spinGlow{to{transform:rotate(360deg)}}
 @keyframes cdPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.12);opacity:.75}}
+.admin-only{display:block;}
+.admin-only.hidden{display:none!important;}
 </style>
-</head>
 <body>
 <div class="layer" id="nebula"></div>
 <div class="layer" id="stars"></div>
@@ -302,7 +303,8 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       <button class="refresh-btn" onclick="loadTournTeams()">🔄 Refresh</button>
     </div>
 
-    <!-- Registration Toggle -->
+    <!-- Registration Toggle — ADMIN ONLY -->
+    <div class="admin-only">
     <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,.2);border:1px solid rgba(105,240,174,.15);border-radius:12px;padding:14px 16px;margin-bottom:14px;">
       <div>
         <div style="font-size:12px;font-weight:800;color:#fff;margin-bottom:3px;">🔐 Registration Toggle</div>
@@ -315,6 +317,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
         </span>
       </label>
     </div>
+    </div>
     <div style="background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.18);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:rgba(255,212,56,.8);line-height:1.6;">
       ⏰ <strong>Registration closes: Thursday 11:59 PM NPT</strong><br>
       💰 Entry fee: Rs.40/squad — verify payment before approving<br>
@@ -326,7 +329,8 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 
     <div class="divider" style="margin-bottom:18px;"></div>
 
-    <!-- Match Stat Generator -->
+    <!-- Match Stat Generator — ADMIN ONLY -->
+    <div class="admin-only">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
       <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--blue);text-transform:uppercase;">📊 Match Stat Card</div>
       <button id="undoBracketBtn" onclick="undoBracket()" style="display:none;padding:7px 16px;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.3);border-radius:8px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;color:var(--red);cursor:pointer;">↩️ UNDO</button>
@@ -348,7 +352,6 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <!-- WhatsApp Group Section — shown after bracket generated -->
     <div id="waGroupSection" style="display:none;"></div>
 
-
     <div class="divider" style="margin-bottom:18px;"></div>
 
     <!-- Publish Results -->
@@ -364,6 +367,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
         <input id="res-note" type="text" placeholder="e.g. GG to all teams! 🙏" style="width:100%;background:rgba(79,195,247,.03);border:1px solid rgba(79,195,247,.1);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
       <button onclick="saveTournResult()" style="padding:16px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:2px solid rgba(105,240,174,.45);border-radius:12px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--green);letter-spacing:2px;cursor:pointer;transition:all .3s;box-shadow:0 0 20px rgba(105,240,174,.08);">🚀 SAVE &amp; PUBLISH RESULTS LIVE</button>
     </div>
+    </div><!-- end admin-only match stat + publish -->
   </div>
 </div>
 
@@ -405,9 +409,9 @@ function applyRoleUI(){
   const subEl=document.querySelector('.admin-sub');
   if(subEl)subEl.textContent=isAdmin?'Dream2Moon Giveaway Manager':'Registration Verification Only';
   // Hide admin-only sections for mini admin
-  const adminOnlySections=['monthlyDrawCard','weeklyDrawCardAlt','endDrawCard','historyList'];
-  document.querySelectorAll('.admin-only').forEach(el=>{el.style.display=isAdmin?'':'none';});
-  document.querySelectorAll('.mini-only').forEach(el=>{el.style.display=isAdmin?'none':'';});
+  document.querySelectorAll('.admin-only').forEach(el=>{
+    el.style.display=isAdmin?'':'none';
+  });
 }
 
 window.doLogout=function(){
