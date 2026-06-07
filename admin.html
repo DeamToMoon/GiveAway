@@ -160,6 +160,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 @keyframes popIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
 @keyframes spinGlow{to{transform:rotate(360deg)}}
 @keyframes cdPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.12);opacity:.75}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 .admin-only{display:block;}
 .admin-only.hidden{display:none!important;}
 </style>
@@ -200,8 +201,8 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
   <div class="card admin-only">
     <div class="card-hdr">📋 Submitted Entries
       <div style="display:flex;gap:8px;">
-        <button class="refresh-btn" onclick="loadEntries()">🔄 Refresh</button>
-        <button class="refresh-btn" style="background:rgba(255,107,107,.07);border-color:rgba(255,107,107,.18);color:var(--red);" onclick="manualClear()">🗑️ Clear All</button>
+        <button class="refresh-btn" onclick="window.loadEntries()">🔄 Refresh</button>
+        <button class="refresh-btn" style="background:rgba(255,107,107,.07);border-color:rgba(255,107,107,.18);color:var(--red);" onclick="window.manualClear()">🗑️ Clear All</button>
       </div>
     </div>
     <div class="entries-list" id="entriesList"><div class="no-entries">Loading entries...</div></div>
@@ -212,9 +213,9 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <div class="copy-section">
       <textarea class="copy-textarea" id="copyArea" readonly placeholder="Click a button below to load entries here..."></textarea>
       <div class="btn-row">
-        <button class="copy-btn copy-btn-blue" onclick="loadUsernames()">👤 Load Usernames</button>
-        <button class="copy-btn copy-btn-blue" onclick="loadUIDs()">🔢 Load UIDs</button>
-        <button class="copy-btn copy-btn-green" onclick="copyToClipboard()">📋 Copy All</button>
+        <button class="copy-btn copy-btn-blue" onclick="window.loadUsernames()">👤 Load Usernames</button>
+        <button class="copy-btn copy-btn-blue" onclick="window.loadUIDs()">🔢 Load UIDs</button>
+        <button class="copy-btn copy-btn-green" onclick="window.copyToClipboard()">📋 Copy All</button>
       </div>
     </div>
   </div>
@@ -224,7 +225,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <div class="copy-section">
       <textarea class="manual-input" id="manualInput" placeholder="Paste usernames here, one per line:&#10;@username1&#10;@username2"></textarea>
       <textarea class="manual-input" id="manualUIDs" placeholder="Paste UIDs here, one per line (match order above):&#10;123456&#10;789012" style="margin-top:8px"></textarea>
-      <button class="add-manual-btn" onclick="addManualEntries()">➕ Add These Entries</button>
+      <button class="add-manual-btn" onclick="window.addManualEntries()">➕ Add These Entries</button>
     </div>
   </div>
 
@@ -232,7 +233,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
   <div class="admin-only" style="display:contents;">
   <div class="card" id="monthlyDrawCard" style="border-color:rgba(255,212,56,.2);">
     <div class="card-hdr" style="color:var(--gold);">🎰 1st Lucky Draw — Weekly Membership Pass 💎</div>
-    <button class="pick-btn" id="monthlyDrawBtn" onclick="startDraw('monthly')" style="background:linear-gradient(135deg,#7c3300,#FFD438,#7c3300);background-size:300%;box-shadow:0 4px 30px rgba(255,212,56,.25);">
+    <button class="pick-btn" id="monthlyDrawBtn" onclick="window.startDraw('monthly')" style="background:linear-gradient(135deg,#7c3300,#FFD438,#7c3300);background-size:300%;box-shadow:0 4px 30px rgba(255,212,56,.25);">
       🎰 SPIN — 1ST LUCKY DRAW WINNER
     </button>
     <div id="monthlyWheelSection" style="display:none;flex-direction:column;align-items:center;gap:18px;margin-top:24px;">
@@ -264,8 +265,8 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
         <div class="wdc-uid" id="winnerUIDMonthly"></div>
       </div>
       <div style="display:flex;gap:12px;width:100%;margin-top:4px;">
-        <button onclick="undoDraw('monthly')" style="flex:1;padding:14px;background:rgba(255,107,107,.08);border:2px solid rgba(255,107,107,.35);border-radius:14px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--red);letter-spacing:2px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='rgba(255,107,107,.2)'" onmouseout="this.style.background='rgba(255,107,107,.08)'">↩️ UNDO<br><span style="font-size:9px;opacity:.7;letter-spacing:1px;">RE-SPIN</span></button>
-        <button onclick="confirmDraw('monthly')" style="flex:2;padding:14px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:2px solid rgba(105,240,174,.4);border-radius:14px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--green);letter-spacing:2px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(105,240,174,.25),rgba(52,211,153,.18))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1))'">✅ CONFIRM WINNER<br><span style="font-size:9px;opacity:.7;letter-spacing:1px;">LOCK THIS RESULT</span></button>
+        <button onclick="window.undoDraw('monthly')" style="flex:1;padding:14px;background:rgba(255,107,107,.08);border:2px solid rgba(255,107,107,.35);border-radius:14px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--red);letter-spacing:2px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='rgba(255,107,107,.2)'" onmouseout="this.style.background='rgba(255,107,107,.08)'">↩️ UNDO<br><span style="font-size:9px;opacity:.7;letter-spacing:1px;">RE-SPIN</span></button>
+        <button onclick="window.confirmDraw('monthly')" style="flex:2;padding:14px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:2px solid rgba(105,240,174,.4);border-radius:14px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--green);letter-spacing:2px;cursor:pointer;transition:all .3s;" onmouseover="this.style.background='linear-gradient(135deg,rgba(105,240,174,.25),rgba(52,211,153,.18))'" onmouseout="this.style.background='linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1))'">✅ CONFIRM WINNER<br><span style="font-size:9px;opacity:.7;letter-spacing:1px;">LOCK THIS RESULT</span></button>
       </div>
     </div>
   </div>
@@ -286,7 +287,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
   <div class="card" id="endDrawCard" style="display:none;border-color:rgba(105,240,174,.2);">
     <div class="card-hdr" style="color:var(--green);">✅ Lucky Draw Winner Confirmed!</div>
     <p style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.7;">Winner is confirmed, entries cleared, and result is <strong style="color:var(--green);">live on the main page</strong>. Click below to reset the wheel and start a fresh new round.</p>
-    <button class="end-btn" id="endDrawBtn" onclick="endDraw()" style="width:100%;padding:20px;font-size:14px;background:linear-gradient(135deg,#065f46,#10b981);box-shadow:0 4px 24px rgba(16,185,129,.3);">🔄 START NEW ROUND</button>
+    <button class="end-btn" id="endDrawBtn" onclick="window.endDraw()" style="width:100%;padding:20px;font-size:14px;background:linear-gradient(135deg,#065f46,#10b981);box-shadow:0 4px 24px rgba(16,185,129,.3);">🔄 START NEW ROUND</button>
   </div>
 
   </div><!-- end admin-only 2nd -->
@@ -301,7 +302,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
   <div class="card" style="border-color:rgba(105,240,174,.25);box-shadow:0 8px 32px rgba(0,0,30,.4),0 0 30px rgba(105,240,174,.05);">
     <div class="card-hdr" style="color:var(--green);font-size:13px;">
       ⚔️ SQUAD TOURNAMENT MANAGEMENT
-      <button class="refresh-btn" onclick="loadTournTeams()">🔄 Refresh</button>
+      <button class="refresh-btn" onclick="window.loadTournTeams()">🔄 Refresh</button>
     </div>
 
     <!-- Registration Toggle — ADMIN ONLY -->
@@ -312,7 +313,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
         <div style="font-size:10px;color:var(--muted);" id="regToggleStatus">Loading...</div>
       </div>
       <label style="position:relative;display:inline-block;width:54px;height:28px;cursor:pointer;">
-        <input type="checkbox" id="regToggle" onchange="toggleRegistration()" style="opacity:0;width:0;height:0;">
+        <input type="checkbox" id="regToggle" onchange="window.toggleRegistration()" style="opacity:0;width:0;height:0;">
         <span id="regToggleSlider" style="position:absolute;inset:0;background:rgba(255,107,107,.3);border-radius:28px;transition:.3s;border:1px solid rgba(255,107,107,.4);">
           <span style="position:absolute;height:20px;width:20px;left:3px;bottom:3px;background:#FF6B6B;border-radius:50%;transition:.3s;" id="regToggleBall"></span>
         </span>
@@ -334,19 +335,19 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <div class="admin-only">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
       <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--blue);text-transform:uppercase;">📊 Match Stat Card</div>
-      <button id="undoBracketBtn" onclick="undoBracket()" style="display:none;padding:7px 16px;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.3);border-radius:8px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;color:var(--red);cursor:pointer;">↩️ UNDO</button>
+      <button id="undoBracketBtn" onclick="window.undoBracket()" style="display:none;padding:7px 16px;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.3);border-radius:8px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;color:var(--red);cursor:pointer;">↩️ UNDO</button>
     </div>
     <div id="bracketGenSection" style="background:rgba(79,195,247,.04);border:1px solid rgba(79,195,247,.12);border-radius:12px;padding:14px;margin-bottom:12px;">
       <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">How many groups? <span style="color:var(--gold);">(max 12 per group)</span></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;" id="groupBtns">
-        <button onclick="setGroups(1)" data-g="1" class="gbtn" style="flex:1;min-width:44px;padding:10px;background:rgba(79,195,247,.08);border:2px solid rgba(79,195,247,.25);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--blue);cursor:pointer;">1</button>
-        <button onclick="setGroups(2)" data-g="2" class="gbtn" style="flex:1;min-width:44px;padding:10px;background:rgba(79,195,247,.08);border:2px solid rgba(79,195,247,.25);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--blue);cursor:pointer;">2</button>
-        <button onclick="setGroups(3)" data-g="3" class="gbtn" style="flex:1;min-width:44px;padding:10px;background:rgba(79,195,247,.08);border:2px solid rgba(79,195,247,.25);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--blue);cursor:pointer;">3</button>
-        <button onclick="setGroups(4)" data-g="4" class="gbtn" style="flex:1;min-width:44px;padding:10px;background:rgba(79,195,247,.08);border:2px solid rgba(79,195,247,.25);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--blue);cursor:pointer;">4</button>
-        <button onclick="setGroups(5)" data-g="5" class="gbtn" style="flex:1;min-width:44px;padding:10px;background:rgba(79,195,247,.08);border:2px solid rgba(79,195,247,.25);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--blue);cursor:pointer;">5</button>
+        <button onclick="window.setGroups(1)" data-g="1" class="gbtn" style="flex:1;min-width:44px;padding:10px;background:rgba(79,195,247,.08);border:2px solid rgba(79,195,247,.25);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--blue);cursor:pointer;">1</button>
+        <button onclick="window.setGroups(2)" data-g="2" class="gbtn" style="flex:1;min-width:44px;padding:10px;background:rgba(79,195,247,.08);border:2px solid rgba(79,195,247,.25);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--blue);cursor:pointer;">2</button>
+        <button onclick="window.setGroups(3)" data-g="3" class="gbtn" style="flex:1;min-width:44px;padding:10px;background:rgba(79,195,247,.08);border:2px solid rgba(79,195,247,.25);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--blue);cursor:pointer;">3</button>
+        <button onclick="window.setGroups(4)" data-g="4" class="gbtn" style="flex:1;min-width:44px;padding:10px;background:rgba(79,195,247,.08);border:2px solid rgba(79,195,247,.25);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--blue);cursor:pointer;">4</button>
+        <button onclick="window.setGroups(5)" data-g="5" class="gbtn" style="flex:1;min-width:44px;padding:10px;background:rgba(79,195,247,.08);border:2px solid rgba(79,195,247,.25);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--blue);cursor:pointer;">5</button>
       </div>
       <div id="bracketInfo" style="font-size:11px;color:var(--faint);text-align:center;">👆 Pick number of groups to see the format</div>
-      <button id="genBracketBtn" onclick="generateBracket()" style="display:none;width:100%;margin-top:12px;padding:13px;background:linear-gradient(135deg,rgba(79,195,247,.18),rgba(0,229,255,.12));border:2px solid rgba(79,195,247,.45);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--cyan);letter-spacing:2px;cursor:pointer;">📊 GENERATE MATCH STAT CARD</button>
+      <button id="genBracketBtn" onclick="window.generateBracket()" style="display:none;width:100%;margin-top:12px;padding:13px;background:linear-gradient(135deg,rgba(79,195,247,.18),rgba(0,229,255,.12));border:2px solid rgba(79,195,247,.45);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--cyan);letter-spacing:2px;cursor:pointer;">📊 GENERATE MATCH STAT CARD</button>
     </div>
     <div id="bracketDisplay" style="font-size:12px;color:var(--muted);text-align:center;padding:8px;"></div>
 
@@ -366,19 +367,24 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
         <input id="res-3rd" type="text" placeholder="3rd place team name" style="width:100%;background:rgba(206,147,216,.04);border:1px solid rgba(206,147,216,.15);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
       <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">📝 Note (optional)</label>
         <input id="res-note" type="text" placeholder="e.g. GG to all teams! 🙏" style="width:100%;background:rgba(79,195,247,.03);border:1px solid rgba(79,195,247,.1);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
-      <button onclick="saveTournResult()" style="padding:16px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:2px solid rgba(105,240,174,.45);border-radius:12px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--green);letter-spacing:2px;cursor:pointer;transition:all .3s;box-shadow:0 0 20px rgba(105,240,174,.08);">🚀 SAVE &amp; PUBLISH RESULTS LIVE</button>
+      <button onclick="window.saveTournResult()" style="padding:16px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:2px solid rgba(105,240,174,.45);border-radius:12px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--green);letter-spacing:2px;cursor:pointer;transition:all .3s;box-shadow:0 0 20px rgba(105,240,174,.08);">🚀 SAVE &amp; PUBLISH RESULTS LIVE</button>
     </div>
     </div><!-- end admin-only match stat + publish -->
   </div>
 </div>
 
+<!-- Fallback: expose doLogin globally in case module hasn't loaded yet -->
+<script>
+function doLogin(){if(window.doLogin)window.doLogin();}
+function doLogout(){if(window.doLogout)window.doLogout();}
+</script>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import{getFirestore,collection,getDocs,addDoc,setDoc,getDoc,deleteDoc,writeBatch,doc,serverTimestamp,orderBy,query}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 const cfg={apiKey:"AIzaSyDPp-JsePgIM4Y3MrFrXEMLiv1GW3sJGKU",authDomain:"dream2moon.firebaseapp.com",projectId:"dream2moon",storageBucket:"dream2moon.firebasestorage.app",messagingSenderId:"172765828532",appId:"1:172765828532:web:d31a0b1dae8cc5752bcee1"};
 const app=initializeApp(cfg);const db=getFirestore(app);
 const sf=document.getElementById('stars');
-for(let i=0;i<120;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*2+.3;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*5}s;--dl:${Math.random()*6}s;--op:${.12+Math.random()*.55};`;sf.appendChild(s);}
+if(sf){for(let i=0;i<120;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*2+.3;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*5}s;--dl:${Math.random()*6}s;--op:${.12+Math.random()*.55};`;sf.appendChild(s);}}
 let allEntries=[],winnerHistory=[],rolling=false;
 
 let currentRole='admin'; // 'admin' or 'mini'
