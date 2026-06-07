@@ -188,14 +188,14 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     </div>
   </div>
 
-  <div class="stats-row">
+  <div class="stats-row admin-only">
     <div class="stat-card"><div class="stat-num" id="totalCount">0</div><div class="stat-lbl">Total Entries</div></div>
     <div class="stat-card" style="border-color:rgba(105,240,174,.15);"><div class="stat-num" style="color:var(--green);text-shadow:0 0 20px rgba(105,240,174,.4);" id="totalWins">0</div><div class="stat-lbl">Draws Done</div></div>
   </div>
 
-  <div class="divider"></div>
+  <div class="divider admin-only"></div>
 
-  <div class="card">
+  <div class="card admin-only">
     <div class="card-hdr">📋 Submitted Entries
       <div style="display:flex;gap:8px;">
         <button class="refresh-btn" onclick="loadEntries()">🔄 Refresh</button>
@@ -205,7 +205,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <div class="entries-list" id="entriesList"><div class="no-entries">Loading entries...</div></div>
   </div>
 
-  <div class="card">
+  <div class="card admin-only">
     <div class="card-hdr">📤 Copy Usernames &amp; UIDs</div>
     <div class="copy-section">
       <textarea class="copy-textarea" id="copyArea" readonly placeholder="Click a button below to load entries here..."></textarea>
@@ -217,7 +217,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     </div>
   </div>
 
-  <div class="card">
+  <div class="card admin-only">
     <div class="card-hdr">✏️ Add Entries Manually</div>
     <div class="copy-section">
       <textarea class="manual-input" id="manualInput" placeholder="Paste usernames here, one per line:&#10;@username1&#10;@username2"></textarea>
@@ -227,6 +227,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
   </div>
 
   <!-- 1ST LUCKY DRAW -->
+  <div class="admin-only" style="display:contents;">
   <div class="card" id="monthlyDrawCard" style="border-color:rgba(255,212,56,.2);">
     <div class="card-hdr" style="color:var(--gold);">🎰 1st Lucky Draw — Weekly Membership Pass 💎</div>
     <button class="pick-btn" id="monthlyDrawBtn" onclick="startDraw('monthly')" style="background:linear-gradient(135deg,#7c3300,#FFD438,#7c3300);background-size:300%;box-shadow:0 4px 30px rgba(255,212,56,.25);">
@@ -267,7 +268,9 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     </div>
   </div>
 
+  </div><!-- end admin-only lucky draw -->
   <!-- 2ND LUCKY DRAW — COMING SOON -->
+  <div class="admin-only" style="display:contents;">
   <div class="card" style="border-color:rgba(255,212,56,.15);">
     <div class="card-hdr" style="color:var(--gold);">🎁 2nd Lucky Draw — Coming Soon 🔜</div>
     <div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px 16px;text-align:center;">
@@ -284,7 +287,8 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <button class="end-btn" id="endDrawBtn" onclick="endDraw()" style="width:100%;padding:20px;font-size:14px;background:linear-gradient(135deg,#065f46,#10b981);box-shadow:0 4px 24px rgba(16,185,129,.3);">🔄 START NEW ROUND</button>
   </div>
 
-  <div class="card">
+  </div><!-- end admin-only 2nd -->
+  <div class="card admin-only">
     <div class="card-hdr">📜 Winner History</div>
     <div class="history-list" id="historyList"><div class="no-entries">No winners picked yet</div></div>
   </div>
@@ -312,8 +316,9 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       </label>
     </div>
     <div style="background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.18);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:11px;color:rgba(255,212,56,.8);line-height:1.6;">
-      ⏰ <strong>Registration closes: Friday 10:00 PM NPT</strong><br>
-      🔒 New registration reopens only after winner is announced via <em>Publish Results</em> below
+      ⏰ <strong>Registration closes: Thursday 11:59 PM NPT</strong><br>
+      💰 Entry fee: Rs.40/squad — verify payment before approving<br>
+      🔒 Unverified teams are marked ⏳ Pending
     </div>
     <div id="tournTeamsList" style="max-height:380px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:18px;">
       <div class="no-entries">Loading teams...</div>
@@ -349,11 +354,11 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <!-- Publish Results -->
     <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;">🏆 Publish Tournament Results</div>
     <div style="display:flex;flex-direction:column;gap:10px;">
-      <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥇 Champion (Rs.1,200)</label>
+      <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥇 Champion (Rs.1,500)</label>
         <input id="res-1st" type="text" placeholder="1st place team name" style="width:100%;background:rgba(255,212,56,.05);border:1px solid rgba(255,212,56,.2);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
-      <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥈 2nd Place (Rs.800)</label>
+      <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥈 2nd Place (Rs.1,000)</label>
         <input id="res-2nd" type="text" placeholder="2nd place team name" style="width:100%;background:rgba(79,195,247,.04);border:1px solid rgba(79,195,247,.15);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
-      <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥉 3rd Place (Rs.400)</label>
+      <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥉 3rd Place (Rs.600)</label>
         <input id="res-3rd" type="text" placeholder="3rd place team name" style="width:100%;background:rgba(206,147,216,.04);border:1px solid rgba(206,147,216,.15);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
       <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">📝 Note (optional)</label>
         <input id="res-note" type="text" placeholder="e.g. GG to all teams! 🙏" style="width:100%;background:rgba(79,195,247,.03);border:1px solid rgba(79,195,247,.1);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
@@ -371,17 +376,39 @@ const sf=document.getElementById('stars');
 for(let i=0;i<120;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*2+.3;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*5}s;--dl:${Math.random()*6}s;--op:${.12+Math.random()*.55};`;sf.appendChild(s);}
 let allEntries=[],winnerHistory=[],rolling=false;
 
+let currentRole='admin'; // 'admin' or 'mini'
 window.doLogin=function(){
   const u=document.getElementById('loginUser').value.trim();
   const p=document.getElementById('loginPass').value;
   if(u==='Dream2moon'&&p==='dream2moon@123'){
+    currentRole='admin';
     document.getElementById('loginScreen').style.display='none';
     document.getElementById('adminPanel').style.display='flex';
+    applyRoleUI();
     loadEntries();loadTournTeams();loadSavedBracket();loadRegToggle();
+  }else if(u==='miniadmin'&&p==='bipin@123'){
+    currentRole='mini';
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('adminPanel').style.display='flex';
+    applyRoleUI();
+    loadTournTeams();loadRegToggle();
   }else{
     document.getElementById('loginError').style.display='block';
   }
 };
+
+function applyRoleUI(){
+  const isAdmin=currentRole==='admin';
+  // Show role badge in header
+  const brandEl=document.querySelector('.admin-brand');
+  if(brandEl)brandEl.textContent=isAdmin?'⚙️ ADMIN PANEL':'🛡️ MINI ADMIN';
+  const subEl=document.querySelector('.admin-sub');
+  if(subEl)subEl.textContent=isAdmin?'Dream2Moon Giveaway Manager':'Registration Verification Only';
+  // Hide admin-only sections for mini admin
+  const adminOnlySections=['monthlyDrawCard','weeklyDrawCardAlt','endDrawCard','historyList'];
+  document.querySelectorAll('.admin-only').forEach(el=>{el.style.display=isAdmin?'':'none';});
+  document.querySelectorAll('.mini-only').forEach(el=>{el.style.display=isAdmin?'none':'';});
+}
 
 window.doLogout=function(){
   document.getElementById('adminPanel').style.display='none';
@@ -722,9 +749,9 @@ function rebuildBracketFromGroups(groups,n){
     +'<div style="background:rgba(0,0,0,.4);border-radius:6px;padding:4px 12px;font-size:10px;font-weight:900;color:#FFD438;letter-spacing:2px;">GAME '+(n+1)+'</div></div>'
     +'<table style="width:100%;border-collapse:collapse;">'+finalRows+'</table>'
     +'<div style="display:flex;gap:0;border-top:1px solid rgba(255,212,56,.2);">'
-    +'<div style="flex:1;padding:10px;text-align:center;border-right:1px solid rgba(255,255,255,.05);background:rgba(255,212,56,.06);"><div style="font-size:16px;">🥇</div><div style="font-size:11px;font-weight:900;color:#FFD438;">Rs.1,200</div><div style="font-size:8px;color:rgba(255,212,56,.5);">CHAMPION</div></div>'
-    +'<div style="flex:1;padding:10px;text-align:center;border-right:1px solid rgba(255,255,255,.05);"><div style="font-size:16px;">🥈</div><div style="font-size:11px;font-weight:900;color:#90CAF9;">Rs.800</div><div style="font-size:8px;color:rgba(144,202,249,.5);">2ND PLACE</div></div>'
-    +'<div style="flex:1;padding:10px;text-align:center;border-right:1px solid rgba(255,255,255,.05);"><div style="font-size:16px;">🥉</div><div style="font-size:11px;font-weight:900;color:#CE93D8;">Rs.400</div><div style="font-size:8px;color:rgba(206,147,216,.5);">3RD PLACE</div></div>'
+    +'<div style="flex:1;padding:10px;text-align:center;border-right:1px solid rgba(255,255,255,.05);background:rgba(255,212,56,.06);"><div style="font-size:16px;">🥇</div><div style="font-size:11px;font-weight:900;color:#FFD438;">Rs.1,500</div><div style="font-size:8px;color:rgba(255,212,56,.5);">CHAMPION</div></div>'
+    +'<div style="flex:1;padding:10px;text-align:center;border-right:1px solid rgba(255,255,255,.05);"><div style="font-size:16px;">🥈</div><div style="font-size:11px;font-weight:900;color:#90CAF9;">Rs.1,000</div><div style="font-size:8px;color:rgba(144,202,249,.5);">2ND PLACE</div></div>'
+    +'<div style="flex:1;padding:10px;text-align:center;border-right:1px solid rgba(255,255,255,.05);"><div style="font-size:16px;">🥉</div><div style="font-size:11px;font-weight:900;color:#CE93D8;">Rs.600</div><div style="font-size:8px;color:rgba(206,147,216,.5);">3RD PLACE</div></div>'
     +'<div style="flex:1;padding:10px;text-align:center;background:rgba(105,240,174,.04);"><div style="font-size:16px;">💚</div><div style="font-size:10px;color:rgba(105,240,174,.7);font-weight:700;margin-top:2px;">via eSewa</div></div>'
     +'</div></div>');
   display.innerHTML='<div style="font-size:10px;color:var(--muted);margin-bottom:10px;text-align:center;letter-spacing:1px;">'+slides.length+' SLIDES — SCREENSHOT EACH ONE</div>'+slides.join('')+buildWASection(groups);
@@ -823,7 +850,7 @@ function renderTournTeams(){
       +'<div style="display:flex;align-items:center;gap:10px;">'
       +'<span class="entry-num">#'+(i+1)+'</span>'
       +'<div class="entry-info"><div class="entry-username">👑 '+esc(t.leaderName)+'</div>'
-      +'<div class="entry-uid">UID: '+esc(t.leaderUID)+' · '+esc(t.member1)+', '+esc(t.member2)+', '+esc(t.member3)+'</div>'
+      +(t.squadName?'<div style="font-size:10px;color:rgba(255,212,56,.8);font-weight:700;margin-bottom:2px;">🏷️ '+esc(t.squadName)+'</div>':'')+'<div class="entry-uid">UID: '+esc(t.leaderUID)+' · '+esc(t.member1)+' ('+esc(t.member1uid||'—')+'), '+esc(t.member2)+' ('+esc(t.member2uid||'—')+'), '+esc(t.member3)+' ('+esc(t.member3uid||'—')+')</div>'+(t.paymentRef?'<div style="font-size:10px;color:rgba(37,211,102,.8);margin-top:2px;">🧾 Payment: '+esc(t.paymentRef)+'</div>':'')
       +(t.whatsapp?'<div style="font-size:11px;color:rgba(105,240,174,.8);margin-top:3px;">📱 WA: '+esc(t.whatsapp)+'</div>':'')
       +'</div>'
       +'<div style="display:flex;gap:6px;flex-shrink:0;">'
@@ -843,7 +870,21 @@ function renderTournTeams(){
   }).join('');
 
   // Attach events
-  list.querySelectorAll('.edit-btn-t').forEach(btn=>{btn.addEventListener('click',()=>{document.getElementById('team-edit-'+btn.dataset.id).style.display='flex';});});
+  list.querySelectorAll('.verify-btn-t').forEach(btn=>{
+    btn.addEventListener('click',async()=>{
+      const id=btn.dataset.id;
+      const team=tournTeams.find(t=>t.id===id);
+      const name=team?(team.squadName||team.leaderName):'this team';
+      const isVerified=team&&team.verified===true;
+      const action=isVerified?'Unverify':'Verify';
+      if(!confirm(action+' team "'+name+'"?'))return;
+      try{
+        await setDoc(doc(db,'tournament_teams',id),{verified:!isVerified},({merge:true}));
+        alert('✅ Team '+action.toLowerCase()+'d!');window.loadTournTeams();
+      }catch(e){alert('❌ Error: '+e.message);}
+    });
+  });
+  list.querySelectorAll('.edit-btn-t').forEach(btn=>{btn.addEventListener('click',()=>{if(currentRole!=='admin'){alert('🚫 Mini admin cannot edit teams.');return;}document.getElementById('team-edit-'+btn.dataset.id).style.display='flex';});});
   list.querySelectorAll('.cancel-btn-t').forEach(btn=>{btn.addEventListener('click',()=>{document.getElementById('team-edit-'+btn.dataset.id).style.display='none';});});
   list.querySelectorAll('.save-btn-t').forEach(btn=>{
     btn.addEventListener('click',async()=>{
@@ -854,7 +895,7 @@ function renderTournTeams(){
       catch(e){alert('❌ Error: '+e.message);}
     });
   });
-  list.querySelectorAll('.del-btn-t').forEach(btn=>{
+  list.querySelectorAll('.del-btn-t').forEach(btn=>{if(currentRole!=='admin'){btn.style.display='none';return;}
     btn.addEventListener('click',async()=>{
       const id=btn.dataset.id;
       const team=tournTeams.find(t=>t.id===id);
@@ -1056,11 +1097,11 @@ window.generateBracket=function(){
       +'<table style="width:100%;border-collapse:collapse;">'+finalRows+'</table>'
       +'<div style="display:flex;gap:0;border-top:1px solid rgba(255,212,56,.2);">'
       +'<div style="flex:1;padding:10px;text-align:center;border-right:1px solid rgba(255,255,255,.05);background:rgba(255,212,56,.06);">'
-      +'<div style="font-size:16px;">🥇</div><div style="font-size:11px;font-weight:900;color:#FFD438;">Rs.1,200</div><div style="font-size:8px;color:rgba(255,212,56,.5);">CHAMPION</div></div>'
+      +'<div style="font-size:16px;">🥇</div><div style="font-size:11px;font-weight:900;color:#FFD438;">Rs.1,500</div><div style="font-size:8px;color:rgba(255,212,56,.5);">CHAMPION</div></div>'
       +'<div style="flex:1;padding:10px;text-align:center;border-right:1px solid rgba(255,255,255,.05);">'
-      +'<div style="font-size:16px;">🥈</div><div style="font-size:11px;font-weight:900;color:#90CAF9;">Rs.800</div><div style="font-size:8px;color:rgba(144,202,249,.5);">2ND PLACE</div></div>'
+      +'<div style="font-size:16px;">🥈</div><div style="font-size:11px;font-weight:900;color:#90CAF9;">Rs.1,000</div><div style="font-size:8px;color:rgba(144,202,249,.5);">2ND PLACE</div></div>'
       +'<div style="flex:1;padding:10px;text-align:center;border-right:1px solid rgba(255,255,255,.05);">'
-      +'<div style="font-size:16px;">🥉</div><div style="font-size:11px;font-weight:900;color:#CE93D8;">Rs.400</div><div style="font-size:8px;color:rgba(206,147,216,.5);">3RD PLACE</div></div>'
+      +'<div style="font-size:16px;">🥉</div><div style="font-size:11px;font-weight:900;color:#CE93D8;">Rs.600</div><div style="font-size:8px;color:rgba(206,147,216,.5);">3RD PLACE</div></div>'
       +'<div style="flex:1;padding:10px;text-align:center;background:rgba(105,240,174,.04);">'
       +'<div style="font-size:16px;">💚</div><div style="font-size:10px;color:rgba(105,240,174,.7);font-weight:700;margin-top:2px;">via eSewa</div></div>'
       +'</div></div>';
