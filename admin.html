@@ -848,6 +848,158 @@ window.loadTournTeams=async function(){
 function renderTournTeams(){
   const list=document.getElementById('tournTeamsList');
   if(!list)return;
+  if(tournTeams.length===0){list.innerHTML='<div class="no-entries">No registrations yet.</div>';return;}
+
+  // Split pending vs verified
+  const pending=tournTeams.filter(t=>!t.verified);
+  const approved=tournTeams.filter(t=>t.verified===true);
+
+  let html='';
+
+  // ── PENDING section ──
+  if(pending.length>0){
+    html+='<div style="font-size:9px;font-weight:800;letter-spacing:3px;color:rgba(255,212,56,.7);text-transform:uppercase;margin-bottom:8px;padding:6px 10px;background:rgba(255,212,56,.06);border-radius:8px;border:1px solid rgba(255,212,56,.15);">⏳ PENDING VERIFICATION ('+pending.length+')</div>';
+    html+=pending.map(function(t,i){
+      return buildTeamRow(t,i,'pending');
+    }).join('');
+    html+='<div style="height:8px;"></div>';
+  }
+
+  // ── APPROVED section ──
+  if(approved.length>0){
+    html+='<div style="font-size:9px;font-weight:800;letter-spacing:3px;color:rgba(105,240,174,.7);text-transform:uppercase;margin-bottom:8px;padding:6px 10px;background:rgba(105,240,174,.04);border-radius:8px;border:1px solid rgba(105,240,174,.12);">✅ VERIFIED TEAMS ('+approved.length+')</div>';
+    html+=approved.map(function(t,i){
+      return buildTeamRow(t,i,'approved');
+    }).join('');
+  }
+
+  list.innerHTML=html;
+  attachTeamEvents();
+}
+
+function buildTeamRow(t,i,status){
+  const isPending=status==='pending';
+  const borderColor=isPending?'rgba(255,212,56,.2)':'rgba(105,240,174,.15)';
+  const bgColor=isPending?'rgba(255,212,56,.03)':'rgba(105,240,174,.02)';
+  return '<div class="entry-item" style="flex-direction:column;align-items:stretch;gap:0;border-color:'+borderColor+';background:'+bgColor+';" id="team-row-'+t.id+'">'
+    // Header row
+    +'<div style="display:flex;align-items:center;gap:10px;padding:4px 0 8px;">'
+    +'<span class="entry-num">#'+(i+1)+'</span>'
+    +'<div class="entry-info">'
+    +(t.squadName?'<div style="font-size:11px;color:rgba(255,212,56,.9);font-weight:800;margin-bottom:2px;">🏷️ '+esc(t.squadName)+'</div>':'')
+    +'<div class="entry-username">👑 '+esc(t.leaderName)+'</div>'
+    +'<div class="entry-uid" style="font-size:10px;">UID: '+esc(t.leaderUID)+' · 📱 '+esc(t.whatsapp||'—')+'</div>'
+    +'<div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;">⚔️ '+esc(t.member1)+' ('+esc(t.member1uid||'—')+') · '+esc(t.member2)+' ('+esc(t.member2uid||'—')+') · '+esc(t.member3)+' ('+esc(t.member3uid||'—')+')</div>'
+    +(t.paymentRef?'<div style="font-size:11px;color:rgba(37,211,102,.9);font-weight:700;margin-top:4px;padding:4px 8px;background:rgba(37,211,102,.07);border-radius:6px;border:1px solid rgba(37,211,102,.15);">🧾 TXN: '+esc(t.paymentRef)+'</div>':'<div style="font-size:11px;color:rgba(255,107,107,.7);margin-top:4px;">⚠️ No transaction ID</div>')
+    +'</div>'
+    +'</div>'
+    // Action buttons
+    +(isPending
+      // Pending: big APPROVE + REJECT
+      ?'<div style="display:flex;gap:8px;margin-top:4px;">'
+        +'<button data-id="'+t.id+'" class="approve-btn-t" style="flex:2;padding:10px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:1.5px solid rgba(105,240,174,.4);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:var(--green);cursor:pointer;letter-spacing:1px;">✅ APPROVE</button>'
+        +'<button data-id="'+t.id+'" class="reject-btn-t" style="flex:1;padding:10px;background:rgba(255,107,107,.07);border:1px solid rgba(255,107,107,.25);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;color:var(--red);cursor:pointer;">🗑️ REJECT</button>'
+        +'</div>'
+      // Approved: small verify toggle + edit/delete for admin
+      :'<div style="display:flex;gap:6px;justify-content:flex-end;margin-top:4px;">'
+        +'<button data-id="'+t.id+'" class="verify-btn-t" style="padding:6px 12px;background:rgba(105,240,174,.08);border:1px solid rgba(105,240,174,.2);border-radius:8px;font-size:11px;color:rgba(105,240,174,.6);cursor:pointer;">↩️ Unverify</button>'
+        +(currentRole==='admin'
+          ?'<button data-id="'+t.id+'" class="edit-btn-t" style="padding:6px 12px;background:rgba(79,195,247,.08);border:1px solid rgba(79,195,247,.2);border-radius:8px;font-size:11px;color:var(--blue);cursor:pointer;">✏️</button>'
+          +'<button data-id="'+t.id+'" class="del-btn-t" style="padding:6px 12px;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.2);border-radius:8px;font-size:11px;color:var(--red);cursor:pointer;">🗑️</button>'
+          :'')
+        +'</div>')
+    // Edit form (admin only)
+    +'<div id="team-edit-'+t.id+'" style="display:none;flex-direction:column;gap:6px;padding:10px;background:rgba(79,195,247,.04);border:1px solid rgba(79,195,247,.12);border-radius:10px;margin-top:8px;">'
+    +'<input id="edit-leader-'+t.id+'" value="'+esc(t.leaderName)+'" placeholder="Leader name" style="background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;">'
+    +'<input id="edit-uid-'+t.id+'" value="'+esc(t.leaderUID)+'" placeholder="Leader UID" style="background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;">'
+    +'<input id="edit-m1-'+t.id+'" value="'+esc(t.member1)+'" placeholder="Member 1" style="background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;">'
+    +'<input id="edit-m2-'+t.id+'" value="'+esc(t.member2)+'" placeholder="Member 2" style="background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;">'
+    +'<input id="edit-m3-'+t.id+'" value="'+esc(t.member3)+'" placeholder="Member 3" style="background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;">'
+    +'<div style="display:flex;gap:8px;">'
+    +'<button data-id="'+t.id+'" class="save-btn-t" style="flex:1;padding:9px;background:rgba(105,240,174,.12);border:1px solid rgba(105,240,174,.35);border-radius:8px;font-size:12px;font-weight:700;color:var(--green);cursor:pointer;">💾 Save</button>'
+    +'<button data-id="'+t.id+'" class="cancel-btn-t" style="flex:1;padding:9px;background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.2);border-radius:8px;font-size:12px;font-weight:700;color:var(--gold);cursor:pointer;">✕ Cancel</button>'
+    +'</div></div>'
+    +'</div>';
+}
+
+function attachTeamEvents(){
+  const list=document.getElementById('tournTeamsList');
+  // Approve
+  list.querySelectorAll('.approve-btn-t').forEach(btn=>{
+    btn.addEventListener('click',async()=>{
+      const id=btn.dataset.id;
+      const team=tournTeams.find(t=>t.id===id);
+      const name=team?(team.squadName||team.leaderName):'this team';
+      if(!confirm('✅ APPROVE "'+name+'"?\n\nPayment verified: '+((team&&team.paymentRef)||'—')+'\n\nThis will make the team visible on the main page.'))return;
+      try{
+        await setDoc(doc(db,'tournament_teams',id),{verified:true,verifiedAt:serverTimestamp(),verifiedBy:currentRole},{merge:true});
+        alert('✅ Team "'+name+'" approved & now LIVE on main page!');
+        window.loadTournTeams();
+      }catch(e){alert('❌ Error: '+e.message);}
+    });
+  });
+  // Reject / delete pending
+  list.querySelectorAll('.reject-btn-t').forEach(btn=>{
+    btn.addEventListener('click',async()=>{
+      const id=btn.dataset.id;
+      const team=tournTeams.find(t=>t.id===id);
+      const name=team?(team.squadName||team.leaderName):'this team';
+      if(!confirm('🗑️ REJECT & DELETE "'+name+'"?\n\nThis will permanently remove their registration.\nUse this if payment was not received.'))return;
+      try{await deleteDoc(doc(db,'tournament_teams',id));alert('🗑️ Registration rejected & deleted.');window.loadTournTeams();}
+      catch(e){alert('❌ Error: '+e.message);}
+    });
+  });
+  // Unverify
+  list.querySelectorAll('.verify-btn-t').forEach(btn=>{
+    btn.addEventListener('click',async()=>{
+      const id=btn.dataset.id;
+      const team=tournTeams.find(t=>t.id===id);
+      const name=team?(team.squadName||team.leaderName):'this team';
+      if(!confirm('↩️ Unverify "'+name+'"?\n\nThis will hide them from the main page until re-approved.'))return;
+      try{
+        await setDoc(doc(db,'tournament_teams',id),{verified:false},{merge:true});
+        alert('↩️ Team unverified.');window.loadTournTeams();
+      }catch(e){alert('❌ Error: '+e.message);}
+    });
+  });
+  // Edit
+  list.querySelectorAll('.edit-btn-t').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      if(currentRole!=='admin'){alert('🚫 Mini admin cannot edit teams.');return;}
+      document.getElementById('team-edit-'+btn.dataset.id).style.display='flex';
+    });
+  });
+  // Cancel edit
+  list.querySelectorAll('.cancel-btn-t').forEach(btn=>{
+    btn.addEventListener('click',()=>{document.getElementById('team-edit-'+btn.dataset.id).style.display='none';});
+  });
+  // Save edit
+  list.querySelectorAll('.save-btn-t').forEach(btn=>{
+    btn.addEventListener('click',async()=>{
+      const id=btn.dataset.id;
+      const data={leaderName:document.getElementById('edit-leader-'+id).value.trim(),leaderUID:document.getElementById('edit-uid-'+id).value.trim(),member1:document.getElementById('edit-m1-'+id).value.trim(),member2:document.getElementById('edit-m2-'+id).value.trim(),member3:document.getElementById('edit-m3-'+id).value.trim()};
+      if(!data.leaderName){alert('Leader name cannot be empty!');return;}
+      try{await setDoc(doc(db,'tournament_teams',id),data,{merge:true});alert('✅ Team updated!');window.loadTournTeams();}
+      catch(e){alert('❌ Error: '+e.message);}
+    });
+  });
+  // Delete (admin only)
+  list.querySelectorAll('.del-btn-t').forEach(btn=>{
+    btn.addEventListener('click',async()=>{
+      if(currentRole!=='admin')return;
+      const id=btn.dataset.id;
+      const team=tournTeams.find(t=>t.id===id);
+      const name=team?team.leaderName:'this team';
+      if(!confirm('🗑️ Delete "'+name+'"?'))return;
+      try{await deleteDoc(doc(db,'tournament_teams',id));alert('✅ Deleted!');window.loadTournTeams();}
+      catch(e){alert('❌ Error: '+e.message);}
+    });
+  });
+}
+
+function renderTournTeams_OLD(){
+  const list=document.getElementById('tournTeamsList');
+  if(!list)return;
   if(tournTeams.length===0){list.innerHTML='<div class="no-entries">No teams registered yet.</div>';return;}
   list.innerHTML=tournTeams.map(function(t,i){
     return '<div class="entry-item" style="flex-direction:column;align-items:stretch;gap:8px;" id="team-row-'+t.id+'">'
@@ -873,6 +1025,9 @@ function renderTournTeams(){
       +'</div></div></div>';
   }).join('');
 
+}
+
+function _oldEvents_unused(){
   // Attach events
   list.querySelectorAll('.verify-btn-t').forEach(btn=>{
     btn.addEventListener('click',async()=>{
