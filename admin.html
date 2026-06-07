@@ -163,6 +163,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 .admin-only{display:block;}
 .admin-only.hidden{display:none!important;}
 </style>
+</head>
 <body>
 <div class="layer" id="nebula"></div>
 <div class="layer" id="stars"></div>
@@ -390,12 +391,12 @@ window.doLogin=function(){
     document.getElementById('adminPanel').style.display='flex';
     applyRoleUI();
     loadEntries();loadTournTeams();loadSavedBracket();loadRegToggle();
-  }else if(u==='miniadmin'&&p==='bipin@123'){
+  }else if(u==='miniadmin'&&p==='Bipin@90'){
     currentRole='mini';
     document.getElementById('loginScreen').style.display='none';
     document.getElementById('adminPanel').style.display='flex';
     applyRoleUI();
-    loadTournTeams();loadRegToggle();
+    loadEntries();loadTournTeams();loadSavedBracket();loadRegToggle();
   }else{
     document.getElementById('loginError').style.display='block';
   }
