@@ -524,7 +524,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
         Your payment &amp; details will be verified by admin.<br>
         You'll be confirmed once verified! ✅
       </div>
-      <div style="font-size:12px;color:var(--muted);text-align:center;line-height:1.7;">Registered squad will appear below after verification.<br>Get ready for <strong style="color:var(--cyan);">Saturday's Tournament</strong> 🏆</div>
+      <div style="font-size:12px;color:var(--muted);text-align:center;line-height:1.7;">Your squad will appear in the list below once admin verifies your payment.<br>Get ready for <strong style="color:var(--cyan);">Saturday's Tournament</strong> 🏆</div>
       <a href="https://chat.whatsapp.com/L3jXdwviYqB8ssi82RyYht?s=cl&p=i&mlu=0" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;padding:14px 22px;background:linear-gradient(135deg,#075e54,#25D366,#075e54);background-size:300%;border:none;border-radius:14px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:#fff;letter-spacing:2px;text-decoration:none;animation:btnShimmer 4s linear infinite;box-shadow:0 4px 20px rgba(37,211,102,.3);">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.092.536 4.06 1.475 5.777L0 24l6.404-1.452A11.955 11.955 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.796 9.796 0 01-5.031-1.388l-.361-.214-3.741.849.862-3.648-.235-.374A9.792 9.792 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
         JOIN WHATSAPP FOR UPDATES
@@ -538,6 +538,10 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <div style="font-size:11px;font-weight:800;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;">
       👥 Registered Teams
       <span style="font-family:'Orbitron',sans-serif;font-size:11px;color:var(--green);" id="teamsCountBadge">— teams</span>
+    </div>
+    <!-- Pending notice — shown if there are pending teams -->
+    <div id="pendingNotice" style="display:none;margin-top:12px;background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.18);border-radius:10px;padding:10px 14px;font-size:11px;color:rgba(255,212,56,.7);line-height:1.6;text-align:center;">
+      ⏳ Some registrations are pending admin verification.<br>Teams appear here once payment is confirmed.
     </div>
     <div class="teams-list" id="teamsList"><div class="no-teams">⏳ Loading teams...</div></div>
   </div>
@@ -751,7 +755,9 @@ setInterval(checkRegistrationStatus,60000);
 // Real-time teams list
 onSnapshot(query(collection(db,'tournament_teams'),orderBy('registeredAt','asc')),snap=>{
   const list=document.getElementById('teamsList');
-  const count=snap.size;
+  const allDocs=snap.docs;
+  const verified=allDocs.filter(d=>d.data().verified===true);
+  const count=verified.length;
   const countEl=document.getElementById('teamsCount');
   const badgeEl=document.getElementById('teamsCountBadge');
   if(countEl)countEl.textContent=count;
@@ -759,7 +765,6 @@ onSnapshot(query(collection(db,'tournament_teams'),orderBy('registeredAt','asc')
   const slots=Math.max(0,60-count);
   const slEl=document.getElementById('slotsLeft');
   if(slEl)slEl.textContent=slots;
-  // Auto-lock registration UI when cap hit
   const isFull=count>=60;
   const regBtn=document.getElementById('registerBtn');
   const lockMsg=document.getElementById('regLockedMsg');
@@ -772,23 +777,26 @@ onSnapshot(query(collection(db,'tournament_teams'),orderBy('registeredAt','asc')
       lockMsg.style.display='block';
       lockMsg.innerHTML='<div style="font-size:28px;margin-bottom:8px;">🚫</div>'
         +'<div style="font-family:\'Orbitron\',sans-serif;font-size:12px;font-weight:900;color:var(--red);letter-spacing:2px;margin-bottom:6px;">MAX REGISTRATION HIT!</div>'
-        +'<div style="font-size:12px;color:var(--muted);line-height:1.6;">60 teams have registered.<br>Registration is now closed!<br>Try again next week 🙏</div>';
+        +'<div style="font-size:12px;color:var(--muted);line-height:1.6;">60 verified teams registered.<br>Registration is now closed!<br>Try again next week 🙏</div>';
     }
     if(badgeText)badgeText.textContent='Full — 60/60 Teams';
     if(badge){badge.style.background='rgba(255,107,107,.15)';badge.style.borderColor='rgba(255,107,107,.3)';}
     if(badgeDot)badgeDot.style.background='#FF6B6B';
   }
-  if(count===0){list.innerHTML='<div class="no-teams">🏕️ No teams yet — be the first to register!</div>';return;}
-  list.innerHTML=snap.docs.map((d,i)=>{
-    const t=d.data();
-    return '<div class="team-item">'
-      +'<div class="team-num">TEAM #'+(i+1)+'</div>'
-      +'<div class="team-leader">👑 '+t.leaderName+'</div>'
-      +'<div class="team-uid">UID: '+t.leaderUID+'</div>'
-      +'<div class="team-members">'
-      +[t.member1,t.member2,t.member3].filter(Boolean).map(m=>'<span class="team-member-chip">⚔️ '+m+'</span>').join('')
-      +'</div></div>';
-  }).join('');
+  if(count===0){
+    list.innerHTML='<div class="no-teams">🏕️ No verified teams yet — register your squad!</div>';
+  }else{
+    list.innerHTML=verified.map((d,i)=>{
+      const t=d.data();
+      return '<div class="team-item">'
+        +'<div class="team-num">TEAM #'+(i+1)+'</div>'
+        +'<div class="team-leader">👑 '+(t.squadName?'<span style="color:var(--gold);font-size:11px;font-weight:800;">'+t.squadName+'</span> · ':'')+t.leaderName+'</div>'
+        +'<div class="team-uid">UID: '+t.leaderUID+'</div>'
+        +'<div class="team-members">'
+        +[t.member1,t.member2,t.member3].filter(Boolean).map(m=>'<span class="team-member-chip">⚔️ '+m+'</span>').join('')
+        +'</div></div>';
+    }).join('');
+  }
 });
 
 
