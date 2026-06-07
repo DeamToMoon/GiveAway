@@ -997,77 +997,7 @@ function attachTeamEvents(){
   });
 }
 
-function renderTournTeams_OLD(){
-  const list=document.getElementById('tournTeamsList');
-  if(!list)return;
-  if(tournTeams.length===0){list.innerHTML='<div class="no-entries">No teams registered yet.</div>';return;}
-  list.innerHTML=tournTeams.map(function(t,i){
-    return '<div class="entry-item" style="flex-direction:column;align-items:stretch;gap:8px;" id="team-row-'+t.id+'">'
-      +'<div style="display:flex;align-items:center;gap:10px;">'
-      +'<span class="entry-num">#'+(i+1)+'</span>'
-      +'<div class="entry-info"><div class="entry-username">👑 '+esc(t.leaderName)+'</div>'
-      +(t.squadName?'<div style="font-size:10px;color:rgba(255,212,56,.8);font-weight:700;margin-bottom:2px;">🏷️ '+esc(t.squadName)+'</div>':'')+'<div class="entry-uid">UID: '+esc(t.leaderUID)+' · '+esc(t.member1)+' ('+esc(t.member1uid||'—')+'), '+esc(t.member2)+' ('+esc(t.member2uid||'—')+'), '+esc(t.member3)+' ('+esc(t.member3uid||'—')+')</div>'+(t.paymentRef?'<div style="font-size:10px;color:rgba(37,211,102,.8);margin-top:2px;">🧾 Payment: '+esc(t.paymentRef)+'</div>':'')
-      +(t.whatsapp?'<div style="font-size:11px;color:rgba(105,240,174,.8);margin-top:3px;">📱 WA: '+esc(t.whatsapp)+'</div>':'')
-      +'</div>'
-      +'<div style="display:flex;gap:6px;flex-shrink:0;">'
-      +'<button data-id="'+t.id+'" class="edit-btn-t" style="padding:7px 12px;background:rgba(79,195,247,.1);border:1px solid rgba(79,195,247,.3);border-radius:8px;font-size:12px;color:var(--blue);cursor:pointer;">✏️</button>'
-      +'<button data-id="'+t.id+'" class="del-btn-t" style="padding:7px 12px;background:rgba(255,107,107,.1);border:1px solid rgba(255,107,107,.3);border-radius:8px;font-size:12px;color:var(--red);cursor:pointer;">🗑️</button>'
-      +'</div></div>'
-      +'<div id="team-edit-'+t.id+'" style="display:none;flex-direction:column;gap:6px;padding:10px;background:rgba(79,195,247,.04);border:1px solid rgba(79,195,247,.12);border-radius:10px;">'
-      +'<input id="edit-leader-'+t.id+'" value="'+esc(t.leaderName)+'" placeholder="Leader name" style="background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;">'
-      +'<input id="edit-uid-'+t.id+'" value="'+esc(t.leaderUID)+'" placeholder="Leader UID" style="background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;">'
-      +'<input id="edit-m1-'+t.id+'" value="'+esc(t.member1)+'" placeholder="Member 1" style="background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;">'
-      +'<input id="edit-m2-'+t.id+'" value="'+esc(t.member2)+'" placeholder="Member 2" style="background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;">'
-      +'<input id="edit-m3-'+t.id+'" value="'+esc(t.member3)+'" placeholder="Member 3" style="background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;">'
-      +'<div style="display:flex;gap:8px;">'
-      +'<button data-id="'+t.id+'" class="save-btn-t" style="flex:1;padding:9px;background:rgba(105,240,174,.12);border:1px solid rgba(105,240,174,.35);border-radius:8px;font-size:12px;font-weight:700;color:var(--green);cursor:pointer;">💾 Save</button>'
-      +'<button data-id="'+t.id+'" class="cancel-btn-t" style="flex:1;padding:9px;background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.2);border-radius:8px;font-size:12px;font-weight:700;color:var(--gold);cursor:pointer;">✕ Cancel</button>'
-      +'</div></div></div>';
-  }).join('');
-
-}
-
-function _oldEvents_unused(){
-  // Attach events
-  list.querySelectorAll('.verify-btn-t').forEach(btn=>{
-    btn.addEventListener('click',async()=>{
-      const id=btn.dataset.id;
-      const team=tournTeams.find(t=>t.id===id);
-      const name=team?(team.squadName||team.leaderName):'this team';
-      const isVerified=team&&team.verified===true;
-      const action=isVerified?'Unverify':'Verify';
-      if(!confirm(action+' team "'+name+'"?'))return;
-      try{
-        await setDoc(doc(db,'tournament_teams',id),{verified:!isVerified},({merge:true}));
-        alert('✅ Team '+action.toLowerCase()+'d!');window.loadTournTeams();
-      }catch(e){alert('❌ Error: '+e.message);}
-    });
-  });
-  list.querySelectorAll('.edit-btn-t').forEach(btn=>{btn.addEventListener('click',()=>{if(currentRole!=='admin'){alert('🚫 Mini admin cannot edit teams.');return;}document.getElementById('team-edit-'+btn.dataset.id).style.display='flex';});});
-  list.querySelectorAll('.cancel-btn-t').forEach(btn=>{btn.addEventListener('click',()=>{document.getElementById('team-edit-'+btn.dataset.id).style.display='none';});});
-  list.querySelectorAll('.save-btn-t').forEach(btn=>{
-    btn.addEventListener('click',async()=>{
-      const id=btn.dataset.id;
-      const data={leaderName:document.getElementById('edit-leader-'+id).value.trim(),leaderUID:document.getElementById('edit-uid-'+id).value.trim(),member1:document.getElementById('edit-m1-'+id).value.trim(),member2:document.getElementById('edit-m2-'+id).value.trim(),member3:document.getElementById('edit-m3-'+id).value.trim()};
-      if(!data.leaderName){alert('Leader name cannot be empty!');return;}
-      try{await setDoc(doc(db,'tournament_teams',id),data,{merge:true});alert('✅ Team updated!');window.loadTournTeams();}
-      catch(e){alert('❌ Error: '+e.message);}
-    });
-  });
-  list.querySelectorAll('.del-btn-t').forEach(btn=>{if(currentRole!=='admin'){btn.style.display='none';return;}
-    btn.addEventListener('click',async()=>{
-      const id=btn.dataset.id;
-      const team=tournTeams.find(t=>t.id===id);
-      const name=team?team.leaderName:'this team';
-      if(!confirm('🗑️ Delete team "'+name+'"?\nThis cannot be undone!'))return;
-      try{await deleteDoc(doc(db,'tournament_teams',id));alert('✅ Team "'+name+'" deleted!');window.loadTournTeams();}
-      catch(e){alert('❌ Delete failed: '+e.message);console.error(e);}
-    });
-  });
-}
-
-window.loadTournTeams=window.loadTournTeams||function(){};
-loadTournTeams();
+// loadTournTeams called after login only
 
 window.saveTournResult=async function(){
   const champion=document.getElementById('res-1st').value.trim();
