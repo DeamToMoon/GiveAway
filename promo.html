@@ -345,27 +345,49 @@ body{background:#000;display:flex;align-items:center;justify-content:center;min-
     </div>
   </div>
 
-  <!-- ═══ S3: GIVEAWAY WINNER ═══ -->
-  <div class="sc" id="s3">
-    <div class="s3-top-label">🎰 1ST LUCKY DRAW · LAST WINNER</div>
-    <div class="s3-big-title">LUCKY DRAW<br>RESULTS</div>
-    <div class="s3-spotlight">
-      <div class="s3-spot-glow"></div>
-      <div class="s3-spot-top">
-        <span class="s3-w-trophy">🥇</span>
-        <div class="s3-w-chip">1ST LUCKY DRAW 💎</div>
-        <div class="s3-w-name" id="s3Name">Loading...</div>
-        <div class="s3-w-uid" id="s3UID">UID: —</div>
+  <!-- ═══ S3: TOURNAMENT COUNTDOWN ═══ -->
+  <div class="sc" id="s3" style="gap:0;justify-content:center;">
+    <!-- Top label -->
+    <div style="font-size:9px;font-weight:800;letter-spacing:5px;color:rgba(0,229,255,.4);text-transform:uppercase;text-align:center;margin-bottom:10px;animation:fadeIn .6s ease .1s both;">⚔️ NEXT TOURNAMENT</div>
+
+    <!-- Big title -->
+    <div style="font-family:'Orbitron',sans-serif;font-size:26px;font-weight:900;color:#fff;text-align:center;letter-spacing:3px;line-height:1.2;text-shadow:0 0 40px rgba(0,229,255,.25);animation:fadeUp .6s ease .2s both;">THIS<br><span style="color:var(--cyan);">SATURDAY</span></div>
+    <div style="font-size:11px;color:rgba(255,255,255,.3);letter-spacing:4px;text-align:center;margin-top:4px;margin-bottom:22px;animation:fadeIn .6s ease .35s both;">FREE FIRE · FULL MAP · SQUAD MODE</div>
+
+    <!-- Countdown boxes -->
+    <div style="display:flex;gap:10px;justify-content:center;margin-bottom:22px;animation:scaleUp .6s cubic-bezier(.34,1.56,.64,1) .4s both;">
+      <div class="cd-box"><div class="cd-num" id="cdDays">00</div><div class="cd-lbl">DAYS</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-box"><div class="cd-num" id="cdHours">00</div><div class="cd-lbl">HRS</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-box"><div class="cd-num" id="cdMins">00</div><div class="cd-lbl">MIN</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-box cd-box-sec"><div class="cd-num" id="cdSecs">00</div><div class="cd-lbl">SEC</div></div>
+    </div>
+
+    <!-- Info cards -->
+    <div style="display:flex;gap:8px;width:100%;animation:fadeUp .5s ease .55s both;">
+      <div style="flex:1;background:rgba(255,212,56,.07);border:1px solid rgba(255,212,56,.2);border-radius:14px;padding:12px 8px;text-align:center;">
+        <div style="font-size:22px;margin-bottom:4px;">💰</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--gold);">Rs.3,300</div>
+        <div style="font-size:8px;color:rgba(255,212,56,.45);letter-spacing:1px;margin-top:2px;">PRIZE POOL</div>
       </div>
-      <div class="s3-spot-bottom">
-        <div class="s3-stat-box"><div class="s3-stat-n" id="s3Entries">—</div><div class="s3-stat-l">IN THE POOL</div></div>
-        <div class="s3-stat-box"><div class="s3-stat-n" style="color:var(--cyan);font-size:16px;">EVERY<br>SAT</div><div class="s3-stat-l">DRAW DAY</div></div>
+      <div style="flex:1;background:rgba(105,240,174,.07);border:1px solid rgba(105,240,174,.2);border-radius:14px;padding:12px 8px;text-align:center;">
+        <div style="font-size:22px;margin-bottom:4px;">⚔️</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--green);" id="s3Teams">— TEAMS</div>
+        <div style="font-size:8px;color:rgba(105,240,174,.45);letter-spacing:1px;margin-top:2px;">REGISTERED</div>
+      </div>
+      <div style="flex:1;background:rgba(79,195,247,.07);border:1px solid rgba(79,195,247,.2);border-radius:14px;padding:12px 8px;text-align:center;">
+        <div style="font-size:22px;margin-bottom:4px;">🎰</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--blue);">FREE</div>
+        <div style="font-size:8px;color:rgba(79,195,247,.45);letter-spacing:1px;margin-top:2px;">GIVEAWAY</div>
       </div>
     </div>
-    <div class="s3-cd"><div class="s3-cd-lbl">⏳ NEXT WINNER IN</div><div class="s3-cd-time" id="s3CD">Calculating...</div></div>
-    <div class="s3-mystery">
-      <div class="s3-my-icon">🎁</div>
-      <div><div class="s3-my-title">MYSTERY PRIZE — COMING SOON</div><div class="s3-my-sub">Something BIG is dropping soon... 🔥 Stay tuned!</div></div>
+
+    <!-- Register tip -->
+    <div style="margin-top:14px;background:rgba(255,107,107,.07);border:1px solid rgba(255,107,107,.18);border-radius:12px;padding:10px 14px;text-align:center;font-size:11px;color:rgba(255,107,107,.8);line-height:1.6;animation:fadeUp .5s ease .7s both;">
+      ⏰ <strong>Register before Thursday 11:59PM NPT</strong><br>
+      <span style="color:rgba(255,255,255,.4);">Rs.40 entry fee · Max 60 squads</span>
     </div>
   </div>
 
@@ -579,37 +601,18 @@ ti.innerHTML=row+row;
 /* ── FIREBASE LIVE DATA ── */
 let teamsData=[];
 
+let tournTeamsVerified=0;
 onSnapshot(query(collection(db,'tournament_teams'),orderBy('registeredAt','asc')),snap=>{
   teamsData=snap.docs.map(d=>({id:d.id,...d.data()}));
   const verified=teamsData.filter(t=>t.verified===true);
+  tournTeamsVerified=verified.length;
   const n=verified.length,slots=Math.max(0,60-n);
   set('s1TeamNum',n||'—');set('s1SlotsNum',slots);set('s2CountLabel',n+' VERIFIED TEAMS');
+  set('s3Teams',(n||'—')+' TEAMS');
   buildTeams();
 });
 
-onSnapshot(collection(db,'entries'),snap=>{set('s3Entries',snap.size||'—');});
-
-onSnapshot(doc(db,'winners','latest'),snap=>{
-  if(snap.exists()){
-    const w=snap.data();
-    set('s3Name',w.monthlyUsername||'—');
-    set('s3UID','UID: '+(w.monthlyUID||'—'));
-  }else{set('s3Name','No winner yet');set('s3UID','Draw every Saturday! 👀');}
-});
-
-// Countdown to next Saturday 10AM NPT
-(function(){
-  const tick=()=>{
-    const now=new Date();
-    const sat=new Date(now);
-    sat.setHours(10,0,0,0);
-    while(sat.getDay()!==6||sat<=now)sat.setDate(sat.getDate()+1);
-    const diff=sat-now;
-    const d=Math.floor(diff/86400000),h=Math.floor(diff%86400000/3600000),m=Math.floor(diff%3600000/60000),s=Math.floor(diff%60000/1000);
-    set('s3CD',`${d}d ${h}h ${m}m ${s}s`);
-  };
-  tick();setInterval(tick,1000);
-})();
+// Countdown to Saturday handled by tickCountdown() above
 
 function set(id,val){const el=document.getElementById(id);if(el)el.textContent=val;}
 function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -645,7 +648,7 @@ const pauseIco=document.getElementById('pauseIco');
 let cur=0,timer=null,paused=false;
 
 // Durations per scene (ms) — total ~22s
-const DUR=[3000,4000,5000,3500,3500,4000,3500,3500];
+const DUR=[3000,4500,5000,4000,3500,4000,3500,3500];
 // Progress bar colors per scene
 const COLORS=[
   'linear-gradient(90deg,#FFD438,#FFA500)',
