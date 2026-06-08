@@ -524,20 +524,46 @@ function buildWASection(groups){
   return html+'</div>';
 }
 
+function g(id){var el=document.getElementById(id);return el?el.value.trim():'';}
+
 function saveTournResult(){
-  var champion=document.getElementById('res-1st').value.trim();
-  if(!champion){alert('Enter champion name!');return;}
-  var second=document.getElementById('res-2nd').value.trim(),third=document.getElementById('res-3rd').value.trim(),note=document.getElementById('res-note').value.trim();
-  if(!confirm('🏆 Publish results?\n1st: '+champion+'\n2nd: '+(second||'—')+'\n3rd: '+(third||'—')+'\n\nThis will clear all teams.'))return;
+  var champion=g('res-1st');
+  if(!champion){alert('Enter champion squad name!');return;}
+  var second=g('res-2nd'),third=g('res-3rd'),fourth=g('res-4th'),note=g('res-note');
+  var msg='🏆 Publish results?\n\n'
+    +'🥇 '+champion+'\n'
+    +(second?'🥈 '+second+'\n':'')
+    +(third?'🥉 '+third+'\n':'')
+    +(fourth?'🎖️ '+fourth+' (4th)\n':'')
+    +'\nThis will clear all teams and go live instantly.';
+  if(!confirm(msg))return;
   var db=getDB();
-  db.collection('tournament_result').doc('latest').set({champion:champion,second:second,third:third,note:note,updatedAt:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
+  var data={
+    champion:champion,
+    champion1Leader:g('res-1st-leader'),champion1m1:g('res-1st-m1'),champion1m2:g('res-1st-m2'),champion1m3:g('res-1st-m3'),
+    second:second,
+    second1Leader:g('res-2nd-leader'),second1m1:g('res-2nd-m1'),second1m2:g('res-2nd-m2'),second1m3:g('res-2nd-m3'),
+    third:third,
+    third1Leader:g('res-3rd-leader'),third1m1:g('res-3rd-m1'),third1m2:g('res-3rd-m2'),third1m3:g('res-3rd-m3'),
+    fourth:fourth,
+    fourth1Leader:g('res-4th-leader'),fourth1m1:g('res-4th-m1'),fourth1m2:g('res-4th-m2'),fourth1m3:g('res-4th-m3'),
+    note:note,
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+  };
+  db.collection('tournament_result').doc('latest').set(data).then(function(){
     return db.collection('tournament_teams').get();
   }).then(function(snap){
     var b=db.batch();snap.forEach(function(d){b.delete(d.ref);});return b.commit();
   }).then(function(){
-    document.getElementById('res-1st').value='';document.getElementById('res-2nd').value='';document.getElementById('res-3rd').value='';document.getElementById('res-note').value='';
+    ['1st','2nd','3rd','4th'].forEach(function(p){
+      ['','−leader','−m1','−m2','−m3'].forEach(function(s){
+        var el=document.getElementById('res-'+p+(s===''?'':s.replace('−','-')));
+        if(el)el.value='';
+      });
+    });
+    document.getElementById('res-note').value='';
     tournTeams=[];renderTournTeams();
-    alert('✅ Results published!\n🗑️ Teams cleared!\n🔓 Registration re-opened!');
+    alert('✅ Results published & LIVE!\n🗑️ All teams cleared!\n🔓 Registration re-opened!');
   }).catch(function(e){alert('❌ '+e.message);});
 }
 
@@ -803,14 +829,52 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       <div class="divider" style="margin:18px 0;"></div>
       <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;">🏆 Publish Tournament Results</div>
       <div style="display:flex;flex-direction:column;gap:10px;">
-        <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥇 Champion (Rs.1,500)</label>
-          <input id="res-1st" type="text" placeholder="1st place team name" style="width:100%;background:rgba(255,212,56,.05);border:1px solid rgba(255,212,56,.2);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
-        <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥈 2nd Place (Rs.1,000)</label>
-          <input id="res-2nd" type="text" placeholder="2nd place team name" style="width:100%;background:rgba(79,195,247,.04);border:1px solid rgba(79,195,247,.15);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
-        <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥉 3rd Place (Rs.600)</label>
-          <input id="res-3rd" type="text" placeholder="3rd place team name" style="width:100%;background:rgba(206,147,216,.04);border:1px solid rgba(206,147,216,.15);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
+        <!-- Champion -->
+        <div style="background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.3);border-radius:12px;padding:12px 14px;">
+          <div style="font-size:9px;font-weight:800;letter-spacing:2px;color:rgba(255,212,56,.9);text-transform:uppercase;margin-bottom:10px;">🥇 Champion — Rs.1,500</div>
+          <input id="res-1st" type="text" placeholder="1st place squad name" style="width:100%;background:rgba(255,212,56,.08);border:1px solid rgba(255,212,56,.3);border-radius:8px;padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;margin-bottom:6px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:2px;">
+            <input id="res-1st-leader" type="text" placeholder="Leader name" style="width:100%;background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.3);border-radius:8px;padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;margin-bottom:6px;">
+            <input id="res-1st-m1" type="text" placeholder="Member 1" style="width:100%;background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.3);border-radius:8px;padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;margin-bottom:6px;">
+            <input id="res-1st-m2" type="text" placeholder="Member 2" style="width:100%;background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.3);border-radius:8px;padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;margin-bottom:6px;">
+            <input id="res-1st-m3" type="text" placeholder="Member 3" style="width:100%;background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.3);border-radius:8px;padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;margin-bottom:6px;">
+          </div>
+        </div>
+        <!-- 2nd Place -->
+        <div style="background:rgba(79,195,247,.05);border:1px solid rgba(79,195,247,.25);border-radius:12px;padding:12px 14px;">
+          <div style="font-size:9px;font-weight:800;letter-spacing:2px;color:rgba(79,195,247,.9);text-transform:uppercase;margin-bottom:10px;">🥈 2nd Place — Rs.1,000</div>
+          <input id="res-2nd" type="text" placeholder="2nd place squad name" style="width:100%;background:rgba(79,195,247,.05);border:1px solid rgba(79,195,247,.25);border-radius:8px;padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;margin-bottom:6px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:2px;">
+            <input id="res-2nd-leader" type="text" placeholder="Leader name" style="width:100%;background:rgba(79,195,247,.05);border:1px solid rgba(79,195,247,.25);border-radius:8px;padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;margin-bottom:6px;">
+            <input id="res-2nd-m1" type="text" placeholder="Member 1" style="width:100%;background:rgba(79,195,247,.05);border:1px solid rgba(79,195,247,.25);border-radius:8px;padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;margin-bottom:6px;">
+            <input id="res-2nd-m2" type="text" placeholder="Member 2" style="width:100%;background:rgba(79,195,247,.05);border:1px solid rgba(79,195,247,.25);border-radius:8px;padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;margin-bottom:6px;">
+            <input id="res-2nd-m3" type="text" placeholder="Member 3" style="width:100%;background:rgba(79,195,247,.05);border:1px solid rgba(79,195,247,.25);border-radius:8px;padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;margin-bottom:6px;">
+          </div>
+        </div>
+        <!-- 3rd Place -->
+        <div style="background:rgba(206,147,216,.05);border:1px solid rgba(206,147,216,.25);border-radius:12px;padding:12px 14px;">
+          <div style="font-size:9px;font-weight:800;letter-spacing:2px;color:rgba(206,147,216,.9);text-transform:uppercase;margin-bottom:10px;">🥉 3rd Place — Rs.600</div>
+          <input id="res-3rd" type="text" placeholder="3rd place squad name" style="width:100%;background:rgba(206,147,216,.05);border:1px solid rgba(206,147,216,.25);border-radius:8px;padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;margin-bottom:6px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:2px;">
+            <input id="res-3rd-leader" type="text" placeholder="Leader name" style="width:100%;background:rgba(206,147,216,.05);border:1px solid rgba(206,147,216,.25);border-radius:8px;padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;margin-bottom:6px;">
+            <input id="res-3rd-m1" type="text" placeholder="Member 1" style="width:100%;background:rgba(206,147,216,.05);border:1px solid rgba(206,147,216,.25);border-radius:8px;padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;margin-bottom:6px;">
+            <input id="res-3rd-m2" type="text" placeholder="Member 2" style="width:100%;background:rgba(206,147,216,.05);border:1px solid rgba(206,147,216,.25);border-radius:8px;padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;margin-bottom:6px;">
+            <input id="res-3rd-m3" type="text" placeholder="Member 3" style="width:100%;background:rgba(206,147,216,.05);border:1px solid rgba(206,147,216,.25);border-radius:8px;padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;margin-bottom:6px;">
+          </div>
+        </div>
+        <!-- 4th Place -->
+        <div style="background:rgba(255,171,64,.05);border:1px solid rgba(255,171,64,.2);border-radius:12px;padding:12px 14px;">
+          <div style="font-size:9px;font-weight:800;letter-spacing:2px;color:rgba(255,171,64,.9);text-transform:uppercase;margin-bottom:10px;">🎖️ 4th Place — Rs.200</div>
+          <input id="res-4th" type="text" placeholder="4th place squad name" style="width:100%;background:rgba(255,171,64,.05);border:1px solid rgba(255,171,64,.2);border-radius:8px;padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;margin-bottom:6px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:2px;">
+            <input id="res-4th-leader" type="text" placeholder="Leader name" style="width:100%;background:rgba(255,171,64,.05);border:1px solid rgba(255,171,64,.2);border-radius:8px;padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;margin-bottom:6px;">
+            <input id="res-4th-m1" type="text" placeholder="Member 1" style="width:100%;background:rgba(255,171,64,.05);border:1px solid rgba(255,171,64,.2);border-radius:8px;padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;margin-bottom:6px;">
+            <input id="res-4th-m2" type="text" placeholder="Member 2" style="width:100%;background:rgba(255,171,64,.05);border:1px solid rgba(255,171,64,.2);border-radius:8px;padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;margin-bottom:6px;">
+            <input id="res-4th-m3" type="text" placeholder="Member 3" style="width:100%;background:rgba(255,171,64,.05);border:1px solid rgba(255,171,64,.2);border-radius:8px;padding:10px 12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;margin-bottom:6px;">
+          </div>
+        </div>
         <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">📝 Note (optional)</label>
-          <input id="res-note" type="text" placeholder="e.g. GG to all teams! 🙏" style="width:100%;background:rgba(79,195,247,.03);border:1px solid rgba(79,195,247,.1);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
+          <input id="res-note" type="text" placeholder="e.g. GG to all teams! Amazing matches 🙏" style="width:100%;background:rgba(79,195,247,.03);border:1px solid rgba(79,195,247,.1);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
         <button onclick="saveTournResult()" style="padding:16px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:2px solid rgba(105,240,174,.45);border-radius:12px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--green);letter-spacing:2px;cursor:pointer;">🚀 SAVE &amp; PUBLISH RESULTS LIVE</button>
       </div>
     </div>
