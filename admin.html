@@ -74,11 +74,79 @@ function loadEntries(db){
     sv('totalCount',allEntries.length);
     if(!allEntries.length){list.innerHTML='<div class="no-entries">No entries yet 😊</div>';return;}
     list.innerHTML=allEntries.map(function(e,i){
-      return '<div class="entry-item"><span class="entry-num">#'+(allEntries.length-i)+'</span>'
-        +'<div class="entry-info"><div class="entry-username">'+esc(e.username)+'</div>'
-        +'<div class="entry-uid">UID: '+esc(e.uid)+'</div></div>'
-        +'<div class="entry-time">'+(e.timestamp?new Date(e.timestamp.seconds*1000).toLocaleString():'Just now')+'</div></div>';
+      var isAdmin=currentRole==='admin';
+      return '<div class="entry-item" id="entry-row-'+e.id+'" style="flex-wrap:wrap;gap:8px;">'
+        +'<span class="entry-num">#'+(allEntries.length-i)+'</span>'
+        +'<div class="entry-info" style="flex:1;min-width:0;">'
+        +'<div class="entry-username">'+esc(e.username)+'</div>'
+        +'<div class="entry-uid">UID: '+esc(e.uid)+'</div>'
+        +'</div>'
+        +'<div class="entry-time" style="font-size:10px;color:rgba(232,244,253,.25);">'+(e.timestamp?new Date(e.timestamp.seconds*1000).toLocaleString():'Just now')+'</div>'
+        +(isAdmin
+          ?'<div style="display:flex;gap:5px;width:100%;margin-top:4px;" class="entry-actions">'
+            +'<div id="entry-edit-'+e.id+'" style="display:none;flex:1;display:none;gap:5px;flex-wrap:wrap;">'
+            +'<input id="eeu-'+e.id+'" value="'+esc(e.username)+'" placeholder="Username" style="flex:1;min-width:100px;background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:7px;padding:6px 10px;font-size:12px;color:#fff;outline:none;">'
+            +'<input id="eeuid-'+e.id+'" value="'+esc(e.uid)+'" placeholder="UID" style="flex:1;min-width:80px;background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:7px;padding:6px 10px;font-size:12px;color:#fff;outline:none;">'
+            +'<button data-id="'+e.id+'" class="save-entry-btn" style="padding:6px 12px;background:rgba(105,240,174,.12);border:1px solid rgba(105,240,174,.3);border-radius:7px;font-size:11px;font-weight:700;color:var(--green);cursor:pointer;">💾</button>'
+            +'<button data-id="'+e.id+'" class="cancel-entry-btn" style="padding:6px 10px;background:rgba(255,212,56,.07);border:1px solid rgba(255,212,56,.2);border-radius:7px;font-size:11px;color:var(--gold);cursor:pointer;">✕</button>'
+            +'</div>'
+            +'<button data-id="'+e.id+'" class="edit-entry-btn" style="padding:5px 11px;background:rgba(79,195,247,.08);border:1px solid rgba(79,195,247,.2);border-radius:7px;font-size:12px;cursor:pointer;">✏️</button>'
+            +'<button data-id="'+e.id+'" class="del-entry-btn" style="padding:5px 11px;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.2);border-radius:7px;font-size:12px;color:var(--red);cursor:pointer;">🗑️</button>'
+            +'</div>'
+          :'')
+        +'</div>';
     }).join('');
+
+    // Attach entry events (admin only)
+    if(currentRole==='admin'){
+      list.querySelectorAll('.edit-entry-btn').forEach(function(btn){
+        btn.addEventListener('click',function(){
+          var id=btn.dataset.id;
+          var editDiv=document.getElementById('entry-edit-'+id);
+          var actionsDiv=btn.closest('.entry-actions');
+          if(!editDiv)return;
+          var isOpen=editDiv.style.display==='flex';
+          editDiv.style.display=isOpen?'none':'flex';
+          btn.style.display=isOpen?'':'none';
+          actionsDiv.querySelector('.del-entry-btn').style.display=isOpen?'':'none';
+        });
+      });
+      list.querySelectorAll('.cancel-entry-btn').forEach(function(btn){
+        btn.addEventListener('click',function(){
+          var id=btn.dataset.id;
+          document.getElementById('entry-edit-'+id).style.display='none';
+          var row=document.getElementById('entry-row-'+id);
+          if(row){
+            var editBtn=row.querySelector('.edit-entry-btn');
+            var delBtn=row.querySelector('.del-entry-btn');
+            if(editBtn)editBtn.style.display='';
+            if(delBtn)delBtn.style.display='';
+          }
+        });
+      });
+      list.querySelectorAll('.save-entry-btn').forEach(function(btn){
+        btn.addEventListener('click',function(){
+          var id=btn.dataset.id;
+          var newUser=document.getElementById('eeu-'+id).value.trim();
+          var newUID=document.getElementById('eeuid-'+id).value.trim();
+          if(!newUser||!newUID){alert('Both fields required!');return;}
+          btn.textContent='⏳';btn.disabled=true;
+          db.collection('entries').doc(id).update({username:newUser,uid:newUID}).then(function(){
+            alert('✅ Entry updated!');loadEntries(db);
+          }).catch(function(e){alert('❌ '+e.message);btn.textContent='💾';btn.disabled=false;});
+        });
+      });
+      list.querySelectorAll('.del-entry-btn').forEach(function(btn){
+        btn.addEventListener('click',function(){
+          var id=btn.dataset.id;
+          var entry=allEntries.find(function(e){return e.id===id;});
+          if(!confirm('🗑️ Delete entry "'+((entry&&entry.username)||'this entry')+'"?\nThis cannot be undone!'))return;
+          db.collection('entries').doc(id).delete().then(function(){
+            alert('✅ Entry deleted!');loadEntries(db);
+          }).catch(function(e){alert('❌ '+e.message);});
+        });
+      });
+    }
   }).catch(function(e){list.innerHTML='<div class="no-entries">❌ '+e.message+'</div>';});
 }
 
@@ -307,60 +375,143 @@ function renderTournTeams(){
 
 function buildTeamRow(t,i,status){
   var isPending=status==='pending';
+  var isAdmin=currentRole==='admin';
+  var inp='background:rgba(255,255,255,.06);border:1px solid rgba(79,195,247,.2);border-radius:8px;padding:8px 12px;font-size:13px;color:#fff;outline:none;width:100%;font-family:\'Exo 2\',sans-serif;margin-bottom:4px;';
   return '<div class="entry-item" style="flex-direction:column;align-items:stretch;gap:0;border-color:'+(isPending?'rgba(255,212,56,.2)':'rgba(105,240,174,.15)')+';background:'+(isPending?'rgba(255,212,56,.03)':'rgba(105,240,174,.02)')+'" id="team-row-'+t.id+'">'
-    +'<div style="display:flex;align-items:center;gap:10px;padding:4px 0 8px;">'
+    // ── Info row ──
+    +'<div style="display:flex;align-items:flex-start;gap:10px;padding:4px 0 8px;">'
     +'<span class="entry-num">#'+(i+1)+'</span>'
-    +'<div class="entry-info">'
+    +'<div class="entry-info" style="flex:1;">'
     +(t.squadName?'<div style="font-size:11px;color:rgba(255,212,56,.9);font-weight:800;margin-bottom:2px;">🏷️ '+esc(t.squadName)+'</div>':'')
     +'<div class="entry-username">👑 '+esc(t.leaderName)+'</div>'
     +'<div class="entry-uid">UID: '+esc(t.leaderUID)+' · 📱 '+esc(t.whatsapp||'—')+'</div>'
-    +'<div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;">⚔️ '+esc(t.member1)+' · '+esc(t.member2)+' · '+esc(t.member3)+'</div>'
-    +(t.paymentRef?'<div style="font-size:11px;color:rgba(37,211,102,.9);font-weight:700;margin-top:4px;padding:3px 8px;background:rgba(37,211,102,.07);border-radius:6px;border:1px solid rgba(37,211,102,.15);">🧾 '+esc(t.paymentRef)+'</div>':'<div style="font-size:11px;color:rgba(255,107,107,.7);margin-top:4px;">⚠️ No payment ref</div>')
+    +'<div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:3px;line-height:1.6;">'
+    +'⚔️ '+esc(t.member1||'—')+' <span style="color:rgba(255,255,255,.25);">('+esc(t.member1uid||'—')+')</span><br>'
+    +'⚔️ '+esc(t.member2||'—')+' <span style="color:rgba(255,255,255,.25);">('+esc(t.member2uid||'—')+')</span><br>'
+    +'⚔️ '+esc(t.member3||'—')+' <span style="color:rgba(255,255,255,.25);">('+esc(t.member3uid||'—')+')</span>'
+    +'</div>'
+    +(t.paymentRef
+      ?'<div style="font-size:11px;color:rgba(37,211,102,.9);font-weight:700;margin-top:5px;padding:4px 10px;background:rgba(37,211,102,.07);border-radius:6px;border:1px solid rgba(37,211,102,.15);">🧾 TXN: '+esc(t.paymentRef)+'</div>'
+      :'<div style="font-size:11px;color:rgba(255,107,107,.7);margin-top:4px;">⚠️ No payment ref</div>')
     +'</div></div>'
+    // ── Action buttons ──
     +(isPending
       ?'<div style="display:flex;gap:8px;margin-top:2px;">'
         +'<button data-id="'+t.id+'" class="approve-btn-t" style="flex:2;padding:10px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:1.5px solid rgba(105,240,174,.4);border-radius:10px;font-family:\'Orbitron\',sans-serif;font-size:10px;font-weight:900;color:var(--green);cursor:pointer;">✅ APPROVE</button>'
-        +'<button data-id="'+t.id+'" class="reject-btn-t" style="flex:1;padding:10px;background:rgba(255,107,107,.07);border:1px solid rgba(255,107,107,.25);border-radius:10px;font-family:\'Orbitron\',sans-serif;font-size:10px;font-weight:700;color:var(--red);cursor:pointer;">🗑️ REJECT</button>'
+        +(isAdmin?'<button data-id="'+t.id+'" class="edit-btn-t" style="padding:10px 14px;background:rgba(79,195,247,.08);border:1px solid rgba(79,195,247,.25);border-radius:10px;font-size:13px;cursor:pointer;" title="Edit">✏️</button>':'')
+        +'<button data-id="'+t.id+'" class="reject-btn-t" style="flex:1;padding:10px;background:rgba(255,107,107,.07);border:1px solid rgba(255,107,107,.25);border-radius:10px;font-family:\'Orbitron\',sans-serif;font-size:10px;font-weight:700;color:var(--red);cursor:pointer;">🗑️</button>'
         +'</div>'
-      :'<div style="display:flex;gap:6px;justify-content:flex-end;margin-top:4px;">'
-        +'<button data-id="'+t.id+'" class="unverify-btn-t" style="padding:6px 12px;background:rgba(255,212,56,.07);border:1px solid rgba(255,212,56,.2);border-radius:8px;font-size:11px;color:rgba(255,212,56,.7);cursor:pointer;">↩️ Unverify</button>'
-        +(currentRole==='admin'?'<button data-id="'+t.id+'" class="del-btn-t" style="padding:6px 12px;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.2);border-radius:8px;font-size:11px;color:var(--red);cursor:pointer;">🗑️</button>':'')
+      :'<div style="display:flex;gap:6px;justify-content:flex-end;margin-top:4px;flex-wrap:wrap;">'
+        +(isAdmin?'<button data-id="'+t.id+'" class="unverify-btn-t" style="padding:6px 12px;background:rgba(255,212,56,.07);border:1px solid rgba(255,212,56,.2);border-radius:8px;font-size:11px;color:rgba(255,212,56,.7);cursor:pointer;">↩️ Unverify</button>':'')
+        +(isAdmin?'<button data-id="'+t.id+'" class="edit-btn-t" style="padding:6px 12px;background:rgba(79,195,247,.08);border:1px solid rgba(79,195,247,.25);border-radius:8px;font-size:13px;cursor:pointer;" title="Edit">✏️</button>':'')
+        +(isAdmin?'<button data-id="'+t.id+'" class="del-btn-t" style="padding:6px 12px;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.2);border-radius:8px;font-size:13px;color:var(--red);cursor:pointer;" title="Delete">🗑️</button>':'')
         +'</div>')
+    // ── Edit form (admin only, hidden by default) ──
+    +(isAdmin
+      ?'<div id="edit-form-'+t.id+'" style="display:none;flex-direction:column;gap:6px;margin-top:10px;padding:12px;background:rgba(79,195,247,.04);border:1px solid rgba(79,195,247,.15);border-radius:12px;">'
+        +'<div style="font-size:9px;font-weight:800;letter-spacing:2px;color:var(--blue);text-transform:uppercase;margin-bottom:4px;">✏️ EDIT TEAM</div>'
+        +'<input id="ef-squad-'+t.id+'" placeholder="Squad name" value="'+esc(t.squadName||'')+'" style="'+inp+'">'
+        +'<input id="ef-leader-'+t.id+'" placeholder="Leader name" value="'+esc(t.leaderName||'')+'" style="'+inp+'">'
+        +'<input id="ef-luid-'+t.id+'" placeholder="Leader UID" value="'+esc(t.leaderUID||'')+'" style="'+inp+'">'
+        +'<input id="ef-wa-'+t.id+'" placeholder="WhatsApp" value="'+esc(t.whatsapp||'')+'" style="'+inp+'">'
+        +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">'
+        +'<input id="ef-m1-'+t.id+'" placeholder="Member 1" value="'+esc(t.member1||'')+'" style="'+inp+'">'
+        +'<input id="ef-m1uid-'+t.id+'" placeholder="M1 UID" value="'+esc(t.member1uid||'')+'" style="'+inp+'">'
+        +'<input id="ef-m2-'+t.id+'" placeholder="Member 2" value="'+esc(t.member2||'')+'" style="'+inp+'">'
+        +'<input id="ef-m2uid-'+t.id+'" placeholder="M2 UID" value="'+esc(t.member2uid||'')+'" style="'+inp+'">'
+        +'<input id="ef-m3-'+t.id+'" placeholder="Member 3" value="'+esc(t.member3||'')+'" style="'+inp+'">'
+        +'<input id="ef-m3uid-'+t.id+'" placeholder="M3 UID" value="'+esc(t.member3uid||'')+'" style="'+inp+'">'
+        +'</div>'
+        +'<input id="ef-pay-'+t.id+'" placeholder="Payment TXN ref" value="'+esc(t.paymentRef||'')+'" style="'+inp+'">'
+        +'<div style="display:flex;gap:8px;margin-top:4px;">'
+        +'<button data-id="'+t.id+'" class="save-btn-t" style="flex:2;padding:10px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:1.5px solid rgba(105,240,174,.4);border-radius:10px;font-family:\'Orbitron\',sans-serif;font-size:11px;font-weight:900;color:var(--green);cursor:pointer;">💾 SAVE</button>'
+        +'<button data-id="'+t.id+'" class="cancel-edit-btn-t" style="flex:1;padding:10px;background:rgba(255,212,56,.07);border:1px solid rgba(255,212,56,.2);border-radius:10px;font-size:11px;color:var(--gold);cursor:pointer;">✕</button>'
+        +'</div>'
+        +'</div>'
+      :'')
     +'</div>';
 }
 
 function attachTeamEvents(){
   var list=document.getElementById('tournTeamsList'),db=getDB();
+
+  // Approve
   list.querySelectorAll('.approve-btn-t').forEach(function(btn){
     btn.addEventListener('click',function(){
       var id=btn.dataset.id,team=tournTeams.find(function(t){return t.id===id;});
       var name=team?(team.squadName||team.leaderName):'team';
-      if(!confirm('✅ APPROVE "'+name+'"?\nPayment: '+((team&&team.paymentRef)||'—')))return;
+      if(!confirm('✅ APPROVE "'+name+'"?\n\n🧾 Payment: '+((team&&team.paymentRef)||'—')+'\n\nThis will make them LIVE on the main page.'))return;
       db.collection('tournament_teams').doc(id).update({verified:true,verifiedAt:firebase.firestore.FieldValue.serverTimestamp(),verifiedBy:currentRole}).then(function(){
-        alert('✅ Approved & LIVE!');loadTournTeams(db);
+        alert('✅ "'+name+'" approved & LIVE!');loadTournTeams(db);
       }).catch(function(e){alert('❌ '+e.message);});
     });
   });
+
+  // Reject
   list.querySelectorAll('.reject-btn-t').forEach(function(btn){
     btn.addEventListener('click',function(){
       var id=btn.dataset.id,team=tournTeams.find(function(t){return t.id===id;});
-      if(!confirm('🗑️ REJECT & DELETE "'+((team&&(team.squadName||team.leaderName))||'team')+'"?'))return;
-      db.collection('tournament_teams').doc(id).delete().then(function(){alert('🗑️ Rejected & deleted.');loadTournTeams(db);}).catch(function(e){alert('❌ '+e.message);});
+      var name=team?(team.squadName||team.leaderName):'team';
+      if(!confirm('🗑️ REJECT & DELETE "'+name+'"?\n\nUse this if payment was not received.\nThis cannot be undone!'))return;
+      db.collection('tournament_teams').doc(id).delete().then(function(){alert('🗑️ "'+name+'" rejected & deleted.');loadTournTeams(db);}).catch(function(e){alert('❌ '+e.message);});
     });
   });
+
+  // Unverify
   list.querySelectorAll('.unverify-btn-t').forEach(function(btn){
     btn.addEventListener('click',function(){
       var id=btn.dataset.id,team=tournTeams.find(function(t){return t.id===id;});
-      if(!confirm('↩️ Unverify "'+((team&&(team.squadName||team.leaderName))||'team')+'"?'))return;
-      db.collection('tournament_teams').doc(id).update({verified:false}).then(function(){alert('↩️ Unverified.');loadTournTeams(db);}).catch(function(e){alert('❌ '+e.message);});
+      var name=team?(team.squadName||team.leaderName):'team';
+      if(!confirm('↩️ Unverify "'+name+'"?\nThey will be hidden from the main page until re-approved.'))return;
+      db.collection('tournament_teams').doc(id).update({verified:false}).then(function(){alert('↩️ "'+name+'" unverified.');loadTournTeams(db);}).catch(function(e){alert('❌ '+e.message);});
     });
   });
+
+  // Edit — show form
+  list.querySelectorAll('.edit-btn-t').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var id=btn.dataset.id;
+      var form=document.getElementById('edit-form-'+id);
+      if(form)form.style.display=form.style.display==='flex'?'none':'flex';
+    });
+  });
+
+  // Cancel edit
+  list.querySelectorAll('.cancel-edit-btn-t').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var form=document.getElementById('edit-form-'+btn.dataset.id);
+      if(form)form.style.display='none';
+    });
+  });
+
+  // Save edit
+  list.querySelectorAll('.save-btn-t').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var id=btn.dataset.id;
+      function gv(field){var el=document.getElementById('ef-'+field+'-'+id);return el?el.value.trim():'';}
+      var data={
+        squadName:gv('squad'),leaderName:gv('leader'),leaderUID:gv('luid'),
+        whatsapp:gv('wa'),paymentRef:gv('pay'),
+        member1:gv('m1'),member1uid:gv('m1uid'),
+        member2:gv('m2'),member2uid:gv('m2uid'),
+        member3:gv('m3'),member3uid:gv('m3uid')
+      };
+      if(!data.leaderName){alert('Leader name cannot be empty!');return;}
+      btn.textContent='⏳...';btn.disabled=true;
+      db.collection('tournament_teams').doc(id).update(data).then(function(){
+        alert('✅ Team updated!');loadTournTeams(db);
+      }).catch(function(e){alert('❌ '+e.message);btn.textContent='💾 SAVE';btn.disabled=false;});
+    });
+  });
+
+  // Delete (admin only)
   list.querySelectorAll('.del-btn-t').forEach(function(btn){
     btn.addEventListener('click',function(){
       if(currentRole!=='admin')return;
       var id=btn.dataset.id,team=tournTeams.find(function(t){return t.id===id;});
-      if(!confirm('🗑️ Delete "'+((team&&team.leaderName)||'team')+'"?'))return;
-      db.collection('tournament_teams').doc(id).delete().then(function(){alert('✅ Deleted!');loadTournTeams(db);}).catch(function(e){alert('❌ '+e.message);});
+      var name=team?(team.squadName||team.leaderName):'team';
+      if(!confirm('🗑️ Permanently delete "'+name+'"?\n\nThis cannot be undone!'))return;
+      db.collection('tournament_teams').doc(id).delete().then(function(){alert('✅ "'+name+'" deleted!');loadTournTeams(db);}).catch(function(e){alert('❌ '+e.message);});
     });
   });
 }
