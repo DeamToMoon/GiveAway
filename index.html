@@ -528,19 +528,6 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
           <div style="font-size:10px;color:rgba(255,255,255,.3);margin-top:8px;line-height:1.6;">Open eSewa → Scan QR → Pay <strong style="color:rgba(37,211,102,.8);">Rs.40</strong><br>Then enter the transaction ID below</div>
         </div>
 
-        <!-- WhatsApp screenshot -->
-        <div style="background:rgba(37,211,102,.04);border:1px solid rgba(37,211,102,.15);border-radius:14px;padding:14px 16px;margin-bottom:14px;">
-          <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:rgba(37,211,102,.7);text-transform:uppercase;margin-bottom:8px;">📸 SEND PAYMENT SCREENSHOT</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:10px;">
-            After paying, send your eSewa payment screenshot to our WhatsApp:<br>
-            <strong style="color:#25D366;font-size:13px;">+44 7423 336282</strong>
-          </div>
-          <a id="waScreenshotBtn" href="#" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;background:linear-gradient(135deg,#075e54,#25D366);border-radius:10px;text-decoration:none;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:#fff;letter-spacing:1px;">
-            💬 SEND SCREENSHOT ON WHATSAPP
-          </a>
-          <div style="font-size:10px;color:rgba(255,255,255,.25);text-align:center;margin-top:8px;">Screenshot stays private — not saved anywhere 🔒</div>
-        </div>
-
         <!-- Payment reference -->
         <div class="field" style="margin-bottom:10px;"><label>🧾 eSewa Transaction ID</label><input type="text" id="t-payment" placeholder="e.g. TXN-123456789"></div>
         <div style="font-size:10px;color:rgba(255,107,107,.7);margin-bottom:18px;line-height:1.6;padding:0 4px;">
@@ -563,6 +550,18 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
         ⏳ <strong>Pending admin verification</strong><br>
         Your payment &amp; details will be verified by admin.<br>
         You'll be confirmed once verified! ✅
+      </div>
+
+      <!-- Screenshot button — shown AFTER submit -->
+      <div style="background:rgba(37,211,102,.05);border:1px solid rgba(37,211,102,.2);border-radius:14px;padding:14px 16px;width:100%;text-align:center;">
+        <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:rgba(37,211,102,.7);text-transform:uppercase;margin-bottom:8px;">📸 LAST STEP — SEND PAYMENT SCREENSHOT</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:12px;">
+          Send your eSewa payment screenshot via WhatsApp so admin can verify your payment faster! 🙏
+        </div>
+        <a id="waScreenshotBtn" href="#" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;background:linear-gradient(135deg,#075e54,#25D366);border-radius:12px;text-decoration:none;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:#fff;letter-spacing:1px;box-shadow:0 4px 20px rgba(37,211,102,.25);">
+          💬 SEND SCREENSHOT ON WHATSAPP
+        </a>
+        <div style="font-size:10px;color:rgba(255,255,255,.2);text-align:center;margin-top:8px;">Screenshot stays private — not saved anywhere 🔒</div>
       </div>
       <div style="font-size:12px;color:var(--muted);text-align:center;line-height:1.7;">Your squad will appear in the list below once admin verifies your payment.<br>Get ready for <strong style="color:var(--cyan);">Saturday's Tournament</strong> 🏆</div>
       <a href="https://chat.whatsapp.com/L3jXdwviYqB8ssi82RyYht?s=cl&p=i&mlu=0" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;padding:14px 22px;background:linear-gradient(135deg,#075e54,#25D366,#075e54);background-size:300%;border:none;border-radius:14px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:#fff;letter-spacing:2px;text-decoration:none;animation:btnShimmer 4s linear infinite;box-shadow:0 4px 20px rgba(37,211,102,.3);">
@@ -948,11 +947,6 @@ window.goToPaymentStep=async function(){
       +'⚔️ '+esc(m2)+' <span style="color:rgba(255,255,255,.4);font-size:10px;">('+esc(m2uid)+')</span><br>'
       +'⚔️ '+esc(m3)+' <span style="color:rgba(255,255,255,.4);font-size:10px;">('+esc(m3uid)+')</span><br>'
       +'<span style="color:rgba(37,211,102,.7);font-size:11px;">✅ All details verified — now pay the entry fee below</span>';
-    // Build WhatsApp link with team info
-    const waNum='9779749378208';
-    const waMsg='Payment screenshot for Dream2Moon Squad Tournament%0A%0ASquad: '+encodeURIComponent(squad)+'%0ALeader: '+encodeURIComponent(leader)+'%0AUID: '+encodeURIComponent(uid)+'%0A%0APlease verify my Rs.40 payment 🙏';
-    const waBtn=document.getElementById('waScreenshotBtn');
-    if(waBtn)waBtn.href='https://wa.me/'+waNum+'?text='+waMsg;
     document.getElementById('tournStep1').style.display='none';
     document.getElementById('tournStep2').style.display='block';
     document.getElementById('tournStep2').scrollIntoView({behavior:'smooth',block:'start'});
@@ -1006,6 +1000,11 @@ window.submitTournament=async function(){
     document.getElementById('tournStep2').style.display='none';
     document.getElementById('tournForm').classList.remove('active');
     document.getElementById('tournSuccess').classList.add('active');
+    // Set WhatsApp screenshot link with squad info
+    const waNum='9779749378208';
+    const waMsg='Hi! I just registered for Dream2Moon Squad Tournament 🏆%0A%0ASquad: '+encodeURIComponent(squad)+'%0ALeader: '+encodeURIComponent(leader)+' (UID: '+encodeURIComponent(uid)+')%0ATXN ID: '+encodeURIComponent(payment)+'%0A%0ASending payment screenshot for verification 🙏';
+    const waBtn=document.getElementById('waScreenshotBtn');
+    if(waBtn)waBtn.href='https://wa.me/'+waNum+'?text='+waMsg;
     launchConfetti();
   }catch(err){
     alert('❌ Error: '+(err.message||err.code||'Unknown'));
