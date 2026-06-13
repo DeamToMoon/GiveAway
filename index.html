@@ -559,7 +559,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 
         <div style="display:flex;gap:10px;">
           <button onclick="cancelTournForm()" style="flex:1;padding:14px;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.2);border-radius:12px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;color:var(--red);cursor:pointer;letter-spacing:1px;">✕ CANCEL</button>
-          <button onclick="goToPaymentStep()" id="nextStepBtn" style="flex:2;padding:14px;background:linear-gradient(135deg,#0e4fa0,#00e5ff,#0e4fa0);background-size:300%;border:none;border-radius:12px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:#fff;cursor:pointer;letter-spacing:2px;animation:btnShimmer 4s linear infinite;">NEXT — PAY ENTRY FEE ▶</button>
+          <button onclick="goToPaymentStep()" id="nextStepBtn" style="flex:2;padding:14px;background:linear-gradient(135deg,#065f46,#10b981,#065f46);background-size:300%;border:none;border-radius:12px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:#fff;cursor:pointer;letter-spacing:2px;animation:btnShimmer 4s linear infinite;">⚔️ SUBMIT ▶</button>
         </div>
       </div>
 
@@ -1270,12 +1270,12 @@ window.goToPaymentStep=async function(){
         if(exUIDs.includes(u)){
           if(u===uid)tWarn('warn-uid','🚫 This UID is already registered in another squad!');
           else alert('🚫 UID "'+u+'" is already in another squad!');
-          btn.disabled=false;btn.textContent='NEXT — PAY ENTRY FEE ▶';return;
+          btn.disabled=false;btn.textContent='⚔️ SUBMIT ▶';return;
         }
       }
     }
     const dSq=await getDocs(query(collection(db,'tournament_teams'),where('squadName','==',squad)));
-    if(!dSq.empty){tWarn('warn-squad','🚫 Squad name "'+squad+'" is already taken! Choose a different name.');btn.disabled=false;btn.textContent='NEXT — PAY ENTRY FEE ▶';return;}
+    if(!dSq.empty){tWarn('warn-squad','🚫 Squad name "'+squad+'" is already taken! Choose a different name.');btn.disabled=false;btn.textContent='⚔️ SUBMIT ▶';return;}
     // All good — show payment step
     const sumEl=document.getElementById('teamSummary');
     if(sumEl)sumEl.innerHTML=
@@ -1338,11 +1338,7 @@ window.submitTournament=async function(){
     document.getElementById('tournStep2').style.display='none';
     document.getElementById('tournForm').classList.remove('active');
     document.getElementById('tournSuccess').classList.add('active');
-    // Set WhatsApp screenshot link with squad info
-    const waNum='9779749378208';
-    const waMsg='Hi! I just registered for Dream2Moon Squad Tournament 🏆%0A%0ASquad: '+encodeURIComponent(squad)+'%0ALeader: '+encodeURIComponent(leader)+' (UID: '+encodeURIComponent(uid)+')%0ATXN ID: '+encodeURIComponent(payment)+'%0A%0ASending payment screenshot for verification 🙏';
-    const waBtn=document.getElementById('waScreenshotBtn');
-    if(waBtn)waBtn.href='https://wa.me/'+waNum+'?text='+waMsg;
+    // Free entry — no payment reference needed
     launchConfetti();
   }catch(err){
     alert('❌ Error: '+(err.message||err.code||'Unknown'));
