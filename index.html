@@ -337,9 +337,9 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       <div style="font-size:14px;font-weight:900;letter-spacing:2px;">🎁 WEEKLY GIVEAWAY</div>
       <div style="font-size:9px;font-weight:600;letter-spacing:2px;opacity:.65;text-transform:uppercase;">Free Entry · Every Saturday 10AM NPT</div>
     </div>
-    <span id="sec1-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;">▼</span>
+    <span id="sec1-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;transform:rotate(180deg);">▼</span>
   </button>
-  <div id="sec1" style="display:none;flex-direction:column;gap:14px;">
+  <div id="sec1" style="display:flex;flex-direction:column;gap:14px;">
   <div class="week-badge">🎁 WEEKLY GIVEAWAY — EVERY SATURDAY 10AM NPT!</div>
 
   <!-- Countdown — standalone -->
@@ -1538,15 +1538,15 @@ onSnapshot(doc(db,'monthly_meta','sfqualifiers'),snap=>{
 // ═══ END MONTHLY TOURNAMENT JS ═══
 
 
-function toggleSec(id){
+window.toggleSec=function(id){
   var el=document.getElementById(id);
   var arrow=document.getElementById(id+'-arrow');
   if(!el)return;
   var open=el.style.display==='flex';
   el.style.display=open?'none':'flex';
   if(arrow)arrow.style.transform=open?'rotate(0deg)':'rotate(180deg)';
-  if(!open)el.scrollIntoView({behavior:'smooth',block:'start'});
-}
+  if(!open)setTimeout(function(){el.scrollIntoView({behavior:'smooth',block:'start'});},50);
+};
 
 
 function launchConfetti(){const wrap=document.getElementById('confetti');wrap.innerHTML='';const cols=['#FFD438','#4FC3F7','#00E5FF','#CE93D8','#69F0AE','#F48FB1','#FFAB40','#fff'];for(let i=0;i<150;i++){const c=document.createElement('div');c.className='cp';const drift=(Math.random()-.5)*450;c.style.cssText=`left:${Math.random()*100}%;background:${cols[Math.floor(Math.random()*cols.length)]};--fd:${1.5+Math.random()*2.5}s;--dx:${drift}px;--br:${Math.random()>.5?'50%':'2px'};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*.9}s;`;wrap.appendChild(c);}setTimeout(()=>wrap.innerHTML='',5500);}
