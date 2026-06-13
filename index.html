@@ -918,7 +918,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import{getFirestore,collection,addDoc,getDocs,onSnapshot,query,where,orderBy,doc,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-const cfg={apiKey:"AIzaSyDPp-JsePgIM4Y3MrFrXEMLiv1GW3sJGKU",authDomain:"dream2moon.firebaseapp.com",projectId:"dream2moon",storageBucket:"dream2moon.firebasestorage.app",messagingSenderId:"172765828572",appId:"1:172765828532:web:d31a0b1dae8cc5752bcee1"};
+const cfg={apiKey:"AIzaSyDPp-JsePgIM4Y3MrFrXEMLiv1GW3sJGKU",authDomain:"dream2moon.firebaseapp.com",projectId:"dream2moon",storageBucket:"dream2moon.firebasestorage.app",messagingSenderId:"172765828532",appId:"1:172765828532:web:d31a0b1dae8cc5752bcee1"};
 const app=initializeApp(cfg);const db=getFirestore(app);
 
 // Stars
@@ -1247,7 +1247,7 @@ window.submitTournament=async function(){
     await addDoc(collection(db,'tournament_teams'),{
       squadName:squad,leaderName:leader,leaderUID:uid,whatsapp:wa,
       member1:m1,member1uid:m1uid,member2:m2,member2uid:m2uid,member3:m3,member3uid:m3uid,
-      paymentRef:'FREE',verified:false,
+      paymentRef:'FREE',verified:true,
       registeredAt:serverTimestamp()
     });
     // Reset form steps for next time
@@ -1473,8 +1473,6 @@ onSnapshot(doc(db,'monthly_meta','sfqualifiers'),snap=>{
     ).join('');
   }
 });
-
-function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
 // ═══ END MONTHLY TOURNAMENT JS ═══
 
