@@ -761,7 +761,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
             <div class="field" style="margin-bottom:0;"><label style="color:rgba(255,255,255,.4);">Sub Player UID</label><input type="text" id="mt-subuid" placeholder="Substitute UID (optional)" inputmode="numeric"></div>
           </div>
 
-          <button onclick="mGoToPayment()" style="width:100%;padding:15px;background:linear-gradient(135deg,#4a0080,#9c27b0);background-size:300%;border:none;border-radius:12px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:#fff;cursor:pointer;letter-spacing:2px;animation:btnShimmer 4s linear infinite;">NEXT — PAY ENTRY FEE ▶</button>
+          <button id="mNextBtn" onclick="mGoToPayment()" style="width:100%;padding:15px;background:linear-gradient(135deg,#4a0080,#9c27b0);background-size:300%;border:none;border-radius:12px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:#fff;cursor:pointer;letter-spacing:2px;animation:btnShimmer 4s linear infinite;">NEXT — PAY ENTRY FEE ▶</button>
         </div>
 
         <!-- STEP 2: Payment -->
@@ -1381,17 +1381,25 @@ function now_d(){return new Date();}
 tickMonthlyCD();setInterval(tickMonthlyCD,1000);
 
 // Screenshot preview
-const ssInput=document.getElementById('mt-screenshot');
-if(ssInput){
+function initScreenshotPreview(){
+  const ssInput=document.getElementById('mt-screenshot');
+  if(!ssInput)return;
   ssInput.addEventListener('change',function(){
     const file=this.files[0];
     if(!file)return;
     const preview=document.getElementById('mt-screenshot-preview');
     const img=document.getElementById('mt-ss-img');
+    if(!preview||!img)return;
     const reader=new FileReader();
     reader.onload=(e)=>{img.src=e.target.result;preview.style.display='block';};
     reader.readAsDataURL(file);
   });
+}
+// Init after DOM ready
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',initScreenshotPreview);
+}else{
+  initScreenshotPreview();
 }
 
 // Monthly step 1 → step 2
@@ -1423,7 +1431,7 @@ window.mGoToPayment=async function(){
   if(mNames.includes(leader.toLowerCase())){const e=document.getElementById('mwarn-leader');if(e){e.textContent='🚫 Player name cannot be same as leader!';e.style.display='block';}return;}
   if(mUIDs.includes(luid.toLowerCase())){const e=document.getElementById('mwarn-luid');if(e){e.textContent='🚫 Player UID cannot be same as leader UID!';e.style.display='block';}return;}
 
-  const btn=document.querySelector('[onclick="mGoToPayment()"]');
+  const btn=document.getElementById('mNextBtn');
   if(btn){btn.disabled=true;btn.textContent='⏳ Checking...';}
 
   try{
