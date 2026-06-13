@@ -1236,6 +1236,7 @@ function tWarn(id,msg){const el=document.getElementById(id);if(el){el.textConten
 function tClear(...ids){ids.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});}
 
 window.goToPaymentStep=async function(){
+  if(window._adminLocked&&!window._tournResultReset){alert('🔒 Registration is currently closed!');return;}
   const squad=document.getElementById('t-squad').value.trim();
   const leader=document.getElementById('t-leader').value.trim();
   const uid=document.getElementById('t-uid').value.trim();
@@ -1259,10 +1260,11 @@ window.goToPaymentStep=async function(){
   if(memberNames.includes(leader.toLowerCase())){tWarn('warn-leader','🚫 Member name cannot be same as leader!');return;}
   if(memberUIDs.includes(uid.toLowerCase())){tWarn('warn-uid','🚫 Member UID cannot be same as leader UID!');return;}
   const btn=document.getElementById('nextStepBtn');
-  btn.disabled=true;btn.textContent='⏳ Checking...';
+  btn.disabled=true;btn.textContent='⏳ Submitting...';
   try{
     const allUIDs=[uid,m1uid,m2uid,m3uid];
     const tSnap=await getDocs(collection(db,'tournament_teams'));
+    if(tSnap.size>=36){tWarn('warn-squad','🚫 All 36 slots are filled! Try next week.');btn.disabled=false;btn.textContent='⚔️ SUBMIT ▶';return;}
     for(const d of tSnap.docs){
       const t=d.data();
       const exUIDs=[t.leaderUID,t.member1uid,t.member2uid,t.member3uid].map(x=>(x||'').trim());
@@ -1275,23 +1277,20 @@ window.goToPaymentStep=async function(){
       }
     }
     const dSq=await getDocs(query(collection(db,'tournament_teams'),where('squadName','==',squad)));
-    if(!dSq.empty){tWarn('warn-squad','🚫 Squad name "'+squad+'" is already taken! Choose a different name.');btn.disabled=false;btn.textContent='⚔️ SUBMIT ▶';return;}
-    // All good — show payment step
-    const sumEl=document.getElementById('teamSummary');
-    if(sumEl)sumEl.innerHTML=
-      '<strong style="color:var(--gold);">🏷️ '+esc(squad)+'</strong><br>'
-      +'👑 '+esc(leader)+' <span style="color:rgba(255,255,255,.4);font-size:10px;">('+esc(uid)+')</span><br>'
-      +'⚔️ '+esc(m1)+' <span style="color:rgba(255,255,255,.4);font-size:10px;">('+esc(m1uid)+')</span><br>'
-      +'⚔️ '+esc(m2)+' <span style="color:rgba(255,255,255,.4);font-size:10px;">('+esc(m2uid)+')</span><br>'
-      +'⚔️ '+esc(m3)+' <span style="color:rgba(255,255,255,.4);font-size:10px;">('+esc(m3uid)+')</span><br>'
-      +'<span style="color:rgba(37,211,102,.7);font-size:11px;">✅ All details verified — now pay the entry fee below</span>';
-    document.getElementById('tournStep1').style.display='none';
-    document.getElementById('tournStep2').style.display='block';
-    document.getElementById('tournStep2').scrollIntoView({behavior:'smooth',block:'start'});
+    if(!dSq.empty){tWarn('warn-squad','🚫 Squad name "'+squad+'" already taken!');btn.disabled=false;btn.textContent='⚔️ SUBMIT ▶';return;}
+    await addDoc(collection(db,'tournament_teams'),{
+      squadName:squad,leaderName:leader,leaderUID:uid,whatsapp:wa,
+      member1:m1,member1uid:m1uid,member2:m2,member2uid:m2uid,member3:m3,member3uid:m3uid,
+      paymentRef:'FREE',verified:true,registeredAt:serverTimestamp()
+    });
+    document.getElementById('tournForm').classList.remove('active');
+    document.getElementById('registerBtn').style.display='none';
+    document.getElementById('tournSuccess').classList.add('active');
+    launchConfetti();
   }catch(err){
-    alert('❌ Error checking: '+(err.message||'Unknown'));
+    alert('❌ Error: '+(err.message||'Unknown'));
+    btn.disabled=false;btn.textContent='⚔️ SUBMIT ▶';
   }
-  btn.disabled=false;btn.textContent='NEXT — PAY ENTRY FEE ▶';
 };
 
 window.backToStep1=function(){
