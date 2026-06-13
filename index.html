@@ -331,6 +331,15 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <span>🔥 Free Fire players be like: "bro I'm not camping I'm just strategic" 💀</span><span class="hl">🎁 WEEKLY LUCKY DRAW EVERY SATURDAY!</span><span>😂 My rank says Diamond but my gameplay says Bronze</span><span class="hl">💎 WIN REAL DIAMONDS HERE — FOR FREE!</span><span>🤣 "One more game" — 3am edition 👀</span><span class="hl">👑 MONTHLY DRAW = 💎💎 DOUBLE DIAMONDS!</span><span>🏆 SQUAD TOURNAMENT — Rs.1200 PRIZE POOL!</span><span class="hl">🎯 ENTER NOW — IT COSTS NOTHING!</span><span>🔥 Free Fire players be like: "bro I'm not camping I'm just strategic" 💀</span><span class="hl">🎁 WEEKLY LUCKY DRAW EVERY SATURDAY!</span><span>😂 My rank says Diamond but my gameplay says Bronze</span><span class="hl">💎 WIN REAL DIAMONDS HERE — FOR FREE!</span>
   </div></div>
 
+  <!-- BTN: 🎁 WEEKLY GIVEAWAY -->
+  <button onclick="toggleSec('sec1')" style="width:100%;padding:18px 20px;background:linear-gradient(135deg,#5c3a00,#b36a00,#e8a000,#b36a00,#5c3a00);background-size:300%;border:none;border-radius:18px;font-family:'Orbitron',sans-serif;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;animation:btnShimmer 5s linear infinite;box-shadow:0 6px 28px rgba(255,212,56,.3);text-align:left;">
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      <div style="font-size:14px;font-weight:900;letter-spacing:2px;">🎁 WEEKLY GIVEAWAY</div>
+      <div style="font-size:9px;font-weight:600;letter-spacing:2px;opacity:.65;text-transform:uppercase;">Free Entry · Every Saturday 10AM NPT</div>
+    </div>
+    <span id="sec1-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;">▼</span>
+  </button>
+  <div id="sec1" style="display:none;flex-direction:column;gap:14px;">
   <div class="week-badge">🎁 WEEKLY GIVEAWAY — EVERY SATURDAY 10AM NPT!</div>
 
   <!-- Countdown — standalone -->
@@ -403,7 +412,17 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <div class="nw-card"><div class="nw-lbl">🏆 Next Winner Announcement</div><div class="nw-text" id="nw-countdown">Calculating...</div></div>
     <div class="sat-box">📅 Results every <strong>Saturday at 10:00 AM NPT!</strong><br>Follow <strong>@Dream2Moon</strong> on TikTok!</div>
   </div>
+  </div>
 
+  <!-- BTN: 🏆 LUCKY DRAW RESULTS -->
+  <button onclick="toggleSec('sec2')" style="width:100%;padding:18px 20px;background:linear-gradient(135deg,#0a2060,#1565C0,#38bdf8,#1565C0,#0a2060);background-size:300%;border:none;border-radius:18px;font-family:'Orbitron',sans-serif;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;animation:btnShimmer 5s linear infinite;box-shadow:0 6px 28px rgba(56,189,248,.25);text-align:left;">
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      <div style="font-size:14px;font-weight:900;letter-spacing:2px;">🏆 LUCKY DRAW RESULTS</div>
+      <div style="font-size:9px;font-weight:600;letter-spacing:2px;opacity:.65;text-transform:uppercase;">Last Winner · Next Draw Countdown</div>
+    </div>
+    <span id="sec2-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;">▼</span>
+  </button>
+  <div id="sec2" style="display:none;flex-direction:column;gap:14px;">
   <!-- Winners -->
   <div class="sec-label">🏆 Latest Winners</div>
   <div class="card" id="latestWinnerCard">
@@ -413,7 +432,17 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <div class="nw-card"><div class="nw-lbl">⏳ Next Winner In</div><div class="nw-text" id="hof-countdown">Calculating...</div></div>
     <div class="hof-note">Could be YOUR name here next 😏</div>
   </div>
+  </div>
 
+  <!-- BTN: 🏆 TOURNAMENT CHAMPION -->
+  <button onclick="toggleSec('sec3')" style="width:100%;padding:18px 20px;background:linear-gradient(135deg,#003820,#065f46,#10b981,#065f46,#003820);background-size:300%;border:none;border-radius:18px;font-family:'Orbitron',sans-serif;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;animation:btnShimmer 5s linear infinite;box-shadow:0 6px 28px rgba(16,185,129,.25);text-align:left;">
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      <div style="font-size:14px;font-weight:900;letter-spacing:2px;">🏆 TOURNAMENT CHAMPION</div>
+      <div style="font-size:9px;font-weight:600;letter-spacing:2px;opacity:.65;text-transform:uppercase;">Weekly Squad Tournament Results</div>
+    </div>
+    <span id="sec3-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;">▼</span>
+  </button>
+  <div id="sec3" style="display:none;flex-direction:column;gap:14px;">
   <!-- Tournament Winner -->
   <div class="sec-label">🏆 Tournament Champion</div>
   <div class="card" id="tournWinnerCard" style="border-color:rgba(105,240,174,.2);">
@@ -421,7 +450,17 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <div id="tournWinnerContent"><div class="win-placeholder"><div style="font-size:36px;margin-bottom:10px;">🏆</div>Tournament results will appear here after the match!<br>Good luck to all teams! ⚔️</div></div>
   </div>
 
+  </div>
 
+  <!-- BTN: ⚔️ WEEKLY TOURNAMENT -->
+  <button onclick="toggleSec('sec4')" style="width:100%;padding:18px 20px;background:linear-gradient(135deg,#003820,#065f46,#059669,#065f46,#003820);background-size:300%;border:none;border-radius:18px;font-family:'Orbitron',sans-serif;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;animation:btnShimmer 5s linear infinite;box-shadow:0 6px 28px rgba(16,185,129,.25);text-align:left;">
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      <div style="font-size:14px;font-weight:900;letter-spacing:2px;">⚔️ WEEKLY TOURNAMENT</div>
+      <div style="font-size:9px;font-weight:600;letter-spacing:2px;opacity:.65;text-transform:uppercase;">FREE Entry · 36 Slots · Rs.1,000 Prize Pool</div>
+    </div>
+    <span id="sec4-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;">▼</span>
+  </button>
+  <div id="sec4" style="display:none;flex-direction:column;gap:14px;">
   <!-- ═══════════════════════════════════
        SQUAD TOURNAMENT SECTION
   ═══════════════════════════════════ -->
@@ -594,6 +633,18 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     </div>
     <div class="teams-list" id="teamsList"><div class="no-teams">⏳ Loading teams...</div></div>
   </div>
+  </div>
+
+  <!-- BTN: 🏆 MONTHLY TOURNAMENT -->
+  <button onclick="toggleSec('sec5')" style="width:100%;padding:18px 20px;background:linear-gradient(135deg,#2d0060,#6a0dad,#9c27b0,#6a0dad,#2d0060);background-size:300%;border:none;border-radius:18px;font-family:'Orbitron',sans-serif;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;animation:btnShimmer 5s linear infinite;box-shadow:0 6px 28px rgba(156,39,176,.28);text-align:left;">
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      <div style="font-size:14px;font-weight:900;letter-spacing:2px;">🏆 MONTHLY TOURNAMENT</div>
+      <div style="font-size:9px;font-weight:600;letter-spacing:2px;opacity:.65;text-transform:uppercase;">NPR 100 Entry · NPR 8,000 Prize Pool · 72 Teams</div>
+    </div>
+    <span id="sec5-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;">▼</span>
+  </button>
+  <div id="sec5" style="display:none;flex-direction:column;gap:14px;">
+    <div class="card" style="border-color:rgba(156,39,176,.3);background:linear-gradient(135deg,rgba(20,0,40,.95),rgba(10,0,30,.9));padding:0;overflow:hidden;">
       <!-- Countdown to 2nd Wednesday -->
       <div style="padding:18px 20px;border-bottom:1px solid rgba(156,39,176,.15);">
         <div style="font-size:9px;font-weight:800;letter-spacing:3px;color:rgba(156,39,176,.6);text-transform:uppercase;text-align:center;margin-bottom:12px;">⏰ REGISTRATION CLOSES IN</div>
@@ -616,7 +667,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
         <div style="background:rgba(10,0,25,.9);padding:14px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">👥</div><div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:var(--cyan);" id="mTeamsCount">—</div><div style="font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;margin-top:2px;">TEAMS REG.</div></div>
         <div style="background:rgba(10,0,25,.9);padding:14px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">⚔️</div><div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:var(--purple);">72</div><div style="font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;margin-top:2px;">MAX TEAMS</div></div>
       </div>
-    </div>
+    </div><!-- end header card -->
 
     <!-- Tournament Format -->
     <div class="card" style="border-color:rgba(156,39,176,.2);">
@@ -807,10 +858,9 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       </div>
     </div>
 
-  </div><!-- end monthlySection -->
 
-  <!-- Monthly Rules Card — always visible below button -->
-  <div id="monthlyRulesCard" style="display:none;" class="card" style="border-color:rgba(156,39,176,.2);margin-top:6px;">
+    <!-- Monthly Rules Card -->
+  <div id="monthlyRulesCard" class="card" style="border-color:rgba(156,39,176,.2);margin-top:6px;">
     <div class="rules-title" style="color:var(--purple);">📋 Monthly Tournament Rules</div>
     <div style="background:rgba(156,39,176,.04);border:1px solid rgba(156,39,176,.12);border-radius:12px;padding:14px;margin-bottom:16px;">
       <div style="font-size:9px;font-weight:800;letter-spacing:3px;color:rgba(206,147,216,.5);text-transform:uppercase;margin-bottom:12px;">⚡ Tournament Format</div>
@@ -834,8 +884,17 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     </div>
   </div>
 
+  </div><!-- end sec5 -->
 
-
+  <!-- BTN: 🔫 FREE FIRE CORNER -->
+  <button onclick="toggleSec('sec6')" style="width:100%;padding:18px 20px;background:linear-gradient(135deg,#450000,#991b1b,#dc2626,#991b1b,#450000);background-size:300%;border:none;border-radius:18px;font-family:'Orbitron',sans-serif;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;animation:btnShimmer 5s linear infinite;box-shadow:0 6px 28px rgba(220,38,38,.22);text-align:left;">
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      <div style="font-size:14px;font-weight:900;letter-spacing:2px;">🔫 FREE FIRE CORNER</div>
+      <div style="font-size:9px;font-weight:600;letter-spacing:2px;opacity:.65;text-transform:uppercase;">Myths · Facts · Real Game Knowledge</div>
+    </div>
+    <span id="sec6-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;">▼</span>
+  </button>
+  <div id="sec6" style="display:none;flex-direction:column;gap:14px;">
   <!-- FF Section -->
   <div class="sec-label">🔫 Free Fire Corner</div>
   <div>
@@ -861,7 +920,18 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
   </div>
 
 
+  </div>
 
+
+  <!-- BTN: 📋 RULES & GUIDELINES -->
+  <button onclick="toggleSec('sec7')" style="width:100%;padding:18px 20px;background:linear-gradient(135deg,#003040,#0e7490,#06b6d4,#0e7490,#003040);background-size:300%;border:none;border-radius:18px;font-family:'Orbitron',sans-serif;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;animation:btnShimmer 5s linear infinite;box-shadow:0 6px 28px rgba(6,182,212,.2);text-align:left;">
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      <div style="font-size:14px;font-weight:900;letter-spacing:2px;">📋 RULES & GUIDELINES</div>
+      <div style="font-size:9px;font-weight:600;letter-spacing:2px;opacity:.65;text-transform:uppercase;">Giveaway Rules · Tournament Rules · Notes</div>
+    </div>
+    <span id="sec7-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;">▼</span>
+  </button>
+  <div id="sec7" style="display:none;flex-direction:column;gap:14px;">
   <!-- Rules -->
   <div class="card">
     <div class="rules-title">📋 Giveaway Rules</div>
@@ -909,6 +979,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
   </div>
 
     <div class="footer">🌙 <span>Powered by</span> <a href="#">Dream2Moon</a> &nbsp;|&nbsp; Play With Purpose</div>
+  </div>
   <a href="admin.html" class="admin-lnk">🔐 Admin Panel</a>
 </div>
 </div>
@@ -1267,15 +1338,7 @@ window.submitTournament=async function(){
 
 // ═══ MONTHLY TOURNAMENT JS ═══
 
-window.toggleMonthly=function(){
-  const s=document.getElementById('monthlySection');
-  const r=document.getElementById('monthlyRulesCard');
-  if(!s)return;
-  const open=s.style.display==='none'||s.style.display==='';
-  s.style.display=open?'block':'none';
-  if(r)r.style.display=open?'block':'none';
-  if(open)s.scrollIntoView({behavior:'smooth',block:'start'});
-};
+window.toggleMonthly=function(){toggleSec("sec5");};
 
 // Monthly countdown: 2nd Wednesday of month 11:59PM NPT (UTC+5:45)
 function getSecondWednesday(year,month){
@@ -1473,6 +1536,17 @@ onSnapshot(doc(db,'monthly_meta','sfqualifiers'),snap=>{
 });
 
 // ═══ END MONTHLY TOURNAMENT JS ═══
+
+
+function toggleSec(id){
+  var el=document.getElementById(id);
+  var arrow=document.getElementById(id+'-arrow');
+  if(!el)return;
+  var open=el.style.display==='flex';
+  el.style.display=open?'none':'flex';
+  if(arrow)arrow.style.transform=open?'rotate(0deg)':'rotate(180deg)';
+  if(!open)el.scrollIntoView({behavior:'smooth',block:'start'});
+}
 
 
 function launchConfetti(){const wrap=document.getElementById('confetti');wrap.innerHTML='';const cols=['#FFD438','#4FC3F7','#00E5FF','#CE93D8','#69F0AE','#F48FB1','#FFAB40','#fff'];for(let i=0;i<150;i++){const c=document.createElement('div');c.className='cp';const drift=(Math.random()-.5)*450;c.style.cssText=`left:${Math.random()*100}%;background:${cols[Math.floor(Math.random()*cols.length)]};--fd:${1.5+Math.random()*2.5}s;--dx:${drift}px;--br:${Math.random()>.5?'50%':'2px'};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*.9}s;`;wrap.appendChild(c);}setTimeout(()=>wrap.innerHTML='',5500);}
