@@ -276,6 +276,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 .main-tab{display:none;flex-direction:column;gap:14px;animation:tabFadeIn .3s ease;}
 .main-tab.active{display:flex;}
 @keyframes tabFadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
 </style>
 </head>
 <body>
@@ -326,30 +327,11 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 <!-- PAGE -->
 <div class="page">
   <!-- Ticker -->
-<!-- Ticker -->
   <div class="ticker-wrap"><div class="ticker">
     <span>🔥 Free Fire players be like: "bro I'm not camping I'm just strategic" 💀</span><span class="hl">🎁 WEEKLY LUCKY DRAW EVERY SATURDAY!</span><span>😂 My rank says Diamond but my gameplay says Bronze</span><span class="hl">💎 WIN REAL DIAMONDS HERE — FOR FREE!</span><span>🤣 "One more game" — 3am edition 👀</span><span class="hl">👑 MONTHLY DRAW = 💎💎 DOUBLE DIAMONDS!</span><span>🏆 SQUAD TOURNAMENT — Rs.1200 PRIZE POOL!</span><span class="hl">🎯 ENTER NOW — IT COSTS NOTHING!</span><span>🔥 Free Fire players be like: "bro I'm not camping I'm just strategic" 💀</span><span class="hl">🎁 WEEKLY LUCKY DRAW EVERY SATURDAY!</span><span>😂 My rank says Diamond but my gameplay says Bronze</span><span class="hl">💎 WIN REAL DIAMONDS HERE — FOR FREE!</span>
   </div></div>
 
-  <!-- Tab Nav -->
-  <div class="tab-nav" id="mainTabNav">
-    <button class="tab-pill active" data-tab="giveaway" onclick="switchMainTab('giveaway',this)">
-      <span class="tab-icon">🎁</span><span class="tab-lbl">Giveaway</span>
-    </button>
-    <button class="tab-pill" data-tab="weekly" onclick="switchMainTab('weekly',this)">
-      <span class="tab-icon">⚔️</span><span class="tab-lbl">Weekly</span>
-    </button>
-    <button class="tab-pill" data-tab="monthly" onclick="switchMainTab('monthly',this)">
-      <span class="tab-icon">🏆</span><span class="tab-lbl">Monthly</span>
-    </button>
-    <button class="tab-pill" data-tab="ff" onclick="switchMainTab('ff',this)">
-      <span class="tab-icon">🔫</span><span class="tab-lbl">FF Corner</span>
-    </button>
-  </div>
-
-  <!-- ═══ TAB: GIVEAWAY ═══ -->
-  <div class="main-tab active" id="tab-giveaway">
-<div class="week-badge">🎁 WEEKLY GIVEAWAY — EVERY SATURDAY 10AM NPT!</div>
+  <div class="week-badge">🎁 WEEKLY GIVEAWAY — EVERY SATURDAY 10AM NPT!</div>
 
   <!-- Countdown — standalone -->
   <div class="card">
@@ -438,11 +420,9 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <div class="hof-title" style="color:var(--green);">🏆 SQUAD TOURNAMENT RESULTS 🏆</div>
     <div id="tournWinnerContent"><div class="win-placeholder"><div style="font-size:36px;margin-bottom:10px;">🏆</div>Tournament results will appear here after the match!<br>Good luck to all teams! ⚔️</div></div>
   </div>
-  </div>
 
-  <!-- ═══ TAB: WEEKLY TOURNAMENT ═══ -->
-  <div class="main-tab" id="tab-weekly">
-<!-- ═══════════════════════════════════
+
+  <!-- ═══════════════════════════════════
        SQUAD TOURNAMENT SECTION
   ═══════════════════════════════════ -->
   <div class="sec-label">⚔️ Squad Tournament</div>
@@ -614,29 +594,6 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     </div>
     <div class="teams-list" id="teamsList"><div class="no-teams">⏳ Loading teams...</div></div>
   </div>
-  </div>
-
-  <!-- ═══ TAB: MONTHLY TOURNAMENT ═══ -->
-  <div class="main-tab" id="tab-monthly">
-    <!-- Monthly header banner -->
-    <div style="background:linear-gradient(135deg,#4a0080,#9c27b0);border-radius:18px;padding:20px;text-align:center;position:relative;overflow:hidden;margin-bottom:14px;box-shadow:0 8px 30px rgba(156,39,176,.3);">
-      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--purple),var(--cyan),var(--gold));background-size:200%;animation:shimmer 3s linear infinite;"></div>
-      <div style="font-size:9px;font-weight:800;letter-spacing:5px;color:rgba(255,255,255,.5);text-transform:uppercase;margin-bottom:6px;">🏆 MONTHLY EVENT</div>
-      <div style="font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:#fff;letter-spacing:2px;line-height:1.2;margin-bottom:4px;">FREE FIRE SQUAD<br><span style="color:var(--gold);">MONTHLY TOURNAMENT</span></div>
-      <div style="font-size:11px;color:rgba(255,255,255,.6);">Compete every month for <strong style="color:var(--gold);">NPR 8,000</strong> prize pool!</div>
-    </div>
-<!-- ═══ MONTHLY TOURNAMENT SECTION ═══ -->
-  <div id="monthlySection">
-
-    <!-- Header -->
-    <div class="card" style="border-color:rgba(156,39,176,.3);background:linear-gradient(135deg,rgba(20,0,40,.95),rgba(10,0,30,.9));padding:0;overflow:hidden;margin-top:4px;">
-      <div style="background:linear-gradient(135deg,#4a0080,#9c27b0);padding:24px 20px;text-align:center;position:relative;overflow:hidden;">
-        <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at 50% 0%,rgba(255,212,56,.15),transparent 60%);"></div>
-        <div style="font-size:10px;font-weight:800;letter-spacing:5px;color:rgba(255,255,255,.5);text-transform:uppercase;margin-bottom:8px;">🏆 MONTHLY EVENT</div>
-        <div style="font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:#fff;letter-spacing:2px;line-height:1.2;margin-bottom:6px;">FREE FIRE SQUAD<br><span style="color:var(--gold);">MONTHLY TOURNAMENT</span></div>
-        <div style="font-size:11px;color:rgba(255,255,255,.6);line-height:1.6;">Compete against the best squads every month<br>for a <strong style="color:var(--gold);">massive Rs.8,000</strong> cash prize pool!</div>
-      </div>
-
       <!-- Countdown to 2nd Wednesday -->
       <div style="padding:18px 20px;border-bottom:1px solid rgba(156,39,176,.15);">
         <div style="font-size:9px;font-weight:800;letter-spacing:3px;color:rgba(156,39,176,.6);text-transform:uppercase;text-align:center;margin-bottom:12px;">⏰ REGISTRATION CLOSES IN</div>
@@ -853,7 +810,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
   </div><!-- end monthlySection -->
 
   <!-- Monthly Rules Card — always visible below button -->
-  <div id="monthlyRulesCard" class="card" style="border-color:rgba(156,39,176,.2);margin-top:6px;">
+  <div id="monthlyRulesCard" style="display:none;" class="card" style="border-color:rgba(156,39,176,.2);margin-top:6px;">
     <div class="rules-title" style="color:var(--purple);">📋 Monthly Tournament Rules</div>
     <div style="background:rgba(156,39,176,.04);border:1px solid rgba(156,39,176,.12);border-radius:12px;padding:14px;margin-bottom:16px;">
       <div style="font-size:9px;font-weight:800;letter-spacing:3px;color:rgba(206,147,216,.5);text-transform:uppercase;margin-bottom:12px;">⚡ Tournament Format</div>
@@ -876,11 +833,10 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       Registration is not confirmed until payment is verified by admin. Entry fee goes entirely to the prize pool — organizer takes zero profit. 🎮🏆
     </div>
   </div>
-  </div>
 
-  <!-- ═══ TAB: FREE FIRE CORNER ═══ -->
-  <div class="main-tab" id="tab-ff">
-<!-- FF Section -->
+
+
+  <!-- FF Section -->
   <div class="sec-label">🔫 Free Fire Corner</div>
   <div>
     <div class="ff-hdr">
@@ -903,6 +859,8 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       <div class="ff-item fact-i"><div class="ff-ico">🧠</div><div class="ff-body"><strong>FACT: Third-partying wins more than raw skill</strong>Let squads fight → swoop in → Booyah! 🏆<div class="ff-badge">BIG BRAIN ✅</div></div></div>
     </div>
   </div>
+
+
 
   <!-- Rules -->
   <div class="card">
@@ -1309,7 +1267,15 @@ window.submitTournament=async function(){
 
 // ═══ MONTHLY TOURNAMENT JS ═══
 
-window.toggleMonthly=function(){};
+window.toggleMonthly=function(){
+  const s=document.getElementById('monthlySection');
+  const r=document.getElementById('monthlyRulesCard');
+  if(!s)return;
+  const open=s.style.display==='none'||s.style.display==='';
+  s.style.display=open?'block':'none';
+  if(r)r.style.display=open?'block':'none';
+  if(open)s.scrollIntoView({behavior:'smooth',block:'start'});
+};
 
 // Monthly countdown: 2nd Wednesday of month 11:59PM NPT (UTC+5:45)
 function getSecondWednesday(year,month){
@@ -1508,28 +1474,6 @@ onSnapshot(doc(db,'monthly_meta','sfqualifiers'),snap=>{
 
 // ═══ END MONTHLY TOURNAMENT JS ═══
 
-// ── MAIN TAB NAVIGATION ──
-function switchMainTab(name, btn){
-  document.querySelectorAll('.main-tab').forEach(function(t){t.classList.remove('active');});
-  document.querySelectorAll('.tab-pill').forEach(function(b){b.classList.remove('active');});
-  var tab = document.getElementById('tab-'+name);
-  if(tab) tab.classList.add('active');
-  if(btn) btn.classList.add('active');
-  // Persist tab on page reload via URL hash
-  window.location.hash = name;
-  // Scroll to top of content
-  var nav = document.getElementById('mainTabNav');
-  if(nav) nav.scrollIntoView({behavior:'smooth', block:'start'});
-}
-// Restore tab from hash on load
-(function(){
-  var hash = window.location.hash.replace('#','');
-  var validTabs = ['giveaway','weekly','monthly','ff'];
-  if(validTabs.indexOf(hash) > -1){
-    var btn = document.querySelector('[data-tab="'+hash+'"]');
-    if(btn) switchMainTab(hash, btn);
-  }
-})();
 
 function launchConfetti(){const wrap=document.getElementById('confetti');wrap.innerHTML='';const cols=['#FFD438','#4FC3F7','#00E5FF','#CE93D8','#69F0AE','#F48FB1','#FFAB40','#fff'];for(let i=0;i<150;i++){const c=document.createElement('div');c.className='cp';const drift=(Math.random()-.5)*450;c.style.cssText=`left:${Math.random()*100}%;background:${cols[Math.floor(Math.random()*cols.length)]};--fd:${1.5+Math.random()*2.5}s;--dx:${drift}px;--br:${Math.random()>.5?'50%':'2px'};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*.9}s;`;wrap.appendChild(c);}setTimeout(()=>wrap.innerHTML='',5500);}
 </script>
