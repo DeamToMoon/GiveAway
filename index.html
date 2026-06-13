@@ -563,26 +563,15 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
         </div>
       </div>
 
-      <!-- STEP 2: Confirm + Join WhatsApp -->
+      <!-- STEP 2: Confirm & Submit -->
       <div id="tournStep2" style="display:none;">
-        <div style="font-size:10px;font-weight:800;letter-spacing:3px;color:var(--green);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><span style="width:20px;height:20px;border-radius:50%;background:var(--green);color:#000;font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</span>CONFIRM &amp; JOIN GROUP</div>
+        <div style="font-size:10px;font-weight:800;letter-spacing:3px;color:var(--green);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:8px;"><span style="width:20px;height:20px;border-radius:50%;background:var(--green);color:#000;font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</span>CONFIRM &amp; SUBMIT</div>
 
         <!-- Team summary -->
         <div style="background:rgba(105,240,174,.05);border:1px solid rgba(105,240,174,.15);border-radius:12px;padding:14px 16px;margin-bottom:16px;font-size:11px;color:rgba(255,255,255,.7);line-height:1.8;" id="teamSummary"></div>
 
-        <!-- Join WhatsApp group -->
-        <div style="background:rgba(37,211,102,.05);border:1px solid rgba(37,211,102,.2);border-radius:16px;padding:16px;margin-bottom:16px;text-align:center;">
-          <div style="font-size:10px;font-weight:800;letter-spacing:3px;color:rgba(37,211,102,.7);text-transform:uppercase;margin-bottom:8px;">📱 JOIN TOURNAMENT GROUP</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:12px;">Join our WhatsApp group to receive your room ID, match schedule and tournament updates!</div>
-          <a href="https://chat.whatsapp.com/L3jXdwviYqB8ssi82RyYht?s=cl&p=i&mlu=0" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;background:linear-gradient(135deg,#075e54,#25D366);border-radius:12px;text-decoration:none;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:#fff;letter-spacing:1px;box-shadow:0 4px 20px rgba(37,211,102,.25);">
-            💬 JOIN WHATSAPP GROUP NOW
-          </a>
-          <div style="font-size:10px;color:rgba(255,255,255,.25);margin-top:8px;">Room ID &amp; match updates sent here 📣</div>
-        </div>
-
-        <div style="background:rgba(79,195,247,.04);border:1px solid rgba(79,195,247,.12);border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:11px;color:rgba(144,202,249,.7);line-height:1.6;">
-          ℹ️ This is a <strong style="color:#fff;">FREE entry</strong> tournament. No payment required.<br>
-          Admin will verify your details before approving. ✅
+        <div style="background:rgba(105,240,174,.04);border:1px solid rgba(105,240,174,.12);border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:11px;color:rgba(105,240,174,.7);line-height:1.6;">
+          🎉 <strong style="color:#fff;">FREE entry</strong> — no payment needed. Submit to register your squad!
         </div>
 
         <div style="display:flex;gap:10px;">
@@ -594,30 +583,22 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 
     <!-- Success message -->
     <div class="tourn-submitted" id="tournSuccess" style="margin-top:20px;">
-      <div style="font-size:52px;animation:bounce 1.5s ease infinite;">⏳</div>
-      <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:var(--gold);letter-spacing:2px;">REGISTRATION SUBMITTED!</div>
-      <div style="background:rgba(255,212,56,.07);border:1px solid rgba(255,212,56,.2);border-radius:12px;padding:12px 16px;font-size:11px;color:rgba(255,212,56,.85);line-height:1.7;text-align:center;">
-        ⏳ <strong>Pending admin verification</strong><br>
-        Your payment &amp; details will be verified by admin.<br>
-        You'll be confirmed once verified! ✅
+      <div style="font-size:52px;animation:bounce 1.5s ease infinite;">🎉</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:var(--green);letter-spacing:2px;">YOU'RE REGISTERED!</div>
+      <div style="background:rgba(105,240,174,.06);border:1px solid rgba(105,240,174,.2);border-radius:12px;padding:12px 16px;font-size:11px;color:rgba(105,240,174,.85);line-height:1.7;text-align:center;">
+        ✅ <strong>Registration submitted!</strong><br>
+        Admin will verify your details before approving.<br>
+        Your squad appears below once confirmed 🏆
       </div>
-
-      <!-- Join group after submit -->
-      <div style="background:rgba(37,211,102,.05);border:1px solid rgba(37,211,102,.2);border-radius:14px;padding:14px 16px;width:100%;text-align:center;">
+      <!-- WhatsApp group — shown after submit -->
+      <div style="background:rgba(37,211,102,.05);border:1px solid rgba(37,211,102,.22);border-radius:14px;padding:16px;width:100%;text-align:center;">
         <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:rgba(37,211,102,.7);text-transform:uppercase;margin-bottom:8px;">📱 JOIN THE TOURNAMENT GROUP</div>
-        <div style="font-size:11px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:12px;">
-          Join to receive room ID, match schedule &amp; all tournament updates! 🔥
-        </div>
-        <a href="https://chat.whatsapp.com/L3jXdwviYqB8ssi82RyYht?s=cl&p=i&mlu=0" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;background:linear-gradient(135deg,#075e54,#25D366);border-radius:12px;text-decoration:none;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:#fff;letter-spacing:1px;box-shadow:0 4px 20px rgba(37,211,102,.25);">
+        <div style="font-size:11px;color:rgba(255,255,255,.55);line-height:1.7;margin-bottom:12px;">Get your room ID, match schedule &amp; all updates here 🔥</div>
+        <a href="https://chat.whatsapp.com/L3jXdwviYqB8ssi82RyYht?s=cl&p=i&ilr=1" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;background:linear-gradient(135deg,#075e54,#25D366,#075e54);background-size:300%;border:none;border-radius:12px;text-decoration:none;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:#fff;letter-spacing:2px;animation:btnShimmer 4s linear infinite;box-shadow:0 4px 20px rgba(37,211,102,.3);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.092.536 4.06 1.475 5.777L0 24l6.404-1.452A11.955 11.955 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.796 9.796 0 01-5.031-1.388l-.361-.214-3.741.849.862-3.648-.235-.374A9.792 9.792 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
           💬 JOIN WHATSAPP GROUP
         </a>
       </div>
-      <div style="font-size:12px;color:var(--muted);text-align:center;line-height:1.7;">Your squad will appear in the list below once admin verifies your payment.<br>Get ready for <strong style="color:var(--cyan);">Saturday's Tournament</strong> 🏆</div>
-      <a href="https://chat.whatsapp.com/L3jXdwviYqB8ssi82RyYht?s=cl&p=i&mlu=0" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:14px;padding:14px 22px;background:linear-gradient(135deg,#075e54,#25D366,#075e54);background-size:300%;border:none;border-radius:14px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:#fff;letter-spacing:2px;text-decoration:none;animation:btnShimmer 4s linear infinite;box-shadow:0 4px 20px rgba(37,211,102,.3);">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.092.536 4.06 1.475 5.777L0 24l6.404-1.452A11.955 11.955 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.796 9.796 0 01-5.031-1.388l-.361-.214-3.741.849.862-3.648-.235-.374A9.792 9.792 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
-        JOIN WHATSAPP FOR UPDATES
-      </a>
-      <div style="font-size:11px;color:rgba(37,211,102,.7);margin-top:6px;text-align:center;font-weight:600;">👆 Tap above to join — get room ID &amp; match updates! 📢</div>
     </div>
   </div>
 
@@ -851,18 +832,19 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       <div style="background:rgba(156,39,176,.08);border:1px solid rgba(156,39,176,.2);border-radius:12px;padding:12px 16px;font-size:11px;color:rgba(206,147,216,.8);line-height:1.7;text-align:center;">
         ⏳ <strong>Pending payment verification</strong><br>
         Admin will verify your payment screenshot &amp; transaction ID.<br>
-        You'll be notified once approved! ✅
+        You'll be confirmed once approved! ✅
       </div>
-      <!-- WhatsApp group join -->
-      <div style="background:rgba(37,211,102,.05);border:1px solid rgba(37,211,102,.2);border-radius:14px;padding:14px 16px;width:100%;text-align:center;">
-        <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:rgba(37,211,102,.7);text-transform:uppercase;margin-bottom:8px;">📱 JOIN TOURNAMENT GROUP</div>
-        <div style="font-size:11px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:12px;">Join our WhatsApp group to receive room ID, match schedule &amp; all tournament updates! 🔥</div>
-        <a href="https://chat.whatsapp.com/L3jXdwviYqB8ssi82RyYht?s=cl&p=i&mlu=0" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;background:linear-gradient(135deg,#075e54,#25D366);border-radius:12px;text-decoration:none;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:#fff;letter-spacing:1px;box-shadow:0 4px 20px rgba(37,211,102,.25);">
+      <!-- WhatsApp group — shown after submit -->
+      <div style="background:rgba(37,211,102,.05);border:1px solid rgba(37,211,102,.22);border-radius:14px;padding:16px;width:100%;text-align:center;">
+        <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:rgba(37,211,102,.7);text-transform:uppercase;margin-bottom:8px;">📱 JOIN THE TOURNAMENT GROUP</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.55);line-height:1.7;margin-bottom:12px;">Get your room ID, match schedule &amp; all updates here 🔥</div>
+        <a href="https://chat.whatsapp.com/L3jXdwviYqB8ssi82RyYht?s=cl&p=i&ilr=1" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;background:linear-gradient(135deg,#075e54,#25D366,#075e54);background-size:300%;border:none;border-radius:12px;text-decoration:none;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:#fff;letter-spacing:2px;animation:btnShimmer 4s linear infinite;box-shadow:0 4px 20px rgba(37,211,102,.3);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.092.536 4.06 1.475 5.777L0 24l6.404-1.452A11.955 11.955 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.796 9.796 0 01-5.031-1.388l-.361-.214-3.741.849.862-3.648-.235-.374A9.792 9.792 0 012.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
           💬 JOIN WHATSAPP GROUP
         </a>
       </div>
-      <div style="font-size:12px;color:var(--muted);text-align:center;line-height:1.7;">
-        Registration is not confirmed until payment verification is completed by an administrator.
+      <div style="font-size:11px;color:rgba(255,255,255,.35);text-align:center;line-height:1.7;">
+        Registration only confirmed after admin verifies payment.
       </div>
     </div>
 
