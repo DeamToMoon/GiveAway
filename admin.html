@@ -707,14 +707,156 @@ function saveTournResult(){
     var b=db.batch();snap.forEach(function(d){b.delete(d.ref);});return b.commit();
   }).then(function(){
     ['1st','2nd','3rd','4th'].forEach(function(p){
-      ['','−leader','−m1','−m2','−m3'].forEach(function(s){
-        var el=document.getElementById('res-'+p+(s===''?'':s.replace('−','-')));
+      ['','-leader','-m1','-m2','-m3'].forEach(function(s){
+        var el=document.getElementById('res-'+p+s);
         if(el)el.value='';
       });
     });
     document.getElementById('res-note').value='';
     tournTeams=[];renderTournTeams();
     alert('✅ Results published & LIVE!\n🗑️ All teams cleared!\n🔓 Registration re-opened!');
+  }).catch(function(e){alert('❌ '+e.message);});
+}
+
+// ── MONTHLY TOURNAMENT ADMIN ──
+function loadMonthlyTeams(){
+  var list=document.getElementById('monthlyTeamsList');
+  if(list)list.innerHTML='<div class="no-entries">⏳ Loading...</div>';
+  var db=getDB();
+  db.collection('monthly_teams').orderBy('registeredAt','asc').get().then(function(snap){
+    var teams=[];snap.forEach(function(d){teams.push(Object.assign({id:d.id},d.data()));});
+    var pending=teams.filter(function(t){return!t.verified;});
+    var approved=teams.filter(function(t){return t.verified===true;});
+    document.getElementById('mTotalCount').textContent=teams.length;
+    document.getElementById('mVerifiedCount').textContent=approved.length;
+    document.getElementById('mPendingCount').textContent=pending.length;
+    if(!teams.length){list.innerHTML='<div class="no-entries">No monthly registrations yet.</div>';return;}
+    var html='';
+    if(pending.length){
+      html+='<div style="font-size:9px;font-weight:800;letter-spacing:3px;color:rgba(255,212,56,.7);text-transform:uppercase;margin-bottom:8px;padding:6px 10px;background:rgba(255,212,56,.06);border-radius:8px;border:1px solid rgba(255,212,56,.15);">⏳ PENDING ('+pending.length+')</div>';
+      pending.forEach(function(t,i){html+=buildMonthlyRow(t,i,'pending');});
+    }
+    if(approved.length){
+      html+='<div style="font-size:9px;font-weight:800;letter-spacing:3px;color:rgba(105,240,174,.7);text-transform:uppercase;margin-bottom:8px;margin-top:8px;padding:6px 10px;background:rgba(105,240,174,.04);border-radius:8px;border:1px solid rgba(105,240,174,.12);">✅ VERIFIED ('+approved.length+')</div>';
+      approved.forEach(function(t,i){html+=buildMonthlyRow(t,i,'approved');});
+    }
+    list.innerHTML=html;
+    attachMonthlyEvents(teams,db);
+  }).catch(function(e){if(list)list.innerHTML='<div class="no-entries">❌ '+e.message+'</div>';});
+}
+
+function buildMonthlyRow(t,i,status){
+  var isPending=status==='pending';
+  var isAdmin=currentRole==='admin';
+  var sn=i+1;
+  return '<div class="entry-item" style="flex-direction:column;align-items:stretch;border-color:'+(isPending?'rgba(255,212,56,.2)':'rgba(105,240,174,.15)')+';background:'+(isPending?'rgba(255,212,56,.02)':'rgba(105,240,174,.02)')+'" id="mteam-'+t.id+'">'
+    +'<div style="display:flex;align-items:flex-start;gap:8px;padding-bottom:8px;">'
+    +'<span class="entry-num" style="color:var(--purple);">SN#'+sn+'</span>'
+    +'<div style="flex:1;">'
+    +(t.squadName?'<div style="font-size:12px;font-weight:800;color:var(--purple);margin-bottom:2px;">🏷️ '+esc(t.squadName)+'</div>':'')
+    +'<div class="entry-username">👑 '+esc(t.leaderName)+'</div>'
+    +'<div class="entry-uid">UID: '+esc(t.leaderUID)+' · 📱 '+esc(t.phone||'—')+'</div>'
+    +'<div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;line-height:1.5;">'
+    +'P2: '+esc(t.m1||'—')+' ('+esc(t.m1uid||'—')+')<br>'
+    +'P3: '+esc(t.m2||'—')+' ('+esc(t.m2uid||'—')+')<br>'
+    +'P4: '+esc(t.m3||'—')+' ('+esc(t.m3uid||'—')+')'
+    +(t.sub?'<br>Sub: '+esc(t.sub)+' ['+esc(t.subuid||'—')+']':'')
+    +'</div>'
+    +(t.txnId?'<div style="font-size:11px;color:rgba(37,211,102,.9);font-weight:700;margin-top:4px;padding:3px 8px;background:rgba(37,211,102,.07);border-radius:6px;border:1px solid rgba(37,211,102,.15);">🧾 TXN: '+esc(t.txnId)+'</div>':'<div style="font-size:11px;color:rgba(255,107,107,.7);margin-top:4px;">⚠️ No TXN ID</div>')
+    +'</div></div>'
+    // Screenshot view (admin only)
+    +(isAdmin&&t.screenshot
+      ?'<div style="margin-bottom:8px;"><button data-id="'+t.id+'" class="view-ss-btn" style="width:100%;padding:7px;background:rgba(255,212,56,.07);border:1px solid rgba(255,212,56,.18);border-radius:8px;font-size:11px;color:var(--gold);cursor:pointer;">📸 View Payment Screenshot</button>'
+        +'<div id="ss-view-'+t.id+'" style="display:none;margin-top:6px;text-align:center;"><img src="'+esc(t.screenshot)+'" style="max-width:100%;border-radius:8px;border:1px solid rgba(255,212,56,.2);" alt="Payment Screenshot"></div></div>'
+      :'')
+    // Actions
+    +(isPending
+      ?'<div style="display:flex;gap:8px;">'
+        +'<button data-id="'+t.id+'" class="mapprove-btn" style="flex:2;padding:10px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:1.5px solid rgba(105,240,174,.4);border-radius:10px;font-family:Orbitron,sans-serif;font-size:10px;font-weight:900;color:var(--green);cursor:pointer;">✅ APPROVE</button>'
+        +'<button data-id="'+t.id+'" class="mreject-btn" style="flex:1;padding:10px;background:rgba(255,107,107,.07);border:1px solid rgba(255,107,107,.25);border-radius:10px;font-family:Orbitron,sans-serif;font-size:10px;font-weight:700;color:var(--red);cursor:pointer;">🗑️ REJECT</button>'
+        +'</div>'
+      :(isAdmin?'<div style="display:flex;gap:6px;justify-content:flex-end;">'
+        +'<button data-id="'+t.id+'" class="munverify-btn" style="padding:6px 12px;background:rgba(255,212,56,.07);border:1px solid rgba(255,212,56,.2);border-radius:8px;font-size:11px;color:rgba(255,212,56,.7);cursor:pointer;">↩️ Unverify</button>'
+        +'<button data-id="'+t.id+'" class="mdel-btn" style="padding:6px 12px;background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.2);border-radius:8px;font-size:11px;color:var(--red);cursor:pointer;">🗑️</button>'
+        +'</div>':''))
+    +'</div>';
+}
+
+function attachMonthlyEvents(teams,db){
+  var list=document.getElementById('monthlyTeamsList');
+  list.querySelectorAll('.view-ss-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var div=document.getElementById('ss-view-'+btn.dataset.id);
+      if(div)div.style.display=div.style.display==='none'?'block':'none';
+    });
+  });
+  list.querySelectorAll('.mapprove-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var id=btn.dataset.id,t=teams.find(function(x){return x.id===id;});
+      var name=t?(t.squadName||t.leaderName):'team';
+      if(!confirm('Approve "'+name+'"? Payment verified?'))return;
+      db.collection('monthly_teams').doc(id).update({verified:true,verifiedAt:firebase.firestore.FieldValue.serverTimestamp(),verifiedBy:currentRole}).then(function(){alert('✅ Approved!');loadMonthlyTeams();}).catch(function(e){alert('❌ '+e.message);});
+    });
+  });
+  list.querySelectorAll('.mreject-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var id=btn.dataset.id,t=teams.find(function(x){return x.id===id;});
+      if(!confirm('🗑️ Reject "'+((t&&(t.squadName||t.leaderName))||'team')+'"?'))return;
+      db.collection('monthly_teams').doc(id).delete().then(function(){alert('🗑️ Rejected!');loadMonthlyTeams();}).catch(function(e){alert('❌ '+e.message);});
+    });
+  });
+  list.querySelectorAll('.munverify-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      if(currentRole!=='admin')return;
+      var id=btn.dataset.id;
+      db.collection('monthly_teams').doc(id).update({verified:false}).then(function(){loadMonthlyTeams();}).catch(function(e){alert('❌ '+e.message);});
+    });
+  });
+  list.querySelectorAll('.mdel-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      if(currentRole!=='admin')return;
+      var id=btn.dataset.id,t=teams.find(function(x){return x.id===id;});
+      if(!confirm('🗑️ Delete "'+((t&&(t.squadName||t.leaderName))||'team')+'"?'))return;
+      db.collection('monthly_teams').doc(id).delete().then(function(){alert('✅ Deleted!');loadMonthlyTeams();}).catch(function(e){alert('❌ '+e.message);});
+    });
+  });
+}
+
+function parseQualSNs(raw){
+  return raw.split(/[\n,]+/).map(function(x){return parseInt(x.trim());}).filter(function(n){return!isNaN(n)&&n>0;});
+}
+
+function saveR1Qualifiers(){
+  var raw=document.getElementById('r1QualInput').value;
+  var sns=parseQualSNs(raw);
+  if(!sns.length){alert('Enter at least one SN number!');return;}
+  if(sns.length>24){if(!confirm('You entered '+sns.length+' teams. Max should be 24. Save anyway?'))return;}
+  var db=getDB();
+  db.collection('monthly_meta').doc('r1qualifiers').set({sns:sns,savedAt:firebase.firestore.FieldValue.serverTimestamp(),savedBy:currentRole}).then(function(){
+    document.getElementById('r1QualPreview').innerHTML='<div style="font-size:11px;color:var(--green);padding:8px 0;">✅ Saved '+sns.length+' Round 1 qualifiers: SN '+sns.join(', ')+'</div>';
+    alert('✅ Round 1 qualifiers saved! ('+sns.length+' teams)');
+  }).catch(function(e){alert('❌ '+e.message);});
+}
+
+function saveSFQualifiers(){
+  var raw=document.getElementById('sfQualInput').value;
+  var sns=parseQualSNs(raw);
+  if(!sns.length){alert('Enter at least one SN number!');return;}
+  if(sns.length>12){if(!confirm('You entered '+sns.length+' teams. Max should be 12. Save anyway?'))return;}
+  var db=getDB();
+  db.collection('monthly_meta').doc('sfqualifiers').set({sns:sns,savedAt:firebase.firestore.FieldValue.serverTimestamp(),savedBy:currentRole}).then(function(){
+    document.getElementById('sfQualPreview').innerHTML='<div style="font-size:11px;color:var(--gold);padding:8px 0;">✅ Saved '+sns.length+' Semi Final qualifiers: SN '+sns.join(', ')+'</div>';
+    alert('✅ Semi Final qualifiers saved! ('+sns.length+' teams)');
+  }).catch(function(e){alert('❌ '+e.message);});
+}
+
+function saveMonthlyResult(){
+  var champion=g('mres-1st'),second=g('mres-2nd'),third=g('mres-3rd');
+  if(!champion){alert('Enter champion team name!');return;}
+  if(!confirm('Publish Monthly Results?\n1st: '+champion+'\n2nd: '+(second||'—')+'\n3rd: '+(third||'—')))return;
+  var db=getDB();
+  db.collection('monthly_result').doc('latest').set({champion:champion,second:second,third:third,updatedAt:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
+    alert('✅ Monthly results published!');
   }).catch(function(e){alert('❌ '+e.message);});
 }
 
@@ -1027,6 +1169,60 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
         <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">📝 Note (optional)</label>
           <input id="res-note" type="text" placeholder="e.g. GG to all teams! Amazing matches 🙏" style="width:100%;background:rgba(79,195,247,.03);border:1px solid rgba(79,195,247,.1);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
         <button onclick="saveTournResult()" style="padding:16px;background:linear-gradient(135deg,rgba(105,240,174,.15),rgba(52,211,153,.1));border:2px solid rgba(105,240,174,.45);border-radius:12px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--green);letter-spacing:2px;cursor:pointer;">🚀 SAVE &amp; PUBLISH RESULTS LIVE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ MONTHLY TOURNAMENT ═══ -->
+  <div class="divider"></div>
+  <div class="card" style="border-color:rgba(156,39,176,.3);">
+    <div class="card-hdr" style="color:var(--purple);font-size:13px;">
+      🏆 MONTHLY TOURNAMENT MANAGEMENT
+      <button class="refresh-btn" onclick="loadMonthlyTeams()" style="border-color:rgba(156,39,176,.3);color:var(--purple);">🔄 Refresh</button>
+    </div>
+
+    <!-- Stats -->
+    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+      <div style="flex:1;background:rgba(156,39,176,.06);border:1px solid rgba(156,39,176,.18);border-radius:12px;padding:12px;text-align:center;min-width:80px;"><div style="font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:var(--purple);" id="mTotalCount">—</div><div style="font-size:9px;color:rgba(206,147,216,.4);letter-spacing:2px;margin-top:3px;">REGISTERED</div></div>
+      <div style="flex:1;background:rgba(105,240,174,.06);border:1px solid rgba(105,240,174,.18);border-radius:12px;padding:12px;text-align:center;min-width:80px;"><div style="font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:var(--green);" id="mVerifiedCount">—</div><div style="font-size:9px;color:rgba(105,240,174,.4);letter-spacing:2px;margin-top:3px;">VERIFIED</div></div>
+      <div style="flex:1;background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.18);border-radius:12px;padding:12px;text-align:center;min-width:80px;"><div style="font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:var(--gold);" id="mPendingCount">—</div><div style="font-size:9px;color:rgba(255,212,56,.4);letter-spacing:2px;margin-top:3px;">PENDING</div></div>
+    </div>
+
+    <!-- Teams list -->
+    <div id="monthlyTeamsList" style="max-height:500px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:18px;"><div class="no-entries">Click Refresh to load monthly teams...</div></div>
+
+    <div class="divider" style="margin-bottom:18px;"></div>
+
+    <!-- Round 1 Qualifiers — admin only -->
+    <div class="admin-only">
+      <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--purple);text-transform:uppercase;margin-bottom:12px;">📌 ROUND 1 — Enter Qualifiers (24 Teams)</div>
+      <div style="background:rgba(156,39,176,.04);border:1px solid rgba(156,39,176,.12);border-radius:12px;padding:14px;margin-bottom:12px;">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Enter the <strong style="color:#fff;">SN numbers</strong> of the 24 qualifying teams from Round 1 (comma or newline separated):<br><span style="font-size:10px;color:rgba(255,255,255,.3);">e.g. 1,3,5,7,9... or one per line</span></div>
+        <textarea id="r1QualInput" style="width:100%;min-height:80px;background:rgba(156,39,176,.05);border:1px solid rgba(156,39,176,.2);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;resize:vertical;" placeholder="1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47"></textarea>
+        <div id="r1QualPreview" style="margin-top:10px;"></div>
+        <button onclick="saveR1Qualifiers()" style="margin-top:10px;width:100%;padding:12px;background:linear-gradient(135deg,rgba(156,39,176,.2),rgba(103,58,183,.15));border:2px solid rgba(156,39,176,.4);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--purple);cursor:pointer;letter-spacing:2px;">✅ SAVE ROUND 1 QUALIFIERS</button>
+      </div>
+
+      <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:12px;">📌 SEMI FINALS — Enter Qualifiers (12 Teams)</div>
+      <div style="background:rgba(255,212,56,.04);border:1px solid rgba(255,212,56,.12);border-radius:12px;padding:14px;margin-bottom:12px;">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6;">Enter the <strong style="color:#fff;">SN numbers</strong> of 24 semi-final teams, then pick the 12 Grand Final qualifiers:<br><span style="font-size:10px;color:rgba(255,255,255,.3);">from the 24 teams that qualified from Round 1</span></div>
+        <textarea id="sfQualInput" style="width:100%;min-height:70px;background:rgba(255,212,56,.04);border:1px solid rgba(255,212,56,.18);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:13px;color:#fff;outline:none;resize:vertical;" placeholder="e.g. 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23"></textarea>
+        <div id="sfQualPreview" style="margin-top:10px;"></div>
+        <button onclick="saveSFQualifiers()" style="margin-top:10px;width:100%;padding:12px;background:linear-gradient(135deg,rgba(255,212,56,.15),rgba(255,171,64,.1));border:2px solid rgba(255,212,56,.35);border-radius:10px;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--gold);cursor:pointer;letter-spacing:2px;">✅ SAVE SEMI FINAL QUALIFIERS</button>
+      </div>
+
+      <div class="divider" style="margin-bottom:18px;"></div>
+
+      <!-- Publish monthly results -->
+      <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;">🏆 Publish Monthly Results</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥇 Champion (NPR 4,000)</label>
+          <input id="mres-1st" type="text" placeholder="1st place team name" style="width:100%;background:rgba(255,212,56,.05);border:1px solid rgba(255,212,56,.2);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
+        <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥈 2nd Place (NPR 2,400)</label>
+          <input id="mres-2nd" type="text" placeholder="2nd place team name" style="width:100%;background:rgba(79,195,247,.04);border:1px solid rgba(79,195,247,.15);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
+        <div><label style="font-size:9px;color:var(--faint);letter-spacing:2px;font-weight:700;text-transform:uppercase;display:block;margin-bottom:6px;">🥉 3rd Place (NPR 1,600)</label>
+          <input id="mres-3rd" type="text" placeholder="3rd place team name" style="width:100%;background:rgba(206,147,216,.04);border:1px solid rgba(206,147,216,.15);border-radius:10px;padding:12px;font-family:'Exo 2',sans-serif;font-size:14px;color:#fff;outline:none;"></div>
+        <button onclick="saveMonthlyResult()" style="padding:16px;background:linear-gradient(135deg,rgba(156,39,176,.2),rgba(103,58,183,.15));border:2px solid rgba(156,39,176,.45);border-radius:12px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;color:var(--purple);letter-spacing:2px;cursor:pointer;">🚀 PUBLISH MONTHLY RESULTS</button>
       </div>
     </div>
   </div>
