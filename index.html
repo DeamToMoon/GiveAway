@@ -998,6 +998,34 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 </div>
 </div>
 
+<script>
+// ── CROSS-BROWSER FUNCTION BRIDGE ──
+// Ensures onclick functions work even before module script loads
+var _fnQueue=[];
+var _fnReady=false;
+function _callFn(name,args){
+  if(_fnReady&&window[name]){
+    window[name].apply(window,args||[]);
+  }else{
+    _fnQueue.push({name:name,args:args||[]});
+  }
+}
+// Stub all onclick functions
+['toggleSec','toggleMonthly','showTab','showTournForm','cancelTournForm',
+ 'backToStep1','submitEntry','submitTournament','goToPaymentStep',
+ 'mGoToPayment','mBackToStep1','submitMonthly','setGroups'].forEach(function(fn){
+  if(!window[fn]){
+    window[fn]=function(){var a=Array.prototype.slice.call(arguments);_callFn(fn,a);};
+  }
+});
+function _flushFnQueue(){
+  _fnReady=true;
+  _fnQueue.forEach(function(item){
+    if(window[item.name])window[item.name].apply(window,item.args);
+  });
+  _fnQueue=[];
+}
+</script>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import{getFirestore,collection,addDoc,getDocs,onSnapshot,query,where,orderBy,doc,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -1092,11 +1120,11 @@ onSnapshot(doc(db,'tournament_result','latest'),snap=>{
 
 
 // Giveaway entry
-window.showTab=function(tab){document.querySelectorAll('.ff-list').forEach(e=>e.classList.remove('active'));document.querySelectorAll('.ff-tab').forEach(e=>e.classList.remove('active'));document.getElementById('tab-'+tab).classList.add('active');document.querySelector('.ff-tab.'+tab).classList.add('active');};
+window._real_showTab=window.showTab=function(tab){document.querySelectorAll('.ff-list').forEach(e=>e.classList.remove('active'));document.querySelectorAll('.ff-tab').forEach(e=>e.classList.remove('active'));document.getElementById('tab-'+tab).classList.add('active');document.querySelector('.ff-tab.'+tab).classList.add('active');};
 function showFieldWarn(id,msg){const el=document.getElementById(id);if(el){el.textContent=msg;el.style.display='block';}}
 function clearFieldWarn(id){const el=document.getElementById(id);if(el)el.style.display='none';}
 
-window.submitEntry=async function(){
+window._real_submitEntry=window.submitEntry=async function(){
   const username=document.getElementById('username').value.trim();
   const uid=document.getElementById('uid').value.trim();
   clearFieldWarn('warnUser');clearFieldWarn('warnUID');
@@ -1222,11 +1250,11 @@ onSnapshot(query(collection(db,'tournament_teams'),orderBy('registeredAt','asc')
 
 
 // Tournament form
-window.showTournForm=function(){
+window._real_showTournForm=window.showTournForm=function(){
   document.getElementById('registerBtn').style.display='none';
   document.getElementById('tournForm').classList.add('active');
 };
-window.cancelTournForm=function(){
+window._real_cancelTournForm=window.cancelTournForm=function(){
   document.getElementById('tournForm').classList.remove('active');
   document.getElementById('registerBtn').style.display='block';
 };
@@ -1235,7 +1263,7 @@ window.cancelTournForm=function(){
 function tWarn(id,msg){const el=document.getElementById(id);if(el){el.textContent=msg;el.style.display='block';el.scrollIntoView({behavior:'smooth',block:'nearest'});}}
 function tClear(...ids){ids.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});}
 
-window.goToPaymentStep=async function(){
+window._real_goToPaymentStep=window.goToPaymentStep=async function(){
   if(window._adminLocked&&!window._tournResultReset){alert('🔒 Registration is currently closed!');return;}
   const squad=document.getElementById('t-squad').value.trim();
   const leader=document.getElementById('t-leader').value.trim();
@@ -1293,14 +1321,14 @@ window.goToPaymentStep=async function(){
   }
 };
 
-window.backToStep1=function(){
+window._real_backToStep1=window.backToStep1=function(){
   document.getElementById('tournStep2').style.display='none';
   document.getElementById('tournStep1').style.display='block';
 };
 
 function esc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
-window.submitTournament=async function(){
+window._real_submitTournament=window.submitTournament=async function(){
   if(window._adminLocked&&!window._tournResultReset){alert('🔒 Registration is currently closed.\nStay tuned for updates! 🏆');return;}
   const squad=document.getElementById('t-squad').value.trim();
   const leader=document.getElementById('t-leader').value.trim();
@@ -1347,7 +1375,7 @@ window.submitTournament=async function(){
 
 // ═══ MONTHLY TOURNAMENT JS ═══
 
-window.toggleMonthly=function(){toggleSec("sec5");};
+window._real_toggleMonthly=window.toggleMonthly=function(){toggleSec("sec5");};
 
 // Monthly countdown: 2nd Wednesday of month 11:59PM NPT (UTC+5:45)
 function getSecondWednesday(year,month){
@@ -1403,7 +1431,7 @@ if(document.readyState==='loading'){
 }
 
 // Monthly step 1 → step 2
-window.mGoToPayment=async function(){
+window._real_mGoToPayment=window.mGoToPayment=async function(){
   const squad=document.getElementById('mt-squad').value.trim();
   const leader=document.getElementById('mt-leader').value.trim();
   const luid=document.getElementById('mt-luid').value.trim();
@@ -1460,63 +1488,89 @@ window.mGoToPayment=async function(){
   if(btn){btn.disabled=false;btn.textContent='NEXT — PAY ENTRY FEE ▶';}
 };
 
-window.mBackToStep1=function(){
+window._real_mBackToStep1=window.mBackToStep1=function(){
   document.getElementById('mStep2').style.display='none';
   document.getElementById('mStep1').style.display='block';
 };
 
-window.submitMonthly=async function(){
-  const squad=document.getElementById('mt-squad').value.trim();
-  const leader=document.getElementById('mt-leader').value.trim();
-  const luid=document.getElementById('mt-luid').value.trim();
-  const ligname=document.getElementById('mt-ligname').value.trim();
-  const phone=document.getElementById('mt-phone').value.trim();
-  const m1=document.getElementById('mt-m1').value.trim();
-  const m1uid=document.getElementById('mt-m1uid').value.trim();
-  const m2=document.getElementById('mt-m2').value.trim();
-  const m2uid=document.getElementById('mt-m2uid').value.trim();
-  const m3=document.getElementById('mt-m3').value.trim();
-  const m3uid=document.getElementById('mt-m3uid').value.trim();
-  const sub=document.getElementById('mt-sub').value.trim();
-  const subuid=document.getElementById('mt-subuid').value.trim();
-  const txn=document.getElementById('mt-txn').value.trim();
-  const ssFile=document.getElementById('mt-screenshot').files[0];
+window._real_submitMonthly=window.submitMonthly=function(){
+  var squad=document.getElementById('mt-squad').value.trim();
+  var leader=document.getElementById('mt-leader').value.trim();
+  var luid=document.getElementById('mt-luid').value.trim();
+  var ligname=document.getElementById('mt-ligname')?document.getElementById('mt-ligname').value.trim():'';
+  var phone=document.getElementById('mt-phone').value.trim();
+  var m1=document.getElementById('mt-m1').value.trim();
+  var m1uid=document.getElementById('mt-m1uid').value.trim();
+  var m2=document.getElementById('mt-m2').value.trim();
+  var m2uid=document.getElementById('mt-m2uid').value.trim();
+  var m3=document.getElementById('mt-m3').value.trim();
+  var m3uid=document.getElementById('mt-m3uid').value.trim();
+  var sub=document.getElementById('mt-sub')?document.getElementById('mt-sub').value.trim():'';
+  var subuid=document.getElementById('mt-subuid')?document.getElementById('mt-subuid').value.trim():'';
+  var txn=document.getElementById('mt-txn').value.trim();
+  var ssInput=document.getElementById('mt-screenshot');
+  var ssFile=ssInput&&ssInput.files&&ssInput.files[0]?ssInput.files[0]:null;
 
-  if(!txn){const e=document.getElementById('mwarn-txn');if(e){e.textContent='⚠️ Please enter your Transaction ID!';e.style.display='block';}return;}
+  // Validate txn
+  var warnTxn=document.getElementById('mwarn-txn');
+  if(!txn){
+    if(warnTxn){warnTxn.textContent='⚠️ Please enter your Transaction ID!';warnTxn.style.display='block';}
+    return;
+  }
+  if(warnTxn)warnTxn.style.display='none';
 
-  const btn=document.getElementById('mSubmitBtn');
-  btn.disabled=true;btn.textContent='⏳ Submitting...';
+  var btn=document.getElementById('mSubmitBtn');
+  if(btn){btn.disabled=true;btn.textContent='⏳ Submitting...';}
 
-  try{
-    // Convert screenshot to base64 if provided (stored in Firestore — admin only can view)
-    let ssData='';
-    if(ssFile){
-      ssData=await new Promise((res)=>{
-        const r=new FileReader();
-        r.onload=(e)=>res(e.target.result);
-        r.readAsDataURL(ssFile);
+  function doSubmit(ssData){
+    // Final duplicate check then save
+    getDocs(query(collection(db,'monthly_teams'),where('squadName','==',squad))).then(function(dSq){
+      if(!dSq.empty){
+        alert('Team name already taken! Please go back and change it.');
+        if(btn){btn.disabled=false;btn.textContent='🏆 SUBMIT REGISTRATION';}
+        return;
+      }
+      var payload={
+        squadName:squad,leaderName:leader,leaderUID:luid,leaderIGN:ligname,
+        phone:phone,m1:m1,m1uid:m1uid,m2:m2,m2uid:m2uid,m3:m3,m3uid:m3uid,
+        sub:sub||'',subuid:subuid||'',txnId:txn,
+        screenshot:ssData||'',
+        verified:false,registeredAt:serverTimestamp()
+      };
+      addDoc(collection(db,'monthly_teams'),payload).then(function(){
+        // Success
+        var regCard=document.getElementById('mRegCard');
+        var mSuccess=document.getElementById('mSuccess');
+        if(regCard)regCard.style.display='none';
+        if(mSuccess)mSuccess.style.display='flex';
+        launchConfetti();
+      }).catch(function(err){
+        alert('Save failed: '+(err&&err.message?err.message:'Unknown error. Check your connection and try again.'));
+        if(btn){btn.disabled=false;btn.textContent='🏆 SUBMIT REGISTRATION';}
       });
-    }
-
-    // Final duplicate check
-    const dSq=await getDocs(query(collection(db,'monthly_teams'),where('squadName','==',squad)));
-    if(!dSq.empty){alert('🚫 Team name already taken! Go back and change it.');btn.disabled=false;btn.textContent='🏆 SUBMIT REGISTRATION';return;}
-
-    await addDoc(collection(db,'monthly_teams'),{
-      squadName:squad,leaderName:leader,leaderUID:luid,leaderIGN:ligname,
-      phone:phone,m1:m1,m1uid:m1uid,m2:m2,m2uid:m2uid,m3:m3,m3uid:m3uid,
-      sub:sub||'',subuid:subuid||'',txnId:txn,
-      screenshot:ssData,  // base64 — only viewable by admin
-      verified:false,registeredAt:serverTimestamp()
+    }).catch(function(err){
+      alert('Check failed: '+(err&&err.message?err.message:'Unknown error. Check your connection and try again.'));
+      if(btn){btn.disabled=false;btn.textContent='🏆 SUBMIT REGISTRATION';}
     });
+  }
 
-    // Show success
-    document.getElementById('mRegCard').style.display='none';
-    document.getElementById('mSuccess').style.display='flex';
-    launchConfetti();
-  }catch(err){
-    alert('❌ Error: '+(err.message||'Unknown'));
-    btn.disabled=false;btn.textContent='🏆 SUBMIT REGISTRATION';
+  // Read screenshot if provided - callback style for max browser compat
+  if(ssFile){
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      doSubmit(ev.target.result);
+    };
+    reader.onerror=function(){
+      // Screenshot failed to read - submit without it
+      doSubmit('');
+    };
+    try{
+      reader.readAsDataURL(ssFile);
+    }catch(e){
+      doSubmit('');
+    }
+  }else{
+    doSubmit('');
   }
 };
 
@@ -1555,7 +1609,7 @@ onSnapshot(doc(db,'monthly_meta','sfqualifiers'),snap=>{
 // ═══ END MONTHLY TOURNAMENT JS ═══
 
 
-window.toggleSec=function(id){
+window._real_toggleSec=window.toggleSec=function(id){
   var el=document.getElementById(id);
   var arrow=document.getElementById(id+'-arrow');
   if(!el)return;
@@ -1567,6 +1621,15 @@ window.toggleSec=function(id){
 
 
 function launchConfetti(){const wrap=document.getElementById('confetti');wrap.innerHTML='';const cols=['#FFD438','#4FC3F7','#00E5FF','#CE93D8','#69F0AE','#F48FB1','#FFAB40','#fff'];for(let i=0;i<150;i++){const c=document.createElement('div');c.className='cp';const drift=(Math.random()-.5)*450;c.style.cssText=`left:${Math.random()*100}%;background:${cols[Math.floor(Math.random()*cols.length)]};--fd:${1.5+Math.random()*2.5}s;--dx:${drift}px;--br:${Math.random()>.5?'50%':'2px'};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*.9}s;`;wrap.appendChild(c);}setTimeout(()=>wrap.innerHTML='',5500);}
+// ── RE-EXPOSE ALL FUNCTIONS & FLUSH QUEUE ──
+// Override stubs with real implementations
+var _realFns=['toggleSec','toggleMonthly','showTab','showTournForm','cancelTournForm',
+  'backToStep1','submitEntry','submitTournament','goToPaymentStep',
+  'mGoToPayment','mBackToStep1','submitMonthly'];
+_realFns.forEach(function(fn){
+  if(window['_real_'+fn])window[fn]=window['_real_'+fn];
+});
+if(typeof _flushFnQueue==='function')_flushFnQueue();
 </script>
 </body>
 </html>
