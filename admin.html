@@ -1057,14 +1057,14 @@ function generateBracket(){
   try{
     var db=getDB();
     var payload={
-      groups:groups.map(function(grp){return grp.map(function(t){return{
+      groups:groups.map(function(grp){return {teams:grp.map(function(t){return{
         leaderName:t.leaderName||'',
         leaderUID:t.leaderUID||'',
         member1:t.member1||'',
         member2:t.member2||'',
         member3:t.member3||'',
         whatsapp:t.whatsapp||''
-      };});}),
+      };})};}),
       n:n,
       savedAt:firebase.firestore.FieldValue.serverTimestamp()
     };
@@ -1101,7 +1101,8 @@ function loadSavedBracket(db){
   db.collection('tournament_meta').doc('bracket').get().then(function(snap){
     if(snap.exists&&snap.data().groups&&snap.data().n){
       var s=snap.data();selectedGroups=s.n;
-      rebuildBracketFromGroups(s.groups,s.n);
+      var plainGroups=s.groups.map(function(g){return (g&&g.teams)?g.teams:g;});
+      rebuildBracketFromGroups(plainGroups,s.n);
     }else{
       document.getElementById('bracketDisplay').innerHTML='';
       var be=document.getElementById('bracketEmptyMsg');if(be)be.style.display='block';
@@ -1255,14 +1256,14 @@ function mGenerateBracket(){
     var db=getDB();
     var payload={
       round:'r1',
-      groups:groups.map(function(grp){return grp.map(function(t){return{
+      groups:groups.map(function(grp){return {teams:grp.map(function(t){return{
         leaderName:t.leaderName||'',
         leaderUID:t.leaderUID||'',
         m1:t.m1||'',
         m2:t.m2||'',
         m3:t.m3||'',
         whatsapp:t.phone||''
-      };});}),
+      };})};}),
       n:n,
       savedAt:firebase.firestore.FieldValue.serverTimestamp()
     };
@@ -1327,7 +1328,8 @@ function loadMonthlySavedBracket(db){
   db.collection('monthly_meta').doc('bracket').get().then(function(snap){
     if(snap.exists&&snap.data().groups&&snap.data().n){
       var s=snap.data();mSelectedGroups=s.n;
-      renderMonthlyBracketHTML(s.groups,s.n);
+      var plainGroups=s.groups.map(function(g){return (g&&g.teams)?g.teams:g;});
+      renderMonthlyBracketHTML(plainGroups,s.n);
       document.getElementById('mBracketGenSection').style.display='none';
       document.getElementById('mUndoBracketBtn').style.display=(currentRole==='admin')?'block':'none';
     }else{
