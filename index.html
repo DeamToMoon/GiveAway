@@ -456,7 +456,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
   <button onclick="toggleSec('sec4')" style="width:100%;padding:18px 20px;background:linear-gradient(135deg,#003820,#065f46,#059669,#065f46,#003820);background-size:300%;border:none;border-radius:18px;font-family:'Orbitron',sans-serif;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;animation:btnShimmer 5s linear infinite;box-shadow:0 6px 28px rgba(16,185,129,.25);text-align:left;">
     <div style="display:flex;flex-direction:column;gap:4px;">
       <div style="font-size:14px;font-weight:900;letter-spacing:2px;">⚔️ WEEKLY TOURNAMENT</div>
-      <div style="font-size:9px;font-weight:600;letter-spacing:2px;opacity:.65;text-transform:uppercase;">FREE Entry · 36 Slots · Rs.1,000 Prize Pool</div>
+      <div style="font-size:9px;font-weight:600;letter-spacing:2px;opacity:.65;text-transform:uppercase;">FREE Entry · 36 Slots · <span id="wBtnPoolTxt">Rs.1,000</span> Prize Pool</div>
     </div>
     <span id="sec4-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;">▼</span>
   </button>
@@ -470,7 +470,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <div class="tourn-live-badge" id="regStatusBadge"><div class="tourn-live-dot"></div><span id="regStatusText">Checking...</span></div>
     <div style="font-size:10px;color:rgba(105,240,174,.55);margin-bottom:14px;padding-left:2px;">📋 FREE entry! Register before <strong style="color:rgba(105,240,174,.8);">Thursday 11:59PM NPT</strong> — 36 slots only</div>
     <div class="tourn-title">🏆 SQUAD GAME<br><span>FULL MAP TOURNAMENT</span></div>
-    <div class="tourn-sub">This Saturday • Free Fire • <strong>Full Map Squad Mode</strong><br>FREE entry this week! Register your squad and compete for <strong>Rs.1,000</strong> prize pool! 🎯</div>
+    <div class="tourn-sub">This Saturday • Free Fire • <strong>Full Map Squad Mode</strong><br>FREE entry this week! Register your squad and compete for <strong id="wSubPoolTxt">Rs.1,000</strong> prize pool! 🎯</div>
 
     <!-- Prize Podium -->
     <div style="background:rgba(105,240,174,.04);border:1px solid rgba(105,240,174,.12);border-radius:12px;padding:8px 12px;margin-bottom:12px;text-align:center;font-size:11px;color:rgba(105,240,174,.7);font-weight:700;">
@@ -479,21 +479,21 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <div class="podium">
       <div class="podium-item p2">
         <div class="podium-rank">🥈</div>
-        <div class="podium-prize">Rs.300</div>
+        <div class="podium-prize" id="wPrize2nd">Rs.300</div>
         <div class="podium-label">2nd Place</div>
       </div>
       <div class="podium-item p1">
         <div class="podium-rank">🥇</div>
-        <div class="podium-prize">Rs.500</div>
+        <div class="podium-prize" id="wPrize1st">Rs.500</div>
         <div class="podium-label">1st Place</div>
       </div>
       <div class="podium-item p3">
         <div class="podium-rank">🥉</div>
-        <div class="podium-prize">Rs.200</div>
+        <div class="podium-prize" id="wPrize3rd">Rs.200</div>
         <div class="podium-label">3rd Place</div>
       </div>
     </div>
-    <div class="esewa-note">💚 Prizes paid via <span>eSewa</span> — Total Prize Pool: <span>Rs.1,000</span></div>
+    <div class="esewa-note">💚 Prizes paid via <span>eSewa</span> — Total Prize Pool: <span id="wPrizeTotal">Rs.1,000</span></div>
 
     <!-- Teams registered count -->
     <div class="teams-count-wrap">
@@ -620,11 +620,21 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
   <button onclick="toggleSec('sec5')" style="width:100%;padding:18px 20px;background:linear-gradient(135deg,#2d0060,#6a0dad,#9c27b0,#6a0dad,#2d0060);background-size:300%;border:none;border-radius:18px;font-family:'Orbitron',sans-serif;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;animation:btnShimmer 5s linear infinite;box-shadow:0 6px 28px rgba(156,39,176,.28);text-align:left;">
     <div style="display:flex;flex-direction:column;gap:4px;">
       <div style="font-size:14px;font-weight:900;letter-spacing:2px;">🏆 MONTHLY TOURNAMENT</div>
-      <div style="font-size:9px;font-weight:600;letter-spacing:2px;opacity:.65;text-transform:uppercase;">NPR 100 Entry · NPR 8,000 Prize Pool · 72 Teams</div>
+      <div style="font-size:9px;font-weight:600;letter-spacing:2px;opacity:.65;text-transform:uppercase;">NPR 100 Entry · <span id="mBtnPoolTxt">NPR 8,000</span> Prize Pool · 72 Teams</div>
     </div>
     <span id="sec5-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;">▼</span>
   </button>
   <div id="sec5" style="display:none;flex-direction:column;gap:14px;">
+
+    <!-- Coming Soon banner — shown when admin turns monthly tournament OFF -->
+    <div id="mComingSoon" style="display:none;background:linear-gradient(135deg,rgba(156,39,176,.12),rgba(103,58,183,.06));border:2px solid rgba(156,39,176,.3);border-radius:18px;padding:28px 20px;text-align:center;">
+      <div style="font-size:46px;margin-bottom:10px;animation:bounce 2.5s ease infinite;">🚧</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:var(--purple);letter-spacing:2px;margin-bottom:8px;">MONTHLY TOURNAMENT</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;color:#fff;letter-spacing:1px;margin-bottom:10px;">COMING SOON 🔜</div>
+      <div style="font-size:12px;color:rgba(206,147,216,.7);line-height:1.7;">Registration is paused for now.<br>Check back soon — past results &amp; rules are still below! 👇</div>
+    </div>
+
+    <div id="mLiveContent" style="display:flex;flex-direction:column;gap:14px;">
     <div class="card" style="border-color:rgba(156,39,176,.3);background:linear-gradient(135deg,rgba(20,0,40,.95),rgba(10,0,30,.9));padding:0;overflow:hidden;">
       <!-- Countdown to 2nd Wednesday -->
       <div style="padding:18px 20px;border-bottom:1px solid rgba(156,39,176,.15);">
@@ -644,7 +654,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       <!-- Info grid -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(156,39,176,.1);">
         <div style="background:rgba(10,0,25,.9);padding:14px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">💰</div><div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:var(--gold);">NPR 100</div><div style="font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;margin-top:2px;">ENTRY FEE</div></div>
-        <div style="background:rgba(10,0,25,.9);padding:14px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">🏆</div><div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:var(--gold);">NPR 8,000</div><div style="font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;margin-top:2px;">PRIZE POOL</div></div>
+        <div style="background:rgba(10,0,25,.9);padding:14px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">🏆</div><div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:var(--gold);" id="mHdrPoolTxt">NPR 8,000</div><div style="font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;margin-top:2px;">PRIZE POOL</div></div>
         <div style="background:rgba(10,0,25,.9);padding:14px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">👥</div><div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:var(--cyan);" id="mTeamsCount">—</div><div style="font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;margin-top:2px;">TEAMS REG.</div></div>
         <div style="background:rgba(10,0,25,.9);padding:14px;text-align:center;"><div style="font-size:18px;margin-bottom:4px;">⚔️</div><div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:var(--purple);">72</div><div style="font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;margin-top:2px;">MAX TEAMS</div></div>
       </div>
@@ -703,21 +713,21 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       <div style="display:flex;flex-direction:column;gap:10px;">
         <div style="background:linear-gradient(135deg,rgba(255,212,56,.12),rgba(255,171,64,.06));border:2px solid rgba(255,212,56,.4);border-radius:14px;padding:16px;display:flex;align-items:center;gap:14px;">
           <div style="font-size:36px;">🥇</div>
-          <div style="flex:1;"><div style="font-family:'Orbitron',sans-serif;font-size:15px;font-weight:900;color:var(--gold);">NPR 4,000</div><div style="font-size:10px;color:rgba(255,212,56,.5);margin-top:2px;letter-spacing:1px;">1ST PLACE · CHAMPION</div></div>
+          <div style="flex:1;"><div style="font-family:'Orbitron',sans-serif;font-size:15px;font-weight:900;color:var(--gold);" id="mPrize1st">NPR 4,000</div><div style="font-size:10px;color:rgba(255,212,56,.5);margin-top:2px;letter-spacing:1px;">1ST PLACE · CHAMPION</div></div>
           <div style="font-size:11px;color:rgba(37,211,102,.7);font-weight:700;">via eSewa 💚</div>
         </div>
         <div style="background:rgba(192,192,192,.06);border:1px solid rgba(192,192,192,.2);border-radius:14px;padding:14px;display:flex;align-items:center;gap:14px;">
           <div style="font-size:32px;">🥈</div>
-          <div style="flex:1;"><div style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:#C0C0C0;">NPR 2,400</div><div style="font-size:10px;color:rgba(192,192,192,.4);margin-top:2px;letter-spacing:1px;">2ND PLACE</div></div>
+          <div style="flex:1;"><div style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:#C0C0C0;" id="mPrize2nd">NPR 2,400</div><div style="font-size:10px;color:rgba(192,192,192,.4);margin-top:2px;letter-spacing:1px;">2ND PLACE</div></div>
           <div style="font-size:11px;color:rgba(37,211,102,.7);font-weight:700;">via eSewa 💚</div>
         </div>
         <div style="background:rgba(205,127,50,.06);border:1px solid rgba(205,127,50,.2);border-radius:14px;padding:14px;display:flex;align-items:center;gap:14px;">
           <div style="font-size:28px;">🥉</div>
-          <div style="flex:1;"><div style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:#CD7F32;">NPR 1,600</div><div style="font-size:10px;color:rgba(205,127,50,.4);margin-top:2px;letter-spacing:1px;">3RD PLACE</div></div>
+          <div style="flex:1;"><div style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:#CD7F32;" id="mPrize3rd">NPR 1,600</div><div style="font-size:10px;color:rgba(205,127,50,.4);margin-top:2px;letter-spacing:1px;">3RD PLACE</div></div>
           <div style="font-size:11px;color:rgba(37,211,102,.7);font-weight:700;">via eSewa 💚</div>
         </div>
         <div style="background:rgba(156,39,176,.05);border:1px solid rgba(156,39,176,.15);border-radius:10px;padding:12px;text-align:center;font-size:11px;color:rgba(255,255,255,.4);">
-          Total Prize Pool: <strong style="color:var(--gold);font-size:13px;">NPR 8,000</strong> · Paid via eSewa
+          Total Prize Pool: <strong style="color:var(--gold);font-size:13px;" id="mPrizeTotalTxt">NPR 8,000</strong> · Paid via eSewa
         </div>
       </div>
     </div>
@@ -849,6 +859,8 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     </div>
 
 
+    </div><!-- end mLiveContent -->
+
     <!-- Monthly Rules Card -->
   <div id="monthlyRulesCard" class="card" style="border-color:rgba(156,39,176,.2);margin-top:6px;">
     <div class="rules-title" style="color:var(--purple);">📋 Monthly Tournament Rules</div>
@@ -966,9 +978,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">📱</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Join WhatsApp group</strong> — Get your room ID &amp; match schedule after registration</div></div>
       <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">🎲</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Random group division</strong> — Teams shuffled &amp; split into groups after registration closes</div></div>
       <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">⚔️</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Group matches</strong> — Top 2 from each group qualify for Grand Final</div></div>
-      <div style="height:1px;background:rgba(105,240,174,.08);margin:10px 0;"></div>
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">🎬</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Live Stream Qualifier</strong> — 12 teams play live. Top 2 earn a Grand Final spot 🔥</div></div>
-      <div style="display:flex;align-items:flex-start;gap:10px;"><div style="font-size:15px;flex-shrink:0;">🏆</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Grand Final</strong> — Top squads battle for <strong style="color:var(--gold);">Rs.1,000</strong> prize pool! 💰</div></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;"><div style="font-size:15px;flex-shrink:0;">🏆</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Grand Final</strong> — Top squads battle for <strong style="color:var(--gold);" id="wFinalPoolTxt">Rs.1,000</strong> prize pool! 💰</div></div>
     </div>
 
     <div class="rule-item"><div class="rule-dot" style="background:var(--green);box-shadow:0 0 6px rgba(105,240,174,.5);"></div>🎉 <strong style="color:var(--green);">FREE entry</strong> — no payment required</div>
@@ -976,19 +986,74 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <div class="rule-item"><div class="rule-dot" style="background:var(--green);"></div>Team: 1 leader + 3 members — all names &amp; UIDs required, cannot be changed</div>
     <div class="rule-item"><div class="rule-dot" style="background:var(--green);"></div>Groups randomly divided after registration closes</div>
     <div class="rule-item"><div class="rule-dot" style="background:var(--green);"></div>Top 2 from each group advance to Grand Final</div>
-    <div class="rule-item"><div class="rule-dot" style="background:#FF9800;box-shadow:0 0 6px rgba(255,152,0,.5);"></div>🎬 Live Stream Qualifier: 12 teams play — top 2 earn a Grand Final spot</div>
     <div class="rule-item"><div class="rule-dot" style="background:#25D366;"></div>📱 Join WhatsApp group after registering — room ID &amp; updates sent there</div>
     <div class="rule-item" style="align-items:flex-start;">
       <div class="rule-dot" style="background:var(--red);box-shadow:0 0 6px rgba(255,107,107,.5);flex-shrink:0;margin-top:3px;"></div>
       <div>🎮 <strong style="color:#fff;">In-game recording is mandatory</strong> during every match. Recording from game settings or highlights is <strong style="color:var(--red);">not accepted</strong> — only real-time screen recording counts. Only suspicious teams will be checked, so don't worry! ⚠️</div>
     </div>
-    <div class="rule-item"><div class="rule-dot" style="background:var(--gold);box-shadow:0 0 6px rgba(255,212,56,.5);"></div>Prizes: 🥇 Rs.500 · 🥈 Rs.300 · 🥉 Rs.200 via eSewa 💚</div>
+    <div class="rule-item"><div class="rule-dot" style="background:var(--gold);box-shadow:0 0 6px rgba(255,212,56,.5);"></div><span id="wRulePrizeTxt">Prizes: 🥇 Rs.500 · 🥈 Rs.300 · 🥉 Rs.200 via eSewa 💚</span></div>
 
     <div style="background:rgba(79,195,247,.04);border:1px solid rgba(79,195,247,.1);border-radius:12px;padding:14px 16px;margin-top:14px;font-size:11px;color:rgba(144,202,249,.65);line-height:1.9;">
       <div style="font-size:9px;font-weight:800;letter-spacing:3px;color:rgba(79,195,247,.4);text-transform:uppercase;margin-bottom:8px;">📌 Note</div>
       This tournament is organized purely for entertainment and to support the Free Fire community. The organizer takes zero profit — all prizes go to deserving players. Fair play always. 🎮🏆
     </div>
   </div>
+  </div>
+
+  <!-- BTN: 💎 FREE FIRE DIAMOND -->
+  <button onclick="toggleSec('sec8')" style="width:100%;padding:18px 20px;background:linear-gradient(135deg,#001a40,#0a3d91,#1565C0,#0a3d91,#001a40);background-size:300%;border:none;border-radius:18px;font-family:'Orbitron',sans-serif;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;animation:btnShimmer 5s linear infinite;box-shadow:0 6px 28px rgba(21,101,192,.3);text-align:left;">
+    <div style="display:flex;flex-direction:column;gap:4px;">
+      <div style="font-size:14px;font-weight:900;letter-spacing:2px;">💎 FREE FIRE DIAMOND</div>
+      <div style="font-size:9px;font-weight:600;letter-spacing:2px;opacity:.65;text-transform:uppercase;">Top-up &amp; Membership · Coming Soon</div>
+    </div>
+    <span id="sec8-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;">▼</span>
+  </button>
+  <div id="sec8" style="display:none;flex-direction:column;gap:14px;">
+
+    <div class="card" style="border-color:rgba(21,101,192,.3);">
+      <div class="rules-title" style="color:var(--blue);">💎 Diamond &amp; Membership</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.55);line-height:1.7;margin-bottom:16px;">
+        Top up Free Fire diamonds directly through Dream2Moon at great rates, or grab a Weekly/Monthly Membership for ongoing perks. Pricing below 👇
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:14px;background:rgba(79,195,247,.05);border:1px solid rgba(79,195,247,.18);border-radius:14px;padding:14px 16px;">
+          <div style="font-size:28px;">💎</div>
+          <div style="flex:1;">
+            <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:#fff;">115 Diamonds</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:2px;">One-time top-up</div>
+          </div>
+          <div style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:var(--gold);">Rs.110</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;background:rgba(105,240,174,.05);border:1px solid rgba(105,240,174,.18);border-radius:14px;padding:14px 16px;">
+          <div style="font-size:28px;">📅</div>
+          <div style="flex:1;">
+            <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:#fff;">Weekly Membership 💎</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:2px;">7 days of diamond perks</div>
+          </div>
+          <div style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:var(--green);">Rs.210</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;background:rgba(156,39,176,.05);border:1px solid rgba(156,39,176,.18);border-radius:14px;padding:14px 16px;">
+          <div style="font-size:28px;">🗓️</div>
+          <div style="flex:1;">
+            <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:#fff;">Monthly Membership 💎</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.35);margin-top:2px;">30 days of diamond perks</div>
+          </div>
+          <div style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:var(--purple);">Rs.1,050</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="border-color:rgba(255,212,56,.25);">
+      <div style="text-align:center;padding:10px 0 16px;">
+        <div style="font-size:42px;margin-bottom:8px;animation:bounce 2.5s ease infinite;">🔜</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:var(--gold);letter-spacing:2px;">COMING SOON</div>
+      </div>
+      <div style="background:rgba(255,212,56,.05);border:1px solid rgba(255,212,56,.15);border-radius:12px;padding:14px 16px;font-size:12px;color:rgba(255,212,56,.75);line-height:1.8;">
+        Diamond top-ups are temporarily paused while we sort out a wholesaler issue — a recent batch of vouchers we received was incorrect, and we're in the process of getting them exchanged. On top of that, prices have risen slightly due to the recent increase in USD/GBP exchange rates. We'll reopen top-ups as soon as everything is sorted — thanks for your patience! 🙏
+      </div>
+    </div>
+
   </div>
 
   <div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding:20px 0 36px;">
@@ -1080,32 +1145,33 @@ onSnapshot(doc(db,'tournament_result','latest'),snap=>{
   if(!el)return;
   if(snap.exists()&&snap.data().champion){
     const r=snap.data();
+    const p1=r.prize1st||500,p2=r.prize2nd||300,p3=r.prize3rd||200;
     el.innerHTML=`
       <div style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">
         ${r.champion?`<div style="background:linear-gradient(135deg,rgba(255,212,56,.12),rgba(255,171,64,.06));border:2px solid rgba(255,212,56,.4);border-radius:16px;padding:18px;text-align:center;">
           <div style="font-size:36px;margin-bottom:6px;">🥇</div>
-          <div style="font-size:9px;font-weight:800;letter-spacing:2px;color:var(--gold);margin-bottom:6px;">CHAMPION — Rs.1,500 eSewa</div>
+          <div style="font-size:9px;font-weight:800;letter-spacing:2px;color:var(--gold);margin-bottom:6px;">CHAMPION — Rs.${p1} eSewa</div>
           <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:var(--gold);">${r.champion}</div>
           <div style="font-size:11px;color:rgba(255,212,56,.6);margin-top:4px;">👑 ${r.champion1Leader||''}</div>
           ${membersRow(r.champion1m1,r.champion1m2,r.champion1m3)}
         </div>`:''}
         ${r.second?`<div style="background:linear-gradient(135deg,rgba(79,195,247,.08),rgba(0,229,255,.04));border:2px solid rgba(79,195,247,.3);border-radius:16px;padding:16px;text-align:center;">
           <div style="font-size:30px;margin-bottom:6px;">🥈</div>
-          <div style="font-size:9px;font-weight:800;letter-spacing:2px;color:var(--blue);margin-bottom:6px;">2ND PLACE — Rs.1,000 eSewa</div>
+          <div style="font-size:9px;font-weight:800;letter-spacing:2px;color:var(--blue);margin-bottom:6px;">2ND PLACE — Rs.${p2} eSewa</div>
           <div style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:var(--blue);">${r.second}</div>
           <div style="font-size:11px;color:rgba(79,195,247,.6);margin-top:4px;">👑 ${r.second1Leader||''}</div>
           ${membersRow(r.second1m1,r.second1m2,r.second1m3)}
         </div>`:''}
         ${r.third?`<div style="background:linear-gradient(135deg,rgba(206,147,216,.08),rgba(167,139,250,.04));border:2px solid rgba(206,147,216,.3);border-radius:16px;padding:16px;text-align:center;">
           <div style="font-size:28px;margin-bottom:6px;">🥉</div>
-          <div style="font-size:9px;font-weight:800;letter-spacing:2px;color:var(--purple);margin-bottom:6px;">3RD PLACE — Rs.600 eSewa</div>
+          <div style="font-size:9px;font-weight:800;letter-spacing:2px;color:var(--purple);margin-bottom:6px;">3RD PLACE — Rs.${p3} eSewa</div>
           <div style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:var(--purple);">${r.third}</div>
           <div style="font-size:11px;color:rgba(206,147,216,.6);margin-top:4px;">👑 ${r.third1Leader||''}</div>
           ${membersRow(r.third1m1,r.third1m2,r.third1m3)}
         </div>`:''}
         ${r.fourth?`<div style="background:linear-gradient(135deg,rgba(255,171,64,.07),rgba(255,152,0,.03));border:2px solid rgba(255,171,64,.25);border-radius:16px;padding:14px;text-align:center;">
           <div style="font-size:24px;margin-bottom:6px;">🎖️</div>
-          <div style="font-size:9px;font-weight:800;letter-spacing:2px;color:rgba(255,171,64,.9);margin-bottom:6px;">4TH PLACE — Rs.200 eSewa</div>
+          <div style="font-size:9px;font-weight:800;letter-spacing:2px;color:rgba(255,171,64,.9);margin-bottom:6px;">4TH PLACE</div>
           <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:rgba(255,171,64,.9);">${r.fourth}</div>
           <div style="font-size:11px;color:rgba(255,171,64,.5);margin-top:4px;">👑 ${r.fourth1Leader||''}</div>
           ${membersRow(r.fourth1m1,r.fourth1m2,r.fourth1m3)}
@@ -1188,6 +1254,18 @@ onSnapshot(doc(db,'tournament_meta','settings'),snap=>{
   }else{
     window._adminLocked=false;
   }
+  // Weekly prize pool — auto 50/30/20 split
+  const pool=(snap.exists()&&snap.data().prizePool)?snap.data().prizePool:1000;
+  const p1=Math.round(pool*0.5),p2=Math.round(pool*0.3),p3=pool-p1-p2;
+  const setTxt=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+  setTxt('wPrize1st','Rs.'+p1);
+  setTxt('wPrize2nd','Rs.'+p2);
+  setTxt('wPrize3rd','Rs.'+p3);
+  setTxt('wPrizeTotal','Rs.'+pool);
+  setTxt('wBtnPoolTxt','Rs.'+pool);
+  setTxt('wSubPoolTxt','Rs.'+pool);
+  setTxt('wFinalPoolTxt','Rs.'+pool);
+  setTxt('wRulePrizeTxt','Prizes: 🥇 Rs.'+p1+' · 🥈 Rs.'+p2+' · 🥉 Rs.'+p3+' via eSewa 💚');
   checkRegistrationStatus();
 });
 // Listen for tournament results — re-opens registration when results published
@@ -1579,6 +1657,24 @@ onSnapshot(collection(db,'monthly_teams'),snap=>{
   const verified=snap.docs.filter(d=>d.data().verified===true).length;
   const el=document.getElementById('mTeamsCount');
   if(el)el.textContent=verified||'—';
+});
+
+// Monthly settings — ON/OFF toggle + prize pool
+onSnapshot(doc(db,'monthly_meta','settings'),snap=>{
+  const data=snap.exists()?snap.data():{};
+  const enabled=data.enabled!==false;
+  const comingSoon=document.getElementById('mComingSoon'),liveContent=document.getElementById('mLiveContent');
+  if(comingSoon)comingSoon.style.display=enabled?'none':'block';
+  if(liveContent)liveContent.style.display=enabled?'flex':'none';
+  const pool=data.prizePool||8000;
+  const p1=Math.round(pool*0.5),p2=Math.round(pool*0.3),p3=pool-p1-p2;
+  const setTxt=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+  setTxt('mBtnPoolTxt','NPR '+pool.toLocaleString());
+  setTxt('mHdrPoolTxt','NPR '+pool.toLocaleString());
+  setTxt('mPrize1st','NPR '+p1.toLocaleString());
+  setTxt('mPrize2nd','NPR '+p2.toLocaleString());
+  setTxt('mPrize3rd','NPR '+p3.toLocaleString());
+  setTxt('mPrizeTotalTxt','NPR '+pool.toLocaleString());
 });
 
 // Live qualifiers display
