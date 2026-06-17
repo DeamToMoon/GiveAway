@@ -312,6 +312,26 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
       </div>
     </div>
 
+    <!-- Diamond Settings -->
+    <div class="card" style="border-color:rgba(79,195,247,.2);">
+      <div class="card-top"></div>
+      <div class="card-hdr" style="color:var(--blue);">💎 Diamond Settings</div>
+      <div class="toggle-wrap">
+        <div>
+          <div class="toggle-label">Diamond Top-Ups</div>
+          <div class="toggle-sub" id="diamondToggleStatus">Loading...</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="diamondToggle" onchange="toggleDiamond()">
+          <span class="toggle-slider"><span class="toggle-ball" id="diamondToggleBall"></span></span>
+        </label>
+      </div>
+      <div class="divider" style="margin:14px 0;"></div>
+      <label class="label">🔜 Coming Soon Message</label>
+      <textarea id="diamondComingSoonText" class="inp textarea" placeholder="Message shown to users while top-ups are off..." style="min-height:110px;"></textarea>
+      <button onclick="saveDiamondSettings()" class="btn btn-blue btn-full" style="margin-top:10px;padding:13px;">💾 Save Diamond Settings</button>
+    </div>
+
   </div><!-- end tab-draw -->
 
   <!-- ══ TAB: WEEKLY ══ -->
@@ -361,7 +381,7 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
     <div class="card">
       <div class="card-top"></div>
       <div class="card-hdr" style="color:var(--blue);">📊 Match Stat Card
-        <button id="undoBracketBtn" onclick="undoBracket()" style="display:none;" class="btn btn-red admin-only" style="padding:6px 12px;font-size:10px;">↩️ Undo</button>
+        <button id="undoBracketBtn" onclick="undoBracket()" style="display:none;" class="btn btn-red admin-undo-btn" style="padding:6px 12px;font-size:10px;">↩️ Undo</button>
       </div>
       <div id="bracketGenSection" class="admin-only">
         <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Number of groups? <span style="color:var(--gold);">(max 12/group)</span></div>
@@ -443,7 +463,7 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
     <div class="card" style="border-color:rgba(156,39,176,.18);">
       <div class="card-top card-top-purple"></div>
       <div class="card-hdr" style="color:var(--purple);">📊 Monthly Match Stat Card
-        <button id="mUndoBracketBtn" onclick="mUndoBracket()" style="display:none;" class="btn btn-red admin-only" style="padding:6px 12px;font-size:10px;">↩️ Undo</button>
+        <button id="mUndoBracketBtn" onclick="mUndoBracket()" style="display:none;" class="btn btn-red admin-undo-btn" style="padding:6px 12px;font-size:10px;">↩️ Undo</button>
       </div>
       <div id="mBracketGenSection" class="admin-only">
         <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Round 1 — Number of groups? <span style="color:var(--gold);">(max 12/group, A–F)</span></div>
@@ -564,7 +584,7 @@ function doLogin(){
   applyRoleUI();
   var db=getDB();
   if(currentRole==='admin'){
-    loadEntries(db);loadRegToggle(db);loadWeeklyPrizePool(db);loadMonthlySettings(db);
+    loadEntries(db);loadRegToggle(db);loadWeeklyPrizePool(db);loadMonthlySettings(db);loadDiamondSettings(db);
   }
   loadSavedBracket(db);loadMonthlySavedBracket(db);
   loadTournTeams(db);loadMonthlyTeams();
@@ -591,6 +611,9 @@ function applyRoleUI(){
   if(roleTag){roleTag.textContent=isAdmin?'ADMIN':'MINI';roleTag.className='nav-role '+(isAdmin?'role-admin':'role-mini');}
   // Hide admin-only sections for mini
   document.querySelectorAll('.admin-only').forEach(function(el){el.style.display=isAdmin?'':'none';});
+  // Undo buttons: mini admin never sees them, regardless of bracket state.
+  // For admin, leave as-is — the bracket load/generate/undo functions control visibility based on whether a bracket exists.
+  document.querySelectorAll('.admin-undo-btn').forEach(function(el){if(!isAdmin)el.style.display='none';});
   // Mini admin: show weekly and monthly tabs, hide draw tab
   if(!isAdmin){
     var drawBtn=document.getElementById('btab-draw');
@@ -950,16 +973,18 @@ function saveWeeklyPrizePool(){
 function rebuildBracketFromGroups(groups,n){
   renderBracketHTML('bracketDisplay',groups,n,'tournament','Rs.',weeklySplit());
   document.getElementById('bracketGenSection').style.display='none';
-  document.getElementById('undoBracketBtn').style.display='block';
+  document.getElementById('undoBracketBtn').style.display=(currentRole==='admin')?'block':'none';
 }
 
 function renderBracketHTML(displayId,groups,n,kind,curSym,prizeSplit){
   var display=document.getElementById(displayId);
   var COLS=GROUP_COLS,LABELS=GROUP_LABELS;
   var DATE=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  var qP=2,fT=n*qP,slides=[];
+  var qP=Math.max(1,Math.round(12/n)),fT=0,slides=[];
   groups.forEach(function(grp,gi){
     var col=COLS[gi%COLS.length],lbl=LABELS[gi]||String(gi+1),rows='';
+    var thisQ=Math.min(qP,grp.length);
+    fT+=thisQ;
     grp.forEach(function(t,ti){
       rows+='<tr style="border-bottom:1px solid rgba(255,255,255,.04);">'
         +'<td style="padding:6px 10px;font-size:11px;color:rgba(255,255,255,.35);text-align:center;">'+(ti+1)+'</td>'
@@ -971,14 +996,14 @@ function renderBracketHTML(displayId,groups,n,kind,curSym,prizeSplit){
       +'<div style="background:'+col+';padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">'
       +'<div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;background:rgba(0,0,0,.3);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fff;">'+lbl+'</div>'
       +'<div><div style="font-size:13px;font-weight:900;color:#fff;letter-spacing:2px;">GROUP '+lbl+'</div>'
-      +'<div style="font-size:9px;color:rgba(255,255,255,.8);">'+grp.length+' SQUADS · TOP 2 QUALIFY</div></div></div>'
+      +'<div style="font-size:9px;color:rgba(255,255,255,.8);">'+grp.length+' SQUADS · TOP '+thisQ+' QUALIFY</div></div></div>'
       +'<div style="background:rgba(0,0,0,.35);border-radius:6px;padding:4px 12px;font-size:10px;font-weight:900;color:#fff;">GAME '+(gi+1)+'</div></div>'
       +'<div style="background:#111;padding:5px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;">'
       +'<span style="font-size:9px;color:rgba(255,255,255,.3);">DREAM2MOON · FULL MAP · FREE FIRE</span>'
       +'<span style="font-size:9px;color:rgba(255,255,255,.2);">'+DATE+'</span></div>'
       +'<table style="width:100%;border-collapse:collapse;">'+rows+'</table></div>');
   });
-  // Grand final — clean top-2-per-group only, no live stream slots
+  // Grand final — clean top-N-per-group only, N auto-calculated so final lands near 12 teams
   var fRows='',tNum=1;
   groups.forEach(function(grp,gi){
     var col=COLS[gi%COLS.length],lbl=LABELS[gi]||String(gi+1);
@@ -1052,11 +1077,11 @@ function loadSavedBracket(db){
 function setGroups(n){
   selectedGroups=n;
   document.querySelectorAll('#groupBtns .gbtn').forEach(function(b){var a=parseInt(b.dataset.g)===n;b.style.background=a?'rgba(79,195,247,.35)':'rgba(79,195,247,.08)';b.style.borderColor=a?'#00E5FF':'rgba(79,195,247,.25)';b.style.color=a?'#fff':'var(--blue)';});
-  var T=tournTeams.length,pG=Math.ceil(T/n),qP=2,fT=n*qP;
+  var T=tournTeams.length,pG=Math.ceil(T/n),qP=Math.max(1,Math.round(12/n)),fT=Math.min(qP*n,T);
   var info=document.getElementById('bracketInfo'),btn=document.getElementById('genBracketBtn');
   if(!T){info.textContent='No teams yet!';btn.style.display='none';return;}
   if(pG>12){var mg=Math.ceil(T/12);info.innerHTML='<span style="color:var(--orange);">⚠️ Auto-adjusting to '+mg+' groups...</span>';btn.style.display='none';setTimeout(function(){setGroups(mg);},700);return;}
-  info.innerHTML='<strong style="color:var(--cyan);">'+T+' teams</strong> → <strong style="color:var(--gold);">'+n+' group'+(n>1?'s':'')+'</strong> → Top 2 qualify each → <strong style="color:var(--green);">Final: '+fT+'</strong>';
+  info.innerHTML='<strong style="color:var(--cyan);">'+T+' teams</strong> → <strong style="color:var(--gold);">'+n+' group'+(n>1?'s':'')+'</strong> → Top '+qP+' qualify each → <strong style="color:var(--green);">Final: ~'+fT+'</strong>';
   btn.style.display='block';
 }
 
@@ -1082,10 +1107,20 @@ function saveTournResult(){
   }).then(function(snap){
     var b=db.batch();snap.forEach(function(d){b.delete(d.ref);});return b.commit();
   }).then(function(){
+    return db.collection('tournament_meta').doc('bracket').set({groups:null,clearedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+  }).then(function(){
     ['1st','2nd','3rd','4th'].forEach(function(p){['','-leader','-m1','-m2','-m3'].forEach(function(s){var el=document.getElementById('res-'+p+s);if(el)el.value='';});});
     document.getElementById('res-note').value='';
     tournTeams=[];renderTournTeams();
-    alert('✅ Results published!\n🗑️ Teams cleared!');
+    document.getElementById('bracketDisplay').innerHTML='';
+    var be=document.getElementById('bracketEmptyMsg');if(be)be.style.display='block';
+    document.getElementById('bracketGenSection').style.display='block';
+    document.getElementById('undoBracketBtn').style.display='none';
+    selectedGroups=0;
+    document.querySelectorAll('#groupBtns .gbtn').forEach(function(b){b.style.background='rgba(79,195,247,.08)';b.style.borderColor='rgba(79,195,247,.25)';b.style.color='var(--blue)';});
+    var bi=document.getElementById('bracketInfo');if(bi)bi.textContent='👆 Pick number of groups';
+    var gb=document.getElementById('genBracketBtn');if(gb)gb.style.display='none';
+    alert('✅ Results published!\n🗑️ Teams & match stat card cleared!');
   }).catch(function(e){alert('❌ '+e.message);});
 }
 
@@ -1227,7 +1262,7 @@ function loadMonthlySavedBracket(db){
       var s=snap.data();mSelectedGroups=s.n;
       renderMonthlyBracketHTML(s.groups,s.n);
       document.getElementById('mBracketGenSection').style.display='none';
-      document.getElementById('mUndoBracketBtn').style.display='block';
+      document.getElementById('mUndoBracketBtn').style.display=(currentRole==='admin')?'block':'none';
     }else{
       document.getElementById('mBracketDisplay').innerHTML='';
       var be=document.getElementById('mBracketEmptyMsg');if(be)be.style.display='block';
@@ -1370,7 +1405,52 @@ function saveMonthlyResult(){
   var db=getDB();
   var s=monthlySplit();
   db.collection('monthly_result').doc('latest').set({champion:champion,second:second,third:third,prize1st:s.first,prize2nd:s.second,prize3rd:s.third,updatedAt:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
-    alert('✅ Monthly results published!');
+    return db.collection('monthly_meta').doc('bracket').set({groups:null,clearedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+  }).then(function(){
+    document.getElementById('mBracketDisplay').innerHTML='';
+    var be=document.getElementById('mBracketEmptyMsg');if(be)be.style.display='block';
+    document.getElementById('mBracketGenSection').style.display='block';
+    document.getElementById('mUndoBracketBtn').style.display='none';
+    mSelectedGroups=0;
+    document.querySelectorAll('#mGroupBtns .gbtn').forEach(function(b){b.style.background='rgba(79,195,247,.08)';b.style.borderColor='rgba(79,195,247,.25)';b.style.color='var(--blue)';});
+    var bi=document.getElementById('mBracketInfo');if(bi)bi.textContent='👆 Pick number of groups';
+    var gb=document.getElementById('mGenBracketBtn');if(gb)gb.style.display='none';
+    alert('✅ Monthly results published!\n🗑️ Match stat card cleared!');
+  }).catch(function(e){alert('❌ '+e.message);});
+}
+
+// ── DIAMOND SETTINGS ──
+var DEFAULT_DIAMOND_TEXT="Diamond top-ups are temporarily paused while we sort out a wholesaler issue — a recent batch of vouchers we received was incorrect, and we're in the process of getting them exchanged. On top of that, prices have risen slightly due to the recent increase in USD/GBP exchange rates. We'll reopen top-ups as soon as everything is sorted — thanks for your patience! 🙏";
+function loadDiamondSettings(db){
+  db.collection('diamond_meta').doc('settings').get().then(function(snap){
+    var data=snap.exists?snap.data():{};
+    var enabled=data.enabled===true;
+    var txt=(typeof data.comingSoonText==='string'&&data.comingSoonText)?data.comingSoonText:DEFAULT_DIAMOND_TEXT;
+    var ta=document.getElementById('diamondComingSoonText');if(ta)ta.value=txt;
+    setDiamondToggleUI(enabled);
+  }).catch(function(){
+    var ta=document.getElementById('diamondComingSoonText');if(ta)ta.value=DEFAULT_DIAMOND_TEXT;
+    setDiamondToggleUI(false);
+  });
+}
+function setDiamondToggleUI(enabled){
+  var cb=document.getElementById('diamondToggle'),ball=document.getElementById('diamondToggleBall'),status=document.getElementById('diamondToggleStatus');
+  var slider=cb?cb.parentElement.querySelector('.toggle-slider'):null;
+  if(!cb)return;
+  cb.checked=enabled;
+  if(enabled){if(slider){slider.style.background='rgba(105,240,174,.25)';slider.style.borderColor='rgba(105,240,174,.4)';}if(ball){ball.style.background='#69F0AE';ball.style.transform='translateX(24px)';}if(status)status.textContent='🟢 IN STOCK';}
+  else{if(slider){slider.style.background='rgba(255,107,107,.25)';slider.style.borderColor='rgba(255,107,107,.4)';}if(ball){ball.style.background='#FF6B6B';ball.style.transform='translateX(0)';}if(status)status.textContent='🔴 OUT OF STOCK';}
+}
+function toggleDiamond(){
+  var db=getDB(),cb=document.getElementById('diamondToggle'),enabled=cb.checked;
+  db.collection('diamond_meta').doc('settings').set({enabled:enabled,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(function(){setDiamondToggleUI(enabled);}).catch(function(e){alert('Failed: '+e.message);cb.checked=!enabled;});
+}
+function saveDiamondSettings(){
+  var db=getDB();
+  var txt=document.getElementById('diamondComingSoonText').value.trim()||DEFAULT_DIAMOND_TEXT;
+  var enabled=document.getElementById('diamondToggle').checked;
+  db.collection('diamond_meta').doc('settings').set({enabled:enabled,comingSoonText:txt,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(function(){
+    alert('✅ Diamond settings saved!');
   }).catch(function(e){alert('❌ '+e.message);});
 }
 
