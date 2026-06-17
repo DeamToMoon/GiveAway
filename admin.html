@@ -976,11 +976,22 @@ function rebuildBracketFromGroups(groups,n){
   document.getElementById('undoBracketBtn').style.display=(currentRole==='admin')?'block':'none';
 }
 
+// Calculates how many teams qualify per group so the Grand Final lands near 12 teams,
+// but never qualifies more than half a group (so group stage stays a meaningful filter)
+// and never asks for more qualifiers than the smallest group actually has.
+function calcQualifiersPerGroup(groups){
+  var n=groups.length;
+  var minGroupSize=groups.reduce(function(m,g){return Math.min(m,g.length);},Infinity);
+  var target=Math.max(1,Math.round(12/n));
+  var cap=Math.max(1,Math.floor(minGroupSize/2));
+  return Math.max(1,Math.min(target,cap,minGroupSize));
+}
+
 function renderBracketHTML(displayId,groups,n,kind,curSym,prizeSplit){
   var display=document.getElementById(displayId);
   var COLS=GROUP_COLS,LABELS=GROUP_LABELS;
   var DATE=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  var qP=Math.max(1,Math.round(12/n)),fT=0,slides=[];
+  var qP=calcQualifiersPerGroup(groups),fT=0,slides=[];
   groups.forEach(function(grp,gi){
     var col=COLS[gi%COLS.length],lbl=LABELS[gi]||String(gi+1),rows='';
     var thisQ=Math.min(qP,grp.length);
@@ -1040,11 +1051,19 @@ function generateBracket(){
   for(var si=teams.length-1;si>0;si--){var sj=Math.floor(Math.random()*(si+1));var st=teams[si];teams[si]=teams[sj];teams[sj]=st;}
   var groups=[];for(var g=0;g<n;g++)groups.push([]);
   teams.forEach(function(t,i){groups[i%n].push(t);});
-  renderBracketHTML('bracketDisplay',groups,n,'tournament','Rs.',weeklySplit());
+  var btn=document.getElementById('genBracketBtn');
+  if(btn){btn.disabled=true;btn.textContent='⏳ Saving...';}
   var db=getDB();
-  db.collection('tournament_meta').doc('bracket').set({groups:groups.map(function(grp){return grp.map(function(t){return{leaderName:t.leaderName,leaderUID:t.leaderUID,member1:t.member1,member2:t.member2,member3:t.member3,whatsapp:t.whatsapp||''};});}),n:n,savedAt:firebase.firestore.FieldValue.serverTimestamp()}).catch(function(e){console.error(e);});
-  document.getElementById('bracketGenSection').style.display='none';
-  document.getElementById('undoBracketBtn').style.display='block';
+  var payload={groups:groups.map(function(grp){return grp.map(function(t){return{leaderName:t.leaderName,leaderUID:t.leaderUID,member1:t.member1,member2:t.member2,member3:t.member3,whatsapp:t.whatsapp||''};});}),n:n,savedAt:firebase.firestore.FieldValue.serverTimestamp()};
+  db.collection('tournament_meta').doc('bracket').set(payload).then(function(){
+    renderBracketHTML('bracketDisplay',groups,n,'tournament','Rs.',weeklySplit());
+    document.getElementById('bracketGenSection').style.display='none';
+    document.getElementById('undoBracketBtn').style.display=(currentRole==='admin')?'block':'none';
+    var be=document.getElementById('bracketEmptyMsg');if(be)be.style.display='none';
+  }).catch(function(e){
+    if(btn){btn.disabled=false;btn.textContent='💾 SAVE & PUBLISH STAT CARD';}
+    alert('❌ Failed to save match stat card: '+(e&&e.message?e.message:'Unknown error')+'\nCheck your connection / Firestore rules and try again.');
+  });
 }
 
 function undoBracket(){
@@ -1077,11 +1096,16 @@ function loadSavedBracket(db){
 function setGroups(n){
   selectedGroups=n;
   document.querySelectorAll('#groupBtns .gbtn').forEach(function(b){var a=parseInt(b.dataset.g)===n;b.style.background=a?'rgba(79,195,247,.35)':'rgba(79,195,247,.08)';b.style.borderColor=a?'#00E5FF':'rgba(79,195,247,.25)';b.style.color=a?'#fff':'var(--blue)';});
-  var T=tournTeams.length,pG=Math.ceil(T/n),qP=Math.max(1,Math.round(12/n)),fT=Math.min(qP*n,T);
+  var T=tournTeams.length,pG=Math.ceil(T/n);
   var info=document.getElementById('bracketInfo'),btn=document.getElementById('genBracketBtn');
   if(!T){info.textContent='No teams yet!';btn.style.display='none';return;}
   if(pG>12){var mg=Math.ceil(T/12);info.innerHTML='<span style="color:var(--orange);">⚠️ Auto-adjusting to '+mg+' groups...</span>';btn.style.display='none';setTimeout(function(){setGroups(mg);},700);return;}
-  info.innerHTML='<strong style="color:var(--cyan);">'+T+' teams</strong> → <strong style="color:var(--gold);">'+n+' group'+(n>1?'s':'')+'</strong> → Top '+qP+' qualify each → <strong style="color:var(--green);">Final: ~'+fT+'</strong>';
+  // Simulate the split to preview the real qualifier count
+  var simGroups=[];for(var g=0;g<n;g++)simGroups.push([]);
+  for(var i=0;i<T;i++)simGroups[i%n].push(1);
+  var qP=calcQualifiersPerGroup(simGroups);
+  var fT=simGroups.reduce(function(sum,grp){return sum+Math.min(qP,grp.length);},0);
+  info.innerHTML='<strong style="color:var(--cyan);">'+T+' teams</strong> → <strong style="color:var(--gold);">'+n+' group'+(n>1?'s':'')+'</strong> → Top '+qP+' qualify each → <strong style="color:var(--green);">Final: '+fT+'</strong>';
   btn.style.display='block';
 }
 
@@ -1203,16 +1227,23 @@ function mGenerateBracket(){
   for(var si=teams.length-1;si>0;si--){var sj=Math.floor(Math.random()*(si+1));var st=teams[si];teams[si]=teams[sj];teams[sj]=st;}
   var groups=[];for(var g2=0;g2<n;g2++)groups.push([]);
   teams.forEach(function(t,i){groups[i%n].push(t);});
-  renderMonthlyBracketHTML(groups,n);
+  var btn=document.getElementById('mGenBracketBtn');
+  if(btn){btn.disabled=true;btn.textContent='⏳ Saving...';}
   var db=getDB();
-  db.collection('monthly_meta').doc('bracket').set({
+  var payload={
     round:'r1',
     groups:groups.map(function(grp){return grp.map(function(t){return{leaderName:t.leaderName,leaderUID:t.leaderUID,m1:t.m1,m2:t.m2,m3:t.m3,whatsapp:t.phone||''};});}),
     n:n,savedAt:firebase.firestore.FieldValue.serverTimestamp()
-  }).catch(function(e){console.error(e);});
-  document.getElementById('mBracketGenSection').style.display='none';
-  document.getElementById('mUndoBracketBtn').style.display='block';
-  var be=document.getElementById('mBracketEmptyMsg');if(be)be.style.display='none';
+  };
+  db.collection('monthly_meta').doc('bracket').set(payload).then(function(){
+    renderMonthlyBracketHTML(groups,n);
+    document.getElementById('mBracketGenSection').style.display='none';
+    document.getElementById('mUndoBracketBtn').style.display=(currentRole==='admin')?'block':'none';
+    var be=document.getElementById('mBracketEmptyMsg');if(be)be.style.display='none';
+  }).catch(function(e){
+    if(btn){btn.disabled=false;btn.textContent='💾 SAVE & PUBLISH STAT CARD';}
+    alert('❌ Failed to save match stat card: '+(e&&e.message?e.message:'Unknown error')+'\nCheck your connection / Firestore rules and try again.');
+  });
 }
 
 function renderMonthlyBracketHTML(groups,n){
