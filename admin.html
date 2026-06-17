@@ -337,6 +337,13 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
         </label>
       </div>
       <div style="background:rgba(255,212,56,.05);border:1px solid rgba(255,212,56,.12);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:10px;color:rgba(255,212,56,.6);line-height:1.6;">⏰ Closes Thursday 11:59PM NPT · Free entry · 36 slots</div>
+      <div class="divider" style="margin:14px 0;"></div>
+      <label class="label">💰 Total Prize Pool (Rs.)</label>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input id="wPrizePool" type="number" placeholder="e.g. 1000" class="inp inp-gold" style="flex:1;">
+        <button onclick="saveWeeklyPrizePool()" class="btn btn-gold" style="padding:13px 16px;">💾 Save</button>
+      </div>
+      <div id="wPrizePreview" style="font-size:10px;color:var(--faint);margin-top:8px;line-height:1.6;"></div>
     </div>
 
     <!-- Teams -->
@@ -351,26 +358,25 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
     </div>
 
     <!-- Match Stat Card -->
-    <div class="admin-only">
-      <div class="card">
-        <div class="card-top"></div>
-        <div class="card-hdr" style="color:var(--blue);">📊 Match Stat Card
-          <button id="undoBracketBtn" onclick="undoBracket()" style="display:none;" class="btn btn-red" style="padding:6px 12px;font-size:10px;">↩️ Undo</button>
-        </div>
-        <div id="bracketGenSection">
-          <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Number of groups? <span style="color:var(--gold);">(max 12/group)</span></div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;" id="groupBtns">
-            <button onclick="setGroups(1)" data-g="1" class="gbtn">1</button>
-            <button onclick="setGroups(2)" data-g="2" class="gbtn">2</button>
-            <button onclick="setGroups(3)" data-g="3" class="gbtn">3</button>
-            <button onclick="setGroups(4)" data-g="4" class="gbtn">4</button>
-            <button onclick="setGroups(5)" data-g="5" class="gbtn">5</button>
-          </div>
-          <div id="bracketInfo" style="font-size:11px;color:var(--faint);text-align:center;margin-bottom:10px;">👆 Pick groups</div>
-          <button id="genBracketBtn" onclick="generateBracket()" style="display:none;" class="btn btn-blue btn-full">📊 GENERATE STAT CARD</button>
-        </div>
-        <div id="bracketDisplay"></div>
+    <div class="card">
+      <div class="card-top"></div>
+      <div class="card-hdr" style="color:var(--blue);">📊 Match Stat Card
+        <button id="undoBracketBtn" onclick="undoBracket()" style="display:none;" class="btn btn-red admin-only" style="padding:6px 12px;font-size:10px;">↩️ Undo</button>
       </div>
+      <div id="bracketGenSection" class="admin-only">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Number of groups? <span style="color:var(--gold);">(max 12/group)</span></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;" id="groupBtns">
+          <button onclick="setGroups(1)" data-g="1" class="gbtn">1</button>
+          <button onclick="setGroups(2)" data-g="2" class="gbtn">2</button>
+          <button onclick="setGroups(3)" data-g="3" class="gbtn">3</button>
+          <button onclick="setGroups(4)" data-g="4" class="gbtn">4</button>
+          <button onclick="setGroups(5)" data-g="5" class="gbtn">5</button>
+        </div>
+        <div id="bracketInfo" style="font-size:11px;color:var(--faint);text-align:center;margin-bottom:10px;">👆 Pick groups</div>
+        <button id="genBracketBtn" onclick="generateBracket()" style="display:none;" class="btn btn-blue btn-full">💾 SAVE &amp; PUBLISH STAT CARD</button>
+      </div>
+      <div id="bracketDisplay"></div>
+      <div id="bracketEmptyMsg" style="display:none;" class="no-entries">No match stat card published yet.</div>
     </div>
 
     <!-- Publish Results -->
@@ -378,9 +384,9 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
       <div class="card-top card-top-gold"></div>
       <div class="card-hdr" style="color:var(--gold);">🏆 Publish Results</div>
       <div style="display:flex;flex-direction:column;gap:10px;">
-        <div><label class="label">🥇 1st Place (Rs.500)</label><input id="res-1st" type="text" placeholder="Squad name" class="inp inp-gold"><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;"><input id="res-1st-leader" type="text" placeholder="Leader" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-1st-m1" type="text" placeholder="M1" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-1st-m2" type="text" placeholder="M2" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-1st-m3" type="text" placeholder="M3" class="inp" style="font-size:13px;padding:10px 12px;"></div></div>
-        <div><label class="label">🥈 2nd Place (Rs.300)</label><input id="res-2nd" type="text" placeholder="Squad name" class="inp"><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;"><input id="res-2nd-leader" type="text" placeholder="Leader" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-2nd-m1" type="text" placeholder="M1" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-2nd-m2" type="text" placeholder="M2" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-2nd-m3" type="text" placeholder="M3" class="inp" style="font-size:13px;padding:10px 12px;"></div></div>
-        <div><label class="label">🥉 3rd Place (Rs.200)</label><input id="res-3rd" type="text" placeholder="Squad name" class="inp"><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;"><input id="res-3rd-leader" type="text" placeholder="Leader" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-3rd-m1" type="text" placeholder="M1" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-3rd-m2" type="text" placeholder="M2" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-3rd-m3" type="text" placeholder="M3" class="inp" style="font-size:13px;padding:10px 12px;"></div></div>
+        <div><label class="label" id="resLbl1st">🥇 1st Place</label><input id="res-1st" type="text" placeholder="Squad name" class="inp inp-gold"><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;"><input id="res-1st-leader" type="text" placeholder="Leader" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-1st-m1" type="text" placeholder="M1" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-1st-m2" type="text" placeholder="M2" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-1st-m3" type="text" placeholder="M3" class="inp" style="font-size:13px;padding:10px 12px;"></div></div>
+        <div><label class="label" id="resLbl2nd">🥈 2nd Place</label><input id="res-2nd" type="text" placeholder="Squad name" class="inp"><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;"><input id="res-2nd-leader" type="text" placeholder="Leader" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-2nd-m1" type="text" placeholder="M1" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-2nd-m2" type="text" placeholder="M2" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-2nd-m3" type="text" placeholder="M3" class="inp" style="font-size:13px;padding:10px 12px;"></div></div>
+        <div><label class="label" id="resLbl3rd">🥉 3rd Place</label><input id="res-3rd" type="text" placeholder="Squad name" class="inp"><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;"><input id="res-3rd-leader" type="text" placeholder="Leader" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-3rd-m1" type="text" placeholder="M1" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-3rd-m2" type="text" placeholder="M2" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-3rd-m3" type="text" placeholder="M3" class="inp" style="font-size:13px;padding:10px 12px;"></div></div>
         <div><label class="label">🎖️ 4th Place</label><input id="res-4th" type="text" placeholder="Squad name" class="inp"><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;"><input id="res-4th-leader" type="text" placeholder="Leader" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-4th-m1" type="text" placeholder="M1" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-4th-m2" type="text" placeholder="M2" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-4th-m3" type="text" placeholder="M3" class="inp" style="font-size:13px;padding:10px 12px;"></div></div>
         <div><label class="label">📝 Note</label><input id="res-note" type="text" placeholder="Optional note..." class="inp"></div>
         <button onclick="saveTournResult()" class="btn-publish">🚀 PUBLISH RESULTS LIVE</button>
@@ -410,6 +416,54 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
       </div>
     </div>
 
+    <!-- Monthly Settings (admin only) -->
+    <div class="card admin-only" style="border-color:rgba(156,39,176,.18);">
+      <div class="card-top card-top-purple"></div>
+      <div class="card-hdr" style="color:var(--purple);">⚙️ Monthly Settings</div>
+      <div class="toggle-wrap">
+        <div>
+          <div class="toggle-label">Monthly Tournament</div>
+          <div class="toggle-sub" id="monthlyToggleStatus">Loading...</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" id="monthlyToggle" onchange="toggleMonthlyTournament()">
+          <span class="toggle-slider"><span class="toggle-ball" id="monthlyToggleBall"></span></span>
+        </label>
+      </div>
+      <div class="divider" style="margin:14px 0;"></div>
+      <label class="label">💰 Total Prize Pool (NPR)</label>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input id="mPrizePool" type="number" placeholder="e.g. 8000" class="inp inp-purple" style="flex:1;">
+        <button onclick="saveMonthlyPrizePool()" class="btn btn-purple" style="padding:13px 16px;">💾 Save</button>
+      </div>
+      <div id="mPrizePreview" style="font-size:10px;color:var(--faint);margin-top:8px;line-height:1.6;"></div>
+    </div>
+
+    <!-- Monthly Match Stat Card -->
+    <div class="card" style="border-color:rgba(156,39,176,.18);">
+      <div class="card-top card-top-purple"></div>
+      <div class="card-hdr" style="color:var(--purple);">📊 Monthly Match Stat Card
+        <button id="mUndoBracketBtn" onclick="mUndoBracket()" style="display:none;" class="btn btn-red admin-only" style="padding:6px 12px;font-size:10px;">↩️ Undo</button>
+      </div>
+      <div id="mBracketGenSection" class="admin-only">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Round 1 — Number of groups? <span style="color:var(--gold);">(max 12/group, A–F)</span></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;" id="mGroupBtns">
+          <button onclick="mSetGroups(1)" data-g="1" class="gbtn">1</button>
+          <button onclick="mSetGroups(2)" data-g="2" class="gbtn">2</button>
+          <button onclick="mSetGroups(3)" data-g="3" class="gbtn">3</button>
+          <button onclick="mSetGroups(4)" data-g="4" class="gbtn">4</button>
+          <button onclick="mSetGroups(5)" data-g="5" class="gbtn">5</button>
+          <button onclick="mSetGroups(6)" data-g="6" class="gbtn">6</button>
+        </div>
+        <div id="mBracketInfo" style="font-size:11px;color:var(--faint);text-align:center;margin-bottom:10px;">👆 Pick groups</div>
+        <div style="font-size:10px;color:var(--muted);margin-bottom:6px;">Optional — only include these SN numbers (comma/newline separated). Leave blank to use ALL verified teams:</div>
+        <textarea id="mBracketSNInput" class="inp textarea inp-purple" placeholder="e.g. 1,2,3,4,5... or leave blank for all"></textarea>
+        <button id="mGenBracketBtn" onclick="mGenerateBracket()" style="display:none;margin-top:10px;" class="btn btn-purple btn-full">💾 SAVE &amp; PUBLISH STAT CARD</button>
+      </div>
+      <div id="mBracketDisplay"></div>
+      <div id="mBracketEmptyMsg" style="display:none;" class="no-entries">No match stat card published yet.</div>
+    </div>
+
     <!-- Qualifiers (admin only) -->
     <div class="admin-only" style="display:flex;flex-direction:column;gap:14px;">
       <div class="card" style="border-color:rgba(255,107,107,.15);">
@@ -434,9 +488,9 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
         <div class="card-top card-top-purple"></div>
         <div class="card-hdr" style="color:var(--purple);">🏆 Publish Monthly Results</div>
         <div style="display:flex;flex-direction:column;gap:10px;">
-          <div><label class="label">🥇 Champion (NPR 4,000)</label><input id="mres-1st" type="text" placeholder="Team name" class="inp inp-gold"></div>
-          <div><label class="label">🥈 2nd Place (NPR 2,400)</label><input id="mres-2nd" type="text" placeholder="Team name" class="inp"></div>
-          <div><label class="label">🥉 3rd Place (NPR 1,600)</label><input id="mres-3rd" type="text" placeholder="Team name" class="inp"></div>
+          <div><label class="label">🥇 Champion</label><input id="mres-1st" type="text" placeholder="Team name" class="inp inp-gold"></div>
+          <div><label class="label">🥈 2nd Place</label><input id="mres-2nd" type="text" placeholder="Team name" class="inp"></div>
+          <div><label class="label">🥉 3rd Place</label><input id="mres-3rd" type="text" placeholder="Team name" class="inp"></div>
           <button onclick="saveMonthlyResult()" class="btn btn-purple btn-full" style="padding:14px;margin-top:4px;">🚀 PUBLISH</button>
         </div>
       </div>
@@ -482,6 +536,7 @@ function getDB(){
 }
 
 var allEntries=[],winnerHistory=[],tournTeams=[],selectedGroups=0;
+var monthlyTeamsCache=[],mSelectedGroups=0;
 var drawnMonthly=null,wheelRunning=false,currentRole='admin';
 
 // ── STARS ──
@@ -501,6 +556,7 @@ function doLogin(){
   var p=document.getElementById('loginPass').value;
   if(u==='Dream2moon'&&p==='dream2moon@123'){currentRole='admin';}
   else if(u==='miniadmin'&&p==='Bipin@90'){currentRole='mini';}
+  else if(u==='miniadmin1'&&p==='Prashant@90'){currentRole='mini';}
   else{document.getElementById('loginError').style.display='block';return;}
   document.getElementById('loginError').style.display='none';
   document.getElementById('loginScreen').style.display='none';
@@ -508,8 +564,9 @@ function doLogin(){
   applyRoleUI();
   var db=getDB();
   if(currentRole==='admin'){
-    loadEntries(db);loadSavedBracket(db);loadRegToggle(db);
+    loadEntries(db);loadRegToggle(db);loadWeeklyPrizePool(db);loadMonthlySettings(db);
   }
+  loadSavedBracket(db);loadMonthlySavedBracket(db);
   loadTournTeams(db);loadMonthlyTeams();
 }
 
@@ -811,7 +868,7 @@ function loadRegToggle(db){
 
 function setToggleUI(locked){
   var cb=document.getElementById('regToggle'),ball=document.getElementById('regToggleBall'),status=document.getElementById('regToggleStatus');
-  var slider=document.querySelector('.toggle-slider');
+  var slider=cb?cb.parentElement.querySelector('.toggle-slider'):null;
   if(!cb)return;
   cb.checked=!locked;
   if(!locked){if(slider){slider.style.background='rgba(105,240,174,.25)';slider.style.borderColor='rgba(105,240,174,.4)';}if(ball){ball.style.background='#69F0AE';ball.style.transform='translateX(24px)';}if(status)status.textContent='🟢 Registration OPEN';}
@@ -823,24 +880,30 @@ function toggleRegistration(){
   db.collection('tournament_meta').doc('settings').set({registrationLocked:locked,updatedAt:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){setToggleUI(locked);}).catch(function(e){alert('Failed: '+e.message);cb.checked=!locked;});
 }
 
-// ── BRACKET ──
-function rebuildBracketFromGroups(groups,n){
-  // simplified rebuild
-  generateBracket();
-}
+// ── WHATSAPP GROUP LINKS (A-F) ──
+var WA_LINKS={
+  A:'https://chat.whatsapp.com/LxRQor611M5DklsoGVPhFv?s=cl&p=i&ilr=1',
+  B:'https://chat.whatsapp.com/HXtt5OGhKw80gSvIP2lBay?s=cl&p=i&ilr=1',
+  C:'https://chat.whatsapp.com/JYOw4EHnFa1CUjNxSW8Nu6?s=cl&p=i&ilr=1',
+  D:'https://chat.whatsapp.com/KHToTuoxRBkJPqRK9cBcZk?s=cl&p=i&ilr=1',
+  E:'https://chat.whatsapp.com/E4OUilEoJ55Czam8jCaGa4?s=cl&p=i&ilr=1',
+  F:'https://chat.whatsapp.com/Leqexziphb7AfdrLEL3wcU?s=cl&p=i&ilr=1'
+};
+var GROUP_LABELS=['A','B','C','D','E','F'];
+var GROUP_COLS=['#E53935','#1E88E5','#43A047','#8E24AA','#F4511E','#00897B'];
+
 function buildWASection(groups){
-  var gLabels=['A','B','C','D','E'],gCols=['#F44336','#1E88E5','#43A047','#8E24AA','#F4511E'];
   var html='<div style="margin-top:16px;background:linear-gradient(135deg,rgba(13,35,75,.95),rgba(8,22,55,.9));border-radius:16px;padding:18px;border:1px solid rgba(37,211,102,.3);">'
     +'<div style="font-size:10px;font-weight:800;letter-spacing:2px;color:#69F0AE;text-transform:uppercase;margin-bottom:14px;border-bottom:1px solid rgba(37,211,102,.15);padding-bottom:10px;">💬 WhatsApp Invites</div>';
   groups.forEach(function(grp,gi){
-    var lbl=gLabels[gi];if(!lbl)return;
-    var col=gCols[gi],link=WA_LINKS[lbl]||'#';
+    var lbl=GROUP_LABELS[gi];if(!lbl)return;
+    var link=WA_LINKS[lbl]||'#';
     html+='<div style="background:rgba(255,255,255,.04);border-radius:10px;padding:10px;margin-bottom:8px;">'
       +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">'
       +'<span style="font-size:12px;font-weight:800;color:#fff;">GROUP '+lbl+'</span>'
       +'<a href="'+link+'" target="_blank" style="padding:4px 10px;background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.4);border-radius:6px;font-size:11px;color:#25D366;text-decoration:none;">🔗 Open</a></div>';
     grp.forEach(function(t){
-      var raw=(t.whatsapp||'').replace(/\D/g,''),num=raw?(raw.startsWith('977')?raw:'977'+raw):'';
+      var raw=(t.whatsapp||t.phone||'').replace(/\D/g,''),num=raw?(raw.indexOf('977')===0?raw:'977'+raw):'';
       var msg='Hi+'+encodeURIComponent(t.leaderName)+'!%0AYou+are+in+Group+'+lbl+'.%0AJoin+your+match+group:%0A'+encodeURIComponent(link);
       html+='<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04);">'
         +'<div style="flex:1;"><div style="font-size:12px;font-weight:700;color:#fff;">👑 '+esc(t.leaderName)+'</div>'
@@ -853,24 +916,55 @@ function buildWASection(groups){
   return html+'</div>';
 }
 
-function generateBracket(){
-  var display=document.getElementById('bracketDisplay');
-  if(!tournTeams.length){display.innerHTML='<p style="color:var(--red)">No teams!</p>';return;}
-  if(!selectedGroups){display.innerHTML='<p style="color:var(--gold)">Pick groups first.</p>';return;}
-  var teams=tournTeams.slice(),n=selectedGroups;
-  for(var si=teams.length-1;si>0;si--){var sj=Math.floor(Math.random()*(si+1));var st=teams[si];teams[si]=teams[sj];teams[sj]=st;}
-  var groups=[];for(var g=0;g<n;g++)groups.push([]);
-  teams.forEach(function(t,i){groups[i%n].push(t);});
-  var COLS=['#E53935','#1E88E5','#43A047','#8E24AA','#F4511E'],LABELS=['A','B','C','D','E'];
+// ── WEEKLY PRIZE POOL ──
+function weeklySplit(){
+  var pool=window._wPrizePool||1000;
+  return {pool:pool,first:Math.round(pool*0.5),second:Math.round(pool*0.3),third:pool-Math.round(pool*0.5)-Math.round(pool*0.3)};
+}
+function loadWeeklyPrizePool(db){
+  db.collection('tournament_meta').doc('settings').get().then(function(snap){
+    var pool=(snap.exists&&snap.data().prizePool)?snap.data().prizePool:1000;
+    window._wPrizePool=pool;
+    var inp=document.getElementById('wPrizePool');if(inp)inp.value=pool;
+    renderWeeklyPrizePreview();
+  }).catch(function(){window._wPrizePool=1000;});
+}
+function renderWeeklyPrizePreview(){
+  var s=weeklySplit(),el=document.getElementById('wPrizePreview');
+  if(el)el.innerHTML='🥇 Rs.'+s.first+' · 🥈 Rs.'+s.second+' · 🥉 Rs.'+s.third+' &nbsp;(Total Rs.'+s.pool+')';
+  var l1=document.getElementById('resLbl1st'),l2=document.getElementById('resLbl2nd'),l3=document.getElementById('resLbl3rd');
+  if(l1)l1.textContent='🥇 1st Place (Rs.'+s.first+')';
+  if(l2)l2.textContent='🥈 2nd Place (Rs.'+s.second+')';
+  if(l3)l3.textContent='🥉 3rd Place (Rs.'+s.third+')';
+}
+function saveWeeklyPrizePool(){
+  var val=parseInt(document.getElementById('wPrizePool').value,10);
+  if(!val||val<=0){alert('Enter a valid prize pool amount!');return;}
+  var db=getDB();
+  db.collection('tournament_meta').doc('settings').set({prizePool:val,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(function(){
+    window._wPrizePool=val;renderWeeklyPrizePreview();alert('✅ Weekly prize pool saved! Rs.'+val);
+  }).catch(function(e){alert('❌ '+e.message);});
+}
+
+// ── BRACKET (WEEKLY) ──
+function rebuildBracketFromGroups(groups,n){
+  renderBracketHTML('bracketDisplay',groups,n,'tournament','Rs.',weeklySplit());
+  document.getElementById('bracketGenSection').style.display='none';
+  document.getElementById('undoBracketBtn').style.display='block';
+}
+
+function renderBracketHTML(displayId,groups,n,kind,curSym,prizeSplit){
+  var display=document.getElementById(displayId);
+  var COLS=GROUP_COLS,LABELS=GROUP_LABELS;
   var DATE=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
-  var qP=2,lS=Math.max(0,12-n*qP),fT=Math.min(n*qP+lS,12),slides=[];
+  var qP=2,fT=n*qP,slides=[];
   groups.forEach(function(grp,gi){
     var col=COLS[gi%COLS.length],lbl=LABELS[gi]||String(gi+1),rows='';
     grp.forEach(function(t,ti){
       rows+='<tr style="border-bottom:1px solid rgba(255,255,255,.04);">'
         +'<td style="padding:6px 10px;font-size:11px;color:rgba(255,255,255,.35);text-align:center;">'+(ti+1)+'</td>'
         +'<td style="padding:6px 10px;font-size:12px;font-weight:700;color:#fff;">'+esc(t.leaderName)+'</td>'
-        +'<td style="padding:6px 10px;font-size:10px;color:rgba(255,255,255,.4);">'+esc(t.member1)+' · '+esc(t.member2)+' · '+esc(t.member3)+'</td>'
+        +'<td style="padding:6px 10px;font-size:10px;color:rgba(255,255,255,.4);">'+esc(t.member1||t.m1||'')+' · '+esc(t.member2||t.m2||'')+' · '+esc(t.member3||t.m3||'')+'</td>'
         +'</tr>';
     });
     slides.push('<div style="background:#0d0d0d;border-radius:12px;overflow:hidden;margin-bottom:14px;border:1px solid '+col+'30;">'
@@ -884,7 +978,7 @@ function generateBracket(){
       +'<span style="font-size:9px;color:rgba(255,255,255,.2);">'+DATE+'</span></div>'
       +'<table style="width:100%;border-collapse:collapse;">'+rows+'</table></div>');
   });
-  // Grand final
+  // Grand final — clean top-2-per-group only, no live stream slots
   var fRows='',tNum=1;
   groups.forEach(function(grp,gi){
     var col=COLS[gi%COLS.length],lbl=LABELS[gi]||String(gi+1);
@@ -896,31 +990,34 @@ function generateBracket(){
       tNum++;
     }
   });
-  for(var ls=0;ls<lS;ls++){
-    fRows+='<tr style="background:rgba(255,152,0,.06);">'
-      +'<td style="padding:8px 12px;text-align:center;"><span style="background:#FF9800;color:#000;font-size:9px;font-weight:900;padding:3px 8px;border-radius:4px;">TEAM '+tNum+'</span></td>'
-      +'<td style="padding:8px 12px;font-size:11px;color:#FF9800;font-weight:700;">🎬 Live Stream Qualifier</td>'
-      +'<td style="padding:8px 12px;text-align:right;"><span style="font-size:9px;color:#FF9800;background:rgba(255,152,0,.18);padding:2px 8px;border-radius:4px;">LIVE</span></td></tr>';
-    tNum++;
-  }
   slides.push('<div style="background:#0d0d0d;border-radius:12px;overflow:hidden;margin-bottom:14px;border:2px solid rgba(255,212,56,.35);">'
     +'<div style="background:linear-gradient(90deg,#7c5200,#c07c00,#7c5200);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">'
     +'<div style="display:flex;align-items:center;gap:10px;"><div style="font-size:24px;">🏆</div>'
     +'<div><div style="font-size:14px;font-weight:900;color:#FFD438;letter-spacing:2px;">GRAND FINAL</div>'
-    +'<div style="font-size:9px;color:rgba(255,220,100,.7);">TOP '+qP+' PER GROUP + '+lS+' LIVE STREAM · '+fT+' TEAMS</div></div></div>'
+    +'<div style="font-size:9px;color:rgba(255,220,100,.7);">TOP '+qP+' PER GROUP · '+fT+' TEAMS</div></div></div>'
     +'<div style="background:rgba(0,0,0,.4);border-radius:6px;padding:4px 12px;font-size:10px;font-weight:900;color:#FFD438;">GAME '+(n+1)+'</div></div>'
     +'<table style="width:100%;border-collapse:collapse;">'+fRows+'</table>'
     +'<div style="display:flex;border-top:1px solid rgba(255,212,56,.2);">'
-    +'<div style="flex:1;padding:10px;text-align:center;border-right:1px solid rgba(255,255,255,.05);background:rgba(255,212,56,.06);"><div style="font-size:16px;">🥇</div><div style="font-size:11px;font-weight:900;color:#FFD438;">Rs.1,500</div><div style="font-size:8px;color:rgba(255,212,56,.5);">CHAMPION</div></div>'
-    +'<div style="flex:1;padding:10px;text-align:center;border-right:1px solid rgba(255,255,255,.05);"><div style="font-size:16px;">🥈</div><div style="font-size:11px;font-weight:900;color:#90CAF9;">Rs.1,000</div><div style="font-size:8px;color:rgba(144,202,249,.5);">2ND</div></div>'
-    +'<div style="flex:1;padding:10px;text-align:center;border-right:1px solid rgba(255,255,255,.05);"><div style="font-size:16px;">🥉</div><div style="font-size:11px;font-weight:900;color:#CE93D8;">Rs.600</div><div style="font-size:8px;color:rgba(206,147,216,.5);">3RD</div></div>'
+    +'<div style="flex:1;padding:10px;text-align:center;border-right:1px solid rgba(255,255,255,.05);background:rgba(255,212,56,.06);"><div style="font-size:16px;">🥇</div><div style="font-size:11px;font-weight:900;color:#FFD438;">'+curSym+prizeSplit.first+'</div><div style="font-size:8px;color:rgba(255,212,56,.5);">CHAMPION</div></div>'
+    +'<div style="flex:1;padding:10px;text-align:center;border-right:1px solid rgba(255,255,255,.05);"><div style="font-size:16px;">🥈</div><div style="font-size:11px;font-weight:900;color:#90CAF9;">'+curSym+prizeSplit.second+'</div><div style="font-size:8px;color:rgba(144,202,249,.5);">2ND</div></div>'
+    +'<div style="flex:1;padding:10px;text-align:center;border-right:1px solid rgba(255,255,255,.05);"><div style="font-size:16px;">🥉</div><div style="font-size:11px;font-weight:900;color:#CE93D8;">'+curSym+prizeSplit.third+'</div><div style="font-size:8px;color:rgba(206,147,216,.5);">3RD</div></div>'
     +'<div style="flex:1;padding:10px;text-align:center;background:rgba(105,240,174,.04);"><div style="font-size:16px;">💚</div><div style="font-size:10px;color:rgba(105,240,174,.7);font-weight:700;margin-top:2px;">eSewa</div></div>'
     +'</div></div>');
-  // WA section
-  var waHTML=buildWASection(groups.map(function(grp){return grp.map(function(t){return{leaderName:t.leaderName,leaderUID:t.leaderUID,whatsapp:t.whatsapp||''};});}));
+  var waHTML=buildWASection(groups.map(function(grp){return grp.map(function(t){return{leaderName:t.leaderName,leaderUID:t.leaderUID,whatsapp:t.whatsapp||t.phone||''};});}));
   display.innerHTML='<div style="font-size:10px;color:var(--muted);margin-bottom:10px;text-align:center;">'+slides.length+' SLIDES — SCREENSHOT EACH ONE</div>'+slides.join('')+waHTML;
+}
+
+function generateBracket(){
+  var display=document.getElementById('bracketDisplay');
+  if(!tournTeams.length){display.innerHTML='<p style="color:var(--red)">No teams!</p>';return;}
+  if(!selectedGroups){display.innerHTML='<p style="color:var(--gold)">Pick groups first.</p>';return;}
+  var teams=tournTeams.slice(),n=selectedGroups;
+  for(var si=teams.length-1;si>0;si--){var sj=Math.floor(Math.random()*(si+1));var st=teams[si];teams[si]=teams[sj];teams[sj]=st;}
+  var groups=[];for(var g=0;g<n;g++)groups.push([]);
+  teams.forEach(function(t,i){groups[i%n].push(t);});
+  renderBracketHTML('bracketDisplay',groups,n,'tournament','Rs.',weeklySplit());
   var db=getDB();
-  db.collection('tournament_meta').doc('bracket').set({groups:groups.map(function(grp){return grp.map(function(t){return{leaderName:t.leaderName,leaderUID:t.leaderUID,whatsapp:t.whatsapp||''};});}),n:n,savedAt:firebase.firestore.FieldValue.serverTimestamp()}).catch(function(e){console.error(e);});
+  db.collection('tournament_meta').doc('bracket').set({groups:groups.map(function(grp){return grp.map(function(t){return{leaderName:t.leaderName,leaderUID:t.leaderUID,member1:t.member1,member2:t.member2,member3:t.member3,whatsapp:t.whatsapp||''};});}),n:n,savedAt:firebase.firestore.FieldValue.serverTimestamp()}).catch(function(e){console.error(e);});
   document.getElementById('bracketGenSection').style.display='none';
   document.getElementById('undoBracketBtn').style.display='block';
 }
@@ -933,7 +1030,7 @@ function undoBracket(){
   document.getElementById('bracketGenSection').style.display='block';
   document.getElementById('undoBracketBtn').style.display='none';
   selectedGroups=0;
-  document.querySelectorAll('.gbtn').forEach(function(b){b.style.background='rgba(79,195,247,.08)';b.style.borderColor='rgba(79,195,247,.25)';b.style.color='var(--blue)';});
+  document.querySelectorAll('#groupBtns .gbtn').forEach(function(b){b.style.background='rgba(79,195,247,.08)';b.style.borderColor='rgba(79,195,247,.25)';b.style.color='var(--blue)';});
   document.getElementById('bracketInfo').textContent='👆 Pick number of groups';
   document.getElementById('genBracketBtn').style.display='none';
 }
@@ -943,9 +1040,9 @@ function loadSavedBracket(db){
     if(snap.exists&&snap.data().groups&&snap.data().n){
       var s=snap.data();selectedGroups=s.n;
       rebuildBracketFromGroups(s.groups,s.n);
-      document.getElementById('bracketGenSection').style.display='none';
-      document.getElementById('undoBracketBtn').style.display='block';
     }else{
+      document.getElementById('bracketDisplay').innerHTML='';
+      var be=document.getElementById('bracketEmptyMsg');if(be)be.style.display='block';
       document.getElementById('bracketGenSection').style.display='block';
       document.getElementById('undoBracketBtn').style.display='none';
     }
@@ -954,12 +1051,12 @@ function loadSavedBracket(db){
 
 function setGroups(n){
   selectedGroups=n;
-  document.querySelectorAll('.gbtn').forEach(function(b){var a=parseInt(b.dataset.g)===n;b.style.background=a?'rgba(79,195,247,.35)':'rgba(79,195,247,.08)';b.style.borderColor=a?'#00E5FF':'rgba(79,195,247,.25)';b.style.color=a?'#fff':'var(--blue)';});
-  var T=tournTeams.length,pG=Math.ceil(T/n),qP=n===1?T:2,lS=n>1?Math.max(0,12-n*qP):0,fT=n===1?T:Math.min(n*qP+lS,12);
+  document.querySelectorAll('#groupBtns .gbtn').forEach(function(b){var a=parseInt(b.dataset.g)===n;b.style.background=a?'rgba(79,195,247,.35)':'rgba(79,195,247,.08)';b.style.borderColor=a?'#00E5FF':'rgba(79,195,247,.25)';b.style.color=a?'#fff':'var(--blue)';});
+  var T=tournTeams.length,pG=Math.ceil(T/n),qP=2,fT=n*qP;
   var info=document.getElementById('bracketInfo'),btn=document.getElementById('genBracketBtn');
   if(!T){info.textContent='No teams yet!';btn.style.display='none';return;}
   if(pG>12){var mg=Math.ceil(T/12);info.innerHTML='<span style="color:var(--orange);">⚠️ Auto-adjusting to '+mg+' groups...</span>';btn.style.display='none';setTimeout(function(){setGroups(mg);},700);return;}
-  info.innerHTML='<strong style="color:var(--cyan);">'+T+' teams</strong> → <strong style="color:var(--gold);">'+n+' group'+(n>1?'s':'')+'</strong> → Top '+qP+' qualify'+(lS>0?' + <strong style="color:#FF9800;">'+lS+' Live</strong>':'')+' → <strong style="color:var(--green);">Final: '+fT+'</strong>';
+  info.innerHTML='<strong style="color:var(--cyan);">'+T+' teams</strong> → <strong style="color:var(--gold);">'+n+' group'+(n>1?'s':'')+'</strong> → Top 2 qualify each → <strong style="color:var(--green);">Final: '+fT+'</strong>';
   btn.style.display='block';
 }
 
@@ -971,12 +1068,14 @@ function saveTournResult(){
   if(!champion){alert('Enter champion name!');return;}
   if(!confirm('Publish weekly results?'))return;
   var db=getDB();
+  var s=weeklySplit();
   var data={
     champion:champion,champion1Leader:g('res-1st-leader'),champion1m1:g('res-1st-m1'),champion1m2:g('res-1st-m2'),champion1m3:g('res-1st-m3'),
     second:g('res-2nd'),second1Leader:g('res-2nd-leader'),second1m1:g('res-2nd-m1'),second1m2:g('res-2nd-m2'),second1m3:g('res-2nd-m3'),
     third:g('res-3rd'),third1Leader:g('res-3rd-leader'),third1m1:g('res-3rd-m1'),third1m2:g('res-3rd-m2'),third1m3:g('res-3rd-m3'),
     fourth:g('res-4th'),fourth1Leader:g('res-4th-leader'),fourth1m1:g('res-4th-m1'),fourth1m2:g('res-4th-m2'),fourth1m3:g('res-4th-m3'),
-    note:g('res-note'),updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+    note:g('res-note'),prize1st:s.first,prize2nd:s.second,prize3rd:s.third,
+    updatedAt:firebase.firestore.FieldValue.serverTimestamp()
   };
   db.collection('tournament_result').doc('latest').set(data).then(function(){
     return db.collection('tournament_teams').get();
@@ -990,8 +1089,154 @@ function saveTournResult(){
   }).catch(function(e){alert('❌ '+e.message);});
 }
 
-// ── MONTHLY TOURNAMENT ──
-var WA_LINKS={A:'https://chat.whatsapp.com/LxRQor611M5DklsoGVPhFv?s=cl&p=i&ilr=1',B:'https://chat.whatsapp.com/HXtt5OGhKw80gSvIP2lBay?s=cl&p=i&ilr=1',C:'https://chat.whatsapp.com/JYOw4EHnFa1CUjNxSW8Nu6?s=cl&p=i&ilr=1',D:'https://chat.whatsapp.com/KHToTuoxRBkJPqRK9cBcZk?s=cl&p=i&ilr=1',E:'https://chat.whatsapp.com/E4OUilEoJ55Czam8jCaGa4?s=cl&p=i&ilr=1'};
+// ── MONTHLY SETTINGS (toggle + prize pool) ──
+function monthlySplit(){
+  var pool=window._mPrizePool||8000;
+  return {pool:pool,first:Math.round(pool*0.5),second:Math.round(pool*0.3),third:pool-Math.round(pool*0.5)-Math.round(pool*0.3)};
+}
+function loadMonthlySettings(db){
+  db.collection('monthly_meta').doc('settings').get().then(function(snap){
+    var data=snap.exists?snap.data():{};
+    var pool=data.prizePool||8000,enabled=data.enabled!==false;
+    window._mPrizePool=pool;
+    var inp=document.getElementById('mPrizePool');if(inp)inp.value=pool;
+    renderMonthlyPrizePreview();
+    setMonthlyToggleUI(enabled);
+  }).catch(function(){window._mPrizePool=8000;setMonthlyToggleUI(true);});
+}
+function renderMonthlyPrizePreview(){
+  var s=monthlySplit(),el=document.getElementById('mPrizePreview');
+  if(el)el.innerHTML='🥇 NPR '+s.first+' · 🥈 NPR '+s.second+' · 🥉 NPR '+s.third+' &nbsp;(Total NPR '+s.pool+')';
+  var l1=document.getElementById('mresLbl1st'),l2=document.getElementById('mresLbl2nd'),l3=document.getElementById('mresLbl3rd');
+  if(l1)l1.textContent='🥇 Champion (NPR '+s.first+')';
+  if(l2)l2.textContent='🥈 2nd Place (NPR '+s.second+')';
+  if(l3)l3.textContent='🥉 3rd Place (NPR '+s.third+')';
+}
+function saveMonthlyPrizePool(){
+  var val=parseInt(document.getElementById('mPrizePool').value,10);
+  if(!val||val<=0){alert('Enter a valid prize pool amount!');return;}
+  var db=getDB();
+  db.collection('monthly_meta').doc('settings').set({prizePool:val,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(function(){
+    window._mPrizePool=val;renderMonthlyPrizePreview();alert('✅ Monthly prize pool saved! NPR '+val);
+  }).catch(function(e){alert('❌ '+e.message);});
+}
+function setMonthlyToggleUI(enabled){
+  var cb=document.getElementById('monthlyToggle'),ball=document.getElementById('monthlyToggleBall'),status=document.getElementById('monthlyToggleStatus');
+  var slider=cb?cb.parentElement.querySelector('.toggle-slider'):null;
+  if(!cb)return;
+  cb.checked=enabled;
+  if(enabled){if(slider){slider.style.background='rgba(105,240,174,.25)';slider.style.borderColor='rgba(105,240,174,.4)';}if(ball){ball.style.background='#69F0AE';ball.style.transform='translateX(24px)';}if(status)status.textContent='🟢 Monthly Tournament ON';}
+  else{if(slider){slider.style.background='rgba(255,107,107,.25)';slider.style.borderColor='rgba(255,107,107,.4)';}if(ball){ball.style.background='#FF6B6B';ball.style.transform='translateX(0)';}if(status)status.textContent='🔴 Monthly Tournament OFF';}
+}
+function toggleMonthlyTournament(){
+  var db=getDB(),cb=document.getElementById('monthlyToggle'),enabled=cb.checked;
+  db.collection('monthly_meta').doc('settings').set({enabled:enabled,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(function(){setMonthlyToggleUI(enabled);}).catch(function(e){alert('Failed: '+e.message);cb.checked=!enabled;});
+}
+
+// ── MONTHLY MATCH STAT CARD (Round 1) ──
+function mSetGroups(n){
+  mSelectedGroups=n;
+  document.querySelectorAll('#mGroupBtns .gbtn').forEach(function(b){var a=parseInt(b.dataset.g)===n;b.style.background=a?'rgba(156,39,176,.35)':'rgba(79,195,247,.08)';b.style.borderColor=a?'#CE93D8':'rgba(79,195,247,.25)';b.style.color=a?'#fff':'var(--blue)';});
+  var verified=monthlyTeamsCache.filter(function(t){return t.verified===true;});
+  var T=verified.length,pG=n?Math.ceil(T/n):0,qP=2,fT=n*qP;
+  var info=document.getElementById('mBracketInfo'),btn=document.getElementById('mGenBracketBtn');
+  if(!T){info.textContent='No verified teams yet!';btn.style.display='none';return;}
+  if(pG>12){var mg=Math.ceil(T/12);info.innerHTML='<span style="color:var(--orange);">⚠️ Auto-adjusting to '+mg+' groups...</span>';btn.style.display='none';setTimeout(function(){mSetGroups(mg);},700);return;}
+  info.innerHTML='<strong style="color:var(--cyan);">'+T+' verified teams</strong> → <strong style="color:var(--purple);">'+n+' group'+(n>1?'s':'')+'</strong> → Top 4 qualify each → <strong style="color:var(--green);">Round 2: '+(n*4)+'</strong>';
+  btn.style.display='block';
+}
+
+function mParseSNList(raw){
+  if(!raw)return null;
+  var parts=raw.split(/[\n,]+/).map(function(s){return parseInt(s.trim(),10);}).filter(function(n){return!isNaN(n)&&n>0;});
+  return parts.length?parts:null;
+}
+
+function mGenerateBracket(){
+  var display=document.getElementById('mBracketDisplay');
+  var verified=monthlyTeamsCache.filter(function(t){return t.verified===true;});
+  if(!verified.length){display.innerHTML='<p style="color:var(--red)">No verified teams!</p>';return;}
+  if(!mSelectedGroups){display.innerHTML='<p style="color:var(--gold)">Pick groups first.</p>';return;}
+  var snRaw=document.getElementById('mBracketSNInput').value;
+  var snList=mParseSNList(snRaw);
+  var pool=verified;
+  if(snList){
+    pool=verified.filter(function(t){return snList.indexOf(t._sn)>-1;});
+    if(!pool.length){alert('None of those SN numbers matched a verified team!');return;}
+  }
+  var teams=pool.slice(),n=mSelectedGroups;
+  for(var si=teams.length-1;si>0;si--){var sj=Math.floor(Math.random()*(si+1));var st=teams[si];teams[si]=teams[sj];teams[sj]=st;}
+  var groups=[];for(var g2=0;g2<n;g2++)groups.push([]);
+  teams.forEach(function(t,i){groups[i%n].push(t);});
+  renderMonthlyBracketHTML(groups,n);
+  var db=getDB();
+  db.collection('monthly_meta').doc('bracket').set({
+    round:'r1',
+    groups:groups.map(function(grp){return grp.map(function(t){return{leaderName:t.leaderName,leaderUID:t.leaderUID,m1:t.m1,m2:t.m2,m3:t.m3,whatsapp:t.phone||''};});}),
+    n:n,savedAt:firebase.firestore.FieldValue.serverTimestamp()
+  }).catch(function(e){console.error(e);});
+  document.getElementById('mBracketGenSection').style.display='none';
+  document.getElementById('mUndoBracketBtn').style.display='block';
+  var be=document.getElementById('mBracketEmptyMsg');if(be)be.style.display='none';
+}
+
+function renderMonthlyBracketHTML(groups,n){
+  var display=document.getElementById('mBracketDisplay');
+  var COLS=GROUP_COLS,LABELS=GROUP_LABELS;
+  var DATE=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
+  var qP=4,slides=[];
+  groups.forEach(function(grp,gi){
+    var col=COLS[gi%COLS.length],lbl=LABELS[gi]||String(gi+1),rows='';
+    grp.forEach(function(t,ti){
+      rows+='<tr style="border-bottom:1px solid rgba(255,255,255,.04);">'
+        +'<td style="padding:6px 10px;font-size:11px;color:rgba(255,255,255,.35);text-align:center;">'+(ti+1)+'</td>'
+        +'<td style="padding:6px 10px;font-size:12px;font-weight:700;color:#fff;">'+esc(t.leaderName)+'</td>'
+        +'<td style="padding:6px 10px;font-size:10px;color:rgba(255,255,255,.4);">'+esc(t.m1||'')+' · '+esc(t.m2||'')+' · '+esc(t.m3||'')+'</td>'
+        +'</tr>';
+    });
+    slides.push('<div style="background:#0d0d0d;border-radius:12px;overflow:hidden;margin-bottom:14px;border:1px solid '+col+'30;">'
+      +'<div style="background:'+col+';padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">'
+      +'<div style="display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;background:rgba(0,0,0,.3);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fff;">'+lbl+'</div>'
+      +'<div><div style="font-size:13px;font-weight:900;color:#fff;letter-spacing:2px;">GROUP '+lbl+'</div>'
+      +'<div style="font-size:9px;color:rgba(255,255,255,.8);">'+grp.length+' SQUADS · TOP 4 QUALIFY</div></div></div>'
+      +'<div style="background:rgba(0,0,0,.35);border-radius:6px;padding:4px 12px;font-size:10px;font-weight:900;color:#fff;">ROUND 1</div></div>'
+      +'<div style="background:#111;padding:5px 16px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;">'
+      +'<span style="font-size:9px;color:rgba(255,255,255,.3);">DREAM2MOON · MONTHLY · FREE FIRE</span>'
+      +'<span style="font-size:9px;color:rgba(255,255,255,.2);">'+DATE+'</span></div>'
+      +'<table style="width:100%;border-collapse:collapse;">'+rows+'</table></div>');
+  });
+  display.innerHTML='<div style="font-size:10px;color:var(--muted);margin-bottom:10px;text-align:center;">'+slides.length+' GROUPS — TOP 4 PER GROUP ADVANCE TO SEMI FINALS</div>'+slides.join('')+buildWASection(groups.map(function(grp){return grp.map(function(t){return{leaderName:t.leaderName,leaderUID:t.leaderUID,whatsapp:t.phone||''};});}));
+}
+
+function mUndoBracket(){
+  if(!confirm('Undo monthly group division?'))return;
+  var db=getDB();
+  db.collection('monthly_meta').doc('bracket').set({groups:null,clearedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(function(){});
+  document.getElementById('mBracketDisplay').innerHTML='';
+  document.getElementById('mBracketGenSection').style.display='block';
+  document.getElementById('mUndoBracketBtn').style.display='none';
+  mSelectedGroups=0;
+  document.querySelectorAll('#mGroupBtns .gbtn').forEach(function(b){b.style.background='rgba(79,195,247,.08)';b.style.borderColor='rgba(79,195,247,.25)';b.style.color='var(--blue)';});
+  document.getElementById('mBracketInfo').textContent='👆 Pick number of groups';
+  document.getElementById('mGenBracketBtn').style.display='none';
+}
+
+function loadMonthlySavedBracket(db){
+  db.collection('monthly_meta').doc('bracket').get().then(function(snap){
+    if(snap.exists&&snap.data().groups&&snap.data().n){
+      var s=snap.data();mSelectedGroups=s.n;
+      renderMonthlyBracketHTML(s.groups,s.n);
+      document.getElementById('mBracketGenSection').style.display='none';
+      document.getElementById('mUndoBracketBtn').style.display='block';
+    }else{
+      document.getElementById('mBracketDisplay').innerHTML='';
+      var be=document.getElementById('mBracketEmptyMsg');if(be)be.style.display='block';
+      document.getElementById('mBracketGenSection').style.display='block';
+      document.getElementById('mUndoBracketBtn').style.display='none';
+    }
+  }).catch(function(){document.getElementById('mBracketGenSection').style.display='block';document.getElementById('mUndoBracketBtn').style.display='none';});
+}
+
 
 function loadMonthlyTeams(){
   var list=document.getElementById('monthlyTeamsList');
@@ -999,6 +1244,7 @@ function loadMonthlyTeams(){
   var db=getDB();
   db.collection('monthly_teams').orderBy('registeredAt','asc').get().then(function(snap){
     var teams=[];snap.forEach(function(d){teams.push(Object.assign({id:d.id,_sn:teams.length+1},d.data()));});
+    monthlyTeamsCache=teams;
     var pending=teams.filter(function(t){return!t.verified;});
     var approved=teams.filter(function(t){return t.verified===true;});
     document.getElementById('mTotalCount').textContent=teams.length;
@@ -1122,7 +1368,8 @@ function saveMonthlyResult(){
   if(!champion){alert('Enter champion name!');return;}
   if(!confirm('Publish monthly results?\n1st: '+champion+'\n2nd: '+(second||'—')+'\n3rd: '+(third||'—')))return;
   var db=getDB();
-  db.collection('monthly_result').doc('latest').set({champion:champion,second:second,third:third,updatedAt:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
+  var s=monthlySplit();
+  db.collection('monthly_result').doc('latest').set({champion:champion,second:second,third:third,prize1st:s.first,prize2nd:s.second,prize3rd:s.third,updatedAt:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
     alert('✅ Monthly results published!');
   }).catch(function(e){alert('❌ '+e.message);});
 }
