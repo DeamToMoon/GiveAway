@@ -1053,17 +1053,35 @@ function generateBracket(){
   teams.forEach(function(t,i){groups[i%n].push(t);});
   var btn=document.getElementById('genBracketBtn');
   if(btn){btn.disabled=true;btn.textContent='⏳ Saving...';}
-  var db=getDB();
-  var payload={groups:groups.map(function(grp){return grp.map(function(t){return{leaderName:t.leaderName,leaderUID:t.leaderUID,member1:t.member1,member2:t.member2,member3:t.member3,whatsapp:t.whatsapp||''};});}),n:n,savedAt:firebase.firestore.FieldValue.serverTimestamp()};
-  db.collection('tournament_meta').doc('bracket').set(payload).then(function(){
-    renderBracketHTML('bracketDisplay',groups,n,'tournament','Rs.',weeklySplit());
-    document.getElementById('bracketGenSection').style.display='none';
-    document.getElementById('undoBracketBtn').style.display=(currentRole==='admin')?'block':'none';
-    var be=document.getElementById('bracketEmptyMsg');if(be)be.style.display='none';
-  }).catch(function(e){
-    if(btn){btn.disabled=false;btn.textContent='💾 SAVE & PUBLISH STAT CARD';}
-    alert('❌ Failed to save match stat card: '+(e&&e.message?e.message:'Unknown error')+'\nCheck your connection / Firestore rules and try again.');
-  });
+  function resetBtn(){if(btn){btn.disabled=false;btn.textContent='💾 SAVE & PUBLISH STAT CARD';}}
+  try{
+    var db=getDB();
+    var payload={
+      groups:groups.map(function(grp){return grp.map(function(t){return{
+        leaderName:t.leaderName||'',
+        leaderUID:t.leaderUID||'',
+        member1:t.member1||'',
+        member2:t.member2||'',
+        member3:t.member3||'',
+        whatsapp:t.whatsapp||''
+      };});}),
+      n:n,
+      savedAt:firebase.firestore.FieldValue.serverTimestamp()
+    };
+    db.collection('tournament_meta').doc('bracket').set(payload).then(function(){
+      renderBracketHTML('bracketDisplay',groups,n,'tournament','Rs.',weeklySplit());
+      document.getElementById('bracketGenSection').style.display='none';
+      document.getElementById('undoBracketBtn').style.display=(currentRole==='admin')?'block':'none';
+      var be=document.getElementById('bracketEmptyMsg');if(be)be.style.display='none';
+      resetBtn();
+    }).catch(function(e){
+      resetBtn();
+      alert('❌ Failed to save match stat card: '+(e&&e.message?e.message:'Unknown error')+'\nCheck your connection / Firestore rules and try again.');
+    });
+  }catch(e){
+    resetBtn();
+    alert('❌ Failed to save match stat card: '+(e&&e.message?e.message:'Unknown error')+'\nThis usually means a team record has missing data. Please review teams and try again.');
+  }
 }
 
 function undoBracket(){
@@ -1087,10 +1105,13 @@ function loadSavedBracket(db){
     }else{
       document.getElementById('bracketDisplay').innerHTML='';
       var be=document.getElementById('bracketEmptyMsg');if(be)be.style.display='block';
-      document.getElementById('bracketGenSection').style.display='block';
+      document.getElementById('bracketGenSection').style.display=(currentRole==='admin')?'block':'none';
       document.getElementById('undoBracketBtn').style.display='none';
     }
-  }).catch(function(){document.getElementById('bracketGenSection').style.display='block';document.getElementById('undoBracketBtn').style.display='none';});
+  }).catch(function(){
+    document.getElementById('bracketGenSection').style.display=(currentRole==='admin')?'block':'none';
+    document.getElementById('undoBracketBtn').style.display='none';
+  });
 }
 
 function setGroups(n){
@@ -1229,21 +1250,36 @@ function mGenerateBracket(){
   teams.forEach(function(t,i){groups[i%n].push(t);});
   var btn=document.getElementById('mGenBracketBtn');
   if(btn){btn.disabled=true;btn.textContent='⏳ Saving...';}
-  var db=getDB();
-  var payload={
-    round:'r1',
-    groups:groups.map(function(grp){return grp.map(function(t){return{leaderName:t.leaderName,leaderUID:t.leaderUID,m1:t.m1,m2:t.m2,m3:t.m3,whatsapp:t.phone||''};});}),
-    n:n,savedAt:firebase.firestore.FieldValue.serverTimestamp()
-  };
-  db.collection('monthly_meta').doc('bracket').set(payload).then(function(){
-    renderMonthlyBracketHTML(groups,n);
-    document.getElementById('mBracketGenSection').style.display='none';
-    document.getElementById('mUndoBracketBtn').style.display=(currentRole==='admin')?'block':'none';
-    var be=document.getElementById('mBracketEmptyMsg');if(be)be.style.display='none';
-  }).catch(function(e){
-    if(btn){btn.disabled=false;btn.textContent='💾 SAVE & PUBLISH STAT CARD';}
-    alert('❌ Failed to save match stat card: '+(e&&e.message?e.message:'Unknown error')+'\nCheck your connection / Firestore rules and try again.');
-  });
+  function resetBtn(){if(btn){btn.disabled=false;btn.textContent='💾 SAVE & PUBLISH STAT CARD';}}
+  try{
+    var db=getDB();
+    var payload={
+      round:'r1',
+      groups:groups.map(function(grp){return grp.map(function(t){return{
+        leaderName:t.leaderName||'',
+        leaderUID:t.leaderUID||'',
+        m1:t.m1||'',
+        m2:t.m2||'',
+        m3:t.m3||'',
+        whatsapp:t.phone||''
+      };});}),
+      n:n,
+      savedAt:firebase.firestore.FieldValue.serverTimestamp()
+    };
+    db.collection('monthly_meta').doc('bracket').set(payload).then(function(){
+      renderMonthlyBracketHTML(groups,n);
+      document.getElementById('mBracketGenSection').style.display='none';
+      document.getElementById('mUndoBracketBtn').style.display=(currentRole==='admin')?'block':'none';
+      var be=document.getElementById('mBracketEmptyMsg');if(be)be.style.display='none';
+      resetBtn();
+    }).catch(function(e){
+      resetBtn();
+      alert('❌ Failed to save match stat card: '+(e&&e.message?e.message:'Unknown error')+'\nCheck your connection / Firestore rules and try again.');
+    });
+  }catch(e){
+    resetBtn();
+    alert('❌ Failed to save match stat card: '+(e&&e.message?e.message:'Unknown error')+'\nThis usually means a team record has missing data. Please review teams and try again.');
+  }
 }
 
 function renderMonthlyBracketHTML(groups,n){
@@ -1297,10 +1333,13 @@ function loadMonthlySavedBracket(db){
     }else{
       document.getElementById('mBracketDisplay').innerHTML='';
       var be=document.getElementById('mBracketEmptyMsg');if(be)be.style.display='block';
-      document.getElementById('mBracketGenSection').style.display='block';
+      document.getElementById('mBracketGenSection').style.display=(currentRole==='admin')?'block':'none';
       document.getElementById('mUndoBracketBtn').style.display='none';
     }
-  }).catch(function(){document.getElementById('mBracketGenSection').style.display='block';document.getElementById('mUndoBracketBtn').style.display='none';});
+  }).catch(function(){
+    document.getElementById('mBracketGenSection').style.display=(currentRole==='admin')?'block':'none';
+    document.getElementById('mUndoBracketBtn').style.display='none';
+  });
 }
 
 
