@@ -456,7 +456,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
   <button onclick="toggleSec('sec4')" style="width:100%;padding:18px 20px;background:linear-gradient(135deg,#003820,#065f46,#059669,#065f46,#003820);background-size:300%;border:none;border-radius:18px;font-family:'Orbitron',sans-serif;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;animation:btnShimmer 5s linear infinite;box-shadow:0 6px 28px rgba(16,185,129,.25);text-align:left;">
     <div style="display:flex;flex-direction:column;gap:4px;">
       <div style="font-size:14px;font-weight:900;letter-spacing:2px;">⚔️ WEEKLY TOURNAMENT</div>
-      <div style="font-size:9px;font-weight:600;letter-spacing:2px;opacity:.65;text-transform:uppercase;">FREE Entry · 36 Slots · <span id="wBtnPoolTxt">Rs.1,000</span> Prize Pool</div>
+      <div style="font-size:9px;font-weight:600;letter-spacing:2px;opacity:.65;text-transform:uppercase;"><span id="wEntryFeeBtnTxt">FREE</span> Entry · <span id="wMaxSlotsTxt">36</span> Slots · <span id="wBtnPoolTxt">Rs.1,000</span> Prize Pool</div>
     </div>
     <span id="sec4-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;">▼</span>
   </button>
@@ -468,7 +468,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 
   <div class="tourn-banner">
     <div class="tourn-live-badge" id="regStatusBadge"><div class="tourn-live-dot"></div><span id="regStatusText">Checking...</span></div>
-    <div style="font-size:10px;color:rgba(105,240,174,.55);margin-bottom:14px;padding-left:2px;">📋 FREE entry! Register before <strong style="color:rgba(105,240,174,.8);">Thursday 11:59PM NPT</strong> — 36 slots only</div>
+    <div style="font-size:10px;color:rgba(105,240,174,.55);margin-bottom:14px;padding-left:2px;">📋 <span id="wEntryFeeFormTxt">FREE</span> entry! Register before <strong style="color:rgba(105,240,174,.8);">Thursday 11:59PM NPT</strong> — <span id="wMaxSlotsFormTxt">36</span> slots only</div>
     <div class="tourn-title">🏆 SQUAD GAME<br><span>FULL MAP TOURNAMENT</span></div>
     <div class="tourn-sub">This Saturday • Free Fire • <strong>Full Map Squad Mode</strong><br>FREE entry this week! Register your squad and compete for <strong id="wSubPoolTxt">Rs.1,000</strong> prize pool! 🎯</div>
 
@@ -973,7 +973,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 
     <div style="background:rgba(105,240,174,.04);border:1px solid rgba(105,240,174,.1);border-radius:12px;padding:14px;margin-bottom:16px;">
       <div style="font-size:9px;font-weight:800;letter-spacing:3px;color:rgba(105,240,174,.5);text-transform:uppercase;margin-bottom:12px;">⚡ How It Works</div>
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">🎉</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:var(--green);">FREE ENTRY</strong> — No payment required. First come, first served — only 36 slots!</div></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">🎉</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:var(--green);" id="wEntryFeeRuleLabel">FREE ENTRY</strong> — No payment required. First come, first served — only <span id="wMaxSlotsRuleTxt">36</span> slots!</div></div>
       <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">📋</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Register your squad</strong> — Leader + 3 members before Thursday 11:59PM NPT</div></div>
       <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">📱</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Join WhatsApp group</strong> — Get your room ID &amp; match schedule after registration</div></div>
       <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;"><div style="font-size:15px;flex-shrink:0;">🎲</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Random group division</strong> — Teams shuffled &amp; split into groups after registration closes</div></div>
@@ -981,7 +981,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       <div style="display:flex;align-items:flex-start;gap:10px;"><div style="font-size:15px;flex-shrink:0;">🏆</div><div style="font-size:12px;color:var(--muted);line-height:1.5;"><strong style="color:#fff;">Grand Final</strong> — Top squads battle for <strong style="color:var(--gold);" id="wFinalPoolTxt">Rs.1,000</strong> prize pool! 💰</div></div>
     </div>
 
-    <div class="rule-item"><div class="rule-dot" style="background:var(--green);box-shadow:0 0 6px rgba(105,240,174,.5);"></div>🎉 <strong style="color:var(--green);">FREE entry</strong> — no payment required</div>
+    <div class="rule-item"><div class="rule-dot" style="background:var(--green);box-shadow:0 0 6px rgba(105,240,174,.5);"></div>🎉 <strong style="color:var(--green);" id="wEntryFeeRuleCardTxt">FREE entry</strong> — no payment required</div>
     <div class="rule-item"><div class="rule-dot" style="background:var(--cyan);box-shadow:0 0 6px rgba(0,229,255,.4);"></div>Register before Thursday 11:59PM NPT — <strong>max 36 teams</strong></div>
     <div class="rule-item"><div class="rule-dot" style="background:var(--green);"></div>Team: 1 leader + 3 members — all names &amp; UIDs required, cannot be changed</div>
     <div class="rule-item"><div class="rule-dot" style="background:var(--green);"></div>Groups randomly divided after registration closes</div>
@@ -1012,6 +1012,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 
     <div class="card" style="border-color:rgba(21,101,192,.3);">
       <div class="rules-title" style="color:var(--blue);">💎 Diamond &amp; Membership</div>
+      <div id="diamondStockBadge" style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:9px;font-weight:800;letter-spacing:2px;margin-bottom:12px;">—</div>
       <div style="font-size:12px;color:rgba(255,255,255,.55);line-height:1.7;margin-bottom:16px;">
         Top up Free Fire diamonds directly through Dream2Moon at great rates, or grab a Weekly/Monthly Membership for ongoing perks. Pricing below 👇
       </div>
@@ -1044,12 +1045,12 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
       </div>
     </div>
 
-    <div class="card" style="border-color:rgba(255,212,56,.25);">
+    <div id="diamondComingSoonCard" class="card" style="border-color:rgba(255,212,56,.25);display:none;">
       <div style="text-align:center;padding:10px 0 16px;">
         <div style="font-size:42px;margin-bottom:8px;animation:bounce 2.5s ease infinite;">🔜</div>
         <div style="font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;color:var(--gold);letter-spacing:2px;">COMING SOON</div>
       </div>
-      <div style="background:rgba(255,212,56,.05);border:1px solid rgba(255,212,56,.15);border-radius:12px;padding:14px 16px;font-size:12px;color:rgba(255,212,56,.75);line-height:1.8;">
+      <div id="diamondComingSoonTxt" style="background:rgba(255,212,56,.05);border:1px solid rgba(255,212,56,.15);border-radius:12px;padding:14px 16px;font-size:12px;color:rgba(255,212,56,.75);line-height:1.8;">
         Diamond top-ups are temporarily paused while we sort out a wholesaler issue — a recent batch of vouchers we received was incorrect, and we're in the process of getting them exchanged. On top of that, prices have risen slightly due to the recent increase in USD/GBP exchange rates. We'll reopen top-ups as soon as everything is sorted — thanks for your patience! 🙏
       </div>
     </div>
@@ -1060,7 +1061,6 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     <a href="admin.html" class="admin-lnk">🔐 Admin Panel</a>
     <div class="footer">🌙 <span>Powered by</span> <a href="#">Dream2Moon</a> &nbsp;|&nbsp; Play With Purpose</div>
   </div>
-</div>
 </div>
 
 <script>
@@ -1255,7 +1255,8 @@ onSnapshot(doc(db,'tournament_meta','settings'),snap=>{
     window._adminLocked=false;
   }
   // Weekly prize pool — auto 50/30/20 split
-  const pool=(snap.exists()&&snap.data().prizePool)?snap.data().prizePool:1000;
+  const data=snap.exists()?snap.data():{};
+  const pool=data.prizePool||1000;
   const p1=Math.round(pool*0.5),p2=Math.round(pool*0.3),p3=pool-p1-p2;
   const setTxt=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
   setTxt('wPrize1st','Rs.'+p1);
@@ -1266,6 +1267,18 @@ onSnapshot(doc(db,'tournament_meta','settings'),snap=>{
   setTxt('wSubPoolTxt','Rs.'+pool);
   setTxt('wFinalPoolTxt','Rs.'+pool);
   setTxt('wRulePrizeTxt','Prizes: 🥇 Rs.'+p1+' · 🥈 Rs.'+p2+' · 🥉 Rs.'+p3+' via eSewa 💚');
+  // Slots + entry fee
+  const maxSlots=data.maxSlots||36;
+  const entryFee=(typeof data.entryFee==='number')?data.entryFee:0;
+  const feeTxt=entryFee===0?'FREE':'Rs.'+entryFee;
+  window._wMaxSlots=maxSlots;
+  window._wEntryFee=entryFee;
+  setTxt('wMaxSlotsTxt',maxSlots);
+  setTxt('wEntryFeeBtnTxt',feeTxt);
+  setTxt('wEntryFeeFormTxt',feeTxt);
+  setTxt('wEntryFeeRuleTxt',feeTxt);
+  setTxt('wMaxSlotsRuleTxt',maxSlots);
+  setTxt('wMaxSlotsFormTxt',maxSlots);
   checkRegistrationStatus();
 });
 // Listen for tournament results — re-opens registration when results published
@@ -1285,14 +1298,15 @@ onSnapshot(query(collection(db,'tournament_teams'),orderBy('registeredAt','asc')
   const allDocs=snap.docs;
   const verified=allDocs.filter(d=>d.data().verified===true);
   const count=verified.length;
+  const maxSlots=window._wMaxSlots||36;
   const countEl=document.getElementById('teamsCount');
   const badgeEl=document.getElementById('teamsCountBadge');
   if(countEl)countEl.textContent=count;
   if(badgeEl)badgeEl.textContent=count+' team'+(count!==1?'s':'');
-  const slots=Math.max(0,36-count);
+  const slots=Math.max(0,maxSlots-count);
   const slEl=document.getElementById('slotsLeft');
   if(slEl)slEl.textContent=slots;
-  const isFull=count>=36;
+  const isFull=count>=maxSlots;
   const regBtn=document.getElementById('registerBtn');
   const lockMsg=document.getElementById('regLockedMsg');
   const badge=document.getElementById('regStatusBadge');
@@ -1304,9 +1318,9 @@ onSnapshot(query(collection(db,'tournament_teams'),orderBy('registeredAt','asc')
       lockMsg.style.display='block';
       lockMsg.innerHTML='<div style="font-size:28px;margin-bottom:8px;">🚫</div>'
         +'<div style="font-family:\'Orbitron\',sans-serif;font-size:12px;font-weight:900;color:var(--red);letter-spacing:2px;margin-bottom:6px;">MAX REGISTRATION HIT!</div>'
-        +'<div style="font-size:12px;color:var(--muted);line-height:1.6;">36 slots filled!<br>Registration is now closed!<br>Try again next week 🙏</div>';
+        +'<div style="font-size:12px;color:var(--muted);line-height:1.6;">'+maxSlots+' slots filled!<br>Registration is now closed!<br>Try again next week 🙏</div>';
     }
-    if(badgeText)badgeText.textContent='Full — 60/60 Teams';
+    if(badgeText)badgeText.textContent='Full — '+maxSlots+'/'+maxSlots+' Teams';
     if(badge){badge.style.background='rgba(255,107,107,.15)';badge.style.borderColor='rgba(255,107,107,.3)';}
     if(badgeDot)badgeDot.style.background='#FF6B6B';
   }
@@ -1370,7 +1384,8 @@ window._real_goToPaymentStep=window.goToPaymentStep=async function(){
   try{
     const allUIDs=[uid,m1uid,m2uid,m3uid];
     const tSnap=await getDocs(collection(db,'tournament_teams'));
-    if(tSnap.size>=36){tWarn('warn-squad','🚫 All 36 slots are filled! Try next week.');btn.disabled=false;btn.textContent='⚔️ SUBMIT ▶';return;}
+    const wMaxSlots=window._wMaxSlots||36;
+    if(tSnap.size>=wMaxSlots){tWarn('warn-squad','🚫 All '+wMaxSlots+' slots are filled! Try next week.');btn.disabled=false;btn.textContent='⚔️ SUBMIT ▶';return;}
     for(const d of tSnap.docs){
       const t=d.data();
       const exUIDs=[t.leaderUID,t.member1uid,t.member2uid,t.member3uid].map(x=>(x||'').trim());
@@ -1424,8 +1439,9 @@ window._real_submitTournament=window.submitTournament=async function(){
   try{
     // Final server-side cap check
     const allTeams=await getDocs(collection(db,'tournament_teams'));
-    if(allTeams.size>=36){
-      alert('🚫 All 36 slots are filled! Try next week!');
+    const wMaxSlots2=window._wMaxSlots||36;
+    if(allTeams.size>=wMaxSlots2){
+      alert('🚫 All '+wMaxSlots2+' slots are filled! Try next week!');
       btn.disabled=false;btn.textContent='⚔️ SUBMIT REGISTRATION';return;
     }
     // Final duplicate squad name check
@@ -1675,6 +1691,43 @@ onSnapshot(doc(db,'monthly_meta','settings'),snap=>{
   setTxt('mPrize2nd','NPR '+p2.toLocaleString());
   setTxt('mPrize3rd','NPR '+p3.toLocaleString());
   setTxt('mPrizeTotalTxt','NPR '+pool.toLocaleString());
+  const maxTeams=data.maxTeams||72;
+  const entryFee=(typeof data.entryFee==='number')?data.entryFee:100;
+  const feeTxt=entryFee===0?'FREE':'NPR '+entryFee.toLocaleString();
+  window._mMaxTeams=maxTeams;
+  window._mEntryFee=entryFee;
+  setTxt('mMaxTeamsTxt',maxTeams);
+  setTxt('mEntryFeeTxt',feeTxt);
+  setTxt('mEntryFeeHdrTxt',feeTxt);
+  setTxt('mEntryFeeFormTxt',feeTxt);
+  setTxt('mEntryFeeQRTxt',feeTxt);
+  setTxt('mEntryFeeRuleTxt',feeTxt);
+});
+
+// Diamond top-up settings — admin-controlled stock status + coming soon text
+onSnapshot(doc(db,'diamond_meta','settings'),snap=>{
+  const data=snap.exists()?snap.data():{};
+  const enabled=data.enabled===true;
+  const badge=document.getElementById('diamondStockBadge');
+  const comingSoonCard=document.getElementById('diamondComingSoonCard');
+  const comingSoonTxt=document.getElementById('diamondComingSoonTxt');
+  if(badge){
+    if(enabled){
+      badge.textContent='🟢 IN STOCK';
+      badge.style.background='rgba(105,240,174,.12)';
+      badge.style.border='1px solid rgba(105,240,174,.3)';
+      badge.style.color='#69F0AE';
+    }else{
+      badge.textContent='🔴 OUT OF STOCK';
+      badge.style.background='rgba(255,107,107,.12)';
+      badge.style.border='1px solid rgba(255,107,107,.3)';
+      badge.style.color='#FF6B6B';
+    }
+  }
+  if(comingSoonCard)comingSoonCard.style.display=enabled?'none':'block';
+  if(comingSoonTxt&&typeof data.comingSoonText==='string'&&data.comingSoonText){
+    comingSoonTxt.textContent=data.comingSoonText;
+  }
 });
 
 // Live qualifiers display
