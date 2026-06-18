@@ -356,8 +356,18 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
           <span class="toggle-slider"><span class="toggle-ball" id="regToggleBall"></span></span>
         </label>
       </div>
-      <div style="background:rgba(255,212,56,.05);border:1px solid rgba(255,212,56,.12);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:10px;color:rgba(255,212,56,.6);line-height:1.6;">⏰ Closes Thursday 11:59PM NPT · Free entry · 36 slots</div>
+      <div style="background:rgba(255,212,56,.05);border:1px solid rgba(255,212,56,.12);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:10px;color:rgba(255,212,56,.6);line-height:1.6;">⏰ Closes Thursday 11:59PM NPT</div>
       <div class="divider" style="margin:14px 0;"></div>
+      <label class="label">👥 Max Slots</label>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
+        <input id="wMaxSlots" type="number" placeholder="e.g. 36" class="inp" style="flex:1;">
+        <button onclick="saveWeeklyMaxSlots()" class="btn btn-blue" style="padding:13px 16px;">💾 Save</button>
+      </div>
+      <label class="label">💵 Entry Fee (Rs., 0 = Free)</label>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
+        <input id="wEntryFee" type="number" placeholder="e.g. 0" class="inp" style="flex:1;">
+        <button onclick="saveWeeklyEntryFee()" class="btn btn-blue" style="padding:13px 16px;">💾 Save</button>
+      </div>
       <label class="label">💰 Total Prize Pool (Rs.)</label>
       <div style="display:flex;gap:8px;align-items:center;">
         <input id="wPrizePool" type="number" placeholder="e.g. 1000" class="inp inp-gold" style="flex:1;">
@@ -403,11 +413,29 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
     <div class="card admin-only">
       <div class="card-top card-top-gold"></div>
       <div class="card-hdr" style="color:var(--gold);">🏆 Publish Results</div>
+      <div style="font-size:10px;color:var(--faint);margin-bottom:8px;">Type a team's SN# to auto-fill their info, or fill in manually.</div>
       <div style="display:flex;flex-direction:column;gap:10px;">
-        <div><label class="label" id="resLbl1st">🥇 1st Place</label><input id="res-1st" type="text" placeholder="Squad name" class="inp inp-gold"><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;"><input id="res-1st-leader" type="text" placeholder="Leader" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-1st-m1" type="text" placeholder="M1" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-1st-m2" type="text" placeholder="M2" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-1st-m3" type="text" placeholder="M3" class="inp" style="font-size:13px;padding:10px 12px;"></div></div>
-        <div><label class="label" id="resLbl2nd">🥈 2nd Place</label><input id="res-2nd" type="text" placeholder="Squad name" class="inp"><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;"><input id="res-2nd-leader" type="text" placeholder="Leader" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-2nd-m1" type="text" placeholder="M1" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-2nd-m2" type="text" placeholder="M2" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-2nd-m3" type="text" placeholder="M3" class="inp" style="font-size:13px;padding:10px 12px;"></div></div>
-        <div><label class="label" id="resLbl3rd">🥉 3rd Place</label><input id="res-3rd" type="text" placeholder="Squad name" class="inp"><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;"><input id="res-3rd-leader" type="text" placeholder="Leader" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-3rd-m1" type="text" placeholder="M1" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-3rd-m2" type="text" placeholder="M2" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-3rd-m3" type="text" placeholder="M3" class="inp" style="font-size:13px;padding:10px 12px;"></div></div>
-        <div><label class="label">🎖️ 4th Place</label><input id="res-4th" type="text" placeholder="Squad name" class="inp"><div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;"><input id="res-4th-leader" type="text" placeholder="Leader" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-4th-m1" type="text" placeholder="M1" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-4th-m2" type="text" placeholder="M2" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-4th-m3" type="text" placeholder="M3" class="inp" style="font-size:13px;padding:10px 12px;"></div></div>
+        <div>
+          <label class="label" id="resLbl1st">🥇 1st Place</label>
+          <div style="display:flex;gap:6px;margin-bottom:6px;"><input id="res-1st-sn" type="number" placeholder="SN#" class="inp inp-gold" style="width:70px;flex-shrink:0;" oninput="wFillResultBySN('1st')"><input id="res-1st" type="text" placeholder="Squad name" class="inp inp-gold" style="flex:1;"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"><input id="res-1st-leader" type="text" placeholder="Leader" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-1st-m1" type="text" placeholder="M1" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-1st-m2" type="text" placeholder="M2" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-1st-m3" type="text" placeholder="M3" class="inp" style="font-size:13px;padding:10px 12px;"></div>
+        </div>
+        <div>
+          <label class="label" id="resLbl2nd">🥈 2nd Place</label>
+          <div style="display:flex;gap:6px;margin-bottom:6px;"><input id="res-2nd-sn" type="number" placeholder="SN#" class="inp" style="width:70px;flex-shrink:0;" oninput="wFillResultBySN('2nd')"><input id="res-2nd" type="text" placeholder="Squad name" class="inp" style="flex:1;"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"><input id="res-2nd-leader" type="text" placeholder="Leader" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-2nd-m1" type="text" placeholder="M1" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-2nd-m2" type="text" placeholder="M2" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-2nd-m3" type="text" placeholder="M3" class="inp" style="font-size:13px;padding:10px 12px;"></div>
+        </div>
+        <div>
+          <label class="label" id="resLbl3rd">🥉 3rd Place</label>
+          <div style="display:flex;gap:6px;margin-bottom:6px;"><input id="res-3rd-sn" type="number" placeholder="SN#" class="inp" style="width:70px;flex-shrink:0;" oninput="wFillResultBySN('3rd')"><input id="res-3rd" type="text" placeholder="Squad name" class="inp" style="flex:1;"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"><input id="res-3rd-leader" type="text" placeholder="Leader" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-3rd-m1" type="text" placeholder="M1" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-3rd-m2" type="text" placeholder="M2" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-3rd-m3" type="text" placeholder="M3" class="inp" style="font-size:13px;padding:10px 12px;"></div>
+        </div>
+        <div>
+          <label class="label">🎖️ 4th Place</label>
+          <div style="display:flex;gap:6px;margin-bottom:6px;"><input id="res-4th-sn" type="number" placeholder="SN#" class="inp" style="width:70px;flex-shrink:0;" oninput="wFillResultBySN('4th')"><input id="res-4th" type="text" placeholder="Squad name" class="inp" style="flex:1;"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"><input id="res-4th-leader" type="text" placeholder="Leader" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-4th-m1" type="text" placeholder="M1" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-4th-m2" type="text" placeholder="M2" class="inp" style="font-size:13px;padding:10px 12px;"><input id="res-4th-m3" type="text" placeholder="M3" class="inp" style="font-size:13px;padding:10px 12px;"></div>
+        </div>
+        <div id="resSNWarn" style="display:none;font-size:11px;color:var(--red);"></div>
         <div><label class="label">📝 Note</label><input id="res-note" type="text" placeholder="Optional note..." class="inp"></div>
         <button onclick="saveTournResult()" class="btn-publish">🚀 PUBLISH RESULTS LIVE</button>
       </div>
@@ -451,6 +479,16 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
         </label>
       </div>
       <div class="divider" style="margin:14px 0;"></div>
+      <label class="label">👥 Max Teams</label>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
+        <input id="mMaxTeams" type="number" placeholder="e.g. 72" class="inp" style="flex:1;">
+        <button onclick="saveMonthlyMaxTeams()" class="btn btn-purple" style="padding:13px 16px;">💾 Save</button>
+      </div>
+      <label class="label">💵 Entry Fee (NPR, 0 = Free)</label>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px;">
+        <input id="mEntryFee" type="number" placeholder="e.g. 100" class="inp" style="flex:1;">
+        <button onclick="saveMonthlyEntryFee()" class="btn btn-purple" style="padding:13px 16px;">💾 Save</button>
+      </div>
       <label class="label">💰 Total Prize Pool (NPR)</label>
       <div style="display:flex;gap:8px;align-items:center;">
         <input id="mPrizePool" type="number" placeholder="e.g. 8000" class="inp inp-purple" style="flex:1;">
@@ -507,10 +545,24 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
       <div class="card" style="border-color:rgba(156,39,176,.18);">
         <div class="card-top card-top-purple"></div>
         <div class="card-hdr" style="color:var(--purple);">🏆 Publish Monthly Results</div>
+        <div style="font-size:10px;color:var(--faint);margin-bottom:8px;">Type a verified team's RES# to auto-fill their info, or fill in manually.</div>
         <div style="display:flex;flex-direction:column;gap:10px;">
-          <div><label class="label">🥇 Champion</label><input id="mres-1st" type="text" placeholder="Team name" class="inp inp-gold"></div>
-          <div><label class="label">🥈 2nd Place</label><input id="mres-2nd" type="text" placeholder="Team name" class="inp"></div>
-          <div><label class="label">🥉 3rd Place</label><input id="mres-3rd" type="text" placeholder="Team name" class="inp"></div>
+          <div>
+            <label class="label" id="mresLbl1st">🥇 Champion</label>
+            <div style="display:flex;gap:6px;margin-bottom:6px;"><input id="mres-1st-sn" type="number" placeholder="RES#" class="inp inp-gold" style="width:70px;flex-shrink:0;" oninput="mFillResultBySN('1st')"><input id="mres-1st" type="text" placeholder="Team name" class="inp inp-gold" style="flex:1;"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"><input id="mres-1st-leader" type="text" placeholder="Leader" class="inp" style="font-size:13px;padding:10px 12px;"><input id="mres-1st-m1" type="text" placeholder="M1" class="inp" style="font-size:13px;padding:10px 12px;"><input id="mres-1st-m2" type="text" placeholder="M2" class="inp" style="font-size:13px;padding:10px 12px;"><input id="mres-1st-m3" type="text" placeholder="M3" class="inp" style="font-size:13px;padding:10px 12px;"></div>
+          </div>
+          <div>
+            <label class="label" id="mresLbl2nd">🥈 2nd Place</label>
+            <div style="display:flex;gap:6px;margin-bottom:6px;"><input id="mres-2nd-sn" type="number" placeholder="RES#" class="inp" style="width:70px;flex-shrink:0;" oninput="mFillResultBySN('2nd')"><input id="mres-2nd" type="text" placeholder="Team name" class="inp" style="flex:1;"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"><input id="mres-2nd-leader" type="text" placeholder="Leader" class="inp" style="font-size:13px;padding:10px 12px;"><input id="mres-2nd-m1" type="text" placeholder="M1" class="inp" style="font-size:13px;padding:10px 12px;"><input id="mres-2nd-m2" type="text" placeholder="M2" class="inp" style="font-size:13px;padding:10px 12px;"><input id="mres-2nd-m3" type="text" placeholder="M3" class="inp" style="font-size:13px;padding:10px 12px;"></div>
+          </div>
+          <div>
+            <label class="label" id="mresLbl3rd">🥉 3rd Place</label>
+            <div style="display:flex;gap:6px;margin-bottom:6px;"><input id="mres-3rd-sn" type="number" placeholder="RES#" class="inp" style="width:70px;flex-shrink:0;" oninput="mFillResultBySN('3rd')"><input id="mres-3rd" type="text" placeholder="Team name" class="inp" style="flex:1;"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"><input id="mres-3rd-leader" type="text" placeholder="Leader" class="inp" style="font-size:13px;padding:10px 12px;"><input id="mres-3rd-m1" type="text" placeholder="M1" class="inp" style="font-size:13px;padding:10px 12px;"><input id="mres-3rd-m2" type="text" placeholder="M2" class="inp" style="font-size:13px;padding:10px 12px;"><input id="mres-3rd-m3" type="text" placeholder="M3" class="inp" style="font-size:13px;padding:10px 12px;"></div>
+          </div>
+          <div id="mresSNWarn" style="display:none;font-size:11px;color:var(--red);"></div>
           <button onclick="saveMonthlyResult()" class="btn btn-purple btn-full" style="padding:14px;margin-top:4px;">🚀 PUBLISH</button>
         </div>
       </div>
@@ -584,8 +636,9 @@ function doLogin(){
   applyRoleUI();
   var db=getDB();
   if(currentRole==='admin'){
-    loadEntries(db);loadRegToggle(db);loadWeeklyPrizePool(db);loadMonthlySettings(db);loadDiamondSettings(db);
+    loadEntries(db);loadRegToggle(db);loadDiamondSettings(db);
   }
+  loadWeeklyPrizePool(db);loadMonthlySettings(db);
   loadSavedBracket(db);loadMonthlySavedBracket(db);
   loadTournTeams(db);loadMonthlyTeams();
 }
@@ -830,13 +883,13 @@ function loadTournTeams(db){
   var list=document.getElementById('tournTeamsList');
   if(list)list.innerHTML='<div class="no-entries">⏳ Loading...</div>';
   db.collection('tournament_teams').orderBy('registeredAt','asc').get().then(function(snap){
-    tournTeams=[];snap.forEach(function(d){tournTeams.push(Object.assign({id:d.id},d.data()));});
+    tournTeams=[];snap.forEach(function(d){tournTeams.push(Object.assign({id:d.id,_sn:tournTeams.length+1},d.data()));});
     document.getElementById('wTeamsTotal').textContent=tournTeams.length;
-    document.getElementById('wSlotsLeft').textContent=Math.max(0,36-tournTeams.length);
+    document.getElementById('wSlotsLeft').textContent=Math.max(0,(window._wMaxSlots||36)-tournTeams.length);
     renderTournTeams();
   }).catch(function(){
     db.collection('tournament_teams').get().then(function(snap){
-      tournTeams=[];snap.forEach(function(d){tournTeams.push(Object.assign({id:d.id},d.data()));});
+      tournTeams=[];snap.forEach(function(d){tournTeams.push(Object.assign({id:d.id,_sn:tournTeams.length+1},d.data()));});
       renderTournTeams();
     }).catch(function(e){if(list)list.innerHTML='<div class="no-entries">❌ '+e.message+'</div>';});
   });
@@ -850,7 +903,7 @@ function renderTournTeams(){
   list.innerHTML=tournTeams.map(function(t,i){
     return '<div class="team-card team-verified" id="wteam-'+t.id+'">'
       +'<div style="display:flex;align-items:flex-start;gap:8px;">'
-      +'<span class="entry-num" style="color:var(--green);">#'+(i+1)+'</span>'
+      +'<span class="entry-num" style="color:var(--green);">SN#'+(t._sn||(i+1))+'</span>'
       +'<div style="flex:1;">'
       +(t.squadName?'<div style="font-size:11px;color:rgba(255,212,56,.85);font-weight:800;margin-bottom:2px;">🏷️ '+esc(t.squadName)+'</div>':'')
       +'<div style="font-size:13px;font-weight:700;color:#fff;">👑 '+esc(t.leaderName)+'</div>'
@@ -946,11 +999,18 @@ function weeklySplit(){
 }
 function loadWeeklyPrizePool(db){
   db.collection('tournament_meta').doc('settings').get().then(function(snap){
-    var pool=(snap.exists&&snap.data().prizePool)?snap.data().prizePool:1000;
+    var data=snap.exists?snap.data():{};
+    var pool=data.prizePool||1000;
+    var maxSlots=data.maxSlots||36;
+    var entryFee=(typeof data.entryFee==='number')?data.entryFee:0;
     window._wPrizePool=pool;
+    window._wMaxSlots=maxSlots;
+    window._wEntryFee=entryFee;
     var inp=document.getElementById('wPrizePool');if(inp)inp.value=pool;
+    var slotsInp=document.getElementById('wMaxSlots');if(slotsInp)slotsInp.value=maxSlots;
+    var feeInp=document.getElementById('wEntryFee');if(feeInp)feeInp.value=entryFee;
     renderWeeklyPrizePreview();
-  }).catch(function(){window._wPrizePool=1000;});
+  }).catch(function(){window._wPrizePool=1000;window._wMaxSlots=36;window._wEntryFee=0;});
 }
 function renderWeeklyPrizePreview(){
   var s=weeklySplit(),el=document.getElementById('wPrizePreview');
@@ -966,6 +1026,25 @@ function saveWeeklyPrizePool(){
   var db=getDB();
   db.collection('tournament_meta').doc('settings').set({prizePool:val,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(function(){
     window._wPrizePool=val;renderWeeklyPrizePreview();alert('✅ Weekly prize pool saved! Rs.'+val);
+  }).catch(function(e){alert('❌ '+e.message);});
+}
+function saveWeeklyMaxSlots(){
+  var val=parseInt(document.getElementById('wMaxSlots').value,10);
+  if(!val||val<=0){alert('Enter a valid slot count!');return;}
+  var db=getDB();
+  db.collection('tournament_meta').doc('settings').set({maxSlots:val,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(function(){
+    window._wMaxSlots=val;
+    var slEl=document.getElementById('wSlotsLeft');if(slEl)slEl.textContent=Math.max(0,val-tournTeams.length);
+    alert('✅ Weekly max slots saved! '+val);
+  }).catch(function(e){alert('❌ '+e.message);});
+}
+function saveWeeklyEntryFee(){
+  var raw=document.getElementById('wEntryFee').value;
+  var val=parseInt(raw,10);
+  if(raw===''||isNaN(val)||val<0){alert('Enter a valid entry fee (0 for free)!');return;}
+  var db=getDB();
+  db.collection('tournament_meta').doc('settings').set({entryFee:val,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(function(){
+    window._wEntryFee=val;alert('✅ Weekly entry fee saved! '+(val===0?'FREE':'Rs.'+val));
   }).catch(function(e){alert('❌ '+e.message);});
 }
 
@@ -1131,6 +1210,31 @@ function setGroups(n){
   btn.style.display='block';
 }
 
+// ── WEEKLY RESULTS SN AUTO-FILL ──
+function wFillResultBySN(place){
+  var snInput=document.getElementById('res-'+place+'-sn');
+  var warn=document.getElementById('resSNWarn');
+  var raw=snInput.value.trim();
+  if(!raw){if(warn)warn.style.display='none';return;}
+  var sn=parseInt(raw,10);
+  var team=tournTeams.find(function(t){return t._sn===sn;});
+  if(!team){
+    if(warn){warn.style.display='block';warn.textContent='⚠️ No weekly team found with SN#'+sn;}
+    return;
+  }
+  if(warn)warn.style.display='none';
+  var nameEl=document.getElementById('res-'+place);
+  var leaderEl=document.getElementById('res-'+place+'-leader');
+  var m1El=document.getElementById('res-'+place+'-m1');
+  var m2El=document.getElementById('res-'+place+'-m2');
+  var m3El=document.getElementById('res-'+place+'-m3');
+  if(nameEl)nameEl.value=team.squadName||team.leaderName||'';
+  if(leaderEl)leaderEl.value=team.leaderName||'';
+  if(m1El)m1El.value=team.member1||'';
+  if(m2El)m2El.value=team.member2||'';
+  if(m3El)m3El.value=team.member3||'';
+}
+
 // ── WEEKLY RESULTS ──
 function g(id){var el=document.getElementById(id);return el?el.value.trim():'';}
 
@@ -1155,7 +1259,7 @@ function saveTournResult(){
   }).then(function(){
     return db.collection('tournament_meta').doc('bracket').set({groups:null,clearedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
   }).then(function(){
-    ['1st','2nd','3rd','4th'].forEach(function(p){['','-leader','-m1','-m2','-m3'].forEach(function(s){var el=document.getElementById('res-'+p+s);if(el)el.value='';});});
+    ['1st','2nd','3rd','4th'].forEach(function(p){['','-sn','-leader','-m1','-m2','-m3'].forEach(function(s){var el=document.getElementById('res-'+p+s);if(el)el.value='';});});
     document.getElementById('res-note').value='';
     tournTeams=[];renderTournTeams();
     document.getElementById('bracketDisplay').innerHTML='';
@@ -1179,11 +1283,17 @@ function loadMonthlySettings(db){
   db.collection('monthly_meta').doc('settings').get().then(function(snap){
     var data=snap.exists?snap.data():{};
     var pool=data.prizePool||8000,enabled=data.enabled!==false;
+    var maxTeams=data.maxTeams||72;
+    var entryFee=(typeof data.entryFee==='number')?data.entryFee:100;
     window._mPrizePool=pool;
+    window._mMaxTeams=maxTeams;
+    window._mEntryFee=entryFee;
     var inp=document.getElementById('mPrizePool');if(inp)inp.value=pool;
+    var teamsInp=document.getElementById('mMaxTeams');if(teamsInp)teamsInp.value=maxTeams;
+    var feeInp=document.getElementById('mEntryFee');if(feeInp)feeInp.value=entryFee;
     renderMonthlyPrizePreview();
     setMonthlyToggleUI(enabled);
-  }).catch(function(){window._mPrizePool=8000;setMonthlyToggleUI(true);});
+  }).catch(function(){window._mPrizePool=8000;window._mMaxTeams=72;window._mEntryFee=100;setMonthlyToggleUI(true);});
 }
 function renderMonthlyPrizePreview(){
   var s=monthlySplit(),el=document.getElementById('mPrizePreview');
@@ -1199,6 +1309,23 @@ function saveMonthlyPrizePool(){
   var db=getDB();
   db.collection('monthly_meta').doc('settings').set({prizePool:val,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(function(){
     window._mPrizePool=val;renderMonthlyPrizePreview();alert('✅ Monthly prize pool saved! NPR '+val);
+  }).catch(function(e){alert('❌ '+e.message);});
+}
+function saveMonthlyMaxTeams(){
+  var val=parseInt(document.getElementById('mMaxTeams').value,10);
+  if(!val||val<=0){alert('Enter a valid team count!');return;}
+  var db=getDB();
+  db.collection('monthly_meta').doc('settings').set({maxTeams:val,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(function(){
+    window._mMaxTeams=val;alert('✅ Monthly max teams saved! '+val);
+  }).catch(function(e){alert('❌ '+e.message);});
+}
+function saveMonthlyEntryFee(){
+  var raw=document.getElementById('mEntryFee').value;
+  var val=parseInt(raw,10);
+  if(raw===''||isNaN(val)||val<0){alert('Enter a valid entry fee (0 for free)!');return;}
+  var db=getDB();
+  db.collection('monthly_meta').doc('settings').set({entryFee:val,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(function(){
+    window._mEntryFee=val;alert('✅ Monthly entry fee saved! '+(val===0?'FREE':'NPR '+val));
   }).catch(function(e){alert('❌ '+e.message);});
 }
 function setMonthlyToggleUI(enabled){
@@ -1351,6 +1478,8 @@ function loadMonthlyTeams(){
   var db=getDB();
   db.collection('monthly_teams').orderBy('registeredAt','asc').get().then(function(snap){
     var teams=[];snap.forEach(function(d){teams.push(Object.assign({id:d.id,_sn:teams.length+1},d.data()));});
+    var vCount=0;
+    teams.forEach(function(t){if(t.verified===true){vCount++;t._vsn=vCount;}});
     monthlyTeamsCache=teams;
     var pending=teams.filter(function(t){return!t.verified;});
     var approved=teams.filter(function(t){return t.verified===true;});
@@ -1379,6 +1508,7 @@ function buildMonthlyTeamRow(t,status){
   return '<div class="team-card '+(isPending?'team-pending':'team-verified')+'" id="mteam-'+t.id+'">'
     +'<div style="display:flex;align-items:flex-start;gap:8px;">'
     +'<span class="entry-num" style="color:var(--purple);">SN#'+esc(t._sn||'')+'</span>'
+    +(status!=='pending'&&t._vsn?'<span class="entry-num" style="color:var(--gold);margin-left:4px;">RES#'+t._vsn+'</span>':'')
     +'<div style="flex:1;min-width:0;">'
     +(t.squadName?'<div style="font-size:11px;color:rgba(255,212,56,.85);font-weight:800;margin-bottom:2px;">🏷️ '+esc(t.squadName)+'</div>':'')
     +'<div style="font-size:13px;font-weight:700;color:#fff;">👑 '+esc(t.leaderName||'—')+'</div>'
@@ -1470,13 +1600,44 @@ function saveSFQualifiers(){
   }).catch(function(e){alert('❌ '+e.message);});
 }
 
+function mFillResultBySN(place){
+  var snInput=document.getElementById('mres-'+place+'-sn');
+  var warn=document.getElementById('mresSNWarn');
+  var raw=snInput.value.trim();
+  if(!raw){if(warn)warn.style.display='none';return;}
+  var vsn=parseInt(raw,10);
+  var team=monthlyTeamsCache.find(function(t){return t.verified===true&&t._vsn===vsn;});
+  if(!team){
+    if(warn){warn.style.display='block';warn.textContent='⚠️ No verified monthly team found with RES#'+vsn;}
+    return;
+  }
+  if(warn)warn.style.display='none';
+  var nameEl=document.getElementById('mres-'+place);
+  var leaderEl=document.getElementById('mres-'+place+'-leader');
+  var m1El=document.getElementById('mres-'+place+'-m1');
+  var m2El=document.getElementById('mres-'+place+'-m2');
+  var m3El=document.getElementById('mres-'+place+'-m3');
+  if(nameEl)nameEl.value=team.squadName||team.leaderName||'';
+  if(leaderEl)leaderEl.value=team.leaderName||'';
+  if(m1El)m1El.value=team.m1||'';
+  if(m2El)m2El.value=team.m2||'';
+  if(m3El)m3El.value=team.m3||'';
+}
+
 function saveMonthlyResult(){
-  var champion=g('mres-1st'),second=g('mres-2nd'),third=g('mres-3rd');
+  var champion=g('mres-1st');
   if(!champion){alert('Enter champion name!');return;}
+  var second=g('mres-2nd'),third=g('mres-3rd');
   if(!confirm('Publish monthly results?\n1st: '+champion+'\n2nd: '+(second||'—')+'\n3rd: '+(third||'—')))return;
   var db=getDB();
   var s=monthlySplit();
-  db.collection('monthly_result').doc('latest').set({champion:champion,second:second,third:third,prize1st:s.first,prize2nd:s.second,prize3rd:s.third,updatedAt:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
+  var data={
+    champion:champion,championLeader:g('mres-1st-leader'),championM1:g('mres-1st-m1'),championM2:g('mres-1st-m2'),championM3:g('mres-1st-m3'),
+    second:second,secondLeader:g('mres-2nd-leader'),secondM1:g('mres-2nd-m1'),secondM2:g('mres-2nd-m2'),secondM3:g('mres-2nd-m3'),
+    third:third,thirdLeader:g('mres-3rd-leader'),thirdM1:g('mres-3rd-m1'),thirdM2:g('mres-3rd-m2'),thirdM3:g('mres-3rd-m3'),
+    prize1st:s.first,prize2nd:s.second,prize3rd:s.third,updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+  };
+  db.collection('monthly_result').doc('latest').set(data).then(function(){
     return db.collection('monthly_meta').doc('bracket').set({groups:null,clearedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
   }).then(function(){
     document.getElementById('mBracketDisplay').innerHTML='';
@@ -1487,6 +1648,7 @@ function saveMonthlyResult(){
     document.querySelectorAll('#mGroupBtns .gbtn').forEach(function(b){b.style.background='rgba(79,195,247,.08)';b.style.borderColor='rgba(79,195,247,.25)';b.style.color='var(--blue)';});
     var bi=document.getElementById('mBracketInfo');if(bi)bi.textContent='👆 Pick number of groups';
     var gb=document.getElementById('mGenBracketBtn');if(gb)gb.style.display='none';
+    ['1st','2nd','3rd'].forEach(function(p){['','-sn','-leader','-m1','-m2','-m3'].forEach(function(s){var el=document.getElementById('mres-'+p+s);if(el)el.value='';});});
     alert('✅ Monthly results published!\n🗑️ Match stat card cleared!');
   }).catch(function(e){alert('❌ '+e.message);});
 }
