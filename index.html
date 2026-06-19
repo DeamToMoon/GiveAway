@@ -1070,49 +1070,78 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
         <div style="font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;color:var(--green);letter-spacing:2px;">KHALTI PAYMENT</div>
       </div>
 
-      <!-- Reference Name Input -->
-      <div style="margin-bottom:14px;">
-        <label style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;">Full Name</label>
-        <input id="diamondPayRef" type="text" placeholder="Enter your full name" maxlength="50" style="width:100%;padding:10px 12px;background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.2);border-radius:8px;color:#fff;font-size:13px;margin-top:4px;font-family:inherit;box-sizing:border-box;">
+      <!-- STEP 1: User Details Form -->
+      <div id="diamondStep1" style="display:block;">
+        <div style="background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.2);border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:10px;color:rgba(37,211,102,.7);line-height:1.6;">
+          ✓ Step 1 of 2: Fill your details below
+        </div>
+
+        <!-- Full Name Input -->
+        <div style="margin-bottom:12px;">
+          <label style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;">Full Name</label>
+          <input id="diamondPayRef" type="text" placeholder="Enter your full name" maxlength="50" style="width:100%;padding:10px 12px;background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.2);border-radius:8px;color:#fff;font-size:13px;margin-top:4px;font-family:inherit;box-sizing:border-box;">
+        </div>
+
+        <!-- Game Name Input -->
+        <div style="margin-bottom:12px;">
+          <label style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;">Free Fire Game Name</label>
+          <input id="diamondGameName" type="text" placeholder="Your in-game character name" maxlength="50" style="width:100%;padding:10px 12px;background:rgba(79,195,247,.08);border:1px solid rgba(79,195,247,.2);border-radius:8px;color:#fff;font-size:13px;margin-top:4px;font-family:inherit;box-sizing:border-box;">
+        </div>
+
+        <!-- UID Input -->
+        <div style="margin-bottom:12px;">
+          <label style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;">Free Fire UID</label>
+          <input id="diamondUID" type="text" placeholder="Your 10-digit UID (e.g. 1234567890)" maxlength="20" style="width:100%;padding:10px 12px;background:rgba(156,39,176,.08);border:1px solid rgba(156,39,176,.2);border-radius:8px;color:#fff;font-size:13px;margin-top:4px;font-family:inherit;box-sizing:border-box;">
+        </div>
+
+        <!-- WhatsApp Number Input -->
+        <div style="margin-bottom:14px;">
+          <label style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;">WhatsApp Number</label>
+          <input id="diamondWhatsApp" type="tel" placeholder="Your WhatsApp number (e.g. 9841234567)" maxlength="15" style="width:100%;padding:10px 12px;background:rgba(105,240,174,.08);border:1px solid rgba(105,240,174,.2);border-radius:8px;color:#fff;font-size:13px;margin-top:4px;font-family:inherit;box-sizing:border-box;">
+        </div>
+
+        <button onclick="proceedToKhaltiPayment()" style="width:100%;padding:12px;background:linear-gradient(135deg,#25D366,#20BA5C);border:none;border-radius:10px;color:#fff;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;letter-spacing:1px;cursor:pointer;transition:all .3s;">
+          ➔ PROCEED TO PAYMENT
+        </button>
       </div>
 
-      <!-- Game Name Input -->
-      <div style="margin-bottom:14px;">
-        <label style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;">Free Fire Game Name</label>
-        <input id="diamondGameName" type="text" placeholder="Your in-game character name" maxlength="50" style="width:100%;padding:10px 12px;background:rgba(79,195,247,.08);border:1px solid rgba(79,195,247,.2);border-radius:8px;color:#fff;font-size:13px;margin-top:4px;font-family:inherit;box-sizing:border-box;">
-      </div>
+      <!-- STEP 2: Khalti QR + Screenshot Upload -->
+      <div id="diamondStep2" style="display:none;">
+        <div style="background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.2);border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:10px;color:rgba(37,211,102,.7);line-height:1.6;">
+          ✓ Step 2 of 2: Complete Khalti payment
+        </div>
 
-      <!-- UID Input -->
-      <div style="margin-bottom:14px;">
-        <label style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;">Free Fire UID</label>
-        <input id="diamondUID" type="text" placeholder="Your 10-digit UID" maxlength="20" style="width:100%;padding:10px 12px;background:rgba(156,39,176,.08);border:1px solid rgba(156,39,176,.2);border-radius:8px;color:#fff;font-size:13px;margin-top:4px;font-family:inherit;box-sizing:border-box;">
-      </div>
+        <!-- Price Display -->
+        <div id="diamondPriceDisplay" style="background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.2);border-radius:12px;padding:12px 14px;text-align:center;margin-bottom:14px;font-size:12px;color:rgba(37,211,102,.9);line-height:1.8;font-weight:900;">
+          Loading...
+        </div>
 
-      <!-- WhatsApp Number Input -->
-      <div style="margin-bottom:14px;">
-        <label style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;">WhatsApp Number</label>
-        <input id="diamondWhatsApp" type="tel" placeholder="Your WhatsApp number (e.g. 9841234567)" maxlength="15" style="width:100%;padding:10px 12px;background:rgba(105,240,174,.08);border:1px solid rgba(105,240,174,.2);border-radius:8px;color:#fff;font-size:13px;margin-top:4px;font-family:inherit;box-sizing:border-box;">
-      </div>
+        <!-- QR Code Section -->
+        <div style="background:rgba(37,211,102,.05);border:1px solid rgba(37,211,102,.2);border-radius:12px;padding:14px;margin-bottom:14px;text-align:center;">
+          <div style="font-size:9px;font-weight:800;letter-spacing:3px;color:rgba(37,211,102,.7);text-transform:uppercase;margin-bottom:10px;">📱 KHALTI QR CODE</div>
+          <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwwUAxMTAxMTAxMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTD/2wBDAQICAgICAwUDAwwUExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTD/wAARCADIAMgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWm5ybnJ2eoqOkpaanqKmqsrO0tba2uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba2uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9/KKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD//Z" style="width:180px;height:180px;border-radius:10px;">
+          <div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:8px;">1. Open Khalti app or scan this QR</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.4);">2. Send the exact amount shown above</div>
+        </div>
 
-      <!-- QR Code -->
-      <div style="background:rgba(37,211,102,.05);border:1px solid rgba(37,211,102,.2);border-radius:16px;padding:16px;margin-bottom:14px;text-align:center;">
-        <div style="font-size:10px;font-weight:800;letter-spacing:3px;color:rgba(37,211,102,.7);text-transform:uppercase;margin-bottom:8px;">📱 KHALTI QR CODE</div>
-        <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAIBAQIBAQICAgICAgICAwUDAwwUAxMTAxMTAxMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTD/2wBDAQICAgICAwUDAwwUExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTD/wAARCADIAMgDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWm5ybnJ2eoqOkpaanqKmqsrO0tba2uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba2uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9/KKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD//Z" style="width:200px;height:200px;border-radius:12px;">
-        <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:8px;">Show this QR to accept payment via Khalti</div>
-      </div>
+        <!-- Screenshot Upload -->
+        <div style="margin-bottom:14px;">
+          <label style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;">📸 Payment Screenshot</label>
+          <input id="diamondScreenshot" type="file" accept="image/*" style="width:100%;padding:10px 12px;background:rgba(79,195,247,.08);border:1px dashed rgba(79,195,247,.3);border-radius:8px;color:#fff;font-size:12px;margin-top:4px;cursor:pointer;box-sizing:border-box;">
+          <div style="font-size:9px;color:rgba(255,255,255,.3);margin-top:4px;">Upload screenshot showing Khalti transaction confirmation</div>
+        </div>
 
-      <!-- Price Display -->
-      <div id="diamondPriceDisplay" style="background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.2);border-radius:12px;padding:12px 14px;text-align:center;margin-bottom:14px;font-size:11px;color:rgba(37,211,102,.8);line-height:1.7;">
-        Loading...
-      </div>
+        <!-- Submit Button -->
+        <button onclick="submitDiamondPayment()" style="width:100%;padding:12px;background:linear-gradient(135deg,#25D366,#20BA5C);border:none;border-radius:10px;color:#fff;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;letter-spacing:2px;cursor:pointer;transition:all .3s;margin-bottom:10px;">
+          ✓ SUBMIT ORDER
+        </button>
+        <button onclick="goBackToDiamondStep1()" style="width:100%;padding:10px;background:rgba(255,107,107,.15);border:1px solid rgba(255,107,107,.3);border-radius:8px;color:#FF6B6B;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;">
+          ← BACK TO DETAILS
+        </button>
 
-      <!-- Submit Button -->
-      <button onclick="submitDiamondPayment()" style="width:100%;padding:13px;background:linear-gradient(135deg,#25D366,#20BA5C);border:none;border-radius:10px;color:#fff;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:900;letter-spacing:2px;cursor:pointer;transition:all .3s;box-shadow:0 4px 12px rgba(37,211,102,.3);">
-        ✓ CONFIRM PAYMENT
-      </button>
-      <div style="font-size:9px;color:rgba(255,255,255,.3);text-align:center;margin-top:8px;">You'll receive confirmation via WhatsApp</div>
-      <div style="background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.15);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:9px;color:rgba(255,212,56,.7);line-height:1.6;text-align:center;">
-        ⏳ <strong>Note:</strong> Confirmations may take longer if we're temporarily offline or unavailable. Please allow up to 24 hours for verification and processing. Thank you for your patience! 🙏
+        <div style="background:rgba(255,212,56,.06);border:1px solid rgba(255,212,56,.15);border-radius:10px;padding:10px 12px;margin-top:10px;font-size:9px;color:rgba(255,212,56,.7);line-height:1.6;text-align:center;">
+          ⏳ <strong>Note:</strong> Confirmations may take up to 24 hours. You'll receive WhatsApp confirmation once verified. Thank you!
+        </div>
       </div>
     </div>
 
@@ -1150,7 +1179,7 @@ function _callFn(name,args){
 // Stub all onclick functions
 ['toggleSec','toggleMonthly','showTab','showTournForm','cancelTournForm',
  'backToStep1','submitEntry','submitTournament','goToPaymentStep',
- 'mGoToPayment','mBackToStep1','submitMonthly','setGroups','selectDiamondPackage','submitDiamondPayment'].forEach(function(fn){
+ 'mGoToPayment','mBackToStep1','submitMonthly','setGroups','selectDiamondPackage','proceedToKhaltiPayment','goBackToDiamondStep1','submitDiamondPayment'].forEach(function(fn){
   if(!window[fn]){
     window[fn]=function(){var a=Array.prototype.slice.call(arguments);_callFn(fn,a);};
   }
@@ -1826,34 +1855,23 @@ function selectDiamondPackage(pkg){
   const sel=document.getElementById('pkg-'+pkg);
   if(sel)sel.checked=true;
   
-  // Show payment card with price
   const paymentCard=document.getElementById('diamondPaymentCard');
-  const priceDisplay=document.getElementById('diamondPriceDisplay');
   if(!diamondEnabled){alert('💎 Diamond top-ups are currently out of stock');return;}
   
   if(paymentCard){
     paymentCard.style.display='block';
-    let priceText='';
-    if(pkg==='115diamonds'){
-      priceText='💎 <strong>115 Diamonds</strong> — Rs.110';
-    }else if(pkg==='weeklypass'){
-      priceText='📅 <strong>Weekly Membership</strong> (7 days) — Rs.210';
-    }else if(pkg==='monthlypass'){
-      priceText='🗓️ <strong>Monthly Membership</strong> (30 days) — Rs.1,050';
-    }
-    if(priceDisplay)priceDisplay.innerHTML=priceText;
+    document.getElementById('diamondStep1').style.display='block';
+    document.getElementById('diamondStep2').style.display='none';
     paymentCard.scrollIntoView({behavior:'smooth',block:'center'});
   }
 }
 
-function submitDiamondPayment(){
-  const selected=document.querySelector('input[name="diamondPackage"]:checked');
+function proceedToKhaltiPayment(){
   const fullName=document.getElementById('diamondPayRef').value.trim();
   const gameName=document.getElementById('diamondGameName').value.trim();
   const uid=document.getElementById('diamondUID').value.trim();
   const whatsapp=document.getElementById('diamondWhatsApp').value.trim();
   
-  if(!selected){alert('❌ Please select a package first');return;}
   if(!fullName){alert('❌ Please enter your full name');return;}
   if(fullName.length<2){alert('❌ Please enter a valid full name');return;}
   if(!gameName){alert('❌ Please enter your Free Fire game name');return;}
@@ -1862,50 +1880,94 @@ function submitDiamondPayment(){
   if(!whatsapp){alert('❌ Please enter your WhatsApp number');return;}
   if(whatsapp.length<10){alert('❌ Please enter a valid WhatsApp number');return;}
   
+  const selected=document.querySelector('input[name="diamondPackage"]:checked');
   const pkgLabel={'115diamonds':'115 Diamonds','weeklypass':'Weekly Membership (7 days)','monthlypass':'Monthly Membership (30 days)'};
   const pkgPrice={'115diamonds':110,'weeklypass':210,'monthlypass':1050};
   
-  const orderData={
-    fullName:fullName,
-    gameName:gameName,
-    uid:uid,
-    whatsapp:whatsapp,
-    package:selected.value,
-    packageName:pkgLabel[selected.value],
-    amount:pkgPrice[selected.value],
-    status:'pending',
-    createdAt:new Date(),
-    timestamp:Date.now()
-  };
+  document.getElementById('diamondStep1').style.display='none';
+  document.getElementById('diamondStep2').style.display='block';
   
-  // Save to Firestore
-  if(typeof db==='undefined'){
-    alert('❌ Unable to save order. Please try again.');
-    return;
+  const priceDisplay=document.getElementById('diamondPriceDisplay');
+  let priceText='';
+  if(selected.value==='115diamonds'){
+    priceText='💎 <strong>115 Diamonds</strong> — Rs.110';
+  }else if(selected.value==='weeklypass'){
+    priceText='📅 <strong>Weekly Membership</strong> (7 days) — Rs.210';
+  }else if(selected.value==='monthlypass'){
+    priceText='🗓️ <strong>Monthly Membership</strong> (30 days) — Rs.1,050';
   }
+  if(priceDisplay)priceDisplay.innerHTML=priceText;
   
-  addDoc(collection(db,'diamond_orders'),orderData)
-    .then(docRef=>{
-      const msg='✅ Order Placed Successfully!\\n\\n'
-        +'Package: '+pkgLabel[selected.value]+'\\n'
-        +'Amount: Rs.'+pkgPrice[selected.value]+'\\n'
-        +'Status: Pending Verification\\n\\n'
-        +'You will receive confirmation via WhatsApp shortly.\\n'
-        +'Reference: '+fullName;
-      alert(msg);
-      
-      // Reset form
-      document.getElementById('diamondPayRef').value='';
-      document.getElementById('diamondGameName').value='';
-      document.getElementById('diamondUID').value='';
-      document.getElementById('diamondWhatsApp').value='';
-      document.getElementById('diamondPaymentCard').style.display='none';
-      document.querySelectorAll('input[name="diamondPackage"]').forEach(r=>r.checked=false);
-    })
-    .catch(err=>{
-      alert('❌ Error saving order: '+err.message+'\\n\\nPlease try again.');
-    });
+  document.getElementById('diamondScreenshot').value='';
+  window.scrollTo({top:document.getElementById('diamondPaymentCard').offsetTop-100,behavior:'smooth'});
 }
+
+function goBackToDiamondStep1(){
+  document.getElementById('diamondStep1').style.display='block';
+  document.getElementById('diamondStep2').style.display='none';
+  document.getElementById('diamondScreenshot').value='';
+}
+
+function submitDiamondPayment(){
+  const selected=document.querySelector('input[name="diamondPackage"]:checked');
+  const fullName=document.getElementById('diamondPayRef').value.trim();
+  const gameName=document.getElementById('diamondGameName').value.trim();
+  const uid=document.getElementById('diamondUID').value.trim();
+  const whatsapp=document.getElementById('diamondWhatsApp').value.trim();
+  const screenshot=document.getElementById('diamondScreenshot').files[0];
+  
+  if(!selected){alert('❌ Please select a package');return;}
+  if(!screenshot){alert('❌ Please upload payment screenshot');return;}
+  
+  const pkgLabel={'115diamonds':'115 Diamonds','weeklypass':'Weekly Membership (7 days)','monthlypass':'Monthly Membership (30 days)'};
+  const pkgPrice={'115diamonds':110,'weeklypass':210,'monthlypass':1050};
+  
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const orderData={
+      fullName:fullName,
+      gameName:gameName,
+      uid:uid,
+      whatsapp:whatsapp,
+      package:selected.value,
+      packageName:pkgLabel[selected.value],
+      amount:pkgPrice[selected.value],
+      screenshotBase64:e.target.result,
+      status:'pending',
+      createdAt:new Date(),
+      timestamp:Date.now()
+    };
+    
+    if(typeof db==='undefined'){
+      alert('❌ Unable to save order. Please try again.');
+      return;
+    }
+    
+    addDoc(collection(db,'diamond_orders'),orderData)
+      .then(docRef=>{
+        const msg='✅ Order Placed Successfully!\\n\\n'
+          +'Package: '+pkgLabel[selected.value]+'\\n'
+          +'Amount: Rs.'+pkgPrice[selected.value]+'\\n'
+          +'Status: Pending Verification\\n\\n'
+          +'You will receive confirmation via WhatsApp shortly.\\n'
+          +'Thank you for your order!';
+        alert(msg);
+        
+        document.getElementById('diamondPayRef').value='';
+        document.getElementById('diamondGameName').value='';
+        document.getElementById('diamondUID').value='';
+        document.getElementById('diamondWhatsApp').value='';
+        document.getElementById('diamondScreenshot').value='';
+        document.getElementById('diamondPaymentCard').style.display='none';
+        document.getElementById('diamondStep1').style.display='block';
+        document.getElementById('diamondStep2').style.display='none';
+        document.querySelectorAll('input[name="diamondPackage"]').forEach(r=>r.checked=false);
+      })
+      .catch(err=>{
+        alert('❌ Error saving order: '+err.message+'\\n\\nPlease try again.');
+      });
+  };
+  reader.readAsDataURL(screenshot);
 
 // Live qualifiers display
 onSnapshot(doc(db,'monthly_meta','r1qualifiers'),snap=>{
