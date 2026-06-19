@@ -1905,9 +1905,8 @@ function proceedToKhaltiPayment(){
   if(fullName.length<2){alert('❌ Please enter a valid full name');return;}
   if(!gameName){alert('❌ Please enter your Free Fire game name');return;}
   if(!uid){alert('❌ Please enter your Free Fire UID');return;}
-  if(uid.length<10){alert('❌ UID should be at least 10 digits');return;}
   if(!whatsapp){alert('❌ Please enter your WhatsApp number');return;}
-  if(whatsapp.length<10){alert('❌ Please enter a valid WhatsApp number');return;}
+  if(whatsapp.length!==10){alert('❌ WhatsApp number must be exactly 10 digits');return;}
   
   const selected=document.querySelector('input[name="diamondPackage"]:checked');
   const pkgLabel={'115diamonds':'115 Diamonds','weeklypass':'Weekly Membership (7 days)','monthlypass':'Monthly Membership (30 days)'};
