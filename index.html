@@ -1213,12 +1213,18 @@ function pad(n){return String(n).padStart(2,'0');}
 function tick(){const ms=Math.max(0,nextSat()-Date.now()),ts=Math.floor(ms/1000);const d=Math.floor(ts/86400),h=Math.floor((ts%86400)/3600),m=Math.floor((ts%3600)/60),s=ts%60;['cd-days','cd-hours','cd-mins','cd-secs'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=pad([d,h,m,s][i]);});const txt=ms>0?fmtCd(ms):'Drawing NOW! 🎉';['nw-countdown','hof-countdown'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=txt;});}
 tick();setInterval(tick,1000);
 
-// Real-time entry count
-function initListeners(){
-console.log('📡 initListeners called, db=', typeof window.db);
-onSnapshot(collection(db,'entries'),snap=>{const el=document.getElementById('publicEntryCount');if(el)el.textContent=snap.size;console.log('✅ Entries loaded:', snap.size);});
+// Real-time entry count - MOVED TO MODULE LEVEL
+console.log('📡 Setting up entries listener at module level...');
+onSnapshot(collection(db,'entries'),snap=>{
+  const el=document.getElementById('publicEntryCount');
+  if(el){
+    el.textContent=snap.size;
+    console.log('✅ Entries loaded:', snap.size);
+  }
+});
 
 // Real-time winners — both shown as Weekly Membership Pass 💎
+console.log('📡 Setting up winners listener at module level...');
 onSnapshot(doc(db,'winners','latest'),snap=>{
   const dEl=document.getElementById('winnersDrawnDate'),duoEl=document.getElementById('winnersDuo');
   if(snap.exists()){
@@ -1855,32 +1861,18 @@ onSnapshot(doc(db,'diamond_meta','settings'),snap=>{
   }
 });
 
-// Call listeners when DOM is ready
-window.initListeners = initListeners;
-console.log('📌 Setting up initListeners, DOM state:', document.readyState);
-if(document.readyState==='loading'){
-  console.log('⏳ DOM still loading, adding DOMContentLoaded listener');
-  document.addEventListener('DOMContentLoaded',function(){
-    console.log('🎯 DOMContentLoaded fired, calling initListeners');
-    initListeners();
-  });
-}else{
-  // DOM already loaded, call immediately
-  console.log('✅ DOM already loaded, calling initListeners immediately');
-  setTimeout(function(){
-    console.log('⚡ setTimeout: calling initListeners');
-    initListeners();
-  }, 100);
-}
+console.log('✅ All Firestore listeners registered at module level');
 
 // Diamond package selection and payment functions
 function selectDiamondPackage(pkg){
+  console.log('🎯 selectDiamondPackage called with:', pkg);
   const radios=document.querySelectorAll('input[name="diamondPackage"]');
   radios.forEach(r=>r.checked=false);
   const sel=document.getElementById('pkg-'+pkg);
   if(sel)sel.checked=true;
   
   const paymentCard=document.getElementById('diamondPaymentCard');
+  console.log('💎 diamondEnabled=', diamondEnabled, ', paymentCard=', paymentCard ? 'exists' : 'NOT FOUND');
   if(!diamondEnabled){alert('💎 Diamond top-ups are currently out of stock');return;}
   
   if(paymentCard){
@@ -1995,6 +1987,13 @@ function submitDiamondPayment(){
   reader.readAsDataURL(screenshot);
 }
 
+// Expose diamond functions globally
+window.selectDiamondPackage = selectDiamondPackage;
+window.proceedToKhaltiPayment = proceedToKhaltiPayment;
+window.goBackToDiamondStep1 = goBackToDiamondStep1;
+window.submitDiamondPayment = submitDiamondPayment;
+console.log('✅ Diamond functions exposed to window');
+
 // Live qualifiers display - INSIDE initListeners
 onSnapshot(doc(db,'monthly_meta','r1qualifiers'),snap=>{
   const panel=document.getElementById('mQualifiersPanel');
@@ -2019,8 +2018,6 @@ onSnapshot(doc(db,'monthly_meta','sfqualifiers'),snap=>{
     ).join('');
   }
 });
-
-} // End of initListeners function
 
 // ═══ END MONTHLY TOURNAMENT JS ═══
 
