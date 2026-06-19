@@ -570,6 +570,44 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
 
   </div><!-- end tab-monthly -->
 
+  <!-- ══ TAB: DIAMOND ORDERS ══ -->
+  <div class="tab-page admin-only" id="tab-diamond">
+    
+    <div class="stats-grid">
+      <div class="stat-box"><div class="stat-n" style="color:var(--blue);" id="diamondTotalOrders">0</div><div class="stat-l">Orders</div></div>
+      <div class="stat-box"><div class="stat-n" style="color:var(--green);" id="diamondPendingOrders">0</div><div class="stat-l">Pending</div></div>
+      <div class="stat-box"><div class="stat-n" style="color:var(--gold);" id="diamondConfirmedOrders">0</div><div class="stat-l">Confirmed</div></div>
+    </div>
+
+    <!-- Diamond Orders List -->
+    <div class="card">
+      <div class="card-top card-top-blue"></div>
+      <div class="card-hdr" style="color:var(--blue);">💎 Diamond Orders
+        <button class="refresh-btn" onclick="loadDiamondOrders()" style="border-color:rgba(21,101,192,.3);color:var(--blue);">🔄</button>
+      </div>
+      <div id="diamondOrdersList" style="display:flex;flex-direction:column;gap:10px;max-height:600px;overflow-y:auto;">
+        <div class="no-entries">⏳ Loading orders...</div>
+      </div>
+    </div>
+
+    <!-- Diamond Settings -->
+    <div class="card">
+      <div class="card-top card-top-blue"></div>
+      <div class="card-hdr" style="color:var(--blue);">⚙️ Diamond Settings</div>
+      <div style="display:flex;gap:6px;margin-bottom:10px;align-items:center;">
+        <label class="label">Stock Status</label>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <input type="checkbox" id="diamondToggle" onchange="toggleDiamondStock()" style="width:20px;height:20px;cursor:pointer;">
+          <span id="diamondStockStatus" style="font-size:12px;color:var(--faint);">Loading...</span>
+        </div>
+      </div>
+      <label class="label">Coming Soon Message</label>
+      <textarea id="diamondComingSoonText" placeholder="Message shown when diamonds are out of stock..." style="width:100%;height:100px;padding:10px 12px;background:rgba(21,101,192,.08);border:1px solid rgba(21,101,192,.2);border-radius:8px;color:#fff;font-size:12px;font-family:inherit;box-sizing:border-box;resize:vertical;margin-bottom:10px;"></textarea>
+      <button onclick="saveDiamondSettings()" class="btn btn-blue btn-full" style="padding:13px;">💾 Save Settings</button>
+    </div>
+
+  </div><!-- end tab-diamond -->
+
   <!-- ══ BOTTOM TAB BAR ══ -->
   <div class="bottom-tabs" id="bottomTabs">
     <button class="btab btab-draw active admin-only" onclick="switchTab('draw',this)" id="btab-draw">
@@ -584,7 +622,11 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
       <span class="btab-icon">🏆</span>
       <span class="btab-lbl">Monthly</span>
     </button>
-  </div>
+    <button class="btab btab-diamond admin-only" onclick="switchTab('diamond',this)" id="btab-diamond">
+      <span class="btab-icon">💎</span>
+      <span class="btab-lbl">Diamond</span>
+    </button>
+  </div><!-- end bottom-tabs -->
 
 </div><!-- end adminPanel -->
 
@@ -636,7 +678,7 @@ function doLogin(){
   applyRoleUI();
   var db=getDB();
   if(currentRole==='admin'){
-    loadEntries(db);loadRegToggle(db);loadDiamondSettings(db);
+    loadEntries(db);loadRegToggle(db);loadDiamondSettings(db);loadDiamondOrders();
   }
   loadWeeklyPrizePool(db);loadMonthlySettings(db);
   loadSavedBracket(db);loadMonthlySavedBracket(db);
@@ -690,6 +732,13 @@ function switchTab(name,btn){
   
   document.getElementById('tab-'+name).classList.add('active');
   btn.classList.add('active');
+  
+  // Load data when switching to diamond tab
+  if(name==='diamond'){
+    loadDiamondOrders();
+    var db=getDB();
+    loadDiamondSettings(db);
+  }
 }
 
 // ── ENTRIES ──
@@ -1686,6 +1735,82 @@ function saveDiamondSettings(){
   db.collection('diamond_meta').doc('settings').set({enabled:enabled,comingSoonText:txt,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(function(){
     alert('✅ Diamond settings saved!');
   }).catch(function(e){alert('❌ '+e.message);});
+}
+
+// ── DIAMOND ORDERS MANAGEMENT ──
+var diamondOrdersCache=[];
+function loadDiamondOrders(){
+  var db=getDB(),list=document.getElementById('diamondOrdersList');
+  if(list)list.innerHTML='<div class="no-entries">⏳ Loading...</div>';
+  db.collection('diamond_orders').orderBy('timestamp','desc').get().then(function(snap){
+    diamondOrdersCache=[];
+    var pending=0,confirmed=0;
+    snap.forEach(function(d){
+      var order=Object.assign({id:d.id},d.data());
+      diamondOrdersCache.push(order);
+      if(order.status==='pending')pending++;
+      if(order.status==='confirmed')confirmed++;
+    });
+    document.getElementById('diamondTotalOrders').textContent=diamondOrdersCache.length;
+    document.getElementById('diamondPendingOrders').textContent=pending;
+    document.getElementById('diamondConfirmedOrders').textContent=confirmed;
+    renderDiamondOrders();
+  }).catch(function(e){
+    if(list)list.innerHTML='<div class="no-entries">❌ Error: '+esc(e.message)+'</div>';
+  });
+}
+function renderDiamondOrders(){
+  var list=document.getElementById('diamondOrdersList');
+  if(!list)return;
+  if(diamondOrdersCache.length===0){list.innerHTML='<div class="no-entries">📭 No diamond orders yet</div>';return;}
+  var html='';
+  diamondOrdersCache.forEach(function(order){
+    var date=order.createdAt instanceof Date?order.createdAt.toLocaleDateString():new Date(order.timestamp).toLocaleDateString();
+    var statusEmoji=order.status==='pending'?'⏳':'✅';
+    html+='<div style="background:rgba(21,101,192,.08);border:1px solid rgba(21,101,192,.15);border-radius:12px;padding:12px;">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px;">';
+    html+='<div><div style="font-weight:900;color:#fff;font-size:13px;">'+esc(order.fullName)+'</div>';
+    html+='<div style="font-size:10px;color:var(--faint);margin-top:2px;">'+esc(order.packageName)+' — Rs.'+order.amount+'</div></div>';
+    html+='<div style="background:rgba(79,195,247,.1);border:1px solid rgba(79,195,247,.2);padding:3px 8px;border-radius:6px;font-size:9px;color:var(--blue);font-weight:700;">'+statusEmoji+' '+order.status.toUpperCase()+'</div>';
+    html+='</div>';
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:10px;color:rgba(255,255,255,.4);margin-bottom:8px;line-height:1.5;">';
+    html+='<div>🎮 Game: <strong style="color:rgba(255,255,255,.7);">'+esc(order.gameName)+'</strong></div>';
+    html+='<div>🆔 UID: <strong style="color:rgba(255,255,255,.7);">'+esc(order.uid)+'</strong></div>';
+    html+='<div>📱 WA: <strong style="color:rgba(255,255,255,.7);">'+esc(order.whatsapp)+'</strong></div>';
+    html+='<div>📅 '+date+'</div>';
+    html+='</div>';
+    html+='<div style="display:flex;gap:6px;">';
+    if(order.status==='pending'){
+      html+='<button onclick="confirmDiamondOrder(\''+order.id+'\')" class="btn btn-green" style="flex:1;padding:8px;font-size:10px;">✅ Confirm</button>';
+      html+='<button onclick="cancelDiamondOrder(\''+order.id+'\')" class="btn btn-red" style="flex:1;padding:8px;font-size:10px;">❌ Cancel</button>';
+    }
+    html+='</div>';
+    html+='</div>';
+  });
+  list.innerHTML=html;
+}
+function confirmDiamondOrder(orderId){
+  if(!confirm('Confirm this diamond order?'))return;
+  var db=getDB();
+  db.collection('diamond_orders').doc(orderId).update({status:'confirmed',confirmedAt:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
+    alert('✅ Order confirmed! Send WhatsApp confirmation to customer.');
+    loadDiamondOrders();
+  }).catch(function(e){alert('❌ '+e.message);});
+}
+function cancelDiamondOrder(orderId){
+  if(!confirm('Cancel this order? (This cannot be undone)'))return;
+  var db=getDB();
+  db.collection('diamond_orders').doc(orderId).delete().then(function(){
+    alert('🗑️ Order deleted!');
+    loadDiamondOrders();
+  }).catch(function(e){alert('❌ '+e.message);});
+}
+function toggleDiamondStock(){
+  var db=getDB(),cb=document.getElementById('diamondToggle'),enabled=cb.checked;
+  var statusEl=document.getElementById('diamondStockStatus');
+  db.collection('diamond_meta').doc('settings').set({enabled:enabled,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).then(function(){
+    if(statusEl)statusEl.textContent=enabled?'🟢 IN STOCK':'🔴 OUT OF STOCK';
+  }).catch(function(e){alert('Failed: '+e.message);cb.checked=!enabled;});
 }
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
