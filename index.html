@@ -3,7 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#060E2A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>Dream2Moon — Giveaway & Tournament</title>
+<link rel="dns-prefetch" href="https://firestore.googleapis.com">
+<link rel="dns-prefetch" href="https://www.gstatic.com">
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -24,8 +31,8 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
   radial-gradient(ellipse 900px 500px at 15% 20%,rgba(79,195,247,.07),transparent),
   radial-gradient(ellipse 700px 600px at 85% 60%,rgba(206,147,216,.06),transparent),
   radial-gradient(ellipse 600px 400px at 50% 95%,rgba(255,212,56,.04),transparent);}
-#stars{z-index:1;}
-.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d) ease-in-out infinite;animation-delay:var(--dl);}
+#stars{z-index:1;contain:strict;}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d) ease-in-out infinite;animation-delay:var(--dl);will-change:opacity;}
 @keyframes twinkle{0%,100%{opacity:0}50%{opacity:var(--op)}}
 .shoot{position:fixed;z-index:2;top:var(--t);left:var(--l);width:140px;height:1.5px;
   background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent);
@@ -35,7 +42,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 #aurora{z-index:0;background:
   radial-gradient(ellipse 1200px 180px at 50% 28%,rgba(0,229,255,.025),transparent),
   radial-gradient(ellipse 1000px 140px at 20% 55%,rgba(79,195,247,.02),transparent);
-  animation:auroraD 20s ease-in-out infinite alternate;}
+  animation:auroraD 20s ease-in-out infinite alternate;will-change:transform;}
 @keyframes auroraD{from{transform:translateY(0) scaleX(1)}to{transform:translateY(28px) scaleX(1.05)}}
 .page{position:relative;z-index:10;max-width:490px;margin:0 auto;padding:0 16px 70px;display:flex;flex-direction:column;align-items:center;gap:18px;}
 /* HERO */
@@ -46,7 +53,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 .moon-sys{position:relative;width:210px;height:210px;display:flex;align-items:center;justify-content:center;z-index:3;}
 .halo{position:absolute;border-radius:50%;border:1px solid var(--hc,rgba(79,195,247,.12));animation:haloPulse var(--hp,4s) ease-in-out infinite;animation-delay:var(--hd,0s);}
 @keyframes haloPulse{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.04);opacity:.9}}
-.orbit-arm{position:absolute;inset:0;border-radius:50%;animation:spin var(--spd,8s) linear infinite;}
+.orbit-arm{position:absolute;inset:0;border-radius:50%;animation:spin var(--spd,8s) linear infinite;will-change:transform;}
 .orbit-arm.rev{animation-direction:reverse;}
 @keyframes spin{to{transform:rotate(360deg)}}
 .orbit-dot{position:absolute;top:-12px;left:50%;transform:translateX(-50%);}
@@ -54,7 +61,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 .orbit-arm.rev .orbit-dot svg{animation-direction:reverse;}
 @keyframes unSpin{from{transform:rotate(0)}to{transform:rotate(-360deg)}}
 .moon-core{position:relative;width:105px;height:105px;z-index:4;}
-.moon-ring-outer{position:absolute;inset:-6px;border-radius:50%;background:conic-gradient(#4FC3F7,#CE93D8,#FFD438,#69F0AE,#4FC3F7);animation:spin 4s linear infinite;}
+.moon-ring-outer{position:absolute;inset:-6px;border-radius:50%;background:conic-gradient(#4FC3F7,#CE93D8,#FFD438,#69F0AE,#4FC3F7);animation:spin 4s linear infinite;will-change:transform;}
 .moon-ring-inner{position:absolute;inset:4px;border-radius:50%;background:#060E2A;}
 .moon-face{position:absolute;inset:7px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 40% 35%,#183070,#0A1830);}
 .moon-surf{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 38% 35%,#FFF0A0 0%,#FFD438 12%,#D4A000 35%,#8B5E00 65%,#3A2800 100%);}
@@ -78,7 +85,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 .card{width:100%;border-radius:20px;padding:20px;position:relative;overflow:hidden;
   background:linear-gradient(135deg,rgba(13,35,75,.93) 0%,rgba(8,22,55,.89) 100%);
   border:1px solid rgba(79,195,247,.18);
-  box-shadow:0 8px 32px rgba(0,0,30,.55),inset 0 1px 0 rgba(79,195,247,.12);backdrop-filter:blur(8px);}
+  box-shadow:0 8px 32px rgba(0,0,30,.55),inset 0 1px 0 rgba(79,195,247,.12);}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
   background:linear-gradient(90deg,var(--blue),var(--cyan),var(--purple),var(--gold),var(--blue));
   background-size:300%;animation:shimmer 4s linear infinite;}
@@ -88,7 +95,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 .sec-label{font-size:9px;letter-spacing:5px;color:var(--faint);text-transform:uppercase;text-align:center;font-weight:700;}
 /* TICKER */
 .ticker-wrap{width:100%;overflow:hidden;background:linear-gradient(135deg,rgba(13,35,75,.96),rgba(7,20,50,.92));border:1px solid rgba(79,195,247,.15);border-radius:14px;padding:10px 0;}
-.ticker{display:flex;white-space:nowrap;animation:tick 35s linear infinite;}
+.ticker{display:flex;white-space:nowrap;animation:tick 35s linear infinite;will-change:transform;transform:translateZ(0);}
 .ticker span{font-size:12px;color:var(--muted);padding:0 22px;font-weight:600;}
 .ticker span.hl{color:var(--gold);font-weight:800;}
 @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
@@ -263,7 +270,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 .tourn-submitted.active{display:flex;}
 
 /* ═══ MAIN TAB NAVIGATION ═══ */
-.tab-nav{display:flex;gap:4px;background:rgba(0,0,0,.25);border-radius:16px;padding:5px;margin-bottom:18px;position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);border:1px solid rgba(79,195,247,.08);}
+.tab-nav{display:flex;gap:4px;background:rgba(0,0,0,.25);border-radius:16px;padding:5px;margin-bottom:18px;position:sticky;top:0;z-index:50;border:1px solid rgba(79,195,247,.08);}
 .tab-pill{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px;border:none;border-radius:11px;background:transparent;color:var(--faint);cursor:pointer;transition:all .25s;font-family:'Exo 2',sans-serif;}
 .tab-pill:hover{color:var(--muted);background:rgba(255,255,255,.04);}
 .tab-pill.active{background:linear-gradient(135deg,rgba(13,35,75,.97),rgba(8,22,55,.93));color:#fff;box-shadow:0 2px 14px rgba(0,0,30,.5);border:1px solid rgba(79,195,247,.12);}
@@ -422,7 +429,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     </div>
     <span id="sec2-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;">▼</span>
   </button>
-  <div id="sec2" style="display:none;flex-direction:column;gap:14px;">
+  <div id="sec2" style="content-visibility:auto;display:none;flex-direction:column;gap:14px;">
   <!-- Winners -->
   <div class="sec-label">🏆 Latest Winners</div>
   <div class="card" id="latestWinnerCard">
@@ -442,7 +449,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     </div>
     <span id="sec3-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;">▼</span>
   </button>
-  <div id="sec3" style="display:none;flex-direction:column;gap:14px;">
+  <div id="sec3" style="content-visibility:auto;display:none;flex-direction:column;gap:14px;">
   <!-- Tournament Winner -->
   <div class="sec-label">🏆 Tournament Champion</div>
   <div class="card" id="tournWinnerCard" style="border-color:rgba(105,240,174,.2);">
@@ -460,7 +467,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     </div>
     <span id="sec4-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;">▼</span>
   </button>
-  <div id="sec4" style="display:none;flex-direction:column;gap:14px;">
+  <div id="sec4" style="content-visibility:auto;display:none;flex-direction:column;gap:14px;">
   <!-- ═══════════════════════════════════
        SQUAD TOURNAMENT SECTION
   ═══════════════════════════════════ -->
@@ -624,7 +631,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     </div>
     <span id="sec5-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;">▼</span>
   </button>
-  <div id="sec5" style="display:none;flex-direction:column;gap:14px;">
+  <div id="sec5" style="content-visibility:auto;display:none;flex-direction:column;gap:14px;">
 
     <!-- Coming Soon banner — shown when admin turns monthly tournament OFF -->
     <div id="mComingSoon" style="display:none;background:linear-gradient(135deg,rgba(156,39,176,.12),rgba(103,58,183,.06));border:2px solid rgba(156,39,176,.3);border-radius:18px;padding:28px 20px;text-align:center;">
@@ -919,7 +926,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     </div>
     <span id="sec6-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;">▼</span>
   </button>
-  <div id="sec6" style="display:none;flex-direction:column;gap:14px;">
+  <div id="sec6" style="content-visibility:auto;display:none;flex-direction:column;gap:14px;">
   <!-- FF Section -->
   <div class="sec-label">🔫 Free Fire Corner</div>
   <div>
@@ -956,7 +963,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     </div>
     <span id="sec7-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;">▼</span>
   </button>
-  <div id="sec7" style="display:none;flex-direction:column;gap:14px;">
+  <div id="sec7" style="content-visibility:auto;display:none;flex-direction:column;gap:14px;">
   <!-- Rules -->
   <div class="card">
     <div class="rules-title">📋 Giveaway Rules</div>
@@ -1008,7 +1015,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
     </div>
     <span id="sec8-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;">▼</span>
   </button>
-  <div id="sec8" style="display:none;flex-direction:column;gap:14px;">
+  <div id="sec8" style="content-visibility:auto;display:none;flex-direction:column;gap:14px;">
 
     <!-- Options Card (shown when in stock) -->
     <div id="diamondOptionsCard" class="card" style="border-color:rgba(21,101,192,.3);">
@@ -1202,8 +1209,8 @@ console.log('🔥 Firebase initialized, db=', typeof db);
 
 // Stars
 const sf=document.getElementById('stars');
-for(let i=0;i<200;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*2.2+.3;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*5}s;--dl:${Math.random()*7}s;--op:${.12+Math.random()*.65};`;sf.appendChild(s);}
-const mf=document.getElementById('moonFace');if(mf)for(let i=0;i<7;i++){const s=document.createElement('div');s.className='ms';const sz=1+Math.random()*1.5;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*85}%;top:${Math.random()*85}%;--d:${1.5+Math.random()*2.5}s;--dl:${Math.random()*3}s;`;mf.appendChild(s);}
+for(let i=0;i<80;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*2.2+.3;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*5}s;--dl:${Math.random()*7}s;--op:${.12+Math.random()*.65};`;sf.appendChild(s);}
+const mf=document.getElementById('moonFace');if(mf)for(let i=0;i<4;i++){const s=document.createElement('div');s.className='ms';const sz=1+Math.random()*1.5;s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*85}%;top:${Math.random()*85}%;--d:${1.5+Math.random()*2.5}s;--dl:${Math.random()*3}s;`;mf.appendChild(s);}
 
 // Countdown
 const NPT=(5*60+45)*60*1000;
@@ -2044,7 +2051,7 @@ window._real_toggleSec=window.toggleSec=function(id){
 };
 
 
-function launchConfetti(){const wrap=document.getElementById('confetti');wrap.innerHTML='';const cols=['#FFD438','#4FC3F7','#00E5FF','#CE93D8','#69F0AE','#F48FB1','#FFAB40','#fff'];for(let i=0;i<150;i++){const c=document.createElement('div');c.className='cp';const drift=(Math.random()-.5)*450;c.style.cssText=`left:${Math.random()*100}%;background:${cols[Math.floor(Math.random()*cols.length)]};--fd:${1.5+Math.random()*2.5}s;--dx:${drift}px;--br:${Math.random()>.5?'50%':'2px'};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*.9}s;`;wrap.appendChild(c);}setTimeout(()=>wrap.innerHTML='',5500);}
+function launchConfetti(){const wrap=document.getElementById('confetti');wrap.innerHTML='';const cols=['#FFD438','#4FC3F7','#00E5FF','#CE93D8','#69F0AE','#F48FB1','#FFAB40','#fff'];for(let i=0;i<80;i++){const c=document.createElement('div');c.className='cp';const drift=(Math.random()-.5)*450;c.style.cssText=`left:${Math.random()*100}%;background:${cols[Math.floor(Math.random()*cols.length)]};--fd:${1.5+Math.random()*2.5}s;--dx:${drift}px;--br:${Math.random()>.5?'50%':'2px'};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*.9}s;`;wrap.appendChild(c);}setTimeout(()=>wrap.innerHTML='',4000);}
 // ── RE-EXPOSE ALL FUNCTIONS & FLUSH QUEUE ──
 // Override stubs with real implementations (only if _real_ version exists)
 var _realFns=['toggleSec','toggleMonthly','showTab','showTournForm','cancelTournForm',
