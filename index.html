@@ -1866,20 +1866,32 @@ console.log('✅ All Firestore listeners registered at module level');
 // Diamond package selection and payment functions
 function selectDiamondPackage(pkg){
   console.log('🎯 selectDiamondPackage called with:', pkg);
+  console.log('💎 diamondEnabled=', diamondEnabled);
+  
+  if(!diamondEnabled){
+    alert('💎 Diamond top-ups are currently OUT OF STOCK 🔴\n\nPlease check back soon!');
+    return;
+  }
+  
   const radios=document.querySelectorAll('input[name="diamondPackage"]');
   radios.forEach(r=>r.checked=false);
   const sel=document.getElementById('pkg-'+pkg);
   if(sel)sel.checked=true;
   
   const paymentCard=document.getElementById('diamondPaymentCard');
-  console.log('💎 diamondEnabled=', diamondEnabled, ', paymentCard=', paymentCard ? 'exists' : 'NOT FOUND');
-  if(!diamondEnabled){alert('💎 Diamond top-ups are currently out of stock');return;}
+  console.log('💳 Payment card element:', paymentCard ? 'FOUND' : 'NOT FOUND');
   
   if(paymentCard){
     paymentCard.style.display='block';
     document.getElementById('diamondStep1').style.display='block';
     document.getElementById('diamondStep2').style.display='none';
-    paymentCard.scrollIntoView({behavior:'smooth',block:'center'});
+    document.getElementById('diamondScreenshot').value='';
+    console.log('✅ Payment card shown, Step 1 displayed');
+    setTimeout(()=>{
+      paymentCard.scrollIntoView({behavior:'smooth',block:'center'});
+    }, 100);
+  }else{
+    alert('❌ Error: Payment form not found');
   }
 }
 
