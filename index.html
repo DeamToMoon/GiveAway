@@ -1212,6 +1212,7 @@ function tick(){const ms=Math.max(0,nextSat()-Date.now()),ts=Math.floor(ms/1000)
 tick();setInterval(tick,1000);
 
 // Real-time entry count
+function initListeners(){
 onSnapshot(collection(db,'entries'),snap=>{const el=document.getElementById('publicEntryCount');if(el)el.textContent=snap.size;});
 
 // Real-time winners — both shown as Weekly Membership Pass 💎
@@ -1848,6 +1849,13 @@ onSnapshot(doc(db,'diamond_meta','settings'),snap=>{
   }
 });
 
+// Call listeners when DOM is ready
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',initListeners);
+}else{
+  initListeners();
+}
+
 // Diamond package selection and payment functions
 function selectDiamondPackage(pkg){
   const radios=document.querySelectorAll('input[name="diamondPackage"]');
@@ -1968,8 +1976,9 @@ function submitDiamondPayment(){
       });
   };
   reader.readAsDataURL(screenshot);
+}
 
-// Live qualifiers display
+// Live qualifiers display - INSIDE initListeners
 onSnapshot(doc(db,'monthly_meta','r1qualifiers'),snap=>{
   const panel=document.getElementById('mQualifiersPanel');
   const el=document.getElementById('r1QualDisplay');
@@ -1994,6 +2003,8 @@ onSnapshot(doc(db,'monthly_meta','sfqualifiers'),snap=>{
   }
 });
 
+} // End of initListeners function
+
 // ═══ END MONTHLY TOURNAMENT JS ═══
 
 
@@ -2010,12 +2021,18 @@ window._real_toggleSec=window.toggleSec=function(id){
 
 function launchConfetti(){const wrap=document.getElementById('confetti');wrap.innerHTML='';const cols=['#FFD438','#4FC3F7','#00E5FF','#CE93D8','#69F0AE','#F48FB1','#FFAB40','#fff'];for(let i=0;i<150;i++){const c=document.createElement('div');c.className='cp';const drift=(Math.random()-.5)*450;c.style.cssText=`left:${Math.random()*100}%;background:${cols[Math.floor(Math.random()*cols.length)]};--fd:${1.5+Math.random()*2.5}s;--dx:${drift}px;--br:${Math.random()>.5?'50%':'2px'};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-delay:${Math.random()*.9}s;`;wrap.appendChild(c);}setTimeout(()=>wrap.innerHTML='',5500);}
 // ── RE-EXPOSE ALL FUNCTIONS & FLUSH QUEUE ──
-// Override stubs with real implementations
+// Override stubs with real implementations (only if _real_ version exists)
 var _realFns=['toggleSec','toggleMonthly','showTab','showTournForm','cancelTournForm',
   'backToStep1','submitEntry','submitTournament','goToPaymentStep',
   'mGoToPayment','mBackToStep1','submitMonthly'];
 _realFns.forEach(function(fn){
   if(window['_real_'+fn])window[fn]=window['_real_'+fn];
+});
+// Diamond functions are already defined, just ensure they're in window
+['selectDiamondPackage','proceedToKhaltiPayment','goBackToDiamondStep1','submitDiamondPayment','setGroups'].forEach(function(fn){
+  if(!window[fn]){
+    console.warn('Function '+fn+' not defined');
+  }
 });
 if(typeof _flushFnQueue==='function')_flushFnQueue();
 </script>
