@@ -1197,6 +1197,7 @@ import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-app
 import{getFirestore,collection,addDoc,getDocs,onSnapshot,query,where,orderBy,doc,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 const cfg={apiKey:"AIzaSyDPp-JsePgIM4Y3MrFrXEMLiv1GW3sJGKU",authDomain:"dream2moon.firebaseapp.com",projectId:"dream2moon",storageBucket:"dream2moon.firebasestorage.app",messagingSenderId:"172765828532",appId:"1:172765828532:web:d31a0b1dae8cc5752bcee1"};
 const app=initializeApp(cfg);const db=getFirestore(app);
+window.db = db; // Expose globally
 
 // Stars
 const sf=document.getElementById('stars');
@@ -1850,10 +1851,12 @@ onSnapshot(doc(db,'diamond_meta','settings'),snap=>{
 });
 
 // Call listeners when DOM is ready
+window.initListeners = initListeners;
 if(document.readyState==='loading'){
   document.addEventListener('DOMContentLoaded',initListeners);
 }else{
-  initListeners();
+  // DOM already loaded, call immediately
+  setTimeout(initListeners, 0);
 }
 
 // Diamond package selection and payment functions
