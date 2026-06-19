@@ -1004,7 +1004,7 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
   <button onclick="toggleSec('sec8')" style="width:100%;padding:18px 20px;background:linear-gradient(135deg,#001a40,#0a3d91,#1565C0,#0a3d91,#001a40);background-size:300%;border:none;border-radius:18px;font-family:'Orbitron',sans-serif;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;animation:btnShimmer 5s linear infinite;box-shadow:0 6px 28px rgba(21,101,192,.3);text-align:left;">
     <div style="display:flex;flex-direction:column;gap:4px;">
       <div style="font-size:14px;font-weight:900;letter-spacing:2px;">💎 FREE FIRE DIAMOND</div>
-      <div style="font-size:9px;font-weight:600;letter-spacing:2px;opacity:.65;text-transform:uppercase;">Top-up &amp; Membership · Coming Soon</div>
+      <div id="diamondBtnSubtitle" style="font-size:9px;font-weight:600;letter-spacing:2px;opacity:.65;text-transform:uppercase;">Top-up &amp; Membership · Coming Soon</div>
     </div>
     <span id="sec8-arrow" style="font-size:18px;transition:transform .3s;opacity:.8;">▼</span>
   </button>
@@ -1072,9 +1072,26 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 
       <!-- Reference Name Input -->
       <div style="margin-bottom:14px;">
-        <label style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;">Payment Reference (Your Name)</label>
+        <label style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;">Full Name</label>
         <input id="diamondPayRef" type="text" placeholder="Enter your full name" maxlength="50" style="width:100%;padding:10px 12px;background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.2);border-radius:8px;color:#fff;font-size:13px;margin-top:4px;font-family:inherit;box-sizing:border-box;">
-        <div style="font-size:9px;color:rgba(255,255,255,.3);margin-top:4px;">This will be your payment reference · must match your actual name</div>
+      </div>
+
+      <!-- Game Name Input -->
+      <div style="margin-bottom:14px;">
+        <label style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;">Free Fire Game Name</label>
+        <input id="diamondGameName" type="text" placeholder="Your in-game character name" maxlength="50" style="width:100%;padding:10px 12px;background:rgba(79,195,247,.08);border:1px solid rgba(79,195,247,.2);border-radius:8px;color:#fff;font-size:13px;margin-top:4px;font-family:inherit;box-sizing:border-box;">
+      </div>
+
+      <!-- UID Input -->
+      <div style="margin-bottom:14px;">
+        <label style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;">Free Fire UID</label>
+        <input id="diamondUID" type="text" placeholder="Your 10-digit UID" maxlength="20" style="width:100%;padding:10px 12px;background:rgba(156,39,176,.08);border:1px solid rgba(156,39,176,.2);border-radius:8px;color:#fff;font-size:13px;margin-top:4px;font-family:inherit;box-sizing:border-box;">
+      </div>
+
+      <!-- WhatsApp Number Input -->
+      <div style="margin-bottom:14px;">
+        <label style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;">WhatsApp Number</label>
+        <input id="diamondWhatsApp" type="tel" placeholder="Your WhatsApp number (e.g. 9841234567)" maxlength="15" style="width:100%;padding:10px 12px;background:rgba(105,240,174,.08);border:1px solid rgba(105,240,174,.2);border-radius:8px;color:#fff;font-size:13px;margin-top:4px;font-family:inherit;box-sizing:border-box;">
       </div>
 
       <!-- QR Code -->
@@ -1767,10 +1784,16 @@ onSnapshot(doc(db,'diamond_meta','settings'),snap=>{
   const enabled=data.enabled===true;
   diamondEnabled=enabled;
   const badge=document.getElementById('diamondStockBadge');
+  const btnSubtitle=document.getElementById('diamondBtnSubtitle');
   const optionsCard=document.getElementById('diamondOptionsCard');
   const paymentCard=document.getElementById('diamondPaymentCard');
   const comingSoonCard=document.getElementById('diamondComingSoonCard');
   const comingSoonTxt=document.getElementById('diamondComingSoonTxt');
+  
+  // Update button subtitle
+  if(btnSubtitle){
+    btnSubtitle.innerHTML=enabled?'Top-up &amp; Membership · <span style="color:#69F0AE;font-weight:900;">Available</span>':'Top-up &amp; Membership · Coming Soon';
+  }
   
   // Update badge
   if(badge){
@@ -1825,19 +1848,63 @@ function selectDiamondPackage(pkg){
 
 function submitDiamondPayment(){
   const selected=document.querySelector('input[name="diamondPackage"]:checked');
-  const payRef=document.getElementById('diamondPayRef').value.trim();
+  const fullName=document.getElementById('diamondPayRef').value.trim();
+  const gameName=document.getElementById('diamondGameName').value.trim();
+  const uid=document.getElementById('diamondUID').value.trim();
+  const whatsapp=document.getElementById('diamondWhatsApp').value.trim();
   
   if(!selected){alert('❌ Please select a package first');return;}
-  if(!payRef){alert('❌ Please enter your name as payment reference');return;}
-  if(payRef.length<2){alert('❌ Please enter a valid full name');return;}
+  if(!fullName){alert('❌ Please enter your full name');return;}
+  if(fullName.length<2){alert('❌ Please enter a valid full name');return;}
+  if(!gameName){alert('❌ Please enter your Free Fire game name');return;}
+  if(!uid){alert('❌ Please enter your Free Fire UID');return;}
+  if(uid.length<10){alert('❌ UID should be at least 10 digits');return;}
+  if(!whatsapp){alert('❌ Please enter your WhatsApp number');return;}
+  if(whatsapp.length<10){alert('❌ Please enter a valid WhatsApp number');return;}
   
-  const pkgLabel={'115diamonds':'115 Diamonds','weeklypass':'Weekly Membership','monthlypass':'Monthly Membership'};
-  const msg='✅ Payment received!\\n\\nPackage: '+pkgLabel[selected.value]+'\\nReference: '+payRef+'\\n\\nYou will receive confirmation via WhatsApp shortly. Thank you!';
-  alert(msg);
+  const pkgLabel={'115diamonds':'115 Diamonds','weeklypass':'Weekly Membership (7 days)','monthlypass':'Monthly Membership (30 days)'};
+  const pkgPrice={'115diamonds':110,'weeklypass':210,'monthlypass':1050};
   
-  document.getElementById('diamondPayRef').value='';
-  document.getElementById('diamondPaymentCard').style.display='none';
-  document.querySelectorAll('input[name="diamondPackage"]').forEach(r=>r.checked=false);
+  const orderData={
+    fullName:fullName,
+    gameName:gameName,
+    uid:uid,
+    whatsapp:whatsapp,
+    package:selected.value,
+    packageName:pkgLabel[selected.value],
+    amount:pkgPrice[selected.value],
+    status:'pending',
+    createdAt:new Date(),
+    timestamp:Date.now()
+  };
+  
+  // Save to Firestore
+  if(typeof db==='undefined'){
+    alert('❌ Unable to save order. Please try again.');
+    return;
+  }
+  
+  addDoc(collection(db,'diamond_orders'),orderData)
+    .then(docRef=>{
+      const msg='✅ Order Placed Successfully!\\n\\n'
+        +'Package: '+pkgLabel[selected.value]+'\\n'
+        +'Amount: Rs.'+pkgPrice[selected.value]+'\\n'
+        +'Status: Pending Verification\\n\\n'
+        +'You will receive confirmation via WhatsApp shortly.\\n'
+        +'Reference: '+fullName;
+      alert(msg);
+      
+      // Reset form
+      document.getElementById('diamondPayRef').value='';
+      document.getElementById('diamondGameName').value='';
+      document.getElementById('diamondUID').value='';
+      document.getElementById('diamondWhatsApp').value='';
+      document.getElementById('diamondPaymentCard').style.display='none';
+      document.querySelectorAll('input[name="diamondPackage"]').forEach(r=>r.checked=false);
+    })
+    .catch(err=>{
+      alert('❌ Error saving order: '+err.message+'\\n\\nPlease try again.');
+    });
 }
 
 // Live qualifiers display
