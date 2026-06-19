@@ -1197,7 +1197,8 @@ import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-app
 import{getFirestore,collection,addDoc,getDocs,onSnapshot,query,where,orderBy,doc,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 const cfg={apiKey:"AIzaSyDPp-JsePgIM4Y3MrFrXEMLiv1GW3sJGKU",authDomain:"dream2moon.firebaseapp.com",projectId:"dream2moon",storageBucket:"dream2moon.firebasestorage.app",messagingSenderId:"172765828532",appId:"1:172765828532:web:d31a0b1dae8cc5752bcee1"};
 const app=initializeApp(cfg);const db=getFirestore(app);
-window.db = db; // Expose globally
+window.db = db;
+console.log('🔥 Firebase initialized, db=', typeof db);
 
 // Stars
 const sf=document.getElementById('stars');
@@ -1214,7 +1215,8 @@ tick();setInterval(tick,1000);
 
 // Real-time entry count
 function initListeners(){
-onSnapshot(collection(db,'entries'),snap=>{const el=document.getElementById('publicEntryCount');if(el)el.textContent=snap.size;});
+console.log('📡 initListeners called, db=', typeof window.db);
+onSnapshot(collection(db,'entries'),snap=>{const el=document.getElementById('publicEntryCount');if(el)el.textContent=snap.size;console.log('✅ Entries loaded:', snap.size);});
 
 // Real-time winners — both shown as Weekly Membership Pass 💎
 onSnapshot(doc(db,'winners','latest'),snap=>{
@@ -1810,10 +1812,13 @@ onSnapshot(doc(db,'monthly_meta','settings'),snap=>{
 
 // Diamond top-up settings — admin-controlled stock status + coming soon text
 var diamondEnabled=false;
+console.log('⚙️ Setting up diamond settings listener...');
 onSnapshot(doc(db,'diamond_meta','settings'),snap=>{
+  console.log('💎 Diamond settings snap:', snap.exists() ? snap.data() : 'NOT FOUND');
   const data=snap.exists()?snap.data():{};
   const enabled=data.enabled===true;
   diamondEnabled=enabled;
+  console.log('💎 Diamond enabled:', enabled);
   const badge=document.getElementById('diamondStockBadge');
   const btnSubtitle=document.getElementById('diamondBtnSubtitle');
   const optionsCard=document.getElementById('diamondOptionsCard');
@@ -1852,11 +1857,20 @@ onSnapshot(doc(db,'diamond_meta','settings'),snap=>{
 
 // Call listeners when DOM is ready
 window.initListeners = initListeners;
+console.log('📌 Setting up initListeners, DOM state:', document.readyState);
 if(document.readyState==='loading'){
-  document.addEventListener('DOMContentLoaded',initListeners);
+  console.log('⏳ DOM still loading, adding DOMContentLoaded listener');
+  document.addEventListener('DOMContentLoaded',function(){
+    console.log('🎯 DOMContentLoaded fired, calling initListeners');
+    initListeners();
+  });
 }else{
   // DOM already loaded, call immediately
-  setTimeout(initListeners, 0);
+  console.log('✅ DOM already loaded, calling initListeners immediately');
+  setTimeout(function(){
+    console.log('⚡ setTimeout: calling initListeners');
+    initListeners();
+  }, 100);
 }
 
 // Diamond package selection and payment functions
