@@ -560,7 +560,7 @@ input[type="text"],input[type="tel"],input[type="file"],input[type="email"]{
           <input type="text" id="t-uid" placeholder="Leader's Free Fire UID" inputmode="numeric">
           <div id="warn-uid" style="display:none;font-size:11px;color:#FF6B6B;margin-top:5px;padding:6px 10px;background:rgba(255,107,107,.08);border-radius:8px;border:1px solid rgba(255,107,107,.2);"></div>
         </div>
-        <div class="field"><label>📱 Leader WhatsApp</label><input type="tel" id="t-wa" placeholder="e.g. 98XXXXXXXX" inputmode="numeric"></div>
+        <div class="field"><label>📱 Leader WhatsApp</label><input type="tel" id="t-wa" placeholder="10-digit number" inputmode="numeric"></div>
 
         <div style="background:rgba(79,195,247,.05);border:1px solid rgba(79,195,247,.12);border-radius:14px;padding:14px 16px;margin-bottom:18px;">
           <div style="font-size:10px;font-weight:800;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:14px;">👥 3 Members (Name + UID)</div>
@@ -768,7 +768,7 @@ input[type="text"],input[type="tel"],input[type="file"],input[type="email"]{
           <div class="field"><label>👑 Team Leader Name</label><input type="text" id="mt-leader" placeholder="Leader in-game name"><div id="mwarn-leader" style="display:none;font-size:11px;color:var(--red);margin-top:4px;padding:5px 10px;background:rgba(255,107,107,.07);border-radius:7px;"></div></div>
           <div class="field"><label>🔢 Leader UID</label><input type="text" id="mt-luid" placeholder="Leader Free Fire UID" inputmode="numeric"><div id="mwarn-luid" style="display:none;font-size:11px;color:var(--red);margin-top:4px;padding:5px 10px;background:rgba(255,107,107,.07);border-radius:7px;"></div></div>
           <div class="field"><label>🎮 Leader In-Game Name</label><input type="text" id="mt-ligname" placeholder="Exactly as shown in-game"></div>
-          <div class="field"><label>📱 Leader Phone Number</label><input type="tel" id="mt-phone" placeholder="e.g. 98XXXXXXXX" inputmode="numeric"></div>
+          <div class="field"><label>📱 Leader Phone Number</label><input type="tel" id="mt-phone" placeholder="10-digit number" inputmode="numeric"></div>
 
           <div style="font-size:9px;font-weight:800;letter-spacing:3px;color:var(--purple);text-transform:uppercase;margin:18px 0 14px;">⚔️ Squad Members</div>
           <div style="background:rgba(156,39,176,.04);border:1px solid rgba(156,39,176,.12);border-radius:12px;padding:14px;margin-bottom:14px;">
@@ -1112,7 +1112,7 @@ input[type="text"],input[type="tel"],input[type="file"],input[type="email"]{
         <!-- WhatsApp Number Input -->
         <div style="margin-bottom:14px;">
           <label style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;">WhatsApp Number</label>
-          <input id="diamondWhatsApp" type="tel" placeholder="Your WhatsApp number (e.g. 9841234567)" maxlength="15" style="width:100%;padding:10px 12px;background:rgba(105,240,174,.08);border:1px solid rgba(105,240,174,.2);border-radius:8px;color:#fff;font-size:13px;margin-top:4px;font-family:inherit;box-sizing:border-box;">
+          <input id="diamondWhatsApp" type="tel" placeholder="Your 10-digit WhatsApp number" maxlength="15" style="width:100%;padding:10px 12px;background:rgba(105,240,174,.08);border:1px solid rgba(105,240,174,.2);border-radius:8px;color:#fff;font-size:13px;margin-top:4px;font-family:inherit;box-sizing:border-box;">
         </div>
 
         <button onclick="proceedToKhaltiPayment()" style="width:100%;padding:12px;background:linear-gradient(135deg,#25D366,#20BA5C);border:none;border-radius:10px;color:#fff;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;letter-spacing:1px;cursor:pointer;transition:all .3s;">
@@ -1530,7 +1530,7 @@ window._real_goToPaymentStep=window.goToPaymentStep=async function(){
   if(!squad){tWarn('warn-squad','⚠️ Please enter your Squad Name!');return;}
   if(!leader){tWarn('warn-leader','⚠️ Please enter the Leader in-game name!');return;}
   if(!uid){tWarn('warn-uid','⚠️ Please enter the Leader UID!');return;}
-  if(!wa||!/^[0-9]{7,15}$/.test(wa.replace(/\s/g,''))){alert('⚠️ Please enter a valid WhatsApp number! 📱');return;}
+  if(!wa||!/^[0-9]{10}$/.test(wa.replace(/\s/g,''))){alert('⚠️ Please enter a valid 10-digit WhatsApp number! 📱');return;}
   if(!m1||!m1uid||!m2||!m2uid||!m3||!m3uid){alert('⚠️ Fill in ALL member names and UIDs!');return;}
   const memberNames=[m1,m2,m3].map(x=>x.toLowerCase());
   const memberUIDs=[m1uid,m2uid,m3uid].map(x=>x.toLowerCase());
@@ -1702,7 +1702,7 @@ window._real_mGoToPayment=window.mGoToPayment=async function(){
   if(!squad){const e=document.getElementById('mwarn-squad');if(e){e.textContent='⚠️ Please enter your team name!';e.style.display='block';}return;}
   if(!leader){const e=document.getElementById('mwarn-leader');if(e){e.textContent='⚠️ Please enter leader name!';e.style.display='block';}return;}
   if(!luid){const e=document.getElementById('mwarn-luid');if(e){e.textContent='⚠️ Please enter leader UID!';e.style.display='block';}return;}
-  if(!phone||!/^[0-9]{7,15}$/.test(phone.replace(/\s/g,''))){alert('⚠️ Please enter a valid phone number!');return;}
+  if(!phone||!/^[0-9]{10}$/.test(phone.replace(/\s/g,''))){alert('⚠️ Please enter a valid 10-digit WhatsApp number!');return;}
   if(!m1||!m1uid||!m2||!m2uid||!m3||!m3uid){alert('⚠️ Please fill all player names and UIDs!');return;}
 
   const mNames=[m1,m2,m3].map(x=>x.toLowerCase());
@@ -1948,7 +1948,7 @@ function proceedToKhaltiPayment(){
   if(!gameName){alert('❌ Please enter your Free Fire game name');return;}
   if(!uid){alert('❌ Please enter your Free Fire UID');return;}
   if(!whatsapp){alert('❌ Please enter your WhatsApp number');return;}
-  if(whatsapp.length!==10){alert('❌ WhatsApp number must be exactly 10 digits');return;}
+  if(!/^\d{10}$/.test(whatsapp)){alert('❌ Please enter a valid 10-digit WhatsApp number');return;}
   
   const selected=document.querySelector('input[name="diamondPackage"]:checked');
   const pkgLabel={'115diamonds':'115 Diamonds','weeklypass':'Weekly Membership (7 days)','monthlypass':'Monthly Membership (30 days)'};
