@@ -1760,6 +1760,19 @@ function renderDiamondOrders(){
     html+='<div>📱 WA: <strong style="color:rgba(255,255,255,.7);">'+esc(order.whatsapp)+'</strong></div>';
     html+='<div>📅 '+date+'</div>';
     html+='</div>';
+    // Screenshot
+    if(order.screenshotBase64){
+      html+='<div style="margin-bottom:8px;">';
+      html+='<div style="font-size:9px;font-weight:800;letter-spacing:1px;color:rgba(37,211,102,.6);text-transform:uppercase;margin-bottom:5px;">📸 Payment Screenshot</div>';
+      html+='<img src="'+order.screenshotBase64+'" '
+        +'onclick="this.style.maxHeight=this.style.maxHeight===\'none\'?\'140px\':\'none\'" '
+        +'style="max-width:100%;max-height:140px;border-radius:8px;border:1px solid rgba(37,211,102,.25);cursor:pointer;display:block;" '
+        +'title="Click to expand">';
+      html+='<div style="font-size:8px;color:rgba(255,255,255,.25);margin-top:3px;">Tap to expand</div>';
+      html+='</div>';
+    } else {
+      html+='<div style="font-size:10px;color:rgba(255,107,107,.5);margin-bottom:8px;">⚠️ No screenshot uploaded</div>';
+    }
     html+='<div style="display:flex;gap:6px;">';
     if(order.status==='pending'){
       html+='<button onclick="confirmDiamondOrder(\''+order.id+'\')" class="btn btn-green" style="flex:1;padding:8px;font-size:10px;">✅ Confirm</button>';
