@@ -211,6 +211,14 @@ body{min-height:100vh;font-family:'Exo 2',sans-serif;color:var(--text);overflow-
 .footer a{color:var(--gold);text-decoration:none;}
 .admin-lnk{display:inline-block;margin-top:4px;padding:8px 20px;background:rgba(79,195,247,.05);border:1px solid rgba(79,195,247,.12);border-radius:20px;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--faint);text-decoration:none;transition:all .3s;}
 .admin-lnk:hover{background:rgba(79,195,247,.1);border-color:rgba(79,195,247,.3);color:var(--blue);}
+
+/* ── MOBILE INPUT FOCUS SCROLL FIX ── */
+input[type="text"],input[type="tel"],input[type="file"],input[type="email"]{
+  -webkit-transform:translateZ(0);
+  transform:translateZ(0);
+  font-size:16px!important; /* Prevents iOS auto-zoom which causes scroll jump */
+}
+
 /* CONFETTI */
 .confetti-wrap{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden;}
 .cp{position:absolute;top:-10px;animation:fall var(--fd) ease-in forwards;border-radius:var(--br);}
@@ -1199,6 +1207,39 @@ function _flushFnQueue(){
   _fnQueue=[];
 }
 </script>
+<script>
+
+// ── IMAGE COMPRESSION HELPER ──
+// Compresses image to max 400KB before saving to Firestore
+function compressImage(file, maxKB, callback) {
+  maxKB = maxKB || 400;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      var MAX_W = 800, MAX_H = 800;
+      var w = img.width, h = img.height;
+      if (w > MAX_W) { h = Math.round(h * MAX_W / w); w = MAX_W; }
+      if (h > MAX_H) { w = Math.round(w * MAX_H / h); h = MAX_H; }
+      canvas.width = w; canvas.height = h;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      // Try quality from 0.8 down until under maxKB
+      var quality = 0.8;
+      var result = canvas.toDataURL('image/jpeg', quality);
+      while (result.length > maxKB * 1024 * 1.37 && quality > 0.2) {
+        quality -= 0.1;
+        result = canvas.toDataURL('image/jpeg', quality);
+      }
+      callback(result);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+</script>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import{getFirestore,collection,addDoc,getDocs,onSnapshot,query,where,orderBy,doc,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -1695,7 +1736,7 @@ window._real_mGoToPayment=window.mGoToPayment=async function(){
     if(sum)sum.innerHTML='<strong style="color:var(--purple);">🏷️ '+esc(squad)+'</strong><br>👑 '+esc(leader)+' <span style="color:rgba(255,255,255,.35);font-size:10px;">('+esc(luid)+')</span><br>⚔️ '+esc(m1)+' · '+esc(m2)+' · '+esc(m3)+'<br><span style="color:rgba(37,211,102,.6);font-size:10px;">✅ All details verified — proceed to payment</span>';
     document.getElementById('mStep1').style.display='none';
     document.getElementById('mStep2').style.display='block';
-    document.getElementById('mStep2').scrollIntoView({behavior:'smooth',block:'start'});
+    var s2=document.getElementById('mStep2');if(s2){var r2=s2.getBoundingClientRect();if(r2.top<0||r2.top>window.innerHeight){s2.scrollIntoView({behavior:'smooth',block:'nearest'});}}
   }catch(err){alert('❌ Error: '+(err.message||'Unknown'));}
   if(btn){btn.disabled=false;btn.textContent='NEXT — PAY ENTRY FEE ▶';}
 };
@@ -1766,21 +1807,11 @@ window._real_submitMonthly=window.submitMonthly=function(){
     });
   }
 
-  // Read screenshot if provided - callback style for max browser compat
+  // Compress screenshot before saving (Firestore 1MB limit)
   if(ssFile){
-    var reader=new FileReader();
-    reader.onload=function(ev){
-      doSubmit(ev.target.result);
-    };
-    reader.onerror=function(){
-      // Screenshot failed to read - submit without it
-      doSubmit('');
-    };
-    try{
-      reader.readAsDataURL(ssFile);
-    }catch(e){
-      doSubmit('');
-    }
+    compressImage(ssFile, 350, function(compressed){
+      doSubmit(compressed);
+    });
   }else{
     doSubmit('');
   }
@@ -1894,9 +1925,13 @@ function selectDiamondPackage(pkg){
     document.getElementById('diamondStep2').style.display='none';
     document.getElementById('diamondScreenshot').value='';
     console.log('✅ Payment card shown, Step 1 displayed');
+    // Smooth scroll without jumping to top
     setTimeout(()=>{
-      paymentCard.scrollIntoView({behavior:'smooth',block:'center'});
-    }, 100);
+      var rect = paymentCard.getBoundingClientRect();
+      if(rect.top < 0 || rect.top > window.innerHeight * 0.3){
+        paymentCard.scrollIntoView({behavior:'smooth',block:'nearest'});
+      }
+    }, 150);
   }else{
     alert('❌ Error: Payment form not found');
   }
@@ -1934,7 +1969,9 @@ function proceedToKhaltiPayment(){
   if(priceDisplay)priceDisplay.innerHTML=priceText;
   
   document.getElementById('diamondScreenshot').value='';
-  window.scrollTo({top:document.getElementById('diamondPaymentCard').offsetTop-100,behavior:'smooth'});
+  // Scroll only if card is out of view
+  var pc = document.getElementById('diamondPaymentCard');
+  if(pc){ var r=pc.getBoundingClientRect(); if(r.top<0||r.top>window.innerHeight*0.5){ pc.scrollIntoView({behavior:'smooth',block:'start'}); } }
 }
 
 function goBackToDiamondStep1(){
@@ -1957,8 +1994,8 @@ function submitDiamondPayment(){
   const pkgLabel={'115diamonds':'115 Diamonds','weeklypass':'Weekly Membership (7 days)','monthlypass':'Monthly Membership (30 days)'};
   const pkgPrice={'115diamonds':110,'weeklypass':210,'monthlypass':1050};
   
-  const reader=new FileReader();
-  reader.onload=function(e){
+  // Compress screenshot before saving to Firestore
+  compressImage(screenshot, 350, function(compressedSS) {
     const orderData={
       fullName:fullName,
       gameName:gameName,
@@ -1967,7 +2004,7 @@ function submitDiamondPayment(){
       package:selected.value,
       packageName:pkgLabel[selected.value],
       amount:pkgPrice[selected.value],
-      screenshotBase64:e.target.result,
+      screenshotBase64:compressedSS,
       status:'pending',
       createdAt:new Date(),
       timestamp:Date.now()
@@ -2001,8 +2038,7 @@ function submitDiamondPayment(){
       .catch(err=>{
         alert('❌ Error saving order: '+err.message+'\\n\\nPlease try again.');
       });
-  };
-  reader.readAsDataURL(screenshot);
+  }); // end compressImage
 }
 
 // Expose diamond functions globally
@@ -2047,7 +2083,7 @@ window._real_toggleSec=window.toggleSec=function(id){
   var open=el.style.display==='flex';
   el.style.display=open?'none':'flex';
   if(arrow)arrow.style.transform=open?'rotate(0deg)':'rotate(180deg)';
-  if(!open)setTimeout(function(){el.scrollIntoView({behavior:'smooth',block:'start'});},50);
+  if(!open)setTimeout(function(){var r=el.getBoundingClientRect();if(r.top<0||r.top>window.innerHeight*0.8){el.scrollIntoView({behavior:'smooth',block:'start'});}},50);
 };
 
 
