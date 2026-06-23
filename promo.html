@@ -999,6 +999,9 @@ var GROUP_LABELS=['A','B','C','D','E','F'];
 var GROUP_COLS=['#E53935','#1E88E5','#43A047','#8E24AA','#F4511E','#00897B'];
 
 function buildWASection(groups){
+  // Store for use by sendAllInGroup
+  window._waGroups={};
+  groups.forEach(function(grp,gi){var lbl=GROUP_LABELS[gi];if(lbl)window._waGroups[lbl]=grp;});
   var html='<div style="margin-top:16px;background:linear-gradient(135deg,rgba(13,35,75,.95),rgba(8,22,55,.9));border-radius:16px;padding:18px;border:1px solid rgba(37,211,102,.3);">'
     +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;border-bottom:1px solid rgba(37,211,102,.15);padding-bottom:10px;">'
     +'<div style="font-size:10px;font-weight:800;letter-spacing:2px;color:#69F0AE;text-transform:uppercase;">💬 WhatsApp Invites</div>'
@@ -1012,7 +1015,7 @@ function buildWASection(groups){
       +'<span style="font-size:12px;font-weight:800;color:#fff;">GROUP '+lbl+'</span>'
       +'<div style="display:flex;gap:5px;">'
       +'<a href="'+link+'" target="_blank" style="padding:4px 10px;background:rgba(37,211,102,.15);border:1px solid rgba(37,211,102,.4);border-radius:6px;font-size:11px;color:#25D366;text-decoration:none;">🔗 Open</a>'
-      +'<button onclick="sendAllInGroup('+JSON.stringify(grp)+',\''+lbl+'\',\''+encodeURIComponent(link)+'\')" style="padding:4px 10px;background:linear-gradient(135deg,#075e54,#25D366);border:none;border-radius:6px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;">📢 Send All</button>'
+      +'<button onclick="sendAllInGroup(\''+lbl+'\')" style="padding:4px 10px;background:linear-gradient(135deg,#075e54,#25D366);border:none;border-radius:6px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;">📢 Send All</button>'
       +'</div></div>';
     grp.forEach(function(t){
       var raw=(t.whatsapp||t.phone||'').replace(/\D/g,''),num=raw?(raw.indexOf('977')===0?raw:'977'+raw):'';
@@ -1804,8 +1807,10 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 
 
 // ── SEND ALL IN GROUP ──
-function sendAllInGroup(teams, lbl, encodedLink) {
-  var link = decodeURIComponent(encodedLink);
+function sendAllInGroup(lbl) {
+  var teams = (window._waGroups && window._waGroups[lbl]) || [];
+  var link = WA_LINKS[lbl] || '#';
+
   var nums = [];
   teams.forEach(function(t) {
     var raw = (t.whatsapp || t.phone || '').replace(/\D/g, '');
@@ -1820,23 +1825,22 @@ function sendAllInGroup(teams, lbl, encodedLink) {
     return;
   }
 
-  if (!confirm('Send Group ' + lbl + ' invite to ' + nums.length + ' players?\n\nThis will open ' + nums.length + ' WhatsApp tabs.')) return;
+  if (!confirm('Send Group ' + lbl + ' invite to ' + nums.length + ' players?\nOpens ' + nums.length + ' WhatsApp tabs.')) return;
 
   var delay = 0;
-  nums.forEach(function(p, i) {
+  nums.forEach(function(p) {
     setTimeout(function() {
-      var msg = 'Hi ' + p.name + '! 🎮%0AYou are in *Group ' + lbl + '* for the tournament.%0AJoin your match group here 👇%0A' + encodeURIComponent(link);
+      var msg = 'Hi+' + encodeURIComponent(p.name) + '!+%F0%9F%8E%AE%0AYou+are+in+*Group+' + lbl + '*+for+the+tournament.%0AJoin+your+match+group+here+%F0%9F%91%87%0A' + encodeURIComponent(link);
       window.open('https://wa.me/' + p.num + '?text=' + msg, '_blank');
     }, delay);
-    delay += 600; // 600ms between each to avoid popup blocking
+    delay += 700;
   });
 
-  // Show success toast
   var toast = document.createElement('div');
-  toast.textContent = '✅ Sending to ' + nums.length + ' players in Group ' + lbl + '...';
+  toast.textContent = '✅ Opening WhatsApp for ' + nums.length + ' players in Group ' + lbl;
   toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#25D366;color:#fff;padding:12px 22px;border-radius:12px;font-weight:700;font-size:13px;z-index:9999;box-shadow:0 4px 20px rgba(37,211,102,.4);';
   document.body.appendChild(toast);
-  setTimeout(function() { toast.remove(); }, 3000);
+  setTimeout(function() { toast.remove(); }, 3500);
 }
 
 // ── SEND ALL TOURNAMENT (all groups at once) ──  
