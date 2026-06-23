@@ -1005,7 +1005,7 @@ function buildWASection(groups){
   var html='<div style="margin-top:16px;background:linear-gradient(135deg,rgba(13,35,75,.95),rgba(8,22,55,.9));border-radius:16px;padding:18px;border:1px solid rgba(37,211,102,.3);">'
     +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;border-bottom:1px solid rgba(37,211,102,.15);padding-bottom:10px;">'
     +'<div style="font-size:10px;font-weight:800;letter-spacing:2px;color:#69F0AE;text-transform:uppercase;">💬 WhatsApp Invites</div>'
-    +'<button onclick="sendAllGroups(groups,GROUP_LABELS,WA_LINKS)" style="padding:7px 14px;background:linear-gradient(135deg,#075e54,#25D366);border:none;border-radius:8px;font-size:11px;font-weight:900;color:#fff;cursor:pointer;letter-spacing:1px;">📢 Send ALL Groups</button>'
+    +'<button onclick="sendAllGroups()" style="padding:7px 14px;background:linear-gradient(135deg,#075e54,#25D366);border:none;border-radius:8px;font-size:11px;font-weight:900;color:#fff;cursor:pointer;letter-spacing:1px;">📢 Send ALL Groups</button>'
     +'</div>';
   groups.forEach(function(grp,gi){
     var lbl=GROUP_LABELS[gi];if(!lbl)return;
@@ -1844,27 +1844,37 @@ function sendAllInGroup(lbl) {
 }
 
 // ── SEND ALL TOURNAMENT (all groups at once) ──  
-function sendAllGroups(allGroups, labels, waLinks) {
+function sendAllGroups() {
+  var waGroups = window._waGroups || {};
+  var labels = Object.keys(waGroups);
+  if (labels.length === 0) { alert('⚠️ No groups loaded yet! Generate bracket first.'); return; }
+
   var total = 0;
-  allGroups.forEach(function(g) { total += g.length; });
-  if (!confirm('Send invites to ALL ' + total + ' players across all groups?\nThis will open ' + total + ' WhatsApp tabs.')) return;
-  
+  labels.forEach(function(lbl) { total += waGroups[lbl].length; });
+
+  if (!confirm('Send invites to ALL ' + total + ' players across ' + labels.length + ' groups?\nOpens ' + total + ' WhatsApp tabs one by one.')) return;
+
   var delay = 0;
-  allGroups.forEach(function(grp, gi) {
-    var lbl = labels[gi];
-    var link = waLinks[lbl] || '#';
+  labels.forEach(function(lbl) {
+    var grp = waGroups[lbl] || [];
+    var link = WA_LINKS[lbl] || '#';
     grp.forEach(function(t) {
       var raw = (t.whatsapp || t.phone || '').replace(/\D/g, '');
-      if (raw) {
-        var num = raw.indexOf('977') === 0 ? raw : '977' + raw;
-        setTimeout(function() {
-          var msg = 'Hi ' + (t.leaderName||'Player') + '! 🎮%0AYou are in *Group ' + lbl + '* for the tournament.%0AJoin your match group here 👇%0A' + encodeURIComponent(link);
-          window.open('https://wa.me/' + num + '?text=' + msg, '_blank');
-        }, delay);
-        delay += 600;
-      }
+      if (!raw) return;
+      var num = raw.indexOf('977') === 0 ? raw : '977' + raw;
+      setTimeout(function() {
+        var msg = 'Hi+' + encodeURIComponent(t.leaderName||'Player') + '!+%F0%9F%8E%AE%0AYou+are+in+*Group+' + lbl + '*+for+the+tournament.%0AJoin+your+match+group+here+%F0%9F%91%87%0A' + encodeURIComponent(link);
+        window.open('https://wa.me/' + num + '?text=' + msg, '_blank');
+      }, delay);
+      delay += 700;
     });
   });
+
+  var toast = document.createElement('div');
+  toast.textContent = '📢 Sending to ' + total + ' players across all groups...';
+  toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#25D366;color:#fff;padding:12px 22px;border-radius:12px;font-weight:700;font-size:13px;z-index:9999;box-shadow:0 4px 20px rgba(37,211,102,.4);';
+  document.body.appendChild(toast);
+  setTimeout(function() { toast.remove(); }, 3500);
 }
 
 </script>
