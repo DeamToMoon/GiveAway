@@ -386,7 +386,7 @@ input[type="text"],input[type="tel"],input[type="file"],input[type="email"]{
     <div class="cd-sub">🏆 <strong>1 winner</strong> announced every Saturday at 10:00 AM Nepal Time</div>
   </div>
 
-  <!-- Prizes -->
+  <!-- Prizes — side by side original style -->
   <div class="prizes">
     <div class="prize-card prize-wk">
       <div class="pz-icon">🏆</div>
@@ -395,10 +395,20 @@ input[type="text"],input[type="tel"],input[type="file"],input[type="email"]{
       <div style="font-size:9px;color:rgba(79,195,247,.6);margin-top:6px;line-height:1.5;">Weekly Membership Pass<br>Every Saturday 🎯</div>
     </div>
     <div class="prize-card prize-mo" id="prize2Card">
-      <div class="pz-icon" id="prize2Icon">🎁</div>
-      <div class="pz-lbl" id="prize2Lbl">Coming Soon</div>
-      <div class="pz-val" id="prize2Val" style="font-size:11px;">Mystery Prize 👀</div>
-      <div style="font-size:9px;color:rgba(255,212,56,.7);margin-top:6px;line-height:1.6;font-weight:700;" id="prize2Sub">Something BIG is<br>dropping soon... 🔥<br>Stay tuned! 🤫</div>
+      <!-- OFF state -->
+      <div id="prize2OffState">
+        <div class="pz-icon">🎁</div>
+        <div class="pz-lbl">Coming Soon</div>
+        <div class="pz-val" style="font-size:11px;">Mystery Prize 👀</div>
+        <div style="font-size:9px;color:rgba(255,212,56,.7);margin-top:6px;line-height:1.6;font-weight:700;">Something BIG is<br>dropping soon... 🔥<br>Stay tuned! 🤫</div>
+      </div>
+      <!-- ON state -->
+      <div id="prize2OnState" style="display:none;">
+        <div class="pz-icon"><div class="prize2-wheel"><div class="prize2-wheel-inner" id="prize2Icon">🏆</div></div></div>
+        <div class="pz-lbl" id="prize2Lbl">2ND PRIZE</div>
+        <div class="pz-val" id="prize2Val" style="font-size:12px;">—</div>
+        <div style="font-size:9px;color:rgba(255,212,56,.7);margin-top:6px;" id="prize2Sub"></div>
+      </div>
     </div>
   </div>
   <div style="text-align:center;font-size:11px;color:var(--faint);letter-spacing:1px;margin-top:-8px;">
@@ -1294,14 +1304,29 @@ onSnapshot(doc(db,'winners','latest'),snap=>{
     const date=w.drawnAt?new Date(w.drawnAt.seconds*1000).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'Recently';
     if(dEl)dEl.textContent='🎉 Drawn on '+date;
     const mn=w.monthlyUsername||'???',mu=w.monthlyUID||'???';
+    const p2on = w.prize2Enabled === true;
+    const p2ico = w.prize2Icon || '🎁';
+    const p2name = w.prize2Name || 'Mystery Prize';
+    const p2sub = w.prize2Sub || 'Stay tuned 👀';
+
+    // 2nd slot HTML — changes based on prize2Enabled in the draw doc
+    const slot2HTML = p2on
+      ? `<div class="wdc" style="flex:0.9;background:linear-gradient(160deg,rgba(255,212,56,.09),rgba(255,171,64,.05));border:1px solid rgba(255,212,56,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:12px 8px;">
+          <div style="font-size:22px;">${p2ico}</div>
+          <div style="font-size:8px;font-weight:800;letter-spacing:1px;color:rgba(255,212,56,.8);text-transform:uppercase;">2nd Prize 🏆</div>
+          <div style="font-family:'Orbitron',sans-serif;font-size:10px;font-weight:900;color:rgba(255,212,56,.9);">${p2name}</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.4);">${p2sub}</div>
+        </div>`
+      : `<div class="wdc" style="flex:0.9;background:linear-gradient(160deg,rgba(255,212,56,.06),rgba(255,171,64,.03));border:1px dashed rgba(255,212,56,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
+          <div style="font-size:22px;">🎁</div>
+          <div style="font-size:8px;font-weight:800;letter-spacing:1px;color:rgba(255,212,56,.5);text-transform:uppercase;">Coming Soon</div>
+          <div style="font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;color:rgba(255,212,56,.4);">Mystery Prize</div>
+          <div style="font-size:9px;color:rgba(255,212,56,.35);">Stay tuned 👀</div>
+        </div>`;
+
     if(duoEl)duoEl.innerHTML=`
       <div class="wdc mo" style="flex:1.3;"><div class="wdc-b">1st Lucky Draw 💎</div><div class="wdc-icon">🎰</div><div class="wdc-name">${mn}</div><div class="wdc-uid">UID: ${mu}</div><div class="wdc-drew">🏆 Winner!</div></div>
-      <div class="wdc" style="flex:0.9;background:linear-gradient(160deg,rgba(255,212,56,.06),rgba(255,171,64,.03));border:1px dashed rgba(255,212,56,.25);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;">
-        <div style="font-size:22px;">🎁</div>
-        <div style="font-size:8px;font-weight:800;letter-spacing:1px;color:rgba(255,212,56,.5);text-transform:uppercase;">Coming Soon</div>
-        <div style="font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;color:rgba(255,212,56,.4);">Mystery Prize</div>
-        <div style="font-size:9px;color:rgba(255,212,56,.35);">Stay tuned 👀</div>
-      </div>`;
+      ${slot2HTML}`;
   }else{if(dEl)dEl.textContent='No draw yet — stay tuned!';}
 });
 
@@ -1947,25 +1972,40 @@ onSnapshot(doc(db,'giveaway_meta','settings'),snap=>{
   const prize2Icon = data.prize2Icon || '🎁';
   const prize2Sub = data.prize2Sub || 'Something BIG is dropping soon... 🔥';
 
-  const card = document.getElementById('prize2Card');
-  if(!card) return;
-
-  // Use getElementById directly — querySelector('#id') on child fails
+  const offState = document.getElementById('prize2OffState');
+  const onState  = document.getElementById('prize2OnState');
   const ico = document.getElementById('prize2Icon');
   const lbl = document.getElementById('prize2Lbl');
   const val = document.getElementById('prize2Val');
   const sub = document.getElementById('prize2Sub');
 
   if(prize2On){
-    if(ico){ ico.innerHTML = '<div class="prize2-wheel"><div class="prize2-wheel-inner">'+prize2Icon+'</div></div>'; }
-    if(lbl) lbl.textContent = '🏆 2nd Prize';
-    if(val){ val.textContent = prize2Text; val.style.fontSize='13px'; }
-    if(sub) sub.innerHTML = prize2Sub;
+    if(offState) offState.style.display = 'none';
+    if(onState)  onState.style.display  = 'block';
+    if(ico) ico.textContent = prize2Icon;
+    if(lbl) lbl.textContent = prize2Text || '2nd Prize';
+    if(val) val.textContent = prize2Text;
+    if(sub) sub.textContent = prize2Sub;
   } else {
-    if(ico){ ico.innerHTML = '🎁'; }
-    if(lbl) lbl.textContent = 'Coming Soon';
-    if(val){ val.textContent = 'Mystery Prize 👀'; val.style.fontSize='11px'; }
-    if(sub) sub.innerHTML = "Something BIG is<br>dropping soon... 🔥<br>Stay tuned! 🤫";
+    if(offState) offState.style.display = 'block';
+    if(onState)  onState.style.display  = 'none';
+  }
+
+  // Also update winners section 2nd slot
+  const ws2ico = document.getElementById('winnersSlot2Icon');
+  const ws2lbl = document.getElementById('winnersSlot2Lbl');
+  const ws2val = document.getElementById('winnersSlot2Val');
+  const ws2sub = document.getElementById('winnersSlot2Sub');
+  if(prize2On){
+    if(ws2ico) ws2ico.textContent = prize2Icon;
+    if(ws2lbl) ws2lbl.textContent = prize2Text || '2nd Prize';
+    if(ws2val) ws2val.textContent = prize2Text;
+    if(ws2sub) ws2sub.textContent = prize2Sub || '';
+  } else {
+    if(ws2ico) ws2ico.textContent = '🎁';
+    if(ws2lbl) ws2lbl.textContent = 'Coming Soon';
+    if(ws2val) ws2val.textContent = 'Mystery Prize';
+    if(ws2sub) ws2sub.textContent = 'Stay tuned 👀';
   }
 });
 
