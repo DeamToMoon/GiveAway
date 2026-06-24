@@ -226,6 +226,39 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
       </div>
     </div>
 
+    <!-- Second Prize Control -->
+    <div class="card">
+      <div class="card-top card-top-gold"></div>
+      <div class="card-hdr">🎁 2nd Lucky Draw Prize</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:#fff;">Enable 2nd Prize</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;">When ON — shows prize in index. When OFF — shows "Coming Soon"</div>
+        </div>
+        <label style="position:relative;display:inline-block;width:46px;height:26px;">
+          <input type="checkbox" id="prize2Toggle" onchange="savePrize2Settings()" style="opacity:0;width:0;height:0;">
+          <span style="position:absolute;cursor:pointer;inset:0;background:rgba(255,255,255,.1);border-radius:26px;transition:.3s;" id="prize2ToggleSlider"></span>
+        </label>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;" id="prize2Fields">
+        <div>
+          <label class="field-label">🏆 Prize Name / Description</label>
+          <input type="text" id="prize2Text" placeholder="e.g. Weekly Membership Pass 💎" class="field-input" oninput="savePrize2Settings()">
+        </div>
+        <div style="display:flex;gap:10px;">
+          <div style="flex:1;">
+            <label class="field-label">Emoji Icon</label>
+            <input type="text" id="prize2Icon" placeholder="🏆" class="field-input" maxlength="4" oninput="savePrize2Settings()">
+          </div>
+          <div style="flex:2;">
+            <label class="field-label">Sub Text</label>
+            <input type="text" id="prize2Sub" placeholder="e.g. Every Saturday 🎯" class="field-input" oninput="savePrize2Settings()">
+          </div>
+        </div>
+      </div>
+      <div id="prize2Status" style="font-size:11px;color:rgba(105,240,174,.7);margin-top:10px;display:none;">✅ Saved!</div>
+    </div>
+
     <!-- Export -->
     <div class="card">
       <div class="card-top"></div>
@@ -435,6 +468,36 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
     </div>
 
     <!-- Monthly Teams -->
+        <!-- Monthly eSewa QR Upload -->
+    <div class="card">
+      <div class="card-top card-top-green"></div>
+      <div class="card-hdr">💚 Monthly Payment QR Code</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.45);margin-bottom:12px;">Upload eSewa QR shown in monthly registration payment step</div>
+      <div style="display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap;">
+        <div style="flex:1;min-width:140px;">
+          <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Current QR</div>
+          <img id="monthlyQRPreview" src="" alt="QR" style="width:130px;height:130px;border-radius:10px;border:2px solid rgba(37,211,102,.3);object-fit:contain;background:rgba(255,255,255,.05);">
+        </div>
+        <div style="flex:2;min-width:180px;display:flex;flex-direction:column;gap:10px;">
+          <div>
+            <label class="field-label">📸 Upload New QR</label>
+            <input type="file" id="monthlyQRFile" accept="image/*" onchange="previewMonthlyQR()" style="width:100%;padding:8px;background:rgba(37,211,102,.06);border:1px dashed rgba(37,211,102,.3);border-radius:8px;color:#fff;font-size:11px;cursor:pointer;">
+            <img id="monthlyQRNewPreview" style="display:none;width:100%;max-height:120px;border-radius:8px;margin-top:6px;object-fit:contain;">
+          </div>
+          <div>
+            <label class="field-label">👤 Account Name</label>
+            <input type="text" id="monthlyQRNameInput" placeholder="e.g. Prashant Bista" class="inp">
+          </div>
+          <div>
+            <label class="field-label">📱 Phone Number</label>
+            <input type="text" id="monthlyQRPhoneInput" placeholder="e.g. 9766799668" class="inp" inputmode="numeric">
+          </div>
+          <button onclick="saveMonthlyQR()" class="btn btn-green btn-full">💾 Save QR & Details</button>
+          <div id="monthlyQRStatus" style="font-size:11px;color:rgba(105,240,174,.7);display:none;">✅ QR saved! Updates live on index.</div>
+        </div>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-top card-top-purple"></div>
       <div class="card-hdr" style="color:var(--purple);">🏆 Monthly Teams
@@ -652,6 +715,7 @@ function doLogin(){
   if(u==='Dream2moon'&&p==='dream2moon@123'){currentRole='admin';}
   else if(u==='miniadmin'&&p==='Bipin@90'){currentRole='mini';}
   else if(u==='miniadmin1'&&p==='Prashant@90'){currentRole='mini';}
+  else if(u==='miniadmin2'&&p==='D2MFF@90'){currentRole='mini';}
   else{document.getElementById('loginError').style.display='block';return;}
   document.getElementById('loginError').style.display='none';
   document.getElementById('loginScreen').style.display='none';
@@ -664,6 +728,8 @@ function doLogin(){
   loadWeeklyPrizePool(db);loadMonthlySettings(db);
   loadSavedBracket(db);loadMonthlySavedBracket(db);
   loadTournTeams(db);loadMonthlyTeams();
+  loadPrize2Settings();
+  loadMonthlyQRPreview();
 }
 
 function doLogout(){
@@ -1808,6 +1874,122 @@ function toggleDiamondStock(){
 }
 
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+
+// ══ PRIZE 2 CONTROLS ══
+var prize2SaveTimer = null;
+function savePrize2Settings() {
+  clearTimeout(prize2SaveTimer);
+  prize2SaveTimer = setTimeout(function() {
+    var enabled = document.getElementById('prize2Toggle').checked;
+    var text = (document.getElementById('prize2Text').value || '').trim();
+    var icon = (document.getElementById('prize2Icon').value || '🎁').trim();
+    var sub  = (document.getElementById('prize2Sub').value || '').trim();
+    getDB().collection('giveaway_meta').doc('settings').set({
+      prize2Enabled: enabled,
+      prize2Text: text,
+      prize2Icon: icon || '🎁',
+      prize2Sub: sub,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, {merge: true}).then(function() {
+      var st = document.getElementById('prize2Status');
+      if(st){ st.style.display='block'; setTimeout(function(){ st.style.display='none'; }, 2000); }
+    });
+  }, 800);
+}
+
+function loadPrize2Settings() {
+  getDB().collection('giveaway_meta').doc('settings').get().then(function(snap) {
+    var data = snap.exists ? snap.data() : {};
+    var tog = document.getElementById('prize2Toggle');
+    if(tog) tog.checked = data.prize2Enabled === true;
+    var sl = document.getElementById('prize2ToggleSlider');
+    if(sl) sl.style.background = data.prize2Enabled ? '#25D366' : 'rgba(255,255,255,.1)';
+    var txt = document.getElementById('prize2Text');
+    if(txt) txt.value = data.prize2Text || '';
+    var ico = document.getElementById('prize2Icon');
+    if(ico) ico.value = data.prize2Icon || '🎁';
+    var sub = document.getElementById('prize2Sub');
+    if(sub) sub.value = data.prize2Sub || '';
+  }).catch(function(){});
+}
+
+// Toggle slider visual
+document.addEventListener('change', function(e) {
+  if(e.target && e.target.id === 'prize2Toggle') {
+    var sl = document.getElementById('prize2ToggleSlider');
+    if(sl) sl.style.background = e.target.checked ? '#25D366' : 'rgba(255,255,255,.1)';
+  }
+});
+
+// ══ MONTHLY QR CONTROLS ══
+function previewMonthlyQR() {
+  var file = document.getElementById('monthlyQRFile').files[0];
+  if(!file) return;
+  var preview = document.getElementById('monthlyQRNewPreview');
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    if(preview){ preview.src = e.target.result; preview.style.display = 'block'; }
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveMonthlyQR() {
+  var file = document.getElementById('monthlyQRFile').files[0];
+  var name = (document.getElementById('monthlyQRNameInput').value || '').trim();
+  var phone = (document.getElementById('monthlyQRPhoneInput').value || '').trim();
+  var status = document.getElementById('monthlyQRStatus');
+
+  if(!file && !name && !phone) { alert('⚠️ Please upload a QR image or enter name/phone'); return; }
+
+  function doSave(b64) {
+    var payload = { updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+    if(b64) payload.qrBase64 = b64;
+    if(name) payload.name = name;
+    if(phone) payload.phone = phone;
+    getDB().collection('monthly_meta').doc('qr').set(payload, {merge: true}).then(function() {
+      if(status){ status.style.display='block'; setTimeout(function(){ status.style.display='none'; }, 3000); }
+      loadMonthlyQRPreview();
+    }).catch(function(e){ alert('❌ '+e.message); });
+  }
+
+  if(file) {
+    // Compress before saving
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      var img = new Image();
+      img.onload = function() {
+        var canvas = document.createElement('canvas');
+        var MAX = 600;
+        var w = img.width, h = img.height;
+        if(w > MAX){ h = Math.round(h*MAX/w); w = MAX; }
+        if(h > MAX){ w = Math.round(w*MAX/h); h = MAX; }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        var q = 0.85, b64 = canvas.toDataURL('image/jpeg', q);
+        while(b64.length > 700*1024 && q > 0.3){ q -= 0.1; b64 = canvas.toDataURL('image/jpeg', q); }
+        doSave(b64);
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  } else {
+    doSave(null);
+  }
+}
+
+function loadMonthlyQRPreview() {
+  getDB().collection('monthly_meta').doc('qr').get().then(function(snap) {
+    if(!snap.exists) return;
+    var d = snap.data();
+    var prev = document.getElementById('monthlyQRPreview');
+    if(prev && d.qrBase64) prev.src = d.qrBase64;
+    var ni = document.getElementById('monthlyQRNameInput');
+    if(ni && d.name) ni.value = d.name;
+    var pi = document.getElementById('monthlyQRPhoneInput');
+    if(pi && d.phone) pi.value = d.phone;
+  }).catch(function(){});
+}
 
 </script>
 </body>
