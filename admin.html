@@ -226,37 +226,40 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
       </div>
     </div>
 
-    <!-- Second Prize Control -->
-    <div class="card">
+    <!-- Second Prize Control — ADMIN ONLY -->
+    <div class="card admin-only">
       <div class="card-top card-top-gold"></div>
-      <div class="card-hdr">🎁 2nd Lucky Draw Prize</div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div class="card-hdr">🎁 2nd Lucky Draw Prize
+        <div id="prize2Status" style="font-size:10px;color:rgba(105,240,174,.8);font-weight:700;display:none;">✅ Auto-saved</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;background:rgba(255,212,56,.05);border:1px solid rgba(255,212,56,.15);border-radius:10px;padding:12px 14px;">
         <div>
-          <div style="font-size:12px;font-weight:700;color:#fff;">Enable 2nd Prize</div>
-          <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;">When ON — shows prize in index. When OFF — shows "Coming Soon"</div>
+          <div style="font-size:12px;font-weight:800;color:#fff;">Enable 2nd Prize</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;">ON = shows prize · OFF = shows "Coming Soon"</div>
         </div>
-        <label style="position:relative;display:inline-block;width:46px;height:26px;">
+        <label style="position:relative;display:inline-block;width:50px;height:28px;flex-shrink:0;">
           <input type="checkbox" id="prize2Toggle" onchange="savePrize2Settings()" style="opacity:0;width:0;height:0;">
-          <span style="position:absolute;cursor:pointer;inset:0;background:rgba(255,255,255,.1);border-radius:26px;transition:.3s;" id="prize2ToggleSlider"></span>
+          <span style="position:absolute;cursor:pointer;inset:0;background:rgba(255,255,255,.12);border-radius:28px;transition:.3s;border:1px solid rgba(255,255,255,.1);" id="prize2ToggleSlider">
+            <span style="position:absolute;width:22px;height:22px;border-radius:50%;background:#fff;top:2px;left:2px;transition:.3s;" id="prize2ToggleThumb"></span>
+          </span>
         </label>
       </div>
-      <div style="display:flex;flex-direction:column;gap:10px;" id="prize2Fields">
+      <div style="display:flex;flex-direction:column;gap:12px;">
         <div>
           <label class="field-label">🏆 Prize Name / Description</label>
-          <input type="text" id="prize2Text" placeholder="e.g. Weekly Membership Pass 💎" class="field-input" oninput="savePrize2Settings()">
+          <input type="text" id="prize2Text" placeholder="e.g. Weekly Membership Pass 💎" class="inp" oninput="savePrize2Settings()">
         </div>
         <div style="display:flex;gap:10px;">
           <div style="flex:1;">
-            <label class="field-label">Emoji Icon</label>
-            <input type="text" id="prize2Icon" placeholder="🏆" class="field-input" maxlength="4" oninput="savePrize2Settings()">
+            <label class="field-label">Emoji</label>
+            <input type="text" id="prize2Icon" placeholder="🏆" class="inp" maxlength="4" oninput="savePrize2Settings()">
           </div>
           <div style="flex:2;">
             <label class="field-label">Sub Text</label>
-            <input type="text" id="prize2Sub" placeholder="e.g. Every Saturday 🎯" class="field-input" oninput="savePrize2Settings()">
+            <input type="text" id="prize2Sub" placeholder="e.g. Every Saturday 🎯" class="inp" oninput="savePrize2Settings()">
           </div>
         </div>
       </div>
-      <div id="prize2Status" style="font-size:11px;color:rgba(105,240,174,.7);margin-top:10px;display:none;">✅ Saved!</div>
     </div>
 
     <!-- Export -->
@@ -468,8 +471,8 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
     </div>
 
     <!-- Monthly Teams -->
-        <!-- Monthly eSewa QR Upload -->
-    <div class="card">
+        <!-- Monthly eSewa QR Upload — ADMIN ONLY -->
+    <div class="card admin-only">
       <div class="card-top card-top-green"></div>
       <div class="card-hdr">💚 Monthly Payment QR Code</div>
       <div style="font-size:11px;color:rgba(255,255,255,.45);margin-bottom:12px;">Upload eSewa QR shown in monthly registration payment step</div>
@@ -645,6 +648,26 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
           <span id="diamondStockStatus" style="font-size:12px;color:var(--faint);">Loading...</span>
         </div>
       </div>
+      <!-- Diamond Khalti QR — ADMIN ONLY -->
+      <div class="admin-only" style="margin-bottom:16px;padding:14px;background:rgba(21,101,192,.06);border:1px solid rgba(21,101,192,.2);border-radius:12px;">
+        <div style="font-size:10px;font-weight:800;letter-spacing:2px;color:var(--blue);text-transform:uppercase;margin-bottom:10px;">💳 Khalti Payment QR</div>
+        <div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;">
+          <div>
+            <div style="font-size:9px;color:rgba(255,255,255,.4);margin-bottom:5px;">CURRENT</div>
+            <img id="diamondQRPreview" src="" alt="QR" style="width:100px;height:100px;border-radius:8px;border:1px solid rgba(21,101,192,.3);object-fit:contain;background:rgba(255,255,255,.05);">
+          </div>
+          <div style="flex:1;min-width:160px;display:flex;flex-direction:column;gap:8px;">
+            <div>
+              <label class="field-label">📸 Upload New QR</label>
+              <input type="file" id="diamondQRFile" accept="image/*" onchange="previewDiamondQR()" style="width:100%;padding:7px;background:rgba(21,101,192,.06);border:1px dashed rgba(21,101,192,.3);border-radius:7px;color:#fff;font-size:11px;cursor:pointer;">
+              <img id="diamondQRNewPreview" style="display:none;width:100%;max-height:100px;border-radius:7px;margin-top:5px;object-fit:contain;">
+            </div>
+            <button onclick="saveDiamondQR()" class="btn btn-blue btn-full" style="padding:8px;">💾 Save Diamond QR</button>
+            <div id="diamondQRStatus" style="font-size:11px;color:rgba(105,240,174,.7);display:none;">✅ QR saved! Updates live on index.</div>
+          </div>
+        </div>
+      </div>
+
       <label class="label">Coming Soon Message</label>
       <textarea id="diamondComingSoonText" placeholder="Message shown when diamonds are out of stock..." style="width:100%;height:100px;padding:10px 12px;background:rgba(21,101,192,.08);border:1px solid rgba(21,101,192,.2);border-radius:8px;color:#fff;font-size:12px;font-family:inherit;box-sizing:border-box;resize:vertical;margin-bottom:10px;"></textarea>
       <button onclick="saveDiamondSettings()" class="btn btn-blue btn-full" style="padding:13px;">💾 Save Settings</button>
@@ -714,8 +737,7 @@ function doLogin(){
   var p=document.getElementById('loginPass').value;
   if(u==='Dream2moon'&&p==='dream2moon@123'){currentRole='admin';}
   else if(u==='miniadmin'&&p==='Bipin@90'){currentRole='mini';}
-  else if(u==='miniadmin1'&&p==='Prashant@90'){currentRole='mini';}
-  else if(u==='miniadmin2'&&p==='D2MFF@90'){currentRole='mini';}
+  else if(u==='miniadmin01'&&p==='D2MFF@90'){currentRole='mini';}
   else{document.getElementById('loginError').style.display='block';return;}
   document.getElementById('loginError').style.display='none';
   document.getElementById('loginScreen').style.display='none';
@@ -730,6 +752,7 @@ function doLogin(){
   loadTournTeams(db);loadMonthlyTeams();
   loadPrize2Settings();
   loadMonthlyQRPreview();
+  loadDiamondQRPreview();
 }
 
 function doLogout(){
@@ -1903,8 +1926,7 @@ function loadPrize2Settings() {
     var data = snap.exists ? snap.data() : {};
     var tog = document.getElementById('prize2Toggle');
     if(tog) tog.checked = data.prize2Enabled === true;
-    var sl = document.getElementById('prize2ToggleSlider');
-    if(sl) sl.style.background = data.prize2Enabled ? '#25D366' : 'rgba(255,255,255,.1)';
+    updatePrize2ToggleUI(data.prize2Enabled === true);
     var txt = document.getElementById('prize2Text');
     if(txt) txt.value = data.prize2Text || '';
     var ico = document.getElementById('prize2Icon');
@@ -1914,11 +1936,16 @@ function loadPrize2Settings() {
   }).catch(function(){});
 }
 
-// Toggle slider visual
+// Toggle slider visual with thumb animation
+function updatePrize2ToggleUI(checked) {
+  var sl = document.getElementById('prize2ToggleSlider');
+  var th = document.getElementById('prize2ToggleThumb');
+  if(sl) sl.style.background = checked ? 'rgba(37,211,102,.8)' : 'rgba(255,255,255,.12)';
+  if(th) th.style.transform = checked ? 'translateX(22px)' : 'translateX(0)';
+}
 document.addEventListener('change', function(e) {
   if(e.target && e.target.id === 'prize2Toggle') {
-    var sl = document.getElementById('prize2ToggleSlider');
-    if(sl) sl.style.background = e.target.checked ? '#25D366' : 'rgba(255,255,255,.1)';
+    updatePrize2ToggleUI(e.target.checked);
   }
 });
 
@@ -1988,6 +2015,60 @@ function loadMonthlyQRPreview() {
     if(ni && d.name) ni.value = d.name;
     var pi = document.getElementById('monthlyQRPhoneInput');
     if(pi && d.phone) pi.value = d.phone;
+  }).catch(function(){});
+}
+
+
+// ══ DIAMOND KHALTI QR CONTROLS ══
+function previewDiamondQR() {
+  var file = document.getElementById('diamondQRFile').files[0];
+  if(!file) return;
+  var preview = document.getElementById('diamondQRNewPreview');
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    if(preview){ preview.src = e.target.result; preview.style.display = 'block'; }
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveDiamondQR() {
+  var file = document.getElementById('diamondQRFile').files[0];
+  if(!file) { alert('⚠️ Please select a QR image to upload'); return; }
+  var status = document.getElementById('diamondQRStatus');
+
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      var MAX = 500;
+      var w = img.width, h = img.height;
+      if(w > MAX){ h = Math.round(h*MAX/w); w = MAX; }
+      if(h > MAX){ w = Math.round(w*MAX/h); h = MAX; }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      var q = 0.85, b64 = canvas.toDataURL('image/jpeg', q);
+      while(b64.length > 600*1024 && q > 0.3){ q -= 0.1; b64 = canvas.toDataURL('image/jpeg', q); }
+
+      getDB().collection('diamond_meta').doc('qr').set({
+        qrBase64: b64,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, {merge: true}).then(function() {
+        if(status){ status.style.display='block'; setTimeout(function(){ status.style.display='none'; }, 3000); }
+        loadDiamondQRPreview();
+      }).catch(function(e){ alert('❌ '+e.message); });
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function loadDiamondQRPreview() {
+  getDB().collection('diamond_meta').doc('qr').get().then(function(snap) {
+    if(!snap.exists) return;
+    var d = snap.data();
+    var prev = document.getElementById('diamondQRPreview');
+    if(prev && d.qrBase64) prev.src = d.qrBase64;
   }).catch(function(){});
 }
 
