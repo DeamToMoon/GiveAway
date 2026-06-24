@@ -229,9 +229,7 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
     <!-- Second Prize Control — ADMIN ONLY -->
     <div class="card admin-only">
       <div class="card-top card-top-gold"></div>
-      <div class="card-hdr">🎁 2nd Lucky Draw Prize
-        <div id="prize2Status" style="font-size:10px;color:rgba(105,240,174,.8);font-weight:700;display:none;">✅ Auto-saved</div>
-      </div>
+      <div class="card-hdr">🎁 2nd Lucky Draw Prize</div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;background:rgba(255,212,56,.05);border:1px solid rgba(255,212,56,.15);border-radius:10px;padding:12px 14px;">
         <div>
           <div style="font-size:12px;font-weight:800;color:#fff;">Enable 2nd Prize</div>
@@ -259,6 +257,8 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
             <input type="text" id="prize2Sub" placeholder="e.g. Every Saturday 🎯" class="inp" oninput="savePrize2Settings()">
           </div>
         </div>
+        <button onclick="savePrize2Now()" class="btn btn-gold btn-full" style="margin-top:12px;padding:10px;font-size:12px;font-weight:800;">💾 Save Prize Settings</button>
+        <div id="prize2Status" style="font-size:11px;color:rgba(105,240,174,.8);font-weight:700;text-align:center;margin-top:8px;display:none;">✅ Saved!</div>
       </div>
     </div>
 
@@ -1900,6 +1900,24 @@ function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').
 
 
 // ══ PRIZE 2 CONTROLS ══
+// Immediate save (button click)
+function savePrize2Now() {
+  var enabled = document.getElementById('prize2Toggle').checked;
+  var text = (document.getElementById('prize2Text').value || '').trim();
+  var icon = (document.getElementById('prize2Icon').value || '🏆').trim();
+  var sub  = (document.getElementById('prize2Sub').value || '').trim();
+  getDB().collection('giveaway_meta').doc('settings').set({
+    prize2Enabled: enabled,
+    prize2Text: text,
+    prize2Icon: icon || '🏆',
+    prize2Sub: sub,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, {merge: true}).then(function() {
+    var st = document.getElementById('prize2Status');
+    if(st){ st.style.display='block'; setTimeout(function(){ st.style.display='none'; }, 2500); }
+  }).catch(function(e){ alert('❌ '+e.message); });
+}
+
 var prize2SaveTimer = null;
 function savePrize2Settings() {
   clearTimeout(prize2SaveTimer);
