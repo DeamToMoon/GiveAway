@@ -941,7 +941,27 @@ function confirmDraw(){
   var w={username:document.getElementById('winnerNameMonthly').textContent,uid:document.getElementById('winnerUIDMonthly').textContent.replace('UID: ','')};
   drawnMonthly=w;
   var db=getDB();
-  db.collection('winners').doc('latest').set({monthlyUsername:w.username,monthlyUID:w.uid,weeklyUsername:'',weeklyUID:'',drawnAt:firebase.firestore.FieldValue.serverTimestamp()}).then(function(){
+  // Get prize2 data if enabled
+  var prize2Enabled = false;
+  var prize2Name = '', prize2Ico = '🎁', prize2Sub = '';
+  try {
+    prize2Enabled = window._prize2Enabled || false;
+    prize2Name = window._prize2Text || '';
+    prize2Ico = window._prize2Icon || '🎁';
+    prize2Sub = window._prize2Sub || '';
+  } catch(e){}
+
+  db.collection('winners').doc('latest').set({
+    monthlyUsername: w.username,
+    monthlyUID: w.uid,
+    weeklyUsername: '',
+    weeklyUID: '',
+    prize2Enabled: prize2Enabled,
+    prize2Name: prize2Name,
+    prize2Icon: prize2Ico,
+    prize2Sub: prize2Sub,
+    drawnAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(function(){
     winnerHistory.unshift({monthly:w});
     document.getElementById('totalWins').textContent=winnerHistory.length;
     updateHistory();
@@ -1906,6 +1926,11 @@ function savePrize2Now() {
   var text = (document.getElementById('prize2Text').value || '').trim();
   var icon = (document.getElementById('prize2Icon').value || '🏆').trim();
   var sub  = (document.getElementById('prize2Sub').value || '').trim();
+  // Cache locally
+  window._prize2Enabled = enabled;
+  window._prize2Text = text;
+  window._prize2Icon = icon || '🏆';
+  window._prize2Sub = sub;
   getDB().collection('giveaway_meta').doc('settings').set({
     prize2Enabled: enabled,
     prize2Text: text,
@@ -1942,6 +1967,11 @@ function savePrize2Settings() {
 function loadPrize2Settings() {
   getDB().collection('giveaway_meta').doc('settings').get().then(function(snap) {
     var data = snap.exists ? snap.data() : {};
+    // Cache for use during draw
+    window._prize2Enabled = data.prize2Enabled === true;
+    window._prize2Text = data.prize2Text || '';
+    window._prize2Icon = data.prize2Icon || '🎁';
+    window._prize2Sub = data.prize2Sub || '';
     var tog = document.getElementById('prize2Toggle');
     if(tog) tog.checked = data.prize2Enabled === true;
     updatePrize2ToggleUI(data.prize2Enabled === true);
