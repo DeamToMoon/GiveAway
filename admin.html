@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <style>
 :root{
   --gold:#FFD438;--blue:#4FC3F7;--cyan:#00E5FF;--purple:#CE93D8;
@@ -178,11 +179,13 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
   <div class="login-brand">DREAM2MOON</div>
   <div class="login-sub">🔐 Admin Access</div>
   <div class="login-card">
-    <input class="login-inp" type="text" id="loginUser" placeholder="Username" autocomplete="off" autocapitalize="off">
+    <input class="login-inp" type="email" id="loginEmail" placeholder="Email" autocomplete="email" autocapitalize="off" inputmode="email">
     <input class="login-inp" type="password" id="loginPass" placeholder="Password">
-    <div class="login-err" id="loginError">❌ Wrong credentials</div>
-    <button class="login-go" onclick="doLogin()">🚀 ENTER PANEL</button>
+    <div class="login-err" id="loginError" style="display:none;">❌ Wrong credentials</div>
+    <div class="login-err" id="loginLoading" style="display:none;color:rgba(255,212,56,.7);">⏳ Signing in...</div>
+    <button class="login-go" id="loginBtn" onclick="doLogin()">🚀 ENTER PANEL</button>
   </div>
+
 </div>
 
 <!-- ═══ ADMIN PANEL ═══ -->
@@ -325,11 +328,41 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
       </div>
     </div>
 
-    <!-- 2nd slot -->
-    <div class="card" style="border-color:rgba(255,212,56,.1);">
+    <!-- 2nd slot — dynamic -->
+    <div class="card admin-only" id="slot2Card" style="border-color:rgba(255,212,56,.2);">
       <div class="card-top card-top-gold"></div>
-      <div class="card-hdr" style="color:var(--gold);">🎁 2nd Slot — Coming Soon</div>
-      <div style="text-align:center;padding:16px;"><div style="font-size:44px;animation:bounce 2s ease infinite;">🔜</div><div style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--gold);letter-spacing:2px;margin-top:10px;">UPGRADING SOON</div></div>
+      <div class="card-hdr" style="color:var(--gold);">🎁 2nd Lucky Draw Slot</div>
+      <!-- OFF state -->
+      <div id="slot2Off" style="text-align:center;padding:16px;">
+        <div style="font-size:44px;animation:bounce 2s ease infinite;">🔜</div>
+        <div style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;color:var(--gold);letter-spacing:2px;margin-top:10px;">UPGRADING SOON</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:6px;">Enable 2nd Prize above to activate</div>
+      </div>
+      <!-- ON state — spin wheel for 2nd prize -->
+      <div id="slot2On" style="display:none;">
+        <div style="font-size:11px;color:rgba(255,255,255,.4);text-align:center;margin-bottom:10px;">Draw winner for 2nd prize from same entries</div>
+        <button class="btn-spin" id="slot2DrawBtn" onclick="startSlot2Draw()" style="font-size:13px;padding:14px;">🎡 SPIN FOR 2ND PRIZE</button>
+        <div id="slot2WheelSection" style="display:none;flex-direction:column;align-items:center;gap:14px;margin-top:20px;">
+          <div style="position:relative;width:260px;height:260px;max-width:100%;">
+            <div style="position:absolute;inset:-6px;border-radius:50%;background:conic-gradient(#CE93D8,#4FC3F7,#CE93D8,#fff0ff,#CE93D8);animation:spinGlow 2s linear infinite;opacity:.3;z-index:0;"></div>
+            <canvas id="slot2Wheel" width="260" height="260" style="position:relative;z-index:1;border-radius:50%;max-width:100%;"></canvas>
+          </div>
+          <div id="slot2WinnerReveal" style="display:none;flex-direction:column;align-items:center;gap:12px;width:100%;">
+            <div style="font-size:44px;animation:bigBounce 1s ease infinite;">🎉</div>
+            <div style="font-family:'Orbitron',sans-serif;font-size:11px;font-weight:900;letter-spacing:2px;color:#CE93D8;">🎊 2ND PRIZE WINNER!</div>
+            <div class="wdc mo" style="width:100%;">
+              <div style="font-size:24px;margin-bottom:6px;" id="slot2PrizeIcon">🏆</div>
+              <div style="font-size:8px;font-weight:800;letter-spacing:1px;color:var(--gold);background:rgba(255,212,56,.12);padding:3px 10px;border-radius:14px;display:inline-block;margin-bottom:8px;" id="slot2PrizeName">2nd Prize</div>
+              <div class="wdc-name" id="slot2WinnerName"></div>
+              <div class="wdc-uid" id="slot2WinnerUID"></div>
+            </div>
+            <div style="display:flex;gap:10px;width:100%;">
+              <button onclick="undoSlot2()" class="btn btn-red" style="flex:1;padding:13px;">↩️ Re-spin</button>
+              <button onclick="confirmSlot2()" class="btn btn-green" style="flex:2;padding:13px;">✅ Confirm 2nd Winner</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="card" id="endDrawCard" style="display:none;border-color:rgba(105,240,174,.2);">
@@ -699,9 +732,12 @@ body{font-family:'Exo 2',sans-serif;color:var(--text);overflow-x:hidden;
 
 <script>
 
-var _db=null;
+// Error handler removed after debugging complete
+
+// ── FIREBASE INIT ──
+var _db = null;
 function getDB(){
-  if(_db)return _db;
+  if(_db) return _db;
   if(!firebase.apps.length){
     firebase.initializeApp({
       apiKey:"AIzaSyDPp-JsePgIM4Y3MrFrXEMLiv1GW3sJGKU",
@@ -712,13 +748,20 @@ function getDB(){
       appId:"1:172765828532:web:d31a0b1dae8cc5752bcee1"
     });
   }
-  _db=firebase.firestore();
+  _db = firebase.firestore();
   return _db;
 }
 
 var allEntries=[],winnerHistory=[],tournTeams=[],selectedGroups=0;
 var monthlyTeamsCache=[],mSelectedGroups=0;
-var drawnMonthly=null,wheelRunning=false,currentRole='admin';
+var drawnMonthly=null,wheelRunning=false,currentRole='';
+
+// ADMIN EMAILS to ROLES mapping
+var ADMIN_ROLES = {
+  'admin.d2mff@gmail.com':  'admin',
+  'd2mff.mini@gmail.com':   'mini',
+  'd2mff.mini01@gmail.com': 'mini'
+};
 
 // ── STARS ──
 document.addEventListener('DOMContentLoaded',function(){
@@ -733,15 +776,52 @@ document.addEventListener('DOMContentLoaded',function(){
 
 // ── LOGIN ──
 function doLogin(){
-  var u=document.getElementById('loginUser').value.trim();
-  var p=document.getElementById('loginPass').value;
-  if(u==='Dream2moon'&&p==='dream2moon@123'){currentRole='admin';}
-  else if(u==='miniadmin'&&p==='Bipin@90'){currentRole='mini';}
-  else if(u==='miniadmin01'&&p==='D2MFF@90'){currentRole='mini';}
-  else{document.getElementById('loginError').style.display='block';return;}
-  document.getElementById('loginError').style.display='none';
-  document.getElementById('loginScreen').style.display='none';
-  document.getElementById('adminPanel').style.display='flex';
+  var email = (document.getElementById('loginEmail').value || '').trim().toLowerCase();
+  var pass  = document.getElementById('loginPass').value;
+  var errEl = document.getElementById('loginError');
+  var loadEl = document.getElementById('loginLoading');
+  var btn   = document.getElementById('loginBtn');
+
+  if(!email || !pass){
+    errEl.textContent = '❌ Enter email and password';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  // Check email is one of our known emails
+  if(!ADMIN_ROLES[email]){
+    errEl.textContent = '❌ Access denied';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  errEl.style.display = 'none';
+  loadEl.style.display = 'block';
+  btn.disabled = true;
+
+  getDB(); // ensure firebase is initialized
+  firebase.auth().signInWithEmailAndPassword(email, pass)
+    .then(function(cred){
+      loadEl.style.display = 'none';
+      btn.disabled = false;
+      currentRole = ADMIN_ROLES[cred.user.email.toLowerCase()] || 'mini';
+      document.getElementById('loginError').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'flex';
+      initPanel();
+    })
+    .catch(function(err){
+      loadEl.style.display = 'none';
+      btn.disabled = false;
+      var msg = '❌ Wrong credentials';
+      if(err.code === 'auth/too-many-requests') msg = '❌ Too many attempts. Try later.';
+      if(err.code === 'auth/network-request-failed') msg = '❌ Network error. Check connection.';
+      errEl.textContent = msg;
+      errEl.style.display = 'block';
+    });
+}
+
+function initPanel(){
   applyRoleUI();
   var db=getDB();
   if(currentRole==='admin'){
@@ -756,9 +836,13 @@ function doLogin(){
 }
 
 function doLogout(){
+  getDB(); // ensure firebase is initialized
+  firebase.auth().signOut().then(function(){
+    currentRole='';
+  }).catch(function(){});
   document.getElementById('adminPanel').style.display='none';
   document.getElementById('loginScreen').style.display='flex';
-  document.getElementById('loginUser').value='';
+  document.getElementById('loginEmail').value='';
   document.getElementById('loginPass').value='';
   document.getElementById('loginError').style.display='none';
   currentRole='admin';
@@ -1931,6 +2015,7 @@ function savePrize2Now() {
   window._prize2Text = text;
   window._prize2Icon = icon || '🏆';
   window._prize2Sub = sub;
+  updateSlot2UI(enabled);
   getDB().collection('giveaway_meta').doc('settings').set({
     prize2Enabled: enabled,
     prize2Text: text,
@@ -1972,6 +2057,7 @@ function loadPrize2Settings() {
     window._prize2Text = data.prize2Text || '';
     window._prize2Icon = data.prize2Icon || '🎁';
     window._prize2Sub = data.prize2Sub || '';
+    updateSlot2UI(window._prize2Enabled);
     var tog = document.getElementById('prize2Toggle');
     if(tog) tog.checked = data.prize2Enabled === true;
     updatePrize2ToggleUI(data.prize2Enabled === true);
@@ -2119,6 +2205,160 @@ function loadDiamondQRPreview() {
     if(prev && d.qrBase64) prev.src = d.qrBase64;
   }).catch(function(){});
 }
+
+
+// ══ 2ND SLOT DRAW ══
+var slot2Running = false;
+var drawnSlot2 = null;
+
+function updateSlot2UI(prize2On) {
+  var off = document.getElementById('slot2Off');
+  var on  = document.getElementById('slot2On');
+  if(off) off.style.display = prize2On ? 'none' : 'block';
+  if(on)  on.style.display  = prize2On ? 'block' : 'none';
+  // Update prize icon/name in wheel reveal
+  if(prize2On){
+    var ico = document.getElementById('slot2PrizeIcon');
+    var nm  = document.getElementById('slot2PrizeName');
+    if(ico) ico.textContent = window._prize2Icon || '🏆';
+    if(nm)  nm.textContent  = window._prize2Text || '2nd Prize';
+  }
+}
+
+function startSlot2Draw(){
+  if(slot2Running){ alert('⏳ Already running!'); return; }
+  if(allEntries.length < 2){ alert('Need at least 2 entries!'); return; }
+  slot2Running = true;
+  var pool = allEntries.filter(function(e){
+    // Exclude already drawn 1st winner
+    return !(drawnMonthly && e.id === drawnMonthly.id);
+  });
+  if(pool.length < 1){ alert('Not enough entries for 2nd draw!'); slot2Running=false; return; }
+  var winner = pool[Math.floor(Math.random() * pool.length)];
+  drawnSlot2 = winner;
+
+  var btn = document.getElementById('slot2DrawBtn');
+  var sec = document.getElementById('slot2WheelSection');
+  var rev = document.getElementById('slot2WinnerReveal');
+  if(btn) btn.disabled = true;
+  if(sec){ sec.style.display = 'flex'; }
+  if(rev) rev.style.display = 'none';
+
+  // Draw on canvas
+  var canvas = document.getElementById('slot2Wheel');
+  if(!canvas){ finishSlot2Draw(winner); return; }
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height, cx = W/2, cy = H/2, R = W/2 - 8;
+  var names = pool.map(function(e){ return e.username || '???'; });
+  var colors = ['#CE93D8','#9C27B0','#7B1FA2','#BA68C8','#E040FB','#AB47BC','#8E24AA','#D500F9'];
+  var sliceA = (2 * Math.PI) / names.length;
+  var winIdx = pool.indexOf(winner);
+  var spinDur = 3000 + Math.random() * 1500;
+  var startTime = null;
+  var startAngle = 0;
+  var targetAngle = (2 * Math.PI * 5) - (winIdx * sliceA) - (sliceA / 2);
+
+  function drawWheel(angle){
+    ctx.clearRect(0,0,W,H);
+    names.forEach(function(n,i){
+      var a0 = angle + i * sliceA;
+      var a1 = a0 + sliceA;
+      ctx.beginPath();
+      ctx.moveTo(cx,cy);
+      ctx.arc(cx,cy,R,a0,a1);
+      ctx.closePath();
+      ctx.fillStyle = colors[i % colors.length];
+      ctx.fill();
+      ctx.save();
+      ctx.translate(cx,cy);
+      ctx.rotate(a0 + sliceA/2);
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold '+ Math.max(8, Math.min(13, 100/names.length)) +'px Exo 2, sans-serif';
+      ctx.fillText(n.substring(0,12), R-6, 4);
+      ctx.restore();
+    });
+    ctx.beginPath();
+    ctx.arc(cx,cy,18,0,2*Math.PI);
+    ctx.fillStyle='#1a0a2e';
+    ctx.fill();
+  }
+
+  function animate(ts){
+    if(!startTime) startTime = ts;
+    var prog = Math.min((ts-startTime)/spinDur, 1);
+    var ease = 1 - Math.pow(1-prog, 4);
+    var cur = startAngle + (targetAngle - startAngle) * ease;
+    drawWheel(cur);
+    if(prog < 1){ requestAnimationFrame(animate); }
+    else{
+      slot2Running = false;
+      setTimeout(function(){
+        var nameEl = document.getElementById('slot2WinnerName');
+        var uidEl  = document.getElementById('slot2WinnerUID');
+        if(nameEl) nameEl.textContent = winner.username || '???';
+        if(uidEl)  uidEl.textContent  = 'UID: '+(winner.uid||'???');
+        if(rev) rev.style.display = 'flex';
+      }, 400);
+    }
+  }
+  drawWheel(startAngle);
+  requestAnimationFrame(animate);
+}
+
+function undoSlot2(){
+  drawnSlot2 = null; slot2Running = false;
+  var rev = document.getElementById('slot2WinnerReveal');
+  var sec = document.getElementById('slot2WheelSection');
+  var btn = document.getElementById('slot2DrawBtn');
+  if(rev) rev.style.display = 'none';
+  if(sec) sec.style.display = 'none';
+  if(btn) btn.disabled = false;
+}
+
+function confirmSlot2(){
+  if(!drawnSlot2){ alert('No winner selected!'); return; }
+  var w2 = drawnSlot2;
+  var db = getDB();
+  // Update winners/latest with 2nd winner
+  db.collection('winners').doc('latest').set({
+    winner2Username: w2.username,
+    winner2UID: w2.uid,
+    prize2Enabled: window._prize2Enabled || false,
+    prize2Name: window._prize2Text || '',
+    prize2Icon: window._prize2Icon || '🎁',
+    prize2Sub:  window._prize2Sub  || '',
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, {merge:true}).then(function(){
+    alert('🎉 2nd Winner confirmed!\n\n'+ w2.username +'\n\nResults updated on index!');
+    var btn = document.getElementById('slot2DrawBtn');
+    if(btn) btn.disabled = false;
+  }).catch(function(e){ alert('❌ '+e.message); });
+}
+
+
+// ── FIREBASE AUTH STATE — check on page load ──
+// Placed at end so all functions (initPanel, ADMIN_ROLES) are defined first
+window.addEventListener('load', function() {
+  try {
+    getDB(); // ensure firebase is initialized
+    firebase.auth().onAuthStateChanged(function(user) {
+      if(user) {
+        var email = (user.email || '').toLowerCase();
+        if(ADMIN_ROLES[email]) {
+          currentRole = ADMIN_ROLES[email];
+          document.getElementById('loginScreen').style.display = 'none';
+          document.getElementById('adminPanel').style.display = 'flex';
+          initPanel();
+        } else {
+          firebase.auth().signOut();
+        }
+      }
+    });
+  } catch(e) {
+    console.warn('Auth check failed:', e);
+  }
+});
 
 </script>
 </body>
